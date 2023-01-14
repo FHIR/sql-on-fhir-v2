@@ -4,29 +4,51 @@
 
 * Modern relational databases got support for native json datatype.
 * New SQL standard introduces json path
+* FHIR JSON is not very database friendly
 
-1. Persistent Format + reference impl of back and forth converter
-2. 
+## Solution
+
+1. FHIR Storage Format
+2. Reference implementation 
+3. Use cases
 
 
-## Table schema
+## Database Schema
 
+Database schema is simple.
+Table per each resource!
+Table name is lowercase resourceType. 
+Two columns:
+
+* id - text, primary key
+* resource - json 
+
+```sql
 create table patient (
  id text,
- resource JSON ;;- fhir persistent format
+ resource JSON
 )
 
+```
 
 ## FHIR Persistent Format
 
+FHIR Persistent Format is an algorithm to translate
+FHIR JSON to more database friendly representation.
 
-## references 
+
+* references `{reference: 'Patient/id'}`=> `{id: pt-1, resourceType: Patient}`
+* extensions
+* CodeableConcept
+* Quantity.value normalization
+
+
+### References 
 
 Encode server local references as {id, resourceType}
 
 Should we preserve reference - if yes - who is a source of true
 
-Reference {reference} => {resourceType, id}
 
 ```yaml
 resourceType: Encounter
@@ -40,6 +62,7 @@ resourceType: Encounter
 patient:
   resourceType: Patient
   id: pt-1
+  
 ```
 
 ```sql
@@ -52,7 +75,7 @@ json_query(resource, '$.patient.id') ;; Standard
 
 ```
 
-## extensions 
+## Extensions 
 
 Think of idea of preserving `extension` attribute
 May work like a context in JSON LD
@@ -76,8 +99,8 @@ extension:
 
 FHIR4DB
 ```yaml
-_extensions:
-   race: value
+extensions:
+  race: value
 ```
 
 ```code sql
@@ -178,13 +201,14 @@ code:
 codings:
  - {system=loinc, code, key: loinc}, 
  - {system=snomed, code, key=snomed}
+
 codes: 
   loinc: {code: ...}
   snomed: {code: ...}
 ```
 
 ```code sql
-codes.loinc.code = ?
+code.loinc.code = ?
 ```
 
 :datetimes /
@@ -196,6 +220,9 @@ _datetimeUtc: '???+00'
 ```
 
 ## Quationaire
+
+
+## Observation.component
 
 
 ## prefix 
@@ -215,3 +242,31 @@ where
   resource.birthDate > '1970'
 
 ```
+
+
+
+
+
+
+```sql
+
+select 
+    current_address(address.period)
+    
+from location
+where  
+
+t.birthDate
+t.resource->>'birthDate'
+
+
+
+
+
+
+```
+
+
+
+
+
