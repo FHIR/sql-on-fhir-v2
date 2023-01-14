@@ -8,210 +8,29 @@
 1. Persistent Format + reference impl of back and forth converter
 2. 
 
+## Getting Started
 
-## Table schema
+This repository is built using the [MkDocs](http://www.mkdocs.org/) static site generator. In order to run the site locally or build this project, you will need to [install Python 2.7.13+](http://docs.python-guide.org/en/latest/starting/installation/).
 
-create table patient (
- id text,
- resource JSON ;;- fhir persistent format
-)
+1. Clone the repository
 
-
-## FHIR Persistent Format
-
-
-## references 
-
-Encode server local references as {id, resourceType}
-
-Should we preserve reference - if yes - who is a source of true
-
-Reference {reference} => {resourceType, id}
-
-```yaml
-resourceType: Encounter
-patient:
-  reference 'Patient/pt-1'
-
+```sh
+$ git clone https://github.com/niquola/sql-on-fhir-2.git
 ```
 
-```yaml
-resourceType: Encounter
-patient:
-  resourceType: Patient
-  id: pt-1
+2. Install the project dependencies
+
+```sh
+$ cd docs
+$ pip install -r requirements.txt
 ```
 
-```sql
+3. Run the site locally
 
-encounter.resource.patient.id =  patient.id
-
-resource#>>'{patient,id}'            ;; postgres
-json_query(resource, '$.patient.id') ;; Standard
-
-
+```sh
+$ mkdocs serve
 ```
 
-## extensions 
+4. Using a browser, go to `http://127.0.0.1:8000/`
 
-Think of idea of preserving `extension` attribute
-May work like a context in JSON LD
-Will simplify conversions back and forth
-
-### Central Registry (optional)
-  
-ext-url => key
-us-core/race => race
-
-- Why registry?
-- To write portable SQL queries
-
-FHIR
-```yaml
-extension: 
-- {url=race, value, key}, 
-- {url, value, key2}, 
-- {url, key}
-
-
-FHIR4DB
-```yaml
-_extensions:
-   race: value
-```
-
-```code sql
-select * from patient 
-where resource.extensions.race = ?
-```
-
-## Coding
-
-Registry as well
-
-http://loinc -> loinc
-
-
-```yaml
-code: 
-  text: '???'
-  codings:
-  - {system=http://loinc,  code, key: loinc}, 
-  - {system=snomed, code, key=snomed}
-code: 
-  text: '???'
-  loinc:  {code: "??", display: '???'}
-  snomed: {code: ...}
-
-```
-
-```code sql
-code.loinc.code = ?
-```
-
-TODO: what if two or more codings with same system?
-possible solution:
-
-
-
-```code sql
- code.snomed[0].code = ?
-```
-
-
-## Quantity
-
-```yaml
-
-quantity:
-  value: ...
-  unit: F or C
-  comparableValue: 
-  comparableUnit: 
-
-```
-
-```code sql
- quantity.comparableValue < quantity.comparableValue
-```
-
-
-## identifiers / telecom  (optional)
-
-```yaml
-identifier: 
-- {system=passport, value, type, use}
-- {system=ssn, value}]
-```
-
-```yaml
-_identifiers: 
-  passport: [value]
-  ssn: [{value, type, use}]
-```
-
-```code sql
-indetifiers.ssn[0] = ?
-```
-
-
-## polymorphics
-
-Think on idea of preserving original valueX
-
-```code yaml
-valueCoding {}
-_value 
-  Coding: ...
-  key: valueCoding
-```
-
-```
-value.Coding = ?
-value is not null
-```
-
-:codings /
-
-```yaml
-code: 
-codings:
- - {system=loinc, code, key: loinc}, 
- - {system=snomed, code, key=snomed}
-codes: 
-  loinc: {code: ...}
-  snomed: {code: ...}
-```
-
-```code sql
-codes.loinc.code = ?
-```
-
-:datetimes /
-
-```yaml
-datetime: '????+03'
-_datetimeUtc: '???+00'
-
-```
-
-## Quationaire
-
-
-## prefix 
-
-Use general prefix for deduced fields?
-
-_extension
-_value
-_code
-_identifier
-
-```sql
-
-select id 
-from patient
-where 
-  resource.birthDate > '1970'
-
-```
+Anytime you make a change to the content within the site, your browser should automatically refresh to show your changes in real-time.
