@@ -16,13 +16,16 @@ and applications.
 **demo:**
 
 ```sql
-select p.gender, count(*)
+select 
+  p.extension.race, 
+  p.gender,
+  count(*)
 from patient p, condition c, concept t
 where p.id = c.subject.id
  and date_part('year', age(p.birthDate)) > 60
+ and t.code = c.code.icd10.code
  and t.valueset = 'chronic X'
-group by p.gender 
-
+group by p.extension.race, p.gender 
 ```
 
 ## Storage Format
@@ -193,35 +196,46 @@ index by system using registry
 ```
 
 
-## Quantity
+### Quantity
+
+Calculate quantity value in comparable units
 
 ```yaml
 
-quantity:
-  value: ...
-  unit: F or C
-  comparableValue: 
-  comparableUnit: 
+valueQuantity:
+  value: [value]
+  unit: F
+  # add
+  comparableValue: [value]
+  comparableUnit: C
 
 ```
 
-```code sql
- quantity.comparableValue < quantity.comparableValue
+```sql
+select * 
+ from observation
+ where valueQuantity.comparableValue > 37
 ```
 
 
 ## identifiers / telecom  (optional)
 
 ```yaml
+--from
 identifier: 
-- {system=passport, value, type, use}
-- {system=ssn, value}]
-```
+- {system=http://..passport, value, ...}
+- {system=http://...ssn, value, ...}]
+telecom: 
+- {system=phone, value, ...}
+- {system=email:, value, ...}]
 
-```yaml
-_identifiers: 
-  passport: [value]
-  ssn: [{value, type, use}]
+--to
+identifier: 
+  passport: [{value: [value], ...}]
+  ssn: [{value: [value]}]
+telecom:
+  phone: []
+  email: []
 ```
 
 ```code sql
@@ -229,26 +243,22 @@ indetifiers.ssn[0] = ?
 ```
 
 
-## polymorphics
+## Polymorphic
 
-Think on idea of preserving original valueX
-
-```code yaml
-valueCoding {}
-_value 
-  Coding: ...
-  key: valueCoding
-```
-
-```
-value.Coding = ?
-value is not null
-```
+TBD
 
 ## Questionnaire
 
+TBD
 
 ## Observation.component
 
+TBD
 
 
+```yaml
+component:
+  systolic: ...
+  dyastolic: ...
+
+```
