@@ -69,11 +69,11 @@ to simplify searches by ids and joins.
 **conversion example**:
 
 ```yaml
---from
+# from
 resourceType: Encounter
 patient:
   reference 'Patient/pt-1'
---to
+# to
 resourceType: Encounter
 patient:
   resourceType: Patient
@@ -109,18 +109,18 @@ using global or local registry of extensions to shorten the names:
 **conversion example**:
 
 ```yaml
---registry
+# registry
 url-1: key1
 url-2: key2
 
---from
+# from
 extension: 
 - {url: [url-1], value[x]: [value]} 
 - {url: [url-2], value[x]: [value]}
 # missed in registry
 - {url: [url-3], value[x]: [value]}
 
--- to
+#  to
 extension:
   key1: [value]
   key2: [value]
@@ -154,18 +154,18 @@ using global or local registry of systems to shorten the names:
 
 ```yaml
 
--- registry
+#  registry
 http://loinc: loinc
 https://snomed: loinc
 
--- from
+#  from
 code: 
   text: '???'
   codings:
   - {system=http://loinc,   code: [code], ...}, 
   - {system=https://snomed, code: [code], ...}
 
---to
+# to
 code: 
   text: '???'
   loinc:  {code: [code], ...}
@@ -221,7 +221,7 @@ select *
 ## identifiers / telecom  (optional)
 
 ```yaml
---from
+# from
 identifier: 
 - {system=http://..passport, value, ...}
 - {system=http://...ssn, value, ...}]
@@ -229,7 +229,7 @@ telecom:
 - {system=phone, value, ...}
 - {system=email:, value, ...}]
 
---to
+# to
 identifier: 
   passport: [{value: [value], ...}]
   ssn: [{value: [value]}]
