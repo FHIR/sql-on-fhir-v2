@@ -17,15 +17,15 @@ and applications.
 
 FHIR supports data in JSON format, 
 data could be loaded into json-aware databases 
-and used. But FHIR JSON representation is not designed for databases
-and usage is painful.
+and used. But FHIR JSON  is not designed for this use case.
 
-The key idea of this spec is to introduce more
-database-friendly JSON representation and easy-implementable 
+This spec introduces more
+database-friendly format and 
 conversion algorithm from FHIR JSON.
 
 This format should simplify common queries in most of modern 
-databases. 
+databases, minimizing requirements of advanced path language.
+In other words we shifting fhirpath complexity from SQL to conversion phase.
 
 ## Format spec
 
