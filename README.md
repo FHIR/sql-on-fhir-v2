@@ -1,7 +1,7 @@
 # SQL on FHIR 2.0
 
 This is second attempt to standardize SQL on FHIR.
-First was done in 2018 - [].
+First was done in 2018 - [here](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md).
 
 ## Motivation
 
