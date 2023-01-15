@@ -15,10 +15,10 @@ and applications.
 
 ## Storage Format
 
-FHIR already supports data in JSON format, 
-it could be loaded into json-aware databases 
-and used. But FHIR JSON representation is not designed for that, 
-making usage difficult and painful.
+FHIR supports data in JSON format, 
+data could be loaded into json-aware databases 
+and used. But FHIR JSON representation is not designed for databases
+and usage is painful.
 
 The key idea of this spec is to introduce more
 database-friendly JSON representation and easy-implementable 
@@ -30,9 +30,10 @@ databases.
 ## Format spec
 
 Format spec defines set of transformations, which can 
-be applied to FHIR data in json format with minimal context dependencies:
+be applied to FHIR data in JSON format with minimal context to be 
+easyly implementable.
 
-Here is a list of transformations:
+The list of transformations:
 
 * References - parse local references
 * Extensions - transform array of extensions into key/value 
