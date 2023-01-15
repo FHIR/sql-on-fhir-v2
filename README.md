@@ -48,24 +48,24 @@ The list of transformations:
 This feature can be discussed [here](https://github.com/niquola/sql-on-fhir-2/discussions/5)
 
 Parse local references like `[resourceType]/[id]` 
-into separate elements `{resourceType: [resourceType], id: [id]}`
+into separate elements `{resourceType: [resourceType], id: [id]}**
+to simplify searches by ids and joins.
 
-Example:
+**conversion example**:
 
 ```yaml
+--from
 resourceType: Encounter
 patient:
   reference 'Patient/pt-1'
-```
-
-```yaml
+--to
 resourceType: Encounter
 patient:
   resourceType: Patient
   id: pt-1
-```
+``**
 
-This simplies joins and searches by ids:
+**query example**:
 
 ```sql
 
@@ -73,80 +73,111 @@ select *
  from encounter enc, patient pt
 where enc.resource.patient.id = pt.id
 
+``**
+
+**algorithm**:
+
 ```
-
-Algorithm:
-
-Walk json object
-  if key = 'reference' and value type of string and value matches regexp `\/?[^/]+\/[^/]+`
+recursive walk json object
+  if key = 'reference' and value type-of string and value matches regexp `\/?[^/]+\/[^/]+`
      split reference by '/'
      replace `reference` property with `id` and `resourceType` property
+```
 
 
 ### Extensions 
 
-Think of idea of preserving `extension` attribute
-May work like a context in JSON LD
-Will simplify conversions back and forth
+Convert array of extensions into object representation for natural access
+using global or local registry of extensions to shorten the names:
 
-### Central Registry (optional)
-  
-ext-url => key
-us-core/race => race
 
-- Why registry?
-- To write portable SQL queries
+**conversion example**:
 
-FHIR
 ```yaml
+--registry
+url-1: key1
+url-2: key2
+
+--from
 extension: 
-- {url=race, value, key}, 
-- {url, value, key2}, 
-- {url, key}
+- {url: [url-1], value[x]: [value]} 
+- {url: [url-2], value[x]: [value]}
+# missed in registry
+- {url: [url-3], value[x]: [value]}
 
-
-FHIR4DB
-```yaml
-extensions:
-  race: value
+-- to
+extension:
+  key1: [value]
+  key2: [value]
+  url-3: [value]
 ```
 
-```code sql
+**query example**:
+
+``` sql
+
 select * from patient 
-where resource.extensions.race = ?
+ where resource.extension.race = ?
+
+```
+
+**algorythm**:
+
+```
+walk json
+if key = 'extension'
+  reduce extensions into object
+  by looking up key in registry or using url as a fallback
+
 ```
 
 ## Coding
 
-Registry as well
 
-http://loinc -> loinc
+Convert array of codings in CodeableConcept into object representation for natural access
+using global or local registry of systems to shorten the names:
 
 
 ```yaml
+-- registry
+http://loinc: loinc
+https://snomed: loinc
+
+-- from
 code: 
   text: '???'
   codings:
-  - {system=http://loinc,  code, key: loinc}, 
-  - {system=snomed, code, key=snomed}
+  - {system=http://loinc,   code: [code], ...}, 
+  - {system=https://snomed, code: [code], ...}
+
+--to
 code: 
   text: '???'
-  loinc:  {code: "??", display: '???'}
-  snomed: {code: ...}
+  loinc:  {code: [code], ...}
+  snomed: {code: [code], ...}
 
 ```
 
-```code sql
-code.loinc.code = ?
+**query example**:
+
+```sql
+select id
+from observation 
+where 
+ resource.code.loinc.code in (?)
+ or resource.code.snomed.code in (?)
+``**
+
+**Potential problem**:
+
+what if two or more codings with same system?
+
+**algorithm**:
+
 ```
+walk if key = codings
+index by system using registry
 
-TODO: what if two or more codings with same system?
-possible solution:
-
-
-
-```code sql
- code.snomed[0].code = ?
 ```
 
 
