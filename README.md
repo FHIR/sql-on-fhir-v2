@@ -73,7 +73,7 @@ select *
  from encounter enc, patient pt
 where enc.resource.patient.id = pt.id
 
-``**
+```
 
 **algorithm**:
 
@@ -128,7 +128,6 @@ walk json
 if key = 'extension'
   reduce extensions into object
   by looking up key in registry or using url as a fallback
-
 ```
 
 ## Coding
@@ -139,6 +138,7 @@ using global or local registry of systems to shorten the names:
 
 
 ```yaml
+
 -- registry
 http://loinc: loinc
 https://snomed: loinc
