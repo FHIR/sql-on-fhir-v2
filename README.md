@@ -45,7 +45,7 @@ The list of transformations:
 
 ### References 
 
-This feature can be discussed at #5
+This feature can be discussed [here](https://github.com/niquola/sql-on-fhir-2/discussions/5)
 
 Parse local references like '<resourceType>/<id>' 
 into separate elements `{resourceType: <resourceType>, id: <id>}`
