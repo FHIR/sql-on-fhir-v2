@@ -13,6 +13,18 @@ and applications.
 * New SQL standard (ISO 2016) introduced json path/query
 * First attempt failed
 
+**demo:**
+
+```sql
+select p.gender, count(*)
+from patient p, condition c, concept t
+where p.id = c.subject.id
+ and date_part('year', age(p.birthDate)) > 60
+ and t.valueset = 'chronic X'
+group by p.gender 
+
+```
+
 ## Storage Format
 
 FHIR supports data in JSON format, 
@@ -63,7 +75,7 @@ resourceType: Encounter
 patient:
   resourceType: Patient
   id: pt-1
-``**
+```
 
 **query example**:
 
@@ -166,7 +178,7 @@ from observation
 where 
  resource.code.loinc.code in (?)
  or resource.code.snomed.code in (?)
-``**
+```
 
 **Potential problem**:
 
@@ -233,79 +245,10 @@ value.Coding = ?
 value is not null
 ```
 
-:codings /
-
-```yaml
-code: 
-codings:
- - {system=loinc, code, key: loinc}, 
- - {system=snomed, code, key=snomed}
-
-codes: 
-  loinc: {code: ...}
-  snomed: {code: ...}
-```
-
-```code sql
-code.loinc.code = ?
-```
-
-:datetimes /
-
-```yaml
-datetime: '????+03'
-_datetimeUtc: '???+00'
-
-```
-
-## Quationaire
+## Questionnaire
 
 
 ## Observation.component
-
-
-## prefix 
-
-Use general prefix for deduced fields?
-
-_extension
-_value
-_code
-_identifier
-
-```sql
-
-select id 
-from patient
-where 
-  resource.birthDate > '1970'
-
-```
-
-
-
-
-
-
-```sql
-
-select 
-    current_address(address.period)
-    
-from location
-where  
-
-t.birthDate
-t.resource->>'birthDate'
-
-
-
-
-
-
-```
-
-
 
 
 
