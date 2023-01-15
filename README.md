@@ -1,60 +1,60 @@
-# SQL on FHIR
+# SQL on FHIR 2.0
+
+This is second attempt to standardize SQL on FHIR.
+First was done in 2018 - [].
 
 ## Motivation
 
-* Modern relational databases got support for native json datatype.
-* New SQL standard introduces json path
-* FHIR JSON is not very database friendly
+More and more health care data available in FHIR,
+people want to use this data for reports, analytics, quality metrics
+and applications.
 
-## Solution
+* Modern databases support json datatype natively (Postgres, Oracle, MySQL, MSSQL, Mongo).
+* New SQL standard (ISO 2016) introduced json path/query
+* First attempt failed
 
-1. FHIR Storage Format
-2. Reference implementation 
-3. Use cases
+## Storage Format
 
+FHIR already supports data in JSON format, 
+it could be loaded into json-aware databases 
+and used. But FHIR JSON representation is not designed for that, 
+making usage difficult and painful.
 
-## Database Schema
+The key idea of this spec is to introduce more
+database-friendly JSON representation and easy-implementable 
+conversion algorithm from FHIR JSON.
 
-Database schema is simple.
-Table per each resource!
-Table name is lowercase resourceType. 
-Two columns:
+This format should simplify common queries in most of modern 
+databases. 
 
-* id - text, primary key
-* resource - json 
+## Format spec
 
-```sql
-create table patient (
- id text,
- resource JSON
-)
+Format spec defines set of transformations, which can 
+be applied to FHIR data in json format with minimal context dependencies:
 
-```
+Here is a list of transformations:
 
-## FHIR Persistent Format
-
-FHIR Persistent Format is an algorithm to translate
-FHIR JSON to more database friendly representation.
-
-
-* references `{reference: 'Patient/id'}`=> `{id: pt-1, resourceType: Patient}`
-* extensions
-* CodeableConcept
-* Quantity.value normalization
+* References - parse local references
+* Extensions - transform array of extensions into key/value 
+* CodeableConcept - transform array of codings into key/value 
+* Quantity - add calculated values in same units
+* Index identifiers, telecoms by system
+* Index addresses, names, by use
 
 
 ### References 
 
-Encode server local references as {id, resourceType}
+This feature can be discussed at #5
 
-Should we preserve reference - if yes - who is a source of true
+Parse local references like '<resourceType>/<id>' 
+into separate elements `{resourceType: <resourceType>, id: <id>}`
 
+Example:
 
 ```yaml
 resourceType: Encounter
 patient:
   reference 'Patient/pt-1'
-
 ```
 
 ```yaml
@@ -62,20 +62,27 @@ resourceType: Encounter
 patient:
   resourceType: Patient
   id: pt-1
-  
 ```
+
+This simplies joins and searches by ids:
 
 ```sql
 
-encounter.resource.patient.id =  patient.id
-
-resource#>>'{patient,id}'            ;; postgres
-json_query(resource, '$.patient.id') ;; Standard
-
+select *
+ from encounter enc, patient pt
+where enc.resource.patient.id = pt.id
 
 ```
 
-## Extensions 
+Algorithm:
+
+Walk json object
+  if key = 'reference' and value type of string and value matches regexp `\/?[^/]+\/[^/]+`
+     split reference by '/'
+     replace `reference` property with `id` and `resourceType` property
+
+
+### Extensions 
 
 Think of idea of preserving `extension` attribute
 May work like a context in JSON LD
