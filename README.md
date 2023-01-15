@@ -53,7 +53,7 @@ The list of transformations:
 * References - parse local references
 * Extensions - transform array of extensions into key/value 
 * CodeableConcept - transform array of codings into key/value 
-* Quantity - add calculated values in same units
+* Quantity - add calculated values in standard units
 * Index identifiers, telecoms by system
 * Index addresses, names, by use
 
