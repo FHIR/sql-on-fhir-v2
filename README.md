@@ -1,17 +1,20 @@
 # SQL on FHIR 2.0
 
-This is second attempt to standardize SQL on FHIR.
-First was done in 2018 - [here](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md).
+This specification standardizes SQL persistence and HTTP operations on FHIR.
+
+First attempt - done in [2018](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md) -  was not successful due to coupling that was too tight to a particular database implementation. Learning from this, this renewed attempt aims to be applicable to all common relational databases (Postgres®, MS SQL Server®, Oracle DB®, etc.) that support JSON.
 
 ## Motivation
 
-More and more health care data available in FHIR,
-people want to use this data for reports, analytics, quality metrics
-and applications.
+HL7 FHIR® is fantastic at unlocking access to healthcare data, but at the same time the resources-based model poses a challenge to established tooling that works with relational data. While one way to deal with this is to perform an [ETL](https://en.wikipedia.org/wiki/Extract,_transform,_load) process to convert/flatten the data, this approach has its drawbacks. This specification aims to enable existing relational knowledge and tooling to be applied to FHIR in a more direct fashion.
 
-* Modern databases support json datatype natively (Postgres, Oracle, MySQL, MSSQL, Mongo).
-* New SQL standard (ISO 2016) introduced json path/query
-* First attempt failed
+Doing so will enable usecases in reporting, analytics, quality metrics, and healthcare applications.
+
+Specifically:
+* SQL is a well-known query language with a large user and tooling base;
+* Modern databases support json datatype natively (Postgres®, Oracle DB®, MySQL®, MSSQL®, MongoDB®);
+* New SQL standard (ISO 2016) introduced json path/query support
+* -> all ingridients necessary for success
 
 **demo:**
 
@@ -28,25 +31,15 @@ where p.id = c.subject.id
 group by p.extension.race, p.gender 
 ```
 
-## Storage Format
+## Storage format
 
-FHIR supports data in JSON format, 
-data could be loaded into json-aware databases 
-and used. But FHIR JSON  is not designed for this use case.
+FHIR supports exchanging data in JSON, which be loaded and used by JSON-aware databases - however the resources-based nature of  FHIR's JSON is not ideally suited for this use case.
 
-This spec introduces more
-database-friendly format and 
-conversion algorithm from FHIR JSON.
-
-This format should simplify common queries in most of modern 
-databases, minimizing requirements of advanced path language.
-In other words we shifting fhirpath complexity from SQL to conversion phase.
+This specification introduces a more database-friendly format and defines a conversion algorithm from FHIR JSON to the said format. The new format should simplify common queries in most of modern databases, minimizing requirements for an advanced path language such as FHIRPath, and removes the need for crafting complex FHIR search queries.
 
 ## Format spec
 
-Format spec defines set of transformations, which can 
-be applied to FHIR data in JSON format with minimal context to be 
-easyly implementable.
+Format spec defines set of transformations which can be applied to FHIR data in JSON format - with minimal context required in order to be easily implementable.
 
 The list of transformations:
 
@@ -63,7 +56,7 @@ The list of transformations:
 This feature can be discussed [here](https://github.com/niquola/sql-on-fhir-2/discussions/5)
 
 Parse local references like `[resourceType]/[id]` 
-into separate elements `{resourceType: [resourceType], id: [id]}**
+into separate elements `{resourceType: [resourceType], id: [id]}`
 to simplify searches by ids and joins.
 
 **conversion example**:
@@ -102,7 +95,7 @@ recursive walk json object
 
 ### Extensions 
 
-Convert array of extensions into object representation for natural access
+Convert an array of extensions into object representation for natural access
 using global or local registry of extensions to shorten the names:
 
 
@@ -148,7 +141,7 @@ if key = 'extension'
 ## Coding
 
 
-Convert array of codings in CodeableConcept into object representation for natural access
+Convert an array of codings in CodeableConcept into object representation for natural access
 using global or local registry of systems to shorten the names:
 
 
