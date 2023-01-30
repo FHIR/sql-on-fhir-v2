@@ -53,6 +53,30 @@ This spec introduces more
 database-friendly format and 
 conversion algorithm from FHIR JSON.
 
+General trick is to convert arrays to maps whenever possible and materialize most of expensive calculations.
+
+```yaml
+resourceType: Observation
+subject: {id: 'pt-1', resourceType: 'Patient'}
+effectiveDate: ...
+# as common denominator for queries
+_effectiveTiming: {..}
+code:
+  _codes: ['loinc|..', 'snomed|..']
+  _loinc: 'L...'
+  _snomed: 'L...'
+  coding: [{}]
+valueQuantity:
+  value: '..'
+  unit: '...'
+  #  quantity translated to standard units
+  _baseValue: '..'
+  _baseUnit: '..'
+component:
+   systolic:  {...}
+   diastolic: {...}
+```
+
 This format should simplify common queries in most of modern 
 databases, minimizing requirements of advanced path language.
 In other words we shifting fhirpath complexity from SQL to conversion phase.
