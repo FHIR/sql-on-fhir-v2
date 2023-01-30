@@ -21,7 +21,7 @@ The shape of solution may be:
 * format should work for schema and schemaless databases
 * conversion to this format should be strightforward to implement with as less context  as possible (StructureDefinition knowledge)
 * format should simplify common queries on different platforms, without requiring advanced features like json_path or unnesting
-* Provide the way to define flatten & preaggregated views (aka dbt)
+* Provide the way to define flatten & preaggregated views (aka dbt, OMOP etc)
 * Provide integartion with terminologies
 * Provide integration with CQL
 
