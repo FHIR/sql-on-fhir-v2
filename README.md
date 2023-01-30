@@ -21,6 +21,7 @@ Requirements:
 * introduce storage format for FHIR, which is isomorphic to FHIR JSON representation but more database friendly
 * format should work for schema and schemaless databases
 * format can be used as primary storage format
+* format should be as version agnostic as possible
 * conversion to this format should be strightforward to implement with as less context  as possible (StructureDefinition knowledge)
 * format should simplify common queries on different platforms, without requiring advanced features like json_path or unnesting
 * Provide the way to define flatten & preaggregated views (aka dbt, OMOP etc)
