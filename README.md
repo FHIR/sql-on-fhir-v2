@@ -53,7 +53,7 @@ This spec introduces more
 database-friendly format and 
 conversion algorithm from FHIR JSON.
 
-General trick is to convert arrays to maps whenever possible and materialize most of expensive calculations.
+General tricks are to convert arrays to maps whenever possible and materialize most of expensive calculations.
 
 ```yaml
 resourceType: Observation
