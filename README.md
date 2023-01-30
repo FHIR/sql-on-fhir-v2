@@ -58,6 +58,9 @@ General tricks are to convert arrays to maps whenever possible and materialize m
 ```yaml
 resourceType: Observation
 subject: {id: 'pt-1', resourceType: 'Patient'}
+# extension.somext  vs extension.where(url=???)
+extension:
+   somext: {...}
 effectiveDate: ...
 # as common denominator for queries
 _effectiveTiming: {..}
