@@ -18,7 +18,8 @@ There are few directions to explore:
 
 The shape of solution may be:
 * introduce storage format for FHIR, which is isomorphic to FHIR JSON representation but more database friendly
-* conversion to this format should be strightforward to implement with as less context (StructureDefinition knowledge) as possible
+* format should work for schema and schemaless databases
+* conversion to this format should be strightforward to implement with as less context  as possible (StructureDefinition knowledge)
 * format should simplify common queries on different platforms, without requiring advanced features like json_path or unnesting
 * Provide the way to define flatten & preaggregated views (aka dbt)
 * Provide integartion with terminologies
