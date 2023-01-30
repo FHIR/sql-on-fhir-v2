@@ -62,8 +62,8 @@ subject: {id: 'pt-1', resourceType: 'Patient'}
 extension:
    somext: {...}
 effectiveDate: ...
-# as common denominator for queries
-_effectiveTiming: {..}
+# Timing as common denominator for  obs._effective.start 
+_effective: {..} # as Timing
 code:
   _codes: ['loinc|..', 'snomed|..']
   _loinc: 'L...'
