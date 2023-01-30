@@ -6,12 +6,23 @@ First was done in 2018 - [here](https://github.com/FHIR/sql-on-fhir/blob/master/
 ## Motivation
 
 More and more health care data available in FHIR,
-people want to use this data for reports, analytics, quality metrics
+people want to use this data for reports, analytics, quality metrics, machine learning
 and applications.
 
+There are few directions to explore:
+
 * Modern databases support json datatype natively (Postgres, Oracle, MySQL, MSSQL, Mongo).
+* Cloud databases and platforms have support of hierarchiecal data (sometimes require predefined schema)
 * New SQL standard (ISO 2016) introduced json path/query
 * First attempt failed
+
+The shape of solution may be:
+* introduce storage format for FHIR, which is isomorphic to FHIR JSON representation but more database friendly
+* conversion to this format should be strightforward to implement with as less context (StructureDefinition knowledge) as possible
+* format should simplify common queries on different platforms, without requiring advanced features like json_path or unnesting
+* Provide the way to define flatten & preaggregated views (aka dbt)
+* Provide integartion with terminologies
+* Provide integration with CQL
 
 **demo:**
 
