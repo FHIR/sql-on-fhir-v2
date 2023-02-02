@@ -145,7 +145,7 @@ if key = 'extension'
   by looking up key in registry or using url as a fallback
 ```
 
-## Coding
+### CodeableConcept
 
 
 Convert array of codings in CodeableConcept into object representation for natural access
@@ -206,6 +206,7 @@ valueQuantity:
   value: [value]
   unit: F
   # add
+  # baseValue, baseUnit
   comparableValue: [value]
   comparableUnit: C
 
@@ -217,8 +218,9 @@ select *
  where valueQuantity.comparableValue > 37
 ```
 
+* How to deal with observation specific conversions like glucose g/l -> mol/l?
 
-## identifiers / telecom  (optional)
+### identifiers / telecom  (optional)
 
 ```yaml
 # from
@@ -243,15 +245,15 @@ indetifiers.ssn[0] = ?
 ```
 
 
-## Polymorphic
+### Polymorphic
 
 TBD
 
-## Questionnaire
+### Questionnaire
 
 TBD
 
-## Observation.component
+### Observation.component
 
 TBD
 
@@ -260,5 +262,34 @@ TBD
 component:
   systolic: ...
   dyastolic: ...
+
+```
+
+## Implementation
+
+### Schema
+
+For JSON-native dbs simple schema is proposed:
+
+* create table per resource (table name is lowercase resourceType)
+* columns: 
+ * id text primary key
+ * resource json
+
+
+### Terminology
+
+Terminology is implemented as a `concept` table, which 
+contains concepts of expanded valuesets - `{system, code, valueset}`
+
+Integration with [FTR](https://docs.aidbox.app/terminology/fhir-terminology-repository/ftr-specification**?
+
+
+
+**example:**
+
+```sql
+select * from observation o, concept c
+where o.code.loinc.code = c.code
 
 ```
