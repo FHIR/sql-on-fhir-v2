@@ -6,12 +6,27 @@ First was done in 2018 - [here](https://github.com/FHIR/sql-on-fhir/blob/master/
 ## Motivation
 
 More and more health care data available in FHIR,
-people want to use this data for reports, analytics, quality metrics
+people want to use this data for reports, analytics, quality metrics, machine learning
 and applications.
 
+There are few directions to explore:
+
 * Modern databases support json datatype natively (Postgres, Oracle, MySQL, MSSQL, Mongo).
+* Cloud databases and platforms have support of hierarchiecal data (sometimes require predefined schema)
 * New SQL standard (ISO 2016) introduced json path/query
 * First attempt failed
+
+Requirements:
+
+* introduce storage format for FHIR, which is isomorphic to FHIR JSON representation but more database friendly
+* format should work for schema and schemaless databases
+* format can be used as primary storage format
+* format should be as version agnostic as possible
+* conversion to this format should be strightforward to implement with as less context  as possible (StructureDefinition knowledge)
+* format should simplify common queries on different platforms, without requiring advanced features like json_path or unnesting
+* Provide the way to define flatten & preaggregated views (aka dbt, OMOP etc)
+* Provide integartion with terminologies
+* Provide integration with CQL
 
 **demo:**
 
@@ -38,6 +53,33 @@ This spec introduces more
 database-friendly format and 
 conversion algorithm from FHIR JSON.
 
+General tricks are to convert arrays to maps whenever possible and materialize most of expensive calculations.
+
+```yaml
+resourceType: Observation
+subject: {id: 'pt-1', resourceType: 'Patient'}
+# extension.somext  vs extension.where(url=???)
+extension:
+   somext: {...}
+effectiveDate: ...
+# Timing as common denominator for  obs._effective.start 
+_effective: {..} # as Timing
+code:
+  _codes: ['loinc|..', 'snomed|..']
+  _loinc: 'L...'
+  _snomed: 'L...'
+  coding: [{}]
+valueQuantity:
+  value: '..'
+  unit: '...'
+  #  quantity translated to standard units
+  _baseValue: '..'
+  _baseUnit: '..'
+component:
+   systolic:  {...}
+   diastolic: {...}
+```
+
 This format should simplify common queries in most of modern 
 databases, minimizing requirements of advanced path language.
 In other words we shifting fhirpath complexity from SQL to conversion phase.
@@ -53,7 +95,7 @@ The list of transformations:
 * References - parse local references
 * Extensions - transform array of extensions into key/value 
 * CodeableConcept - transform array of codings into key/value 
-* Quantity - add calculated values in same units
+* Quantity - add calculated values in standard units
 * Index identifiers, telecoms by system
 * Index addresses, names, by use
 
