@@ -1,148 +1,84 @@
 # SQL on FHIR 2.0
 
-This is second attempt to standardize SQL on FHIR.
-First was done in 2018 - [here](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md).
-
 ## Motivation
 
 More and more health care data available in FHIR,
 people want to use this data for reports, analytics, quality metrics, machine learning
 and applications.
 
-There are few directions to explore:
-
 * Modern databases support json datatype natively (Postgres, Oracle, MySQL, MSSQL, Mongo).
-* Cloud databases and platforms have support of hierarchiecal data (sometimes require predefined schema)
+* Cloud databases and platforms have support of hierarchiecal data
 * New SQL standard (ISO 2016) introduced json path/query
-* First attempt failed
 
-Requirements:
+## Principles
 
-* introduce storage format for FHIR, which is isomorphic to FHIR JSON representation but more database friendly
-* format should work for schema and schemaless databases
-* format can be used as primary storage format
-* format should be as version agnostic as possible
-* conversion to this format should be strightforward to implement with as less context  as possible (StructureDefinition knowledge)
-* format should simplify common queries on different platforms, without requiring advanced features like json_path or unnesting
-* Provide the way to define flatten & preaggregated views (aka dbt, OMOP etc)
-* Provide integartion with terminologies
-* Provide integration with CQL
+Transformations should be easy to implement and with minimal context dependencies
 
-**demo:**
+## Levels
 
-```sql
-select 
-  p.extension.race, 
-  p.gender,
-  count(*)
-from patient p, condition c, concept t
-where p.id = c.subject.id
- and date_part('year', age(p.birthDate)) > 60
- and t.code = c.code.icd10.code
- and t.valueset = 'chronic X'
-group by p.extension.race, p.gender 
-```
+Spec defines to levels of transformations, which can be applied to FHIR data in JSON
+to make it more database friendly. And third level where views and rules can be defined with SQL.
 
-## Storage Format
+* Level 1 (basic transformations) - minimal common transformations
+ * Parse ids from references and store as separate element for join performance
+ * Unnest contained resources
+ * Make ids from multiple sources unique to avoid conflicts (optional if only a single source is represented in the db)
+* Level 2 (queryability transformations) - make structure more friendly to query without requirement of advanced features in database.
+ * Normalize different datetime representations (e.g., onsetPeriod vs. onsetDateTime)
+ * Normalize quantity units
+ * Access extensions by name
+* Level 3 (views & rules)
+ * define many useful flattened and pre-aggregated views on top of json by SQL queries
+ * data quality rules in SQL
 
-FHIR supports data in JSON format, 
-data could be loaded into json-aware databases 
-and used. But FHIR JSON  is not designed for this use case.
+## 1. Basic Transformations
 
-This spec introduces more
-database-friendly format and 
-conversion algorithm from FHIR JSON.
+### Reference
 
-General tricks are to convert arrays to maps whenever possible and materialize most of expensive calculations.
+* Transformation traverses the JSON object and search for `reference` property with string value.
+* If value is a **Relative URL** two components - resource id and type are extracted
+* Add property `reference` is preserved
+* Add property `type` to Reference object with value of resource type
+* Add property `id` (`_id`, `id_`, `@id`') #19
 
-```yaml
-resourceType: Observation
-subject: {id: 'pt-1', resourceType: 'Patient'}
-# extension.somext  vs extension.where(url=???)
-extension:
-   somext: {...}
-effectiveDate: ...
-# Timing as common denominator for  obs._effective.start 
-_effective: {..} # as Timing
-code:
-  _codes: ['loinc|..', 'snomed|..']
-  _loinc: 'L...'
-  _snomed: 'L...'
-  coding: [{}]
-valueQuantity:
-  value: '..'
-  unit: '...'
-  #  quantity translated to standard units
-  _baseValue: '..'
-  _baseUnit: '..'
-component:
-   systolic:  {...}
-   diastolic: {...}
-```
+```js
 
-This format should simplify common queries in most of modern 
-databases, minimizing requirements of advanced path language.
-In other words we shifting fhirpath complexity from SQL to conversion phase.
-
-## Format spec
-
-Format spec defines set of transformations, which can 
-be applied to FHIR data in JSON format with minimal context to be 
-easyly implementable.
-
-The list of transformations:
-
-* References - parse local references
-* Extensions - transform array of extensions into key/value 
-* CodeableConcept - transform array of codings into key/value 
-* Quantity - add calculated values in standard units
-* Index identifiers, telecoms by system
-* Index addresses, names, by use
-
-
-### References 
-
-This feature can be discussed [here](https://github.com/niquola/sql-on-fhir-2/discussions/5)
-
-Parse local references like `[resourceType]/[id]` 
-into separate elements `{resourceType: [resourceType], id: [id]}**
-to simplify searches by ids and joins.
-
-**conversion example**:
-
-```yaml
-# from
-resourceType: Encounter
-patient:
-  reference 'Patient/pt-1'
-# to
-resourceType: Encounter
-patient:
-  resourceType: Patient
-  id: pt-1
-```
-
-**query example**:
-
-```sql
-
-select *
- from encounter enc, patient pt
-where enc.resource.patient.id = pt.id
+transform({reference: 'Patient/pt1'})
+//=>
+{reference: 'Patient/pt1', type: 'Patient', id: 'pt1'}
 
 ```
 
-**algorithm**:
+Optionally id can be calculated as a hash of reference and source - #10 (TBD @gotdan).
 
+
+### Contained Resources & References
+
+* generate id of contained resources
+* fix refs to contained resources
+
+## 2. Optional Transformations
+
+### DateTime normalization
+
+### Quantity normalization
+
+Calculate quantity value in comparable units.
+
+```js
+translate({valueQuantity: {value: ?, unit: 'F'}})
+//=>
+{
+ valueQuantity: {
+   value: ?,
+   unit: 'F',
+   _baseValue: ?,
+   _baseUnit: 'C'
+ }
+}
 ```
-recursive walk json object
-  if key = 'reference' and value type-of string and value matches regexp `\/?[^/]+\/[^/]+`
-     split reference by '/'
-     replace `reference` property with `id` and `resourceType` property
-```
 
-
-### Extensions 
+### Extensions
 
 Convert array of extensions into object representation for natural access
 using global or local registry of extensions to shorten the names:
@@ -156,8 +92,8 @@ url-1: key1
 url-2: key2
 
 # from
-extension: 
-- {url: [url-1], value[x]: [value]} 
+extension:
+- {url: [url-1], value[x]: [value]}
 - {url: [url-2], value[x]: [value]}
 # missed in registry
 - {url: [url-3], value[x]: [value]}
@@ -187,151 +123,48 @@ if key = 'extension'
   by looking up key in registry or using url as a fallback
 ```
 
-### CodeableConcept
 
-
-Convert array of codings in CodeableConcept into object representation for natural access
-using global or local registry of systems to shorten the names:
+### Terminology
 
 
 ```yaml
-
-#  registry
-http://loinc: loinc
-https://snomed: loinc
-
-#  from
-code: 
+code:
   text: '???'
   codings:
   - {system=http://loinc,   code: [code], ...}, 
   - {system=https://snomed, code: [code], ...}
-
-# to
-code: 
-  text: '???'
-  loinc:  {code: [code], ...}
-  snomed: {code: [code], ...}
-
+$code: ['system|code', 'system|code']
 ```
 
 **query example**:
 
 ```sql
 select id
-from observation 
-where 
- resource.code.loinc.code in (?)
- or resource.code.snomed.code in (?)
-```
-
-**Potential problem**:
-
-what if two or more codings with same system?
-
-**algorithm**:
-
-```
-walk if key = codings
-index by system using registry
-
+from observation
+where resource.code contains 'system|code'
 ```
 
 
-### Quantity
+## 3. Views & Rules
 
-Calculate quantity value in comparable units
+Using SQL we can define useful flatten views:
 
-```yaml
-
-valueQuantity:
-  value: [value]
-  unit: F
-  # add
-  # baseValue, baseUnit
-  comparableValue: [value]
-  comparableUnit: C
-
-```
 
 ```sql
-select * 
- from observation
- where valueQuantity.comparableValue > 37
-```
 
-* How to deal with observation specific conversions like glucose g/l -> mol/l?
-
-### identifiers / telecom  (optional)
-
-```yaml
-# from
-identifier: 
-- {system=http://..passport, value, ...}
-- {system=http://...ssn, value, ...}]
-telecom: 
-- {system=phone, value, ...}
-- {system=email:, value, ...}]
-
-# to
-identifier: 
-  passport: [{value: [value], ...}]
-  ssn: [{value: [value]}]
-telecom:
-  phone: []
-  email: []
-```
-
-```code sql
-indetifiers.ssn[0] = ?
-```
-
-
-### Polymorphic
-
-TBD
-
-### Questionnaire
-
-TBD
-
-### Observation.component
-
-TBD
-
-
-```yaml
-component:
-  systolic: ...
-  dyastolic: ...
+-- model: flatten_patient
+SELECT
+  resource.id,
+  resource.birthDate as birthDate,
+  resource.gender as gender,
+  resource.extension.us_race.code as race
+FROM patient
 
 ```
 
-## Implementation
+## Credits
 
-### Schema
+* @niquola
+* @gotdan
 
-For JSON-native dbs simple schema is proposed:
-
-* create table per resource (table name is lowercase resourceType)
-* columns: 
- * id text primary key
- * resource json
-
-
-### Terminology
-
-Terminology is implemented as a `concept` table, which 
-contains concepts of expanded valuesets - `{system, code, valueset}`
-
-Integration with [FTR](https://docs.aidbox.app/terminology/fhir-terminology-repository/ftr-specification**?
-
-
-
-**example:**
-
-```sql
-select * from observation o, concept c
-where o.code.loinc.code = c.code
-
-```
+This work is logical continuation of [SQL on FHIR 1.0](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md)
