@@ -20,16 +20,16 @@ Spec defines to levels of transformations, which can be applied to FHIR data in 
 to make it more database friendly. And third level where views and rules can be defined with SQL.
 
 * Level 1 (basic transformations) - minimal common transformations
-** Parse ids from references and store as separate element for join performance
-** Unnest contained resources
-** Make ids from multiple sources unique to avoid conflicts (optional if only a single source is represented in the db)
+  * Parse ids from references and store as separate element for join performance
+  * Unnest contained resources
+  * Make ids from multiple sources unique to avoid conflicts (optional if only a single source is represented in the db)
 * Level 2 (queryability transformations) - make structure more friendly to query without requirement of advanced features in database.
-** Normalize different datetime representations (e.g., onsetPeriod vs. onsetDateTime)
-** Normalize quantity units
-** Access extensions by name
+  * Normalize different datetime representations (e.g., onsetPeriod vs. onsetDateTime)
+  * Normalize quantity units
+  * Access extensions by name
 * Level 3 (views & rules)
-** define many useful flattened and pre-aggregated views on top of json by SQL queries
-** data quality rules in SQL
+  * define many useful flattened and pre-aggregated views on top of json by SQL queries
+  * data quality rules in SQL
 
 ## 1. Basic Transformations
 
