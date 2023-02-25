@@ -235,7 +235,7 @@ Logical: FlattenPatient
 * race: 0..* code
 ```
  
-Using SQL we can define useful flatten views.
+Implementation of view is defined by SQL (aka dbt)
  
 
 ```sql
