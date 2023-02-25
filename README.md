@@ -266,6 +266,7 @@ FROM patient
 
 Work is sponsored and supported by:
 * [Health Samurai](https://www.health-samurai.io/)
+* [FHIR Foundation](https://fhir.org/)
 * Do you want to support - contact us!
  
 
