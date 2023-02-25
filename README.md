@@ -18,24 +18,23 @@ and applications.
 
 Transformations should be easy to implement and with minimal context dependencies
 
-## Levels
+## Intro
 
-Spec defines schema, level of required and optional transformations, which can be applied to FHIR data in JSON
-to make it more database friendly. And third level where views and rules can be defined with SQL.
+Spec describes schema, transformations and definitions of views & rules in SQL.
 
-* Level 0 (schema) - each resource type has dedicated table  with two columns id and resource
-* Level 1 (transformations) - minimal common transformations
+* Schema - each resource type has dedicated table  with two columns id and resource
+* Transformations - minimal common transformations
   * Parse ids from references and store as separate element for join performance
   * Unnest contained resources
   * Make ids from multiple sources unique to avoid conflicts (optional if only a single source is represented in the db)
   * [optional] Normalize different datetime representations (e.g., onsetPeriod vs. onsetDateTime)
   * [optional] Normalize quantity units
   * [optional] Access extensions by name
-* Level 3 (views & rules)
+* Views And Rules
   * define many useful flattened and pre-aggregated views on top of json by SQL queries
   * data quality rules in SQL
   
-## 0. Schema
+## 1. Schema
 
 Create table for each resource type with at least two comuns:
 * `id` varchar  primary key 
@@ -53,14 +52,14 @@ CREATE TABLE "patient" (
 
 ```
 
-## 1. Transformations
+## 2. Transformations
 
 All transformations shell 
 * preserve original information
 * may use only simple context
 * should not depend on profiles and versions of FHIR
 
-### 1.1 Reference
+### 2.1 Reference
 
 Algorythm structure reference for efficient joins between resource tables
 Reference transformation algorythm has option multisource. When multisource option is on id is calculated as `sha256(absolute_reference(config,reference))`. Absolute reference can be calculated from reference if it's absolute or provided
@@ -85,7 +84,7 @@ transform(config, {reference: 'Patient/pt1', id: 'local'})
 Optionally id can be calculated as a hash of reference and source - #10 (TBD @gotdan).
 
 
-### 1.2 Contained Resources & References
+### 2.2 Contained Resources & References
 
 * unnest contained resources
 * generate id of contained resources
@@ -94,7 +93,7 @@ Optionally id can be calculated as a hash of reference and source - #10 (TBD @go
 
 
 
-### 1.3 [optioanl] Quantity normalization
+### 2.3 [optioanl] Quantity normalization
 
 Quantity values are normalized to metric system. 
 Conversion formuals are provided and supported by SQL on FHIR as config JSON:
@@ -120,7 +119,7 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
 }
 ```
 
-### 1.4 [optioanl] DateTime normalization
+### 2.4 [optioanl] DateTime normalization
 
 If element can be represented as dateTime and Period deduce Period from all dateTime.
 Algorythm search for `<prefix>DateTime` and add `<prefix>Period` element.
@@ -133,7 +132,7 @@ effectivePeriod: {start: '<x>', end: '<x>'}
 
 ```
 
-### 1.5 [optioanl] Extensions
+### 2.5 [optioanl] Extensions
 
 Convert array of extensions into object representation for natural access.
 
@@ -198,7 +197,7 @@ select * from patient
 ```
 
 
-### [optional] Terminology
+### 2.6 [optional] Terminology
 
 
 ```yaml
