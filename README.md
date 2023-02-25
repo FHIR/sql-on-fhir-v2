@@ -1,14 +1,15 @@
 # SQL on FHIR 2.0
 
+Join us at [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
+
 ## Motivation
 
 More and more health care data available in FHIR,
 people want to use this data for reports, analytics, quality metrics, machine learning
 and applications.
 
-* Modern databases support json datatype natively (Postgres, Oracle, MySQL, MSSQL, Mongo).
-* Cloud databases and platforms have support of hierarchiecal data
-* New SQL standard (ISO 2016) introduced json path/query
+* Modern databases support json datatype natively (Postgres, Oracle, MySQL, MSSQL, Mongo, BiqQuery, Snowflake).
+* New SQL standard (ISO 2016) introduced json datatype and PL/json_path 
 
 ## Principles
 
