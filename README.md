@@ -199,6 +199,8 @@ select * from patient
 
 ### 2.6 [optional] Terminology
 
+Terminology is represented as `concept` table with codings.
+ 
 
 ```yaml
 code:
@@ -209,12 +211,13 @@ code:
 $code: ['system|code', 'system|code']
 ```
 
-**query example**:
 
 ```sql
-select id
-from observation
-where resource.code contains 'system|code'
+select *
+from observation o, concept c
+where 
+  c.valueset = 'http://loinc.org'
+  and o.resource.$code contains c.resource.$code
 ```
 
 
