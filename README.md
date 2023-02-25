@@ -261,5 +261,10 @@ FROM patient
 
 * @niquola
 * @gotdan
+ 
+This work is sponsored and supported by:
+* [Health Samurai](https://www.health-samurai.io/)
+* Do you want to support - contact us!
+ 
 
 This work is logical continuation of [SQL on FHIR 1.0](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md)
