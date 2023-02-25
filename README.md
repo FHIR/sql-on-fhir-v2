@@ -87,6 +87,7 @@ Optionally id can be calculated as a hash of reference and source - #10 (TBD @go
 
 ### 1.2 Contained Resources & References
 
+* unnest contained resources
 * generate id of contained resources
 * fix refs to contained resources
 
