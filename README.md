@@ -222,7 +222,7 @@ where resource.code contains 'system|code'
 
 ### 3.1 View Definition
  
-TBD: use FHIR logical models to describe views
+TBD: use [FHIR logical models](https://www.hl7.org/fhir/structuredefinition.html#logical) to describe views
  
 ```fsh
  
