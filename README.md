@@ -220,6 +220,10 @@ where resource.code contains 'system|code'
 
 ## 3. Views & Rules
 
+### 3.1 View Definition
+ 
+TBD: use FHIR logical models to describe views
+ 
 Using SQL we can define useful flatten views.
  
 ```fsh
@@ -260,6 +264,7 @@ SELECT
 FROM patient
 ```
  
+### 3.2 Rule Definition
 
 ## Credits
 
