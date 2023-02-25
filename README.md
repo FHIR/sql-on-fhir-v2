@@ -275,4 +275,4 @@ Work is sponsored and supported by:
 * Do you want to support - contact us!
  
 
-Work is logical continuation of [SQL on FHIR 1.0](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md)
+This work is rethink of [SQL on FHIR 1.0](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md)
