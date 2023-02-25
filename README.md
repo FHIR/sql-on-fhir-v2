@@ -16,7 +16,7 @@ and applications.
 
 ## Principles
 
-Transformations should be easy to implement and with minimal context dependencies
+Schemas and transformations should not depend on FHIR versions and profiles.
 
 ## Intro
 
