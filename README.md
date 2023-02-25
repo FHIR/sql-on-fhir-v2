@@ -224,8 +224,6 @@ where resource.code contains 'system|code'
  
 TBD: use FHIR logical models to describe views
  
-Using SQL we can define useful flatten views.
- 
 ```fsh
  
 id: flatten-patient
@@ -234,6 +232,9 @@ id: flatten-patient
 * sex: ...
 * race: ...
 ```
+ 
+Using SQL we can define useful flatten views.
+ 
 
 ```sql
 
