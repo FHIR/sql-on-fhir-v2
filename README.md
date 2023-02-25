@@ -259,12 +259,14 @@ FROM patient
 
 ## Credits
 
-* @niquola
-* @gotdan
- 
-This work is sponsored and supported by:
+* Nikolai Ryzhikov @niquola
+* Dan Gottlieb @gotdan
+* Marat Surmashev @aitem
+* FHIR Community - https://chat.fhir.org/
+
+Work is sponsored and supported by:
 * [Health Samurai](https://www.health-samurai.io/)
 * Do you want to support - contact us!
  
 
-This work is logical continuation of [SQL on FHIR 1.0](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md)
+Work is logical continuation of [SQL on FHIR 1.0](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md)
