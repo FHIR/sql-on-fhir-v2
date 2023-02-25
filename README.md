@@ -56,7 +56,7 @@ All transformations shell
 * may use only simple context
 * should not depend on profiles and versions of FHIR
 
-### Reference
+### 1.1 Reference
 
 Algorythm structure reference for efficient joins between resource tables
 Reference transformation algorythm has option multisource. When multisource option is on id is calculated as `sha256(absolute_reference(config,reference))`. Absolute reference can be calculated from reference if it's absolute or provided
@@ -81,7 +81,7 @@ transform(config, {reference: 'Patient/pt1', id: 'local'})
 Optionally id can be calculated as a hash of reference and source - #10 (TBD @gotdan).
 
 
-### Contained Resources & References
+### 1.2 Contained Resources & References
 
 * generate id of contained resources
 * fix refs to contained resources
@@ -89,7 +89,7 @@ Optionally id can be calculated as a hash of reference and source - #10 (TBD @go
 
 
 
-### [optioanl] Quantity normalization
+### 1.3 [optioanl] Quantity normalization
 
 Quantity values are normalized to metric system. 
 Conversion formuals are provided and supported by SQL on FHIR as config JSON:
@@ -115,7 +115,7 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
 }
 ```
 
-### [optioanl] DateTime normalization
+### 1.4 [optioanl] DateTime normalization
 
 If element can be represented as dateTime and Period deduce Period from all dateTime.
 Algorythm search for `<prefix>DateTime` and add `<prefix>Period` element.
@@ -128,31 +128,59 @@ effectivePeriod: {start: '<x>', end: '<x>'}
 
 ```
 
-### Extensions
+### 1.5 [optioanl] Extensions
 
-Convert array of extensions into object representation for natural access
-using global or local registry of extensions to shorten the names:
+Convert array of extensions into object representation for natural access.
 
+Algorythm find `extension` element
+* search for extension element
+* create sibling `$extension`
+* find extesion and split it's url into '<url>/<name>' parts
+* use <name> as name for property, i.e. `$extension[<name>] = merge(extension, {$url: <url>, $index: <index>}`
 
-**conversion example**:
+Notes: 
+ 
+ There is a some probability of extension name clash
+ Clash can be resolved by `$url` property and assuming one jurisdiction this will allow to keep algorythm pure, but still useful
 
 ```yaml
-# registry
-url-1: key1
-url-2: key2
-
-# from
+-
+resourceType: Patient
+id: example
 extension:
-- {url: [url-1], value[x]: [value]}
-- {url: [url-2], value[x]: [value]}
-# missed in registry
-- {url: [url-3], value[x]: [value]}
+- url: http://hl7.org/fhir/us/core/StructureDefinition/us-core-race
+  extension:
+  - url: ombCategory
+    valueCoding: {..}
+  - url: ombCategory
+    valueCoding: {...}
+  - url: ombCategory
+    valueCoding: {...}
+  - url: detailed
+    valueCoding: {...}
+  - url: detailed
+    valueCoding: {...}
+  - url: text
+    valueString: Mixed
+- url: http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex
+  valueCode: F
+- url: http://hl7.org/fhir/us/core/StructureDefinition/us-core-genderIdentity
+  valueCodeableConcept: {...}
+- url: http://domain/path/ext-name
+  valueX: ...
 
 #  to
-extension:
-  key1: [value]
-  key2: [value]
-  url-3: [value]
+extension: <preserved>
+$extension:
+  us-core-race:
+    $url: 'http://hl7.org/fhir/us/core/StructureDefinition'
+    ombCategory: [{valueCoding: {$index: 0, ...}, {valueCoding: {$index: 0, ...}]
+    detailed: [...]
+    text: [...]
+  us-core-birthsex: [{valueCode: 'F'}]
+  us-core-genderIdentity: [{valueCodeableConcept: {...}]
+  ext-name: [{$url: 'http://domain/path', valueX: ....}]
+
 ```
 
 **query example**:
@@ -160,21 +188,12 @@ extension:
 ``` sql
 
 select * from patient 
- where resource.extension.race = ?
+ where resource.$extension.us-core-race[0].valueCoding.code = ?
 
 ```
 
-**algorythm**:
 
-```
-walk json
-if key = 'extension'
-  reduce extensions into object
-  by looking up key in registry or using url as a fallback
-```
-
-
-### Terminology
+### [optional] Terminology
 
 
 ```yaml
@@ -197,20 +216,46 @@ where resource.code contains 'system|code'
 
 ## 3. Views & Rules
 
-Using SQL we can define useful flatten views:
-
+Using SQL we can define useful flatten views.
+ 
+```fsh
+ 
+id: flatten-patient
+* id ....
+* bod: ...
+* sex: ...
+* race: ...
+```
 
 ```sql
 
 -- model: flatten_patient
 SELECT
   resource.id,
-  resource.birthDate as birthDate,
-  resource.gender as gender,
+  resource.birthDate as bod,
+  resource.gender as sex,
   resource.extension.us_race.code as race
 FROM patient
 
 ```
+
+Spec will define how views and rules can be distributed in machine readable format (probably close to [dbt](https://docs.getdbt.com/)):
+ 
+```yaml
+models:
+ flatten_pt:
+   comumns:
+     id: ....
+     bod: ..
+   query: |
+SELECT
+  resource.id,
+  resource.birthDate as bod,
+  resource.gender as sex,
+  resource.extension.us_race.code as race
+FROM patient
+```
+ 
 
 ## Credits
 
