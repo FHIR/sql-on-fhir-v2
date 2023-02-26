@@ -7,7 +7,7 @@ Join us at
 
 ## Motivation
 
-More and more health care data available in FHIR,
+More and more health care data available in FHIR®,
 people want to use this data for reports, analytics, quality metrics, machine learning
 and applications.
 
