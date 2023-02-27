@@ -1,9 +1,11 @@
-# SQL on FHIR 2.0
+# SQL on FHIR® 2.0
 
 Join us at
 
 * [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
 * [WG weekly meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
+
+
 
 ## Motivation
 
@@ -269,7 +271,13 @@ FROM patient
  
 ### 3.2 Rule Definition
 
+## License
+
+FHIR® is the registered trademark of HL7 and is used with the permission of HL7. Use of the FHIR trademark does not constitute endorsement of the contents of this repository by HL7, nor affirmation that this data is conformant to the various applicable standards
+
 ## Credits
+
+
 
 * Nikolai Ryzhikov @niquola
 * Dan Gottlieb @gotdan
