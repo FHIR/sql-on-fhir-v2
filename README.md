@@ -15,6 +15,7 @@ More and more health care data available in [FHIR®](https://hl7.org/fhir) forma
 - Queries written against the spec should be translatable between database engines that have JSON support (i.e., avoiding features that are not widely implemented)
 - Schemas and transformations should depend as little as possible on specific FHIR versions and profiles
 - It should be possible to run transformations on raw data prior to loading it into a database (ETL) or within a database using SQL (ELT)
+- Use `$` prefix for all calculated elements to avoid clash with FHIR elements
 
 ## Schema
 
@@ -99,7 +100,7 @@ TODO: Determine a standard prefix or suffix for elements added in level 1 and le
 	config = {source: 'source-of-data-domain.com'}
 	transform(config, {reference: 'Patient/pt1'})
 	//=>
-	{reference: 'Patient/pt1', type: 'Patient', id: 'pt1'}
+	{reference: 'Patient/pt1', type: 'Patient', $id: 'pt1'}
 	```
 
 #### 1b. Make resource ids unique to avoid conflicts when data from multiple sources is being combined (optional if only a single source is represented in the database)
