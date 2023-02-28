@@ -5,45 +5,24 @@ Join us at
 * [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
 * [WG weekly meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
 
-
-
 ## Motivation
 
-More and more health care data available in FHIR®,
-people want to use this data for reports, analytics, quality metrics, machine learning
-and applications.
-
-* Modern databases support json datatype natively (Postgres, Oracle, MySQL, MSSQL, Mongo, BiqQuery, Snowflake).
-* New SQL standard (ISO 2016) introduced json datatype and PL/json_path 
+More and more health care data available in [FHIR®](https://hl7.org/fhir) format. Support for JSON data in modern database engines (e.g., BigQuery, Snowflake, Postgres, Oracle, MySql, etc.) creates the opportunity to work with this data using off-the-shelf, low cost and scalable tooling for reporting, analytics, machine learning and other applications. Developing a standard SQL representation for FHIR will create the opportunity to share queries and other infrastructure within the FHIR community.
 
 ## Principles
 
-Schemas and transformations should not depend on FHIR versions and profiles.
+- Queries written against the spec should be portable between institutions
+- Queries written against the spec should be translatable between database engines that have JSON support (i.e., avoiding features that are not widely implemented)
+- Schemas and transformations should depend as little as possible on specific FHIR versions and profiles
+- It should be possible to run transformations on raw data prior to loading it into a database (ETL) or within a database using SQL (ELT)
 
-## Intro
+## Schema
 
-Spec describes schema, transformations and definitions of views & rules in SQL.
+Create a single table for each resource type (name of the FHIR resource type in lower case) with the following columns:
 
-* Schema - each resource type has dedicated table  with two columns id and resource
-* Transformations - minimal common transformations
-  * Parse ids from references and store as separate element for join performance
-  * Unnest contained resources
-  * Make ids from multiple sources unique to avoid conflicts (optional if only a single source is represented in the db)
-  * [optional] Normalize different datetime representations (e.g., onsetPeriod vs. onsetDateTime)
-  * [optional] Normalize quantity units
-  * [optional] Access extensions by name
-* Views And Rules
-  * define many useful flattened and pre-aggregated views on top of json by SQL queries
-  * data quality rules in SQL
-  
-## 1. Schema
-
-Create table for each resource type with at least two comuns:
-* `id` varchar  primary key 
-* `resource` column type of json
-* other columns can be added by implementation, but they shold not be required or with defaults
-
-Table name is lowercased resourceType property:
+* `id` - varchar primary key (TODO: is this a performance improvement in database engines relative to creating an index into the id element of the FHIR resource? See #22)
+* `resource` - json (TODO: allow jsonb or other binary representations of the json? See #22)
+* other columns may be added by individual implementations, but should not be used in queries that will be publicly shared
 
 ```sql
 CREATE TABLE "patient" (
@@ -51,54 +30,114 @@ CREATE TABLE "patient" (
    resource json not null,
    ...other columns...
 )
-
 ```
 
-## 2. Transformations
-
-All transformations shell 
-* preserve original information
-* may use only simple context
-* should not depend on profiles and versions of FHIR
-
-### 2.1 Reference
-
-Algorythm structure reference for efficient joins between resource tables
-Reference transformation algorythm has option multisource. When multisource option is on id is calculated as `sha256(absolute_reference(config,reference))`. Absolute reference can be calculated from reference if it's absolute or provided
-by config.
-
-* Transformation traverses the JSON object and search for `reference` property with string value.
-* If value is a **Relative URL** two components - resource id and type are extracted
-* If `multisource` option is on calculate `id` as `sha256(absolute_reference(config, reference))`
-* Add property `reference` is preserved
-* Add property `type` to Reference object with value of resource type
-* If property `id` exists - rename to `$id`
-* Add property `id` with local or calculated id
-
-```js
-config = {source: 'source-of-data-domain.com'}
-transform(config, {reference: 'Patient/pt1', id: 'local'})
-//=>
-{reference: 'Patient/pt1', type: 'Patient', id: 'pt1', $id: 'local' }
-
+[optional] Terminology can be represented as `concept` table with codings:
+ 
+```yaml
+code:
+  text: '???'
+  codings:
+  - {system=http://loinc,   code: [code], ...}, 
+  - {system=https://snomed, code: [code], ...}
+$code: ['system|code', 'system|code']
 ```
 
-Optionally id can be calculated as a hash of reference and source - #10 (TBD @gotdan).
+```sql
+select *
+from observation o, concept c
+where 
+  c.valueset = 'http://loinc.org'
+  and o.resource.$code contains c.resource.$code
+```
 
+## Transformations
 
-### 2.2 Contained Resources & References
+### Overview
 
-* unnest contained resources
-* generate id of contained resources
-* fix refs to contained resources
+This specification defines four layers of transformations to improve the queryability of FHIR data, each of which build on the previous levels:
 
+**1. Data Loading Transformations (JSON to JSON transformation)**
+	
+  - a. Extract resource ids in references and store them as separate element to improve join performance
+  - b. Make resource ids unique to avoid conflicts when data from multiple sources is being combined (optional if only a single data source is represented in the database)
+  - c. Extract contained resources into individual resources for queryability
 
+**2. Standardization Transformations (JSON to JSON transformation)**
+  
+  - a. Convert all date and dateTime elements into date ranges, storing both the range and the level of precision in the source data
+  - b. Normalize units in Quantity type to metric system where applicable (TODO: can we say anything about unit size (e.g. centimeters vs. meters in the case of height?))
 
+**3. Simplified Resources (JSON to JSON transformation)**
+  
+  - TODO: Need to define a namespacing and directory approach for these since adoption will depend on use case (e.g., a resource table could be named something like us_core_patient_for_analytics).
 
-### 2.3 [optioanl] Quantity normalization
+  - a. Convert a subset of extension values into top level resource elements 
+  - b. Extract system and codes from some CodeableConcept elements into top level resource elements
+  - c. Coalesce multiple elements into a single new element based on heuristics (e.g., populate with the `sex assigned at birth` extension value if available, falling back to `gender`)
+
+**4. Flattened Metrics, Measures and Aggregates (JSON to tabular transformation)**
+
+  - TODO: Need to define a namespacing and directory approach for these since adoption will depend on use case (e.g., a table could be named something like patient_count_by_age_race_ethnicity)
+
+  - Defines flattened and pre-aggregated tables and views on top of json through SQL queries. These views may incorporate standardized level 2 resources, simplified level 3 resources, or other level 4 flattened representations. It is recommended to use an orchestration tool like DBT to refresh tables in the correct order.
+
+TODO: Determine a standard prefix or suffix for elements added in level 1 and level 2 transformations. This probably needs to be alphabetical since an underscore is used in FHIR JSON for primitive extensions and databases like BigQuery only allow a-z and underscore as the first character of a field name (https://cloud.google.com/bigquery/docs/schemas#:~:text=A%20column%20name%20must%20contain). Maybe `sof_` for sql on fhir?
+
+### 1. Data Loading Transformations
+
+#### 1a. Extract resource ids in references and store them as separate element to improve join performance
+
+  * Traverse the JSON object and search for a `reference` property with a string value. SQL transformations may also use data from FHIR structure definitions to define the path to references.
+  * If data from multiple sources is being integrated in the database and the reference value is not a relative URL, remove the url scheme, and calculate the sha256 hash of the URL as the id
+  * If data from multiple sources is being integrated in the database and this value is a relative URL, construct an absolute URL with the base URL of the source, remove the URL scheme, and calculate the sha256 hash of the URL as the id
+  * If the database will only contain values from one data source, extract the last URL segment as the id
+  * Add the property `id` to the Reference and populate it with the id
+  * If the type property of the Reference is not populated, extract the second to last segment of the URL and use it to populate this property.
+
+	```js
+	config = {source: 'source-of-data-domain.com'}
+	transform(config, {reference: 'Patient/pt1'})
+	//=>
+	{reference: 'Patient/pt1', type: 'Patient', id: 'pt1'}
+	```
+
+#### 1b. Make resource ids unique to avoid conflicts when data from multiple sources is being combined (optional if only a single source is represented in the database)
+
+  * Retain original id in `sof_id_prev`
+  * Build a URL with base URL of the source, the resourceType, and the resource id
+  * Remove the scheme from this URL  
+  * Calculate the sha256 hash of the URL as the id
+  * Update the resource id
+
+#### 1c. Extract contained resources into individual resources
+
+  * Build URL with base url, resourceType, parent resource id, and contained resource id
+  * Remove URL scheme
+  * Hash with sha256
+  * Retain original id in sof_id_prev
+  * Update resource id
+  * Extract from parent resource
+  * Update internal references in former parent to new id
+
+### 2.  Standardization Transformations
+
+#### 2a. Date normalization
+
+If element can be represented as dateTime and Period deduce Period from all dateTime.
+Algorithm search for `<prefix>DateTime` and add `<prefix>Period` element.
+
+```yaml
+effectiveDateTime: '<x>'
+---
+effectiveDateTime: '<x>'
+effectivePeriod: {start: '<x>', end: '<x>'}
+```
+
+#### 2b. Quantity normalization
 
 Quantity values are normalized to metric system. 
-Conversion formuals are provided and supported by SQL on FHIR as config JSON:
+Conversion formulas are provided and supported by SQL on FHIR as config JSON:
 
 ```js
 { 
@@ -121,24 +160,12 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
 }
 ```
 
-### 2.4 [optioanl] DateTime normalization
+### 3. Simplified Resources
 
-If element can be represented as dateTime and Period deduce Period from all dateTime.
-Algorythm search for `<prefix>DateTime` and add `<prefix>Period` element.
-
-```yaml
-effectiveDateTime: '<x>'
----
-effectiveDateTime: '<x>'
-effectivePeriod: {start: '<x>', end: '<x>'}
-
-```
-
-### 2.5 [optioanl] Extensions
-
+#### 3a. Extensions
 Convert array of extensions into object representation for natural access.
 
-Algorythm find `extension` element
+Algorithm find `extension` element
 * search for extension element
 * create sibling `$extension`
 * find extesion and split it's url into '<url>/<name>' parts
@@ -147,7 +174,7 @@ Algorythm find `extension` element
 Notes: 
  
  There is a some probability of extension name clash
- Clash can be resolved by `$url` property and assuming one jurisdiction this will allow to keep algorythm pure, but still useful
+ Clash can be resolved by `$url` property and assuming one jurisdiction this will allow to keep algorithm pure, but still useful
 
 ```yaml
 -
@@ -198,36 +225,9 @@ select * from patient
 
 ```
 
-
-### 2.6 [optional] Terminology
-
-Terminology is represented as `concept` table with codings.
+### 4. Flattened Metrics, Measures and Aggregates
  
-
-```yaml
-code:
-  text: '???'
-  codings:
-  - {system=http://loinc,   code: [code], ...}, 
-  - {system=https://snomed, code: [code], ...}
-$code: ['system|code', 'system|code']
-```
-
-
-```sql
-select *
-from observation o, concept c
-where 
-  c.valueset = 'http://loinc.org'
-  and o.resource.$code contains c.resource.$code
-```
-
-
-## 3. Views & Rules
-
-### 3.1 View Definition
- 
-TBD: use [FHIR logical models](https://www.hl7.org/fhir/structuredefinition.html#logical) to describe views
+TODO: use [FHIR logical models](https://www.hl7.org/fhir/structuredefinition.html#logical) to describe views
  
 ```fsh
 Logical: FlattenPatient
@@ -238,7 +238,6 @@ Logical: FlattenPatient
 ```
  
 Implementation of view is defined by SQL (aka dbt)
- 
 
 ```sql
 
@@ -268,8 +267,6 @@ SELECT
   resource.extension.us_race.code as race
 FROM patient
 ```
- 
-### 3.2 Rule Definition
 
 ## License
 
@@ -277,18 +274,16 @@ FHIR® is the registered trademark of HL7 and is used with the permission of HL7
 
 ## Credits
 
-
-
-* Nikolai Ryzhikov @niquola
-* Dan Gottlieb @gotdan
-* Marat Surmashev @aitem
+* Nikolai Ryzhikov @niquola (Health Samurai)
+* Dan Gottlieb @gotdan (Central Square Solutions)
+* Marat Surmashev @aitem (Health Samurai)
 * FHIR Community - https://chat.fhir.org/
 
 Work is sponsored and supported by:
 * [Health Samurai](https://www.health-samurai.io/)
 * [FHIR Foundation](https://fhir.org/)
 * [Health Dev Hub](https://www.healthdevhub.com/)
-* Do you want to support - contact us!
+* Interested in helping to support this work - contact us!
  
-
+ 
 This work is rethink of [SQL on FHIR 1.0](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md)
