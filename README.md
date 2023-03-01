@@ -17,7 +17,7 @@ More and more health care data available in [FHIR®](https://hl7.org/fhir) forma
 - It should be possible to run transformations on raw data prior to loading it into a database (ETL) or within a database using SQL (ELT)
 - Use `$` prefix for all calculated elements to avoid clash with FHIR elements
 
-## Schema
+## Schema - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/33)
 
 Create a single table for each resource type (name of the FHIR resource type in lower case) with the following columns:
 
@@ -33,7 +33,7 @@ CREATE TABLE "patient" (
 )
 ```
 
-## Terminology 
+## Terminology - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/32)
 
 Terminology can be represented as `concept` table with codings:
  
@@ -54,7 +54,7 @@ where
   and o.resource.$code contains c.resource.$code
 ```
 
-## Transformations
+## Transformations - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/25)
 
 This specification defines few essential transformations to improve the queryability of FHIR data, each of which build on the previous levels:
 
@@ -76,7 +76,7 @@ This specification defines few essential transformations to improve the queryabi
 
 TODO: Determine a standard prefix or suffix for elements added in level 1 and level 2 transformations. This probably needs to be alphabetical since an underscore is used in FHIR JSON for primitive extensions and databases like BigQuery only allow a-z and underscore as the first character of a field name (https://cloud.google.com/bigquery/docs/schemas#:~:text=A%20column%20name%20must%20contain). Maybe `sof_` for sql on fhir?
 
-### References Transformations
+### References Transformations  - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/19)
 
 Extract resource ids in references and store them as separate element to improve join performance
 
@@ -106,7 +106,7 @@ database)
   * Calculate the sha256 hash of the URL as the id
   * Update the resource id
 
-### Contained Resources
+### Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/28)
 
 Extract contained resources into individual resources
 
@@ -118,7 +118,7 @@ Extract contained resources into individual resources
   * Extract from parent resource
   * Update internal references in former parent to new id
 
-### Date Normalization
+### Date Normalization  - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/29)
 
 If element can be represented as dateTime and Period deduce Period from all dateTime.
 Algorithm search for `<prefix>DateTime` and add `<prefix>Period` element.
@@ -132,7 +132,7 @@ effectivePeriod: {start: '<x>', end: '<x>'}
 $effectivePeriod: {start: '<x>', end: '<x>'}
 ```
 
-### Quantity Normalization
+### Quantity Normalization - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/17)
 
 Quantity values are normalized to metric system.
 Conversion formulas are provided and supported by SQL on FHIR as config JSON:
@@ -160,7 +160,7 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
 Alternative: Original value saved as an extension.
 
 
-### Extensions
+### Extensions - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/30)
 
 Convert array of extensions into object representation for natural access.
 
@@ -224,7 +224,7 @@ select * from patient
 
 ```
 
-## Views: Flattened Metrics, Measures and Aggregates
+## Views: Flattened Metrics, Measures and Aggregates - - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/31)
 
 
 Defines flattened and pre-aggregated tables and views on top of json through SQL queries. These views may incorporate standardized level 2 resources, simplified level 3 resources, or other level 4 flattened representations. It is recommended to use an orchestration tool like DBT to refresh tables in the correct order.
