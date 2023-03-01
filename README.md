@@ -48,7 +48,7 @@ CREATE TABLE "patient" (
    ...other columns...
 )
 ```
-### 1.2 Binary Schema
+### 1.2 Databases Strict Schema & Binary Formats - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/50)
 
 TODO: Define intermidiate representation of FHIR Profiles and framework to generate
 schemas for Avro, Protobuf, Parquet and db specific hierarchical datastructres (ClickHouse, Snowflake etc)
