@@ -28,7 +28,7 @@ Spec consists of:
 - Cover most of pupular technologies
 - Queries written against the spec should be portable between institutions and 
   translatable between database engines that have JSON  or nested datastructures support (i.e., avoiding features that are not widely implemented)
-- Basic schemas and transformations should depend as little as possible on specific FHIR versions and profiles. Advanced optimizations (like Avro, ProtoBuf) may.
+- Basic schemas and transformations should depend as little as possible on specific FHIR versions and profiles. Schema driven implementations (like Avro, ProtoBuf) may depend on Profiles.
 - It should be possible to run transformations on raw data or within a database using SQL (ELT)
 - Use `sof_` prefix for all calculated elements to avoid clash with FHIR elements - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/45)
 
