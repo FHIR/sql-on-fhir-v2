@@ -1,8 +1,6 @@
 # SQL on FHIR® JSON
 
-Here is a link to  [SQL on FHIR Columnar](https://github.com/FHIR/sql-on-fhir-archived)
-
-We are working to merge both into one!
+Here is a link to  [SQL on FHIR Columnar](https://github.com/FHIR/sql-on-fhir-archived) - we are working to merge both into one!
 
 * Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir/discussions)
 * Join us on [Weekly Meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
