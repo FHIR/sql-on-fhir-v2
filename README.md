@@ -9,7 +9,7 @@
 
 More and more health care data available in [FHIR®](https://hl7.org/fhir) format. Support for JSON data in modern database engines (e.g., BigQuery, Snowflake, Postgres, Oracle, MySql, etc.) creates the opportunity to work with this data using off-the-shelf, low cost and scalable tooling for reporting, analytics, machine learning and other applications. Developing a standard SQL representation for FHIR will create the opportunity to share queries and other infrastructure within the FHIR community.
 
-## Principles [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/44)
+**Principles** [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/44)
 
 - Queries written against the spec should be portable between institutions
 - Queries written against the spec should be translatable between database engines that have JSON support (i.e., avoiding features that are not widely implemented)
@@ -17,7 +17,7 @@ More and more health care data available in [FHIR®](https://hl7.org/fhir) forma
 - It should be possible to run transformations on raw data prior to loading it into a database (ETL) or within a database using SQL (ELT)
 - Use `$` prefix for all calculated elements to avoid clash with FHIR elements
 
-## Schema - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/35)
+## 1. Schema - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/35)
 
 Create a single table for each resource type (name of the FHIR resource type in lower case) with the following columns:
 
@@ -33,7 +33,7 @@ CREATE TABLE "patient" (
 )
 ```
 
-## Terminology - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/36)
+## 2. Terminology - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/36)
 
 Terminology can be represented as `concept` table with codings:
  
@@ -54,7 +54,7 @@ where
   and o.resource.$code contains c.resource.$code
 ```
 
-## Transformations - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/37)
+## 3. Transformations - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/37)
 
 This specification defines few essential transformations to improve the queryability of FHIR data, each of which build on the previous levels:
 
@@ -224,7 +224,7 @@ select * from patient
 
 ```
 
-## Views:  Metrics, Measures and Aggregates - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/42)
+## 4. Views:  Metrics, Measures and Aggregates - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/42)
 
 
 Defines flattened and pre-aggregated tables and views on top of json through SQL queries. These views may incorporate standardized level 2 resources, simplified level 3 resources, or other level 4 flattened representations. It is recommended to use an orchestration tool like DBT to refresh tables in the correct order.
