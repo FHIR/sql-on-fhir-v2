@@ -1,6 +1,8 @@
-# SQL on FHIR® (JSON & Binary)
+# SQL on FHIR® (v2.0)
 
-Here is a link to  [SQL on FHIR Binary](https://github.com/FHIR/sql-on-fhir-archived) - we are working to merge both into one!
+If you are looking for the early version of "SQL on FHIR" 
+here is a link to [SQL on FHIR v1.0](https://github.com/FHIR/sql-on-fhir-archived)
+We are working to merge both into one!
 
 * Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir/discussions)
 * Join us on [Weekly Meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
