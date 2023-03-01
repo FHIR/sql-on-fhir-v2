@@ -30,7 +30,7 @@ Spec consists of:
   translatable between database engines that have JSON  or nested datastructures support (i.e., avoiding features that are not widely implemented)
 - Basic schemas and transformations should depend as little as possible on specific FHIR versions and profiles. Advanced optimizations (like Avro, ProtoBuf) may.
 - It should be possible to run transformations on raw data or within a database using SQL (ELT)
-- Use `$` prefix for all calculated elements to avoid clash with FHIR elements
+- Use `sof_` prefix for all calculated elements to avoid clash with FHIR elements
 
 
 ## 1. Schema 
@@ -68,7 +68,7 @@ code:
   codings:
   - {system=http://loinc,   code: [code], ...}, 
   - {system=https://snomed, code: [code], ...}
-$code: ['system|code', 'system|code']
+sof_code: ['system|code', 'system|code']
 ```
 
 ```sql
@@ -76,7 +76,7 @@ select *
 from observation o, concept c
 where 
   c.valueset = 'http://loinc.org'
-  and o.resource.$code contains c.resource.$code
+  and o.resource.sof_code contains c.resource.$code
 ```
 
 ## 3. Transformations - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/37)
@@ -115,7 +115,7 @@ Extract resource ids in references and store them as separate element to improve
 	config = {source: 'source-of-data-domain.com'}
 	transform(config, {reference: 'Patient/pt1'})
 	//=>
-	{reference: 'Patient/pt1', type: 'Patient', $id: 'pt1'}
+	{reference: 'Patient/pt1', type: 'Patient', sof_id: 'pt1'}
 	```
 
 #### Hashing
@@ -153,7 +153,7 @@ effectiveDateTime: '<x>'
 effectiveDateTime: '<x>'
 effectivePeriod: {start: '<x>', end: '<x>'}
 --or
-$effectivePeriod: {start: '<x>', end: '<x>'}
+sof_effectivePeriod: {start: '<x>', end: '<x>'}
 ```
 
 ### 3.4 Quantity Normalization - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/41)
@@ -175,8 +175,8 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
  valueQuantity: {
    value: 97.8,
    unit: 'F',
-   $value: 36.6,
-   $unit: 'C'
+   sof_value: 36.6,
+   sof_unit: 'C'
  }
 }
 ```
@@ -227,7 +227,7 @@ extension:
 
 #  to
 extension: <preserved>
-$extension:
+sof_extension:
   us-core-race:
     $url: 'http://hl7.org/fhir/us/core/StructureDefinition'
     ombCategory: [{valueCoding: {$index: 0, ...}, {valueCoding: {$index: 0, ...}]
@@ -244,7 +244,7 @@ $extension:
 ``` sql
 
 select * from patient
- where resource.$extension.us-core-race[0].valueCoding.code = ?
+ where resource.sof_extension.us-core-race[0].valueCoding.code = ?
 
 ```
 
