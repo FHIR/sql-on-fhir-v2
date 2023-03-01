@@ -186,7 +186,7 @@ Alternative: Original value saved as an extension.
 
 ### 3.5 Extensions - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/43)
 
-Convert array of extensions into object representation for natural access.
+Convert array of extensions into object representation for easy access of elements in databases, which do not support json path filter feature.
 
 Algorithm find `extension` element
 * search for extension element
