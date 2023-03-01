@@ -13,6 +13,8 @@ More and more health care data available in [FHIR®](https://hl7.org/fhir) forma
 
 Spec core is based on native JSON support by databases, but more advanced optimizations can be done with binary data formats like Avro, Parquet, ProtoBuf and database specific schemas. This make pipeline more complicated and vendor specific. Spec will try to provide common parts of schema generation from FHIR Profiles for such technologies.
 
+Spec is targeting both Transactional (OLTP) & Analytical Use Cases (OLAP).
+
 
 Spec consists of:
 * Database Schema Definition
