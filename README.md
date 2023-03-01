@@ -1,6 +1,6 @@
-# SQL on FHIR® JSON
+# SQL on FHIR® (JSON & Binary)
 
-Here is a link to  [SQL on FHIR Columnar](https://github.com/FHIR/sql-on-fhir-archived) - we are working to merge both into one!
+Here is a link to  [SQL on FHIR Binary](https://github.com/FHIR/sql-on-fhir-archived) - we are working to merge both into one!
 
 * Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir/discussions)
 * Join us on [Weekly Meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
@@ -11,13 +11,8 @@ Here is a link to  [SQL on FHIR Columnar](https://github.com/FHIR/sql-on-fhir-ar
 
 More and more health care data available in [FHIR®](https://hl7.org/fhir) format. Support for JSON data in modern database engines (e.g., BigQuery, Snowflake, Postgres, Oracle, MySql, etc.) creates the opportunity to work with this data using off-the-shelf, low cost and scalable tooling for reporting, analytics, machine learning and other applications. Developing a standard SQL representation for FHIR will create the opportunity to share queries and other infrastructure within the FHIR community.
 
-**Principles** [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/44)
+Spec core is based on native JSON support by databases, but more advanced optimizations can be done with binary data formats like Avro, Parquet, ProtoBuf and database specific schemas. This make pipeline more complicated and vendor specific. Spec will try to provide common parts of schema generation from FHIR Profiles for such technologies, which are compatible with JSON as much as possbile.
 
-- Queries written against the spec should be portable between institutions
-- Queries written against the spec should be translatable between database engines that have JSON support (i.e., avoiding features that are not widely implemented)
-- Schemas and transformations should depend as little as possible on specific FHIR versions and profiles
-- It should be possible to run transformations on raw data prior to loading it into a database (ETL) or within a database using SQL (ELT)
-- Use `$` prefix for all calculated elements to avoid clash with FHIR elements
 
 Spec consists of
 * Database Schema Definition
@@ -25,7 +20,20 @@ Spec consists of
 * ETL Transformations to load FHIR data into database
 * Views definitions framework
 
-## 1. Schema - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/47)
+
+## [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/44)
+
+- Cover most of pupular technologies
+- Queries written against the spec should be portable between institutions and 
+  translatable between database engines that have JSON  or nested datastructures support (i.e., avoiding features that are not widely implemented)
+- Basic schemas and transformations should depend as little as possible on specific FHIR versions and profiles. Advanced optimizations (like Avro, ProtoBuf) may.
+- It should be possible to run transformations on raw data or within a database using SQL (ELT)
+- Use `$` prefix for all calculated elements to avoid clash with FHIR elements
+
+
+## 1. Schema 
+
+### 1.1 Schema  for JSON - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/47)
 
 Create a single table for each resource type (name of the FHIR resource type in lower case) with the following columns:
 
@@ -40,6 +48,13 @@ CREATE TABLE "patient" (
    ...other columns...
 )
 ```
+### 1.2 Binary Schema
+
+TODO: Define intermidiate representation of FHIR Profiles and framework to generate
+schemas for Avro, Protobuf, Parquet and db specific hierarchical datastructres (ClickHouse, Snowflake etc)
+
+It should be easy to convert between JSON and binary representations.
+
 
 ## 2. Terminology - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/36)
 
