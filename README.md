@@ -9,7 +9,7 @@
 
 More and more health care data available in [FHIR®](https://hl7.org/fhir) format. Support for JSON data in modern database engines (e.g., BigQuery, Snowflake, Postgres, Oracle, MySql, etc.) creates the opportunity to work with this data using off-the-shelf, low cost and scalable tooling for reporting, analytics, machine learning and other applications. Developing a standard SQL representation for FHIR will create the opportunity to share queries and other infrastructure within the FHIR community.
 
-## Principles
+## Principles [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/44)
 
 - Queries written against the spec should be portable between institutions
 - Queries written against the spec should be translatable between database engines that have JSON support (i.e., avoiding features that are not widely implemented)
