@@ -23,14 +23,14 @@ Spec consists of:
 * Views definitions framework
 
 
-## [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/44)
+## Principles [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/44)
 
 - Cover most of pupular technologies
 - Queries written against the spec should be portable between institutions and 
   translatable between database engines that have JSON  or nested datastructures support (i.e., avoiding features that are not widely implemented)
 - Basic schemas and transformations should depend as little as possible on specific FHIR versions and profiles. Advanced optimizations (like Avro, ProtoBuf) may.
 - It should be possible to run transformations on raw data or within a database using SQL (ELT)
-- Use `sof_` prefix for all calculated elements to avoid clash with FHIR elements
+- Use `sof_` prefix for all calculated elements to avoid clash with FHIR elements - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/45)
 
 
 ## 1. Schema 
