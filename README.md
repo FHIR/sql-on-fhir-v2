@@ -80,9 +80,8 @@ This specification defines few essential transformations to improve the queryabi
 * **Extensions**: Convert a subset of extension values into top level resource elements
 * **CodeableConcepts**: Extract system and codes from some CodeableConcept elements into top level resource elements
 
-TODO: Determine a standard prefix or suffix for elements added in level 1 and level 2 transformations. This probably needs to be alphabetical since an underscore is used in FHIR JSON for primitive extensions and databases like BigQuery only allow a-z and underscore as the first character of a field name (https://cloud.google.com/bigquery/docs/schemas#:~:text=A%20column%20name%20must%20contain). Maybe `sof_` for sql on fhir?
 
-### References Transformations  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/38)
+### References  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/38)
 
 Extract resource ids in references and store them as separate element to improve join performance
 
