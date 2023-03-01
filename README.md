@@ -25,7 +25,7 @@ Spec consists of:
 
 ## Principles [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/44)
 
-- Cover most of pupular technologies
+- Cover most of pupular technologies - see [tech matrix](https://github.com/FHIR/sql-on-fhir/blob/master/tech-matrix.md)
 - Queries written against the spec should be portable between institutions and 
   translatable between database engines that have JSON  or nested datastructures support (i.e., avoiding features that are not widely implemented)
 - Basic schemas and transformations should depend as little as possible on specific FHIR versions and profiles. Schema driven implementations (like Avro, ProtoBuf) may depend on Profiles.
