@@ -110,7 +110,7 @@ Extract resource ids in references and store them as separate element to improve
   * If data from multiple sources is being integrated in the database and the reference value is not a relative URL, remove the url scheme, and calculate the sha256 hash of the URL as the id
   * If data from multiple sources is being integrated in the database and this value is a relative URL, construct an absolute URL with the base URL of the source, remove the URL scheme, and calculate the sha256 hash of the URL as the id
   * If the database will only contain values from one data source, extract the last URL segment as the id
-  * Add the property `id` to the Reference and populate it with the id
+  * Add the property `sof_id` to the Reference and populate it with the id
   * If the type property of the Reference is not populated, extract the second to last segment of the URL and use it to populate this property.
 
 	```js
