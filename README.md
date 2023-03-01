@@ -17,7 +17,7 @@ More and more health care data available in [FHIR®](https://hl7.org/fhir) forma
 - It should be possible to run transformations on raw data prior to loading it into a database (ETL) or within a database using SQL (ELT)
 - Use `$` prefix for all calculated elements to avoid clash with FHIR elements
 
-## Schema - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/33)
+## Schema - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/35)
 
 Create a single table for each resource type (name of the FHIR resource type in lower case) with the following columns:
 
@@ -33,7 +33,7 @@ CREATE TABLE "patient" (
 )
 ```
 
-## Terminology - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/32)
+## Terminology - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/36)
 
 Terminology can be represented as `concept` table with codings:
  
@@ -54,7 +54,7 @@ where
   and o.resource.$code contains c.resource.$code
 ```
 
-## Transformations - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/25)
+## Transformations - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/37)
 
 This specification defines few essential transformations to improve the queryability of FHIR data, each of which build on the previous levels:
 
