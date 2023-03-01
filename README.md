@@ -23,7 +23,7 @@ Spec consists of
 * ETL Transformations to load FHIR data into database
 * Views definitions framework
 
-## 1. Schema - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/35)
+## 1. Schema - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/47)
 
 Create a single table for each resource type (name of the FHIR resource type in lower case) with the following columns:
 
