@@ -106,7 +106,7 @@ database)
   * Calculate the sha256 hash of the URL as the id
   * Update the resource id
 
-### Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/28)
+### Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/16)
 
 Extract contained resources into individual resources
 
