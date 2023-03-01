@@ -247,7 +247,7 @@ sof_extension:
 ``` sql
 
 select * from patient
- where resource.sof_extension.us-core-race[0].valueCoding.code = ?
+ where resource.sof_extension.us_core_race[0].valueCoding.code = ?
 
 ```
 
