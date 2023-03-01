@@ -224,7 +224,7 @@ select * from patient
 
 ```
 
-## Views: Flattened Metrics, Measures and Aggregates - - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/31)
+## Views:  Metrics, Measures and Aggregates - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/42)
 
 
 Defines flattened and pre-aggregated tables and views on top of json through SQL queries. These views may incorporate standardized level 2 resources, simplified level 3 resources, or other level 4 flattened representations. It is recommended to use an orchestration tool like DBT to refresh tables in the correct order.
