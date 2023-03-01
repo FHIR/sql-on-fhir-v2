@@ -56,40 +56,29 @@ where
 
 ## Transformations
 
-### Overview
+This specification defines few essential transformations to improve the queryability of FHIR data, each of which build on the previous levels:
 
-This specification defines four layers of transformations to improve the queryability of FHIR data, each of which build on the previous levels:
-
-**1. Data Loading Transformations (JSON to JSON transformation)**
-	
+* **References**:
   - a. Extract resource ids in references and store them as separate element to improve join performance
-  - b. Make resource ids unique to avoid conflicts when data from multiple sources is being combined (optional if only a single data source is represented in the database)
-  - c. Extract contained resources into individual resources for queryability
-
-**2. Standardization Transformations (JSON to JSON transformation)**
-  
-  - a. Convert all date and dateTime elements into date ranges, storing both the range and the level of precision in the source data
-  - b. Normalize units in Quantity type to metric system where applicable (TODO: can we say anything about unit size (e.g. centimeters vs. meters in the case of height?))
-
-**3. Simplified Resources (JSON to JSON transformation)**
-  
-  - TODO: Need to define a namespacing and directory approach for these since adoption will depend on use case (e.g., a resource table could be named something like us_core_patient_for_analytics).
-
-  - a. Convert a subset of extension values into top level resource elements 
-  - b. Extract system and codes from some CodeableConcept elements into top level resource elements
-  - c. Coalesce multiple elements into a single new element based on heuristics (e.g., populate with the `sex assigned at birth` extension value if available, falling back to `gender`)
-
-**4. Flattened Metrics, Measures and Aggregates (JSON to tabular transformation)**
-
-  - TODO: Need to define a namespacing and directory approach for these since adoption will depend on use case (e.g., a table could be named something like patient_count_by_age_race_ethnicity)
-
-  - Defines flattened and pre-aggregated tables and views on top of json through SQL queries. These views may incorporate standardized level 2 resources, simplified level 3 resources, or other level 4 flattened representations. It is recommended to use an orchestration tool like DBT to refresh tables in the correct order.
+  - b. Make resource ids unique to avoid conflicts when data from multiple
+    sources is being combined (optional if only a single data source is
+    represented in the database)
+* **Contained Resources**: Extract contained resources into individual resources
+  for queryability
+* **Date/Period Normalization**: Convert all date and dateTime elements into
+  date ranges, storing both the range and the level of precision in the source
+  data
+* **Quantity Normalization**: Normalize units in Quantity type to metric system
+  where applicable (TODO: can we say anything about unit size (e.g. centimeters
+  vs. meters in the case of height?))
+* **Extensions**: Convert a subset of extension values into top level resource elements
+* **CodeableConcepts**: Extract system and codes from some CodeableConcept elements into top level resource elements
 
 TODO: Determine a standard prefix or suffix for elements added in level 1 and level 2 transformations. This probably needs to be alphabetical since an underscore is used in FHIR JSON for primitive extensions and databases like BigQuery only allow a-z and underscore as the first character of a field name (https://cloud.google.com/bigquery/docs/schemas#:~:text=A%20column%20name%20must%20contain). Maybe `sof_` for sql on fhir?
 
-### 1. Data Loading Transformations
+### References Transformations
 
-#### 1a. Extract resource ids in references and store them as separate element to improve join performance
+Extract resource ids in references and store them as separate element to improve join performance
 
   * Traverse the JSON object and search for a `reference` property with a string value. SQL transformations may also use data from FHIR structure definitions to define the path to references.
   * If data from multiple sources is being integrated in the database and the reference value is not a relative URL, remove the url scheme, and calculate the sha256 hash of the URL as the id
@@ -105,15 +94,21 @@ TODO: Determine a standard prefix or suffix for elements added in level 1 and le
 	{reference: 'Patient/pt1', type: 'Patient', $id: 'pt1'}
 	```
 
-#### 1b. Make resource ids unique to avoid conflicts when data from multiple sources is being combined (optional if only a single source is represented in the database)
+#### Hashing
+
+1b. Make resource ids unique to avoid conflicts when data from multiple sources
+is being combined (optional if only a single source is represented in the
+database)
 
   * Retain original id in `sof_id_prev`
   * Build a URL with base URL of the source, the resourceType, and the resource id
-  * Remove the scheme from this URL  
+  * Remove the scheme from this URL
   * Calculate the sha256 hash of the URL as the id
   * Update the resource id
 
-#### 1c. Extract contained resources into individual resources
+### Contained Resources
+
+Extract contained resources into individual resources
 
   * Build URL with base url, resourceType, parent resource id, and contained resource id
   * Remove URL scheme
@@ -123,9 +118,7 @@ TODO: Determine a standard prefix or suffix for elements added in level 1 and le
   * Extract from parent resource
   * Update internal references in former parent to new id
 
-### 2.  Standardization Transformations
-
-#### 2a. Date normalization
+### Date Normalization
 
 If element can be represented as dateTime and Period deduce Period from all dateTime.
 Algorithm search for `<prefix>DateTime` and add `<prefix>Period` element.
@@ -135,18 +128,19 @@ effectiveDateTime: '<x>'
 ---
 effectiveDateTime: '<x>'
 effectivePeriod: {start: '<x>', end: '<x>'}
+--or
+$effectivePeriod: {start: '<x>', end: '<x>'}
 ```
 
-#### 2b. Quantity normalization
+### Quantity Normalization
 
-Quantity values are normalized to metric system. 
+Quantity values are normalized to metric system.
 Conversion formulas are provided and supported by SQL on FHIR as config JSON:
 
 ```js
-{ 
+{
   '<unit>': {formula: '<...>', baseUnit: '<...>'}
   'F': {formual: '(x - 32)/1.8000`, baseUnit: 'C'},
-  
 }
 ```
 
@@ -163,9 +157,11 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
 }
 ```
 
-### 3. Simplified Resources
+Alternative: Original value saved as an extension.
 
-#### 3a. Extensions
+
+### Extensions
+
 Convert array of extensions into object representation for natural access.
 
 Algorithm find `extension` element
@@ -174,8 +170,8 @@ Algorithm find `extension` element
 * find extesion and split it's url into '<url>/<name>' parts
 * use <name> as name for property, i.e. `$extension[<name>] = merge(extension, {$url: <url>, $index: <index>}`
 
-Notes: 
- 
+Notes:
+
  There is a some probability of extension name clash
  Clash can be resolved by `$url` property and assuming one jurisdiction this will allow to keep algorithm pure, but still useful
 
@@ -223,15 +219,19 @@ $extension:
 
 ``` sql
 
-select * from patient 
+select * from patient
  where resource.$extension.us-core-race[0].valueCoding.code = ?
 
 ```
 
-### 4. Flattened Metrics, Measures and Aggregates
- 
-TODO: use [FHIR logical models](https://www.hl7.org/fhir/structuredefinition.html#logical) to describe views
- 
+## Views: Flattened Metrics, Measures and Aggregates
+
+
+Defines flattened and pre-aggregated tables and views on top of json through SQL queries. These views may incorporate standardized level 2 resources, simplified level 3 resources, or other level 4 flattened representations. It is recommended to use an orchestration tool like DBT to refresh tables in the correct order.
+
+* TODO: use [FHIR logical models](https://www.hl7.org/fhir/structuredefinition.html#logical) to describe views
+* TODO: Need to define a namespacing and directory approach for these since adoption will depend on use case (e.g., a table could be named something like patient_count_by_age_race_ethnicity)
+
 ```fsh
 Logical: FlattenPatient
 * id 1..1 string
@@ -239,7 +239,7 @@ Logical: FlattenPatient
 * sex: 1..1 code
 * race: 0..* code
 ```
- 
+
 Implementation of view is defined by SQL (aka dbt)
 
 ```sql
@@ -255,7 +255,7 @@ FROM patient
 ```
 
 Spec will define how views and rules can be distributed in machine readable format (probably close to [dbt](https://docs.getdbt.com/)):
- 
+
 ```yaml
 models:
  flatten_pt:
