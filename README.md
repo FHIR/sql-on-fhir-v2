@@ -33,7 +33,9 @@ CREATE TABLE "patient" (
 )
 ```
 
-[optional] Terminology can be represented as `concept` table with codings:
+## Terminology 
+
+Terminology can be represented as `concept` table with codings:
  
 ```yaml
 code:
