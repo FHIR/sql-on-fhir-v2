@@ -160,7 +160,7 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
 Alternative: Original value saved as an extension.
 
 
-### Extensions - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/30)
+### Extensions - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/43)
 
 Convert array of extensions into object representation for natural access.
 
