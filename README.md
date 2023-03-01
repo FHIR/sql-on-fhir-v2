@@ -81,7 +81,7 @@ This specification defines few essential transformations to improve the queryabi
 * **CodeableConcepts**: Extract system and codes from some CodeableConcept elements into top level resource elements
 
 
-### References  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/38)
+### 3.1 References  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/38)
 
 Extract resource ids in references and store them as separate element to improve join performance
 
@@ -111,7 +111,7 @@ database)
   * Calculate the sha256 hash of the URL as the id
   * Update the resource id
 
-### Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/39)
+### 3.2 Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/39)
 
 Extract contained resources into individual resources
 
@@ -123,7 +123,7 @@ Extract contained resources into individual resources
   * Extract from parent resource
   * Update internal references in former parent to new id
 
-### Date Normalization  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/40)
+### 3.3 Date Normalization  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/40)
 
 If element can be represented as dateTime and Period deduce Period from all dateTime.
 Algorithm search for `<prefix>DateTime` and add `<prefix>Period` element.
@@ -137,7 +137,7 @@ effectivePeriod: {start: '<x>', end: '<x>'}
 $effectivePeriod: {start: '<x>', end: '<x>'}
 ```
 
-### Quantity Normalization - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/41)
+### 3.4 Quantity Normalization - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/41)
 
 Quantity values are normalized to metric system.
 Conversion formulas are provided and supported by SQL on FHIR as config JSON:
@@ -165,7 +165,7 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
 Alternative: Original value saved as an extension.
 
 
-### Extensions - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/43)
+### 3.5 Extensions - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/43)
 
 Convert array of extensions into object representation for natural access.
 
