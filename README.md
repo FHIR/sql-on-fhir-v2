@@ -1,9 +1,9 @@
 # SQL on FHIR® 2.0
 
-Join us at
+* Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir/discussions)
+* Join us on [Weekly Meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
+* Ask any questios in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
 
-* [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
-* [WG weekly meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
 
 ## Motivation
 
