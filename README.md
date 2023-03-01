@@ -303,6 +303,7 @@ FHIR® is the registered trademark of HL7 and is used with the permission of HL7
 * Dan Gottlieb @gotdan (Central Square Solutions)
 * Vadim Peretokin @vadi2 (Philips)
 * Marat Surmashev @aitem (Health Samurai)
+* Ryan Brush @rbrush (Google)
 * FHIR Community - https://chat.fhir.org/
 
 Work is sponsored and supported by:
