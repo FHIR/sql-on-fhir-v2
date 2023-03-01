@@ -106,7 +106,7 @@ database)
   * Calculate the sha256 hash of the URL as the id
   * Update the resource id
 
-### Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/16)
+### Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/39)
 
 Extract contained resources into individual resources
 
@@ -118,7 +118,7 @@ Extract contained resources into individual resources
   * Extract from parent resource
   * Update internal references in former parent to new id
 
-### Date Normalization  - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/29)
+### Date Normalization  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/40)
 
 If element can be represented as dateTime and Period deduce Period from all dateTime.
 Algorithm search for `<prefix>DateTime` and add `<prefix>Period` element.
@@ -132,7 +132,7 @@ effectivePeriod: {start: '<x>', end: '<x>'}
 $effectivePeriod: {start: '<x>', end: '<x>'}
 ```
 
-### Quantity Normalization - [Discussion](https://github.com/FHIR/sql-on-fhir/issues/17)
+### Quantity Normalization - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/41)
 
 Quantity values are normalized to metric system.
 Conversion formulas are provided and supported by SQL on FHIR as config JSON:
