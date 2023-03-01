@@ -190,9 +190,10 @@ Convert array of extensions into object representation for easy access of elemen
 
 Algorithm find `extension` element
 * search for extension element
-* create sibling `$extension`
-* find extesion and split it's url into '<url>/<name>' parts
-* use <name> as name for property, i.e. `$extension[<name>] = merge(extension, {$url: <url>, $index: <index>}`
+* create sibling `sof_extension`
+* find extesion and split it's url into '<url>/<name>' part
+* replace all `-` with `_`	
+* use <name> as name for property, i.e. `sof_extension[<name>] = merge(extension, {sof_url: <url>, sof_index: <index>}`
 
 Notes:
 
@@ -228,14 +229,14 @@ extension:
 #  to
 extension: <preserved>
 sof_extension:
-  us-core-race:
-    $url: 'http://hl7.org/fhir/us/core/StructureDefinition'
-    ombCategory: [{valueCoding: {$index: 0, ...}, {valueCoding: {$index: 0, ...}]
+  us_core_race:
+    sof_url: 'http://hl7.org/fhir/us/core/StructureDefinition'
+    ombCategory: [{valueCoding: {sof_index: 0, ...}, {valueCoding: {sof_index: 0, ...}]
     detailed: [...]
     text: [...]
-  us-core-birthsex: [{valueCode: 'F'}]
-  us-core-genderIdentity: [{valueCodeableConcept: {...}]
-  ext-name: [{$url: 'http://domain/path', valueX: ....}]
+  us_core_birthsex: [{valueCode: 'F'}]
+  us_core_genderIdentity: [{valueCodeableConcept: {...}]
+  ext_name: [{sof_url: 'http://domain/path', valueX: ....}]
 
 ```
 
