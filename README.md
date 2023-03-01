@@ -11,10 +11,10 @@ Here is a link to  [SQL on FHIR Binary](https://github.com/FHIR/sql-on-fhir-arch
 
 More and more health care data available in [FHIR®](https://hl7.org/fhir) format. Support for JSON data in modern database engines (e.g., BigQuery, Snowflake, Postgres, Oracle, MySql, etc.) creates the opportunity to work with this data using off-the-shelf, low cost and scalable tooling for reporting, analytics, machine learning and other applications. Developing a standard SQL representation for FHIR will create the opportunity to share queries and other infrastructure within the FHIR community.
 
-Spec core is based on native JSON support by databases, but more advanced optimizations can be done with binary data formats like Avro, Parquet, ProtoBuf and database specific schemas. This make pipeline more complicated and vendor specific. Spec will try to provide common parts of schema generation from FHIR Profiles for such technologies, which are compatible with JSON as much as possbile.
+Spec core is based on native JSON support by databases, but more advanced optimizations can be done with binary data formats like Avro, Parquet, ProtoBuf and database specific schemas. This make pipeline more complicated and vendor specific. Spec will try to provide common parts of schema generation from FHIR Profiles for such technologies.
 
 
-Spec consists of
+Spec consists of:
 * Database Schema Definition
 * Terminology table and distribution
 * ETL Transformations to load FHIR data into database
