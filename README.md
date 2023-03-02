@@ -4,7 +4,7 @@ If you are looking for the early version of "SQL on FHIR"
 here is a link to [SQL on FHIR v1.0](https://github.com/FHIR/sql-on-fhir-archived)
 We are working to merge both into one!
 
-* Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir/discussions)
+* Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions)
 * Join us on [Weekly Meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
 * Ask any questios in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
 
@@ -25,19 +25,19 @@ Spec consists of:
 * Views definitions framework
 
 
-## Principles [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/44)
+## Principles [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/44)
 
-- Cover most of pupular technologies - see [tech matrix](https://github.com/FHIR/sql-on-fhir/blob/master/tech-matrix.md)
+- Cover most of pupular technologies - see [tech matrix](https://github.com/FHIR/sql-on-fhir-v2/blob/master/tech-matrix.md)
 - Queries written against the spec should be portable between institutions and 
   translatable between database engines that have JSON  or nested datastructures support (i.e., avoiding features that are not widely implemented)
 - Basic schemas and transformations should depend as little as possible on specific FHIR versions and profiles. Schema driven implementations (like Avro, ProtoBuf) may depend on Profiles.
 - It should be possible to run transformations on raw data or within a database using SQL (ELT)
-- Use `sof_` prefix for all calculated elements to avoid clash with FHIR elements - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/45)
+- Use `sof_` prefix for all calculated elements to avoid clash with FHIR elements - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/45)
 
 
 ## 1. Schema 
 
-### 1.1 Schema  for JSON - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/47)
+### 1.1 Schema  for JSON - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/47)
 
 Create a single table for each resource type (name of the FHIR resource type in lower case) with the following columns:
 
@@ -52,7 +52,7 @@ CREATE TABLE "patient" (
    ...other columns...
 )
 ```
-### 1.2 Databases Strict Schema & Binary Formats - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/50)
+### 1.2 Databases Strict Schema & Binary Formats - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/50)
 
 TODO: Define intermidiate representation of FHIR Profiles and framework to generate
 schemas for Avro, Protobuf, Parquet and db specific hierarchical datastructres (ClickHouse, Snowflake etc)
@@ -60,7 +60,7 @@ schemas for Avro, Protobuf, Parquet and db specific hierarchical datastructres (
 It should be easy to convert between JSON and binary representations.
 
 
-## 2. Terminology - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/36)
+## 2. Terminology - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/36)
 
 Terminology can be represented as `concept` table with codings:
  
@@ -81,7 +81,7 @@ where
   and o.resource.sof_code contains c.resource.$code
 ```
 
-## 3. Transformations - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/37)
+## 3. Transformations - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/37)
 
 This specification defines few essential transformations to improve the queryability of FHIR data, each of which build on the previous levels:
 
@@ -102,7 +102,7 @@ This specification defines few essential transformations to improve the queryabi
 * **CodeableConcepts**: Extract system and codes from some CodeableConcept elements into top level resource elements
 
 
-### 3.1 References  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/38)
+### 3.1 References  - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/38)
 
 Extract resource ids in references and store them as separate element to improve join performance
 
@@ -132,7 +132,7 @@ database)
   * Calculate the sha256 hash of the URL as the id
   * Update the resource id
 
-### 3.2 Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/39)
+### 3.2 Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/39)
 
 Extract contained resources into individual resources
 
@@ -144,7 +144,7 @@ Extract contained resources into individual resources
   * Extract from parent resource
   * Update internal references in former parent to new id
 
-### 3.3 Date Normalization  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/40)
+### 3.3 Date Normalization  - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/40)
 
 If element can be represented as dateTime and Period deduce Period from all dateTime.
 Algorithm search for `<prefix>DateTime` and add `<prefix>Period` element.
@@ -158,7 +158,7 @@ effectivePeriod: {start: '<x>', end: '<x>'}
 sof_effectivePeriod: {start: '<x>', end: '<x>'}
 ```
 
-### 3.4 Quantity Normalization - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/41)
+### 3.4 Quantity Normalization - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/41)
 
 Quantity values are normalized to metric system.
 Conversion formulas are provided and supported by SQL on FHIR as config JSON:
@@ -186,7 +186,7 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
 Alternative: Original value saved as an extension.
 
 
-### 3.5 Extensions - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/43)
+### 3.5 Extensions - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/43)
 
 Convert array of extensions into object representation for easy access of elements in databases, which do not support json path filter feature.
 
@@ -251,7 +251,7 @@ select * from patient
 
 ```
 
-## 4. Views:  Metrics, Measures and Aggregates - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/42)
+## 4. Views:  Metrics, Measures and Aggregates - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/42)
 
 
 Defines flattened and pre-aggregated tables and views on top of json through SQL queries. These views may incorporate standardized level 2 resources, simplified level 3 resources, or other level 4 flattened representations. It is recommended to use an orchestration tool like DBT to refresh tables in the correct order.
