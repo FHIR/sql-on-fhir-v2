@@ -1,18 +1,39 @@
 # Technologies
 
-JSON Features:
+JSON Database Features:
 
-| feature   |  json | binary |  unnest | json path basic | json path * | json path ? |
----------------------------------------------------------------------------------------------------------
-| PostgreSQL   | yes     | yes      | yes       | yes                 | yes            | yes
-| MySQL        | yes     | yes      | yes       | yes                 | yes            | no
-| SQLLight     | yes     | no       | yes       | yes                 | no             | no
-| ClickHouse   | yes     | yes      | yes       | yes                 | yes            | no
-| MSSQL        | yes     | no       | yes       | yes                 | no             | no
-| Oracle       | yes     | no       | yes       | yes                 | yes            | no
-| BigQuery     | yes     | no       | yes       | yes                 | no             | no
-| Snowlake     | yes     | yes      | yes       | yes                 | no             | no
-| Athena SQL   | yes     | yes      | yes       | yes                 | no             | no
+| feature      |  json   | binary   |  unnest   | json path basic     | json path *    | json path ? |
+|--------------|---------|----------|-----------|---------------------|----------------|-------------|
+| PostgreSQL   | yes     | yes      | yes       | yes                 | yes            | yes         |
+| MySQL        | yes     | yes      | yes       | yes                 | yes            | no          |
+| SQLLight     | yes     | no       | yes       | yes                 | no             | no          |
+| ClickHouse   | yes     | yes      | yes       | yes                 | yes            | no          |
+| MSSQL        | yes     | no       | yes       | yes                 | no             | no          |
+| Oracle       | yes     | no       | yes       | yes                 | yes            | no          |
+| BigQuery     | yes     | no       | yes       | yes                 | no             | no          |
+| Snowlake     | yes     | yes      | yes       | yes                 | no             | no          |
+| Athena SQL   | yes     | yes      | yes       | yes                 | no             | no          |
+
+
+Schemas & Formats datatypes:
+
+* Primitives
+* Nested records/tuples
+* Option type (Polymorphic types)
+* Enums
+
+
+Formats:
+
+* Apache Avro
+* Apache Arrow
+* Parquet
+* ProtoBuf
+
+Schemas:
+
+* ClickHouse
+* Snowflake
 
 
 

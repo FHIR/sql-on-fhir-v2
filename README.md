@@ -1,8 +1,10 @@
-# SQL on FHIR® (JSON & Binary)
+# SQL on FHIR® (v2.0)
 
-Here is a link to  [SQL on FHIR Binary](https://github.com/FHIR/sql-on-fhir-archived) - we are working to merge both into one!
+If you are looking for the early version of "SQL on FHIR" 
+here is a link to [SQL on FHIR v1.0](https://github.com/FHIR/sql-on-fhir-archived)
+We are working to merge both into one!
 
-* Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir/discussions)
+* Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions)
 * Join us on [Weekly Meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
 * Ask any questios in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
 
@@ -11,29 +13,31 @@ Here is a link to  [SQL on FHIR Binary](https://github.com/FHIR/sql-on-fhir-arch
 
 More and more health care data available in [FHIR®](https://hl7.org/fhir) format. Support for JSON data in modern database engines (e.g., BigQuery, Snowflake, Postgres, Oracle, MySql, etc.) creates the opportunity to work with this data using off-the-shelf, low cost and scalable tooling for reporting, analytics, machine learning and other applications. Developing a standard SQL representation for FHIR will create the opportunity to share queries and other infrastructure within the FHIR community.
 
-Spec core is based on native JSON support by databases, but more advanced optimizations can be done with binary data formats like Avro, Parquet, ProtoBuf and database specific schemas. This make pipeline more complicated and vendor specific. Spec will try to provide common parts of schema generation from FHIR Profiles for such technologies, which are compatible with JSON as much as possbile.
+Spec core is based on native JSON support by databases, but more advanced optimizations can be done with binary data formats like Avro, Parquet, ProtoBuf and database specific schemas. This make pipeline more complicated and vendor specific. Spec will try to provide common parts of schema generation from FHIR Profiles for such technologies.
+
+Spec is targeting both Transactional (OLTP) & Analytical Use Cases (OLAP).
 
 
-Spec consists of
+Spec consists of:
 * Database Schema Definition
 * Terminology table and distribution
 * ETL Transformations to load FHIR data into database
 * Views definitions framework
 
 
-## [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/44)
+## Principles [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/44)
 
-- Cover most of pupular technologies
+- Cover most of pupular technologies - see [tech matrix](https://github.com/FHIR/sql-on-fhir-v2/blob/master/tech-matrix.md)
 - Queries written against the spec should be portable between institutions and 
   translatable between database engines that have JSON  or nested datastructures support (i.e., avoiding features that are not widely implemented)
-- Basic schemas and transformations should depend as little as possible on specific FHIR versions and profiles. Advanced optimizations (like Avro, ProtoBuf) may.
+- Basic schemas and transformations should depend as little as possible on specific FHIR versions and profiles. Schema driven implementations (like Avro, ProtoBuf) may depend on Profiles.
 - It should be possible to run transformations on raw data or within a database using SQL (ELT)
-- Use `$` prefix for all calculated elements to avoid clash with FHIR elements
+- Use `sof_` prefix for all calculated elements to avoid clash with FHIR elements - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/45)
 
 
 ## 1. Schema 
 
-### 1.1 Schema  for JSON - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/47)
+### 1.1 Schema  for JSON - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/47)
 
 Create a single table for each resource type (name of the FHIR resource type in lower case) with the following columns:
 
@@ -48,7 +52,7 @@ CREATE TABLE "patient" (
    ...other columns...
 )
 ```
-### 1.2 Databases Strict Schema & Binary Formats - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/50)
+### 1.2 Databases Strict Schema & Binary Formats - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/50)
 
 TODO: Define intermidiate representation of FHIR Profiles and framework to generate
 schemas for Avro, Protobuf, Parquet and db specific hierarchical datastructres (ClickHouse, Snowflake etc)
@@ -56,7 +60,7 @@ schemas for Avro, Protobuf, Parquet and db specific hierarchical datastructres (
 It should be easy to convert between JSON and binary representations.
 
 
-## 2. Terminology - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/36)
+## 2. Terminology - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/36)
 
 Terminology can be represented as `concept` table with codings:
  
@@ -66,7 +70,7 @@ code:
   codings:
   - {system=http://loinc,   code: [code], ...}, 
   - {system=https://snomed, code: [code], ...}
-$code: ['system|code', 'system|code']
+sof_code: ['system|code', 'system|code']
 ```
 
 ```sql
@@ -74,10 +78,10 @@ select *
 from observation o, concept c
 where 
   c.valueset = 'http://loinc.org'
-  and o.resource.$code contains c.resource.$code
+  and o.resource.sof_code contains c.resource.$code
 ```
 
-## 3. Transformations - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/37)
+## 3. Transformations - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/37)
 
 This specification defines few essential transformations to improve the queryability of FHIR data, each of which build on the previous levels:
 
@@ -98,7 +102,7 @@ This specification defines few essential transformations to improve the queryabi
 * **CodeableConcepts**: Extract system and codes from some CodeableConcept elements into top level resource elements
 
 
-### 3.1 References  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/38)
+### 3.1 References  - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/38)
 
 Extract resource ids in references and store them as separate element to improve join performance
 
@@ -106,14 +110,14 @@ Extract resource ids in references and store them as separate element to improve
   * If data from multiple sources is being integrated in the database and the reference value is not a relative URL, remove the url scheme, and calculate the sha256 hash of the URL as the id
   * If data from multiple sources is being integrated in the database and this value is a relative URL, construct an absolute URL with the base URL of the source, remove the URL scheme, and calculate the sha256 hash of the URL as the id
   * If the database will only contain values from one data source, extract the last URL segment as the id
-  * Add the property `id` to the Reference and populate it with the id
+  * Add the property `sof_id` to the Reference and populate it with the id
   * If the type property of the Reference is not populated, extract the second to last segment of the URL and use it to populate this property.
 
 	```js
 	config = {source: 'source-of-data-domain.com'}
 	transform(config, {reference: 'Patient/pt1'})
 	//=>
-	{reference: 'Patient/pt1', type: 'Patient', $id: 'pt1'}
+	{reference: 'Patient/pt1', type: 'Patient', sof_id: 'pt1'}
 	```
 
 #### Hashing
@@ -128,7 +132,7 @@ database)
   * Calculate the sha256 hash of the URL as the id
   * Update the resource id
 
-### 3.2 Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/39)
+### 3.2 Contained Resources  - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/39)
 
 Extract contained resources into individual resources
 
@@ -140,7 +144,7 @@ Extract contained resources into individual resources
   * Extract from parent resource
   * Update internal references in former parent to new id
 
-### 3.3 Date Normalization  - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/40)
+### 3.3 Date Normalization  - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/40)
 
 If element can be represented as dateTime and Period deduce Period from all dateTime.
 Algorithm search for `<prefix>DateTime` and add `<prefix>Period` element.
@@ -151,10 +155,10 @@ effectiveDateTime: '<x>'
 effectiveDateTime: '<x>'
 effectivePeriod: {start: '<x>', end: '<x>'}
 --or
-$effectivePeriod: {start: '<x>', end: '<x>'}
+sof_effectivePeriod: {start: '<x>', end: '<x>'}
 ```
 
-### 3.4 Quantity Normalization - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/41)
+### 3.4 Quantity Normalization - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/41)
 
 Quantity values are normalized to metric system.
 Conversion formulas are provided and supported by SQL on FHIR as config JSON:
@@ -173,8 +177,8 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
  valueQuantity: {
    value: 97.8,
    unit: 'F',
-   $value: 36.6,
-   $unit: 'C'
+   sof_value: 36.6,
+   sof_unit: 'C'
  }
 }
 ```
@@ -182,15 +186,16 @@ translate(config, {valueQuantity: {value: ?, unit: 'F'}})
 Alternative: Original value saved as an extension.
 
 
-### 3.5 Extensions - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/43)
+### 3.5 Extensions - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/43)
 
-Convert array of extensions into object representation for natural access.
+Convert array of extensions into object representation for easy access of elements in databases, which do not support json path filter feature.
 
 Algorithm find `extension` element
 * search for extension element
-* create sibling `$extension`
-* find extesion and split it's url into '<url>/<name>' parts
-* use <name> as name for property, i.e. `$extension[<name>] = merge(extension, {$url: <url>, $index: <index>}`
+* create sibling `sof_extension`
+* find extesion and split it's url into '<url>/<name>' part
+* replace all `-` with `_`	
+* use <name> as name for property, i.e. `sof_extension[<name>] = merge(extension, {sof_url: <url>, sof_index: <index>}`
 
 Notes:
 
@@ -225,15 +230,15 @@ extension:
 
 #  to
 extension: <preserved>
-$extension:
-  us-core-race:
-    $url: 'http://hl7.org/fhir/us/core/StructureDefinition'
-    ombCategory: [{valueCoding: {$index: 0, ...}, {valueCoding: {$index: 0, ...}]
+sof_extension:
+  us_core_race:
+    sof_url: 'http://hl7.org/fhir/us/core/StructureDefinition'
+    ombCategory: [{valueCoding: {sof_index: 0, ...}, {valueCoding: {sof_index: 0, ...}]
     detailed: [...]
     text: [...]
-  us-core-birthsex: [{valueCode: 'F'}]
-  us-core-genderIdentity: [{valueCodeableConcept: {...}]
-  ext-name: [{$url: 'http://domain/path', valueX: ....}]
+  us_core_birthsex: [{valueCode: 'F'}]
+  us_core_genderIdentity: [{valueCodeableConcept: {...}]
+  ext_name: [{sof_url: 'http://domain/path', valueX: ....}]
 
 ```
 
@@ -242,11 +247,11 @@ $extension:
 ``` sql
 
 select * from patient
- where resource.$extension.us-core-race[0].valueCoding.code = ?
+ where resource.sof_extension.us_core_race[0].valueCoding.code = ?
 
 ```
 
-## 4. Views:  Metrics, Measures and Aggregates - [Discussion](https://github.com/FHIR/sql-on-fhir/discussions/42)
+## 4. Views:  Metrics, Measures and Aggregates - [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/42)
 
 
 Defines flattened and pre-aggregated tables and views on top of json through SQL queries. These views may incorporate standardized level 2 resources, simplified level 3 resources, or other level 4 flattened representations. It is recommended to use an orchestration tool like DBT to refresh tables in the correct order.
