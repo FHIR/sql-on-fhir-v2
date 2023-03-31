@@ -7,6 +7,7 @@ We are working to merge both into one!
 * Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions)
 * Join us on [Weekly Meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
 * Ask any questios in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
+* Checkout the interactive [demo](http://142.132.196.32:7777/#/console)
 
 
 ## Intro
