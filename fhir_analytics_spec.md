@@ -184,11 +184,19 @@ and examples follow in sections below.
       desc: ""},
   ],
 
-  // Filters are FHIRPath expressions joined with an implicit "and". This allows
-  // users to select a subset of rows that match a specific need. For example,
-  // users may be interested only in a subset of observations based on code
-  // value and can filter them here.
-  "filters": [""]
+  // Filters are FHIRPath expressions joined with an implicit "and". This 
+  // enables users to select a subset of rows that match a specific need. 
+  // For example, a user may be interested only in a subset of observations 
+  // based on code value and can filter them here.
+  "filters": [
+    {
+      // The FHIRPath expression for the filter.
+      "expr": "",
+
+      // An optional human-readable description of the filter.
+      "desc": ""
+    }
+  ]
 }
 ```
 
