@@ -274,9 +274,8 @@ for ways to use first-class date types in the resulting view to improve
 user experience on top of them.
 
 ## Examples
-Here are some examples of the above structure. The first is quite simple,
-just some simple patient demographics:
 
+### Simple patient demographics
 
 ```js
 {
@@ -305,6 +304,7 @@ just some simple patient demographics:
 }
 ```
 
+### Variables and unnesting
 View also support variables in the *vars* section, allowing for specific
 FHIRPath segments to be unnested into multiple rows. For instance, here
 is a view to create a simple patient address table. All addresses for the
@@ -346,6 +346,60 @@ joined by users.
       "expr": "%addr.postalCode",
     }
   ]
+}
+```
+
+### Flattened Blood Pressure
+An example demonstrating how to flatten a blood pressure Observation resource 
+that complies with the [US Core](https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-blood-pressure.html) 
+profile. This definition will result in one row per blood pressure where 
+both systolic and diastolic values are present.
+
+```js
+{
+  "name": "us_core_blood_pressure",
+  "resource": "Observation",
+  "vars": [{
+	// create a variable representing the systolic bp component
+    "name": "sbp_component",
+    "expr": "component.where(code.coding.exists(system='http://loinc.org' and code='8480-6')).first()"
+  },{
+	// create a variable representing the diastolic bp component
+    "name": "dbp_component",
+    "expr": "component.where(code.coding.exists(system='http://loinc.org' and code='8462-4')).first()"
+  }],
+  "filters": [{
+	// filter to blood pressure observations without a data absent reason 
+  // for the systolic or diastolic component
+    "expr": "code.coding.exists(system='http://loinc.org' and code='85354-9')"
+  },{
+    "expr": "%sbp_component.dataAbsentReason.empty()"
+  },{
+    "expr": "%dbp_component.dataAbsentReason.empty()"
+  }],
+  "columns": [{
+    "name": "id", "expr": "id"
+  },{
+    "name": "patient_id", "expr": "subject.getId()"
+  },{
+    "name": "effective_date_time", "expr": "effective.ofType(dateTime)"
+  },{
+    "name": "sbp_quantity_system",  "expr": "%sbp_component.value.ofType(Quantity).system"
+  },{
+    "name": "sbp_quantity_code",  "expr": "%sbp_component.value.ofType(Quantity).code"
+  },{
+    "name": "sbp_quantity_display",  "expr": "%sbp_component.value.ofType(Quantity).unit"
+  },{
+    "name": "sbp_quantity_value",  "expr": "%sbp_component.value.ofType(Quantity).value"
+  },{
+    "name": "dbp_quantity_system",  "expr": "%dbp_component.value.ofType(Quantity).system"
+  },{
+    "name": "dbp_quantity_code",  "expr": "%dbp_component.value.ofType(Quantity).code"
+  },{
+    "name": "dbp_quantity_display",  "expr": "%dbp_component.value.ofType(Quantity).unit"
+  },{
+    "name": "dbp_quantity_value",  "expr": "%dbp_component.value.ofType(Quantity).value"
+  }]
 }
 ```
 
