@@ -237,8 +237,10 @@ the following functions and operators:
 #### Core required functions
 All view runners must implement these functions:
 
+##### FHIRPath subset:
 * `where` function to select items in arrays (like the home address)
 * `exists` function to support filtering items
+* `empty` function to support filtering items
 * `extension(url)` shortcut to retrieve extensions
 * `join` function
 * `equals` operator, primarily for use in the where function above
@@ -248,6 +250,9 @@ All view runners must implement these functions:
 * basic arithmetic (+, -, *, /)
 * comparisons: =, !=, >, <=
 * Literals for strings, numbers
+
+##### Additional functions:
+* `getId` function to return the resource id from a [reference](https://hl7.org/fhir/references.html#Reference) element. This function has no parameters. Note that implementations of getId may differ based on the structure of the underlying data being queried. For example, potential approaches could include dynamically extracting the last segment from the reference URL, looking up the id from an annotation stored in the annotation layer, or calculating a hash of the full reference URL.
 
 #### Optional functions
 View runners are encouraged to implement these functions as well to support a
