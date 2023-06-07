@@ -147,25 +147,29 @@ and examples follow in sections below.
   // The FHIR resource the view is based on, e.g. 'Patient' or 'Observation'.
   "resource": "",
 
-  // An optional list of variables that can be used in columns below. This
-  // can reduce duplicate strings or manage unnesting behavior for repeated
-  // fields.
-  "vars": [{
+  // An optional list of constants that can be used in any FHIRPath expression in
+  // the view definition.  These are effectively strings or numbers that can be 
+  // injected into FHIRPath expressions below by having `%constantName` in  the
+  // expression.
+  "constants": [{
     // The name of the variable that can be referenced by following variables
     // or columns, where users would use the "%variable_name" syntax.
     "name": "",
 
-    // The FHIRPath expression for the field the variable contains.
-    "expr": "",
-
-    // This defines the behavior of the produced view when the variable's
-    // expression results in multiple values. The behavior of these is
-    // defined in the "Unnesting support" section below.
-    "whenMany": "error" | "array" | "unnest" | "cross"
+    // The value of the constant name to be used in expressions below.
+    "value": ""
   }],
 
-  // The columns stanza defines the actual content of the view itself.
-  "columns": [
+  // The select stanza defines the actual content of the view itself. This stanza is a list where each
+  // item in is one of:
+  // 
+  // * a structure with the column name, expression, and optional description, 
+  // * a 'from' structure indicating a relative path to pull fields from in a nested select, or
+  // * a 'forEach' structure, unrolling the specified path and creating a new row for each item.
+  //
+  // See the comments below for details on the semantics.
+  "select": [
+    // Structures with a 'name' and 'expression' indicate a single colunn to select
     {
       // The name of the column produced in the output.
       //
@@ -182,13 +186,37 @@ and examples follow in sections below.
 
       // An optional human-readable description of the column.
       desc: ""},
+
+      // A 'from' expression is a convenience to select values relative to some parent FHIRPath. 
+      // This does not unnest or unroll multiple values. If the 'from' results in a FHIRPath collection, 
+      // that full collection is used in the nested select, so the resulting view would have repeated
+      // fields rather than a separate row per value.
+      {
+        // A FHIRPath expression for the parent path to select values from. 
+        "from": "",
+
+        // A nested select expression, using the same structure as defined at the root.
+        "select": []
+      },
+
+      // A 'forEach' expression unnests a new row for each item in the specified FHIRPath expression, 
+      // and users will select columns in the nested select. This differs from the 'from' expression above
+      // because it creates a new row for each item in the matched collection, unrolling that part of the resource.
+      {
+        // A FHIRPath expression
+        "forEach": "",
+
+        // A nested select expression, using the same structure as defined at the root.
+        "select": []
+      }
+
   ],
 
-  // Filters are FHIRPath expressions joined with an implicit "and". This 
+  // 'where' filters are FHIRPath expressions joined with an implicit "and". This 
   // enables users to select a subset of rows that match a specific need. 
   // For example, a user may be interested only in a subset of observations 
   // based on code value and can filter them here.
-  "filters": [
+  "where": [
     {
       // The FHIRPath expression for the filter.
       "expr": "",
@@ -200,43 +228,34 @@ and examples follow in sections below.
 }
 ```
 
-### Unnesting support
-The `vars` stanza defined above allows users to control if and how repeated
-structures are unnested into flattened views. It supports the following
-values:
+### Unnesting semantics
+Some flattened FHIR views need to unnest repeated fields into a row for each item. For instance, patient addresses are repeated fields on the Patient resource, so that may be extracted to 'patient_address' table, with a row for each.
 
-#### error
-`error` indicates this variable should not have repeated values, and view
-runners should treat it as an error condition if they do. Runners are encouraged
-to report a useful error message if this is encountered, but that is left to
-the runner implementations.
+This is accomplished with the `forEach` expression seen in the view definition structure above. Here is a simple example creating rows for the city and postal code per patient:
 
-#### array
-`array` indicates this variable should create an array for repeated values,
-effectively creating a view that is not fully flattened. This can be useful for
-interactive exploration or for workloads that would like to preserve some
-repeated structures while flattening others.
+```js
+{
+  "name": "patient_address",
+  "resource": "Patient",
+  "select": [{
+    "name": "patient_id",
+    "expr": "Patient.id"
+  },{
+    "foreach": "address"
+    "select": [{
+      "name": "city",
+      "expr": "city",
+    },{
+      "name": "zip",
+      "expr": "postalCode",
+    }]
+  }]
+}
+```
 
-#### unnest
-`unnest` indicates that repeated items in the variable should be unnested into
-separate rows. For instance, users may unnest addresses into a table with a
-separate row for each address.
+A more complete patient address example is below.
 
-There may be multiple levels of unnesting along a tree -- for instance, users
-may Patient contacts, and also unnest telecom information for each contact.
-In that case, there would be a row for each telecom, and columns selected
-from the parent contact and grandparent patient would be included in that row.
 
-Note that `unnest` prohibits cross joins of separate collections. For instance,
-unnesting both Patient.contact and Patient.address would effectively be a
-cross join of those fields and should be treated as an error. If users need
-such behavior for a special case, they may use the `cross` behavior below.
-
-#### cross
-`cross` behaves identically to `unnest`, with the addition that cross joins
-between nested fields are supported. Most users should avoid this unless they
-have a use case where cross joining fields within a resource is specifically
-needed.
 
 ### Supported FHIRPath functions
 Views are defined by a subset of FHIRPath, with simple nested field paths and
@@ -295,70 +314,59 @@ user experience on top of them.
   "name": "patient_demographics",
   "resource": "Patient",
   "desc": "A view of simple patient demographics",
-  "columns" [
-    {
-      "name": "patient_id",
-      "expr": "id",
-    },
-    {
-      "name": "given_name",
-      // Use the FHIRPath join function to create a single given name field.
-      "expr": "name.given.join(' ')",
-    },
-    {
-      "name": "family_name",
-      "expr": "name.family",
-    },
-    {
-      "name": "gender",
+  "select" [{
+      "name": "id", 
+      "expr": "id"
+    },{
+      "name": "gender", 
       "expr": "gender"
+    },{
+      // Use the first 'official' patient name for our demographics table.
+      // Selects within this stanza are relative to the `from` result.
+      "from": "name.where(use = 'official').first()",
+      "select" [{
+        "name": "given_name",
+        // Use the FHIRPath join function to create a single given name field.
+        "expr": "given.join(' ')",
+      },{
+        "name": "family_name",
+        "expr": "family",
+      }]
     }
   ]
 }
 ```
 
-### Variables and unnesting
-View also support variables in the *vars* section, allowing for specific
-FHIRPath segments to be unnested into multiple rows. For instance, here
-is a view to create a simple patient address table. All addresses for the
-patient will have have the patient id in their row so they can be easily
-joined by users.
+### Unnesting repeated fields
+Here is a more complete example of unnesting patient addresses into multiple rows:
+
 
 ```js
 {
   "name": "patient_address",
   "resource": "Patient",
-  // Create a variable to unnest addresses in the columns below.
-  "vars": [{
-    "name": "addr",
-    "expr": "address",
-    "whenMany": "unnest"
-    }],
-  "columns": [
-    {
-      "name": "patient_id",
-      "expr": "Patient.id",
-    },
-    // Fields relative to vars can be accessed as FHIRPath relative to the var.
-    {
+  "select": [{
+    "name": "patient_id", 
+    "expr": "Patient.id"
+  },{
+    // "foreach" rather than "from" to indicate we are unrolling these into separate rows
+    "foreach": "address"
+    "select": [{
       "name": "street",
       // Join all address lines together for this simple table.
-      "expr": "%addr.line.join('\n')",
+      "expr": "line.join('\n')",
       "desc": "The full street address, including newlines if present."
-    },
-    {
+    },{
       "name": "use",
-      "expr": "%addr.use",
-    },
-    {
+      "expr": "use",
+    },{
       "name": "city",
-      "expr": "%addr.city",
-    },
-    {
+      "expr": "city",
+    },{
       "name": "zip",
-      "expr": "%addr.postalCode",
-    }
-  ]
+      "expr": "postalCode",
+    }]
+  }]
 }
 ```
 
@@ -372,48 +380,42 @@ both systolic and diastolic values are present.
 {
   "name": "us_core_blood_pressure",
   "resource": "Observation",
-  "vars": [{
-	// create a variable representing the systolic bp component
-    "name": "sbp_component",
-    "expr": "component.where(code.coding.exists(system='http://loinc.org' and code='8480-6')).first()"
-  },{
-	// create a variable representing the diastolic bp component
-    "name": "dbp_component",
-    "expr": "component.where(code.coding.exists(system='http://loinc.org' and code='8462-4')).first()"
-  }],
-  "filters": [{
-	// filter to blood pressure observations without a data absent reason 
+  // Thie example uses constants since these strings are repeated in multiple places.
+  "constants": [
+    {"name": "sbp_component", "value": "component.where(code.coding.exists(system='http://loinc.org' and code='8480-6')).first()"},
+    {"name": "dbp_component", "value": "component.where(code.coding.exists(system='http://loinc.org' and code='8462-4')).first()"}],
+  "select": [
+    // Selects the columns relative to the resource root, since there is no "from" expression"
+    {"name": "id", "expr": "id"},
+    {"name": "patient_id", "expr": "subject.getId()"},
+    {"name": "effective_date_time", "expr": "effective.ofType(dateTime)"},
+    // Nested selects to retrieve items from specific locations within the resource. Since this is "select" 
+    // rather than "forEach", it will not unroll into multiple rows.
+    {
+      // Select columns relative to the "from" expression. We reuse the constant above to reduce duplication.
+      "from": "%sbp_component",
+      "select": [
+        {"name": "sbp_quantity_system",  "expr": "value.ofType(Quantity).system"},
+        {"name": "sbp_quantity_code",  "expr": "value.ofType(Quantity).code"},
+        {"name": "sbp_quantity_display",  "expr": "value.ofType(Quantity).unit"},
+        {"name": "sbp_quantity_value",  "expr": "value.ofType(Quantity).value"}]
+    },{
+      "from": "%dbp_component",
+      "select": [
+        {"name": "dbp_quantity_system",  "expr": "value.ofType(Quantity).system"},
+        {"name": "dbp_quantity_code",  "expr": "value.ofType(Quantity).code"},
+        {"name": "dbp_quantity_display",  "expr": "value.ofType(Quantity).unit"},
+        {"name": "dbp_quantity_value",  "expr": "value.ofType(Quantity).value"}]
+      }]
+  // filter to blood pressure observations without a data absent reason
   // for the systolic or diastolic component
-    "expr": "code.coding.exists(system='http://loinc.org' and code='85354-9')"
-  },{
-    "expr": "%sbp_component.dataAbsentReason.empty()"
-  },{
-    "expr": "%dbp_component.dataAbsentReason.empty()"
-  }],
-  "columns": [{
-    "name": "id", "expr": "id"
-  },{
-    "name": "patient_id", "expr": "subject.getId()"
-  },{
-    "name": "effective_date_time", "expr": "effective.ofType(dateTime)"
-  },{
-    "name": "sbp_quantity_system",  "expr": "%sbp_component.value.ofType(Quantity).system"
-  },{
-    "name": "sbp_quantity_code",  "expr": "%sbp_component.value.ofType(Quantity).code"
-  },{
-    "name": "sbp_quantity_display",  "expr": "%sbp_component.value.ofType(Quantity).unit"
-  },{
-    "name": "sbp_quantity_value",  "expr": "%sbp_component.value.ofType(Quantity).value"
-  },{
-    "name": "dbp_quantity_system",  "expr": "%dbp_component.value.ofType(Quantity).system"
-  },{
-    "name": "dbp_quantity_code",  "expr": "%dbp_component.value.ofType(Quantity).code"
-  },{
-    "name": "dbp_quantity_display",  "expr": "%dbp_component.value.ofType(Quantity).unit"
-  },{
-    "name": "dbp_quantity_value",  "expr": "%dbp_component.value.ofType(Quantity).value"
-  }]
+  "where": [
+    {"expr": "code.coding.exists(system='http://loinc.org' and code='85354-9')"},
+    {"expr": "%sbp_component.dataAbsentReason.empty()"},
+    {"expr": "%dbp_component.dataAbsentReason.empty()"}]
 }
+
+
 ```
 
 # Open questions and needs
