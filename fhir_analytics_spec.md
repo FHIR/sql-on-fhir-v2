@@ -148,7 +148,7 @@ and examples follow in sections below.
   "resource": "",
 
   // An optional list of constants that can be used in any FHIRPath expression in
-  // the view definition.  These are effectively strings or numbers that can be 
+  // the view definition.  These are effectively strings or numbers that can be
   // injected into FHIRPath expressions below by having `%constantName` in  the
   // expression.
   "constants": [{
@@ -162,8 +162,8 @@ and examples follow in sections below.
 
   // The select stanza defines the actual content of the view itself. This stanza is a list where each
   // item in is one of:
-  // 
-  // * a structure with the column name, expression, and optional description, 
+  //
+  // * a structure with the column name, expression, and optional description,
   // * a 'from' structure indicating a relative path to pull fields from in a nested select, or
   // * a 'forEach' structure, unrolling the specified path and creating a new row for each item.
   //
@@ -177,44 +177,62 @@ and examples follow in sections below.
       // start with an underscore -- i.e. with a regular expression of
       // ^[^_][A-Za-z0-9_]+$. This makes it usable as table names in a wide
       // variety of databases.
-      name: "",
+      "name": "",
 
       // The FHIRPath expression for the column's content. This may be from
-      // the resource root or from a variable defined above, using a
-     // %var_name.rest.of.path structure.
-      expr: "",
+      // the resource root or from a constant defined above, using a
+      // %constant_name.rest.of.path structure.
+      "expr": "",
 
       // An optional human-readable description of the column.
-      desc: ""},
+      "desc": "",
+    
+      // Tags can be used to attach optional metadata to fields, such as implementation-specific
+      // directives or database-specific type hints as described below.
+      //
+      // By convention, tags should be of the form 'namespace/tag_name'. For instance,
+      // 'ansi/type' can be used to indicate the field should use the given ANSI SQL type.
+      // 
+      // Users may create experimental or system-specific tag names by prefixing them
+      // with an underscore.
+      "tags": [{
 
-      // A 'from' expression is a convenience to select values relative to some parent FHIRPath. 
-      // This does not unnest or unroll multiple values. If the 'from' results in a FHIRPath collection, 
-      // that full collection is used in the nested select, so the resulting view would have repeated
-      // fields rather than a separate row per value.
-      {
-        // A FHIRPath expression for the parent path to select values from. 
-        "from": "",
+        // The name of the tag, using the 'namespace/tag_name' convention described above.
+        "name": "",
+       
+        // The tag value.
+        "value": ""
+      }]
+    },
 
-        // A nested select expression, using the same structure as defined at the root.
-        "select": []
-      },
+    // A 'from' expression is a convenience to select values relative to some parent FHIRPath.
+    // This does not unnest or unroll multiple values. If the 'from' results in a FHIRPath collection,
+    // that full collection is used in the nested select, so the resulting view would have repeated
+    // fields rather than a separate row per value.
+    {
+      // A FHIRPath expression for the parent path to select values from.
+      "from": "",
 
-      // A 'forEach' expression unnests a new row for each item in the specified FHIRPath expression, 
-      // and users will select columns in the nested select. This differs from the 'from' expression above
-      // because it creates a new row for each item in the matched collection, unrolling that part of the resource.
-      {
-        // A FHIRPath expression
-        "forEach": "",
+      // A nested select expression, using the same structure as defined at the root.
+      "select": []
+    },
 
-        // A nested select expression, using the same structure as defined at the root.
-        "select": []
-      }
+    // A 'forEach' expression unnests a new row for each item in the specified FHIRPath expression,
+    // and users will select columns in the nested select. This differs from the 'from' expression above
+    // because it creates a new row for each item in the matched collection, unrolling that part of the resource.
+    {
+      // A FHIRPath expression
+      "forEach": "",
+
+      // A nested select expression, using the same structure as defined at the root.
+      "select": []
+    }
 
   ],
 
-  // 'where' filters are FHIRPath expressions joined with an implicit "and". This 
-  // enables users to select a subset of rows that match a specific need. 
-  // For example, a user may be interested only in a subset of observations 
+  // 'where' filters are FHIRPath expressions joined with an implicit "and". This
+  // enables users to select a subset of rows that match a specific need.
+  // For example, a user may be interested only in a subset of observations
   // based on code value and can filter them here.
   "where": [
     {
@@ -273,6 +291,7 @@ All view runners must implement these functions:
 * `equals` operator, primarily for use in the where function above
 * `ofType` function to select the desired value type
 * `first` function
+* `lowBoundary()` and `highBoundary()`, including on Period -- [currently in progress in FHIRPath](https://build.fhir.org/fhirpath.html).
 * boolean operators (_and_, _or_, _not_)
 * basic arithmetic (+, -, *, /)
 * comparisons: =, !=, >, <=
@@ -300,10 +319,41 @@ reached consensus:
 * combining collections with `|`
 * set membership checks
 
-## Date/time conversion behavior
-TODO -- Many datasets reliably have full dates in fields, so we should look
-for ways to use first-class date types in the resulting view to improve
-user experience on top of them.
+## Date/time conversions
+We will support the in-progress `lowBoundary()` and `highBoundary()` FHIRPath functions as they are incorporated into the specification. This will allow users to convert all date and time-related types to "start time" and "end time" fields for easy use in SQL.
+
+## Database type hints
+Since these analytic views are often used as SQL tables, it can be useful to provide database type information to ensure the desired tables or views are created. This is done by tagging fields with database-specific type information.
+
+For instance, here we tag a simple birth date as an ANSI date:
+
+```js
+
+{
+  "name": "patient_birth_date",
+  "resource": "Patient",
+  "desc": "A view of simple patient birth dates",
+  "select" [{
+      "name": "id",
+      "expr": "id"
+    },{
+      // This particular view relies on the birth dates being full dates,
+      // which isn't guaranteed but is common and can simplify analysis in some systems.
+      "name": "birth_date",
+      "expr": "birthDate",
+      "tags": [{
+        "name": "ansi/type",
+        "value": "DATE"
+      }]
+    }
+  ]
+}
+```
+
+Another use case may be fore users to select database-specific numeric types based. Currently we support only the `ansi` prefix but can add other database-specific values over time.
+
+Behavior is undefined and left to the runner if the expression returns a value that is incompatible with the underlying database type.
+
 
 ## Examples
 
@@ -315,10 +365,10 @@ user experience on top of them.
   "resource": "Patient",
   "desc": "A view of simple patient demographics",
   "select" [{
-      "name": "id", 
+      "name": "id",
       "expr": "id"
     },{
-      "name": "gender", 
+      "name": "gender",
       "expr": "gender"
     },{
       // Use the first 'official' patient name for our demographics table.
@@ -346,7 +396,7 @@ Here is a more complete example of unnesting patient addresses into multiple row
   "name": "patient_address",
   "resource": "Patient",
   "select": [{
-    "name": "patient_id", 
+    "name": "patient_id",
     "expr": "Patient.id"
   },{
     // "foreach" rather than "from" to indicate we are unrolling these into separate rows
@@ -371,9 +421,9 @@ Here is a more complete example of unnesting patient addresses into multiple row
 ```
 
 ### Flattened Blood Pressure
-An example demonstrating how to flatten a blood pressure Observation resource 
-that complies with the [US Core](https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-blood-pressure.html) 
-profile. This definition will result in one row per blood pressure where 
+An example demonstrating how to flatten a blood pressure Observation resource
+that complies with the [US Core](https://build.fhir.org/ig/HL7/US-Core/StructureDefinition-us-core-blood-pressure.html)
+profile. This definition will result in one row per blood pressure where
 both systolic and diastolic values are present.
 
 ```js
@@ -389,7 +439,7 @@ both systolic and diastolic values are present.
     {"name": "id", "expr": "id"},
     {"name": "patient_id", "expr": "subject.getId()"},
     {"name": "effective_date_time", "expr": "effective.ofType(dateTime)"},
-    // Nested selects to retrieve items from specific locations within the resource. Since this is "select" 
+    // Nested selects to retrieve items from specific locations within the resource. Since this is "select"
     // rather than "forEach", it will not unroll into multiple rows.
     {
       // Select columns relative to the "from" expression. We reuse the constant above to reduce duplication.
@@ -421,9 +471,6 @@ both systolic and diastolic values are present.
 # Open questions and needs
 The following open questions and needs remain:
 
-* Define a pattern for working with imprecise date types.
-  * Consider adding metadata or another approach to convert to full date types in the
-  view if the underlying dataset supports it?
 * Define a pattern and create examples for joining resources via references
 * Additional examples to illustrate usage patterns
 * Pressure test this with known use cases
