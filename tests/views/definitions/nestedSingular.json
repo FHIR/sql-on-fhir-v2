@@ -1,0 +1,23 @@
+{
+  "name": "Nested singular elements",
+  "resource": "Patient",
+  "select": [
+    {
+      "name": "id",
+      "expr": "id" 
+    },
+    {
+      "forEach": "name",
+      "select": [
+        {
+          "name": "name_use",
+          "expr": "use"
+        },
+        {
+          "name": "family_name",
+          "expr": "family"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "forEach within from",
+  "resource": "Patient",
+  "select": [
+    {
+      "name": "id",
+      "expr": "id"
+    },
+    {
+      "from": "name",
+      "select": [
+        {
+          "forEach": "prefix",
+          "select": [
+            {
+              "name": "name_prefix",
+              "expr": "$this"
+            }
+          ]
+        },
+        {
+          "forEach": "given",
+          "select": [
+            {
+              "name": "given_name",
+              "expr": "$this"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
