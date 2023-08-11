@@ -220,9 +220,22 @@ and examples follow in sections below.
     // A 'forEach' expression unnests a new row for each item in the specified FHIRPath expression,
     // and users will select columns in the nested select. This differs from the 'from' expression above
     // because it creates a new row for each item in the matched collection, unrolling that part of the resource.
+    //
+    // If the expression results in an empty collection, it will result in related rows being omitted from the 
+    // result - similar to an inner join in SQL.
     {
       // A FHIRPath expression
       "forEach": "",
+
+      // A nested select expression, using the same structure as defined at the root.
+      "select": []
+    },
+
+    // A 'forEachOrNull' expression has the same meaning as `forEach`, except that it will generate a null value 
+    // in the case where the expression results in an empty collection - similar to a left outer join in SQL.
+    {
+      // A FHIRPath expression
+      "forEachOrNull": "",
 
       // A nested select expression, using the same structure as defined at the root.
       "select": []
