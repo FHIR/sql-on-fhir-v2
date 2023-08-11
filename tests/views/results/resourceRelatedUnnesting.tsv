@@ -1,7 +1,7 @@
 id	name_prefix	family_name	marital_status_system	marital_status_code
-1	Miss.	Wuckert	http://terminology.hl7.org/CodeSystem/v3-MaritalStatus	M
 1	Miss.	Wuckert	http://snomed.info/sct	87915002
-1	Mrs.	Oberbrunner	http://terminology.hl7.org/CodeSystem/v3-MaritalStatus	M
+1	Miss.	Wuckert	http://terminology.hl7.org/CodeSystem/v3-MaritalStatus	M
 1	Mrs.	Oberbrunner	http://snomed.info/sct	87915002
+1	Mrs.	Oberbrunner	http://terminology.hl7.org/CodeSystem/v3-MaritalStatus	M
 2	Mr.	Towne		
 2	Prof.	Cleveland		
