@@ -1,5 +1,6 @@
 {
   "name": "forEach within from",
+  "desc": "Note that the use of sibling forEach statements in this query generates a cross join, which is generally considered an anti-pattern. This query is provided to verify the behaviour of implementations in this scenario.",
   "resource": "Patient",
   "select": [
     {
