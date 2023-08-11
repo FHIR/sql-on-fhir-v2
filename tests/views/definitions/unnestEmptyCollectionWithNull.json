@@ -1,0 +1,19 @@
+{
+  "name": "Unnest empty collection with null",
+  "resource": "Patient",
+  "select": [
+    {
+      "name": "id",
+      "expr": "id"
+    },
+    {
+      "forEachOrNull": "photo",
+      "select": [
+        {
+          "name": "photo_title",
+          "expr": "title"
+        }
+      ]
+    }
+  ]
+}
