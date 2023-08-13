@@ -1,0 +1,13 @@
+{ 
+  "name": "hl7.fhir.uv.sql-on-fhir.ig-template",
+  "type": "fhir.template",
+  "license": "CC0-1.0",
+  "description": "SQL on FHIR IG Template",
+  "author": "http://hl7.org/fhir",
+  "canonical": "http://fhir.org/templates/hl7.fhir.uv.sql-on-fhir.ig-template",
+  "base": "fhir.base.template",
+  "dependencies": {
+    "fhir.base.template": "current"
+  },
+  "version": "0.1.0"
+}
