@@ -11,8 +11,8 @@ Expression: "matches('^[^_][A-Za-z0-9_]+$')"
 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 
-Logical: ViewDefinitionMinimial
-Title: "View Definition: Minimial"
+Logical: ViewDefinitionMinimal
+Title: "View Definition: Minimal"
 Description: """
 View definition without canonical FHIR properties. 
 """
@@ -34,10 +34,10 @@ View definition without canonical FHIR properties.
     * value 1..1 string "Value of tag"
   * from 0..1 BackboneElement "A convenience to select values relative to some parent FHIRPath."
     * expression 1..1 string "FHIRPath expression for the parent path to select values from"
-    * select 0..* contentReference #ViewDefinitionMinimial.select "See select" "Nested select"
+    * select 0..* contentReference #ViewDefinitionMinimal.select "See select" "Nested select"
   * forEach 0..1 BackboneElement "Expression unnest a new row for each item in the specified FHIRPath expression."
     * expression 1..1 string "FHIRPath expression for the parent path to select values from"
-    * select 0..* contentReference #ViewDefinitionMinimial.select "See select" "Nested select"
+    * select 0..* contentReference #ViewDefinitionMinimal.select "See select" "Nested select"
 * where 0..* BackboneElement "Where filters care FHIRPath expressions joined with implicit 'and'"
   * expression 1..1 string "FHIRPath expression for the filter"
   * description 0..1 markdown "Description of the filter"
