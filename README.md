@@ -16,3 +16,4 @@ This is a Sushi project and can use HL7 IG Publisher to build locally:
   2. Run `_updatePublisher.sh` to get the latest IG publisher
   3. Run `_genonce.sh` to generate the IG
   4. Run `open output/index.html` to view the IG website
+
