@@ -73,8 +73,8 @@ menu:
     Purpose: purpose.html
     System Layers: layers.html
     View Definition: view-definition.html
-    Schema: schema.html
-    Columnar Databases: columnar.html
+    JSON Schema Guidance: json_schema_guidance.html
+    Columnar Schema Guidance: columnar_schema_guidance.html
     Tech Matrix: tech-matrix.html
   Artifacts: artifacts.html
 
