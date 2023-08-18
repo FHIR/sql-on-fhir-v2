@@ -403,3 +403,7 @@ Thrift is an interface definition language and binary communication protocol[2]
 used for defining and creating services for numerous programming languages.[3]
 It was developed at Facebook for "scalable cross-language services development"
 and as of 2020 is an open source project in the Apache Software Foundation.
+
+---
+
+**[Back: Specification Purpose](purpose.html)**
