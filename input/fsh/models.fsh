@@ -74,7 +74,7 @@ and criteria are defined by FHIRPath expressions.
   * name obeys sql-name
   * expression 1..1 string "FHIRPath expression, can include %constant"
   * description 0..1 markdown "Description of the field"
-  * tag 0..1 BackboneElement "Optional metadata for the field"
+  * tag 0..* BackboneElement "Optional metadata for the field"
     * name 1..1 string "Name of tag (e.g. 'ansi/type')"
     * value 1..1 string "Value of tag"
   * from 0..1 BackboneElement "A convenience to select values relative to some parent FHIRPath."
