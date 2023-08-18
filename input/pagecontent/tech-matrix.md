@@ -11,8 +11,9 @@ JSON Database Features:
 | MSSQL        | yes     | no       | yes       | yes                 | no             | no          |
 | Oracle       | yes     | no       | yes       | yes                 | yes            | no          |
 | BigQuery     | yes     | no       | yes       | yes                 | no             | no          |
-| Snowlake     | yes     | yes      | yes       | yes                 | no             | no          |
+| Snowflake    | yes     | yes      | yes       | yes                 | no             | no          |
 | Athena SQL   | yes     | yes      | yes       | yes                 | no             | no          |
+| DuckDB       | no      | no       | yes       | no                  | no             | no          |
 
 
 Schemas & Formats datatypes:
@@ -23,7 +24,7 @@ Schemas & Formats datatypes:
 * Enums
 
 
-Formats:
+Binary formats:
 
 * Apache Avro
 * Apache Arrow
@@ -151,7 +152,7 @@ FROM mydataset.table1
 
 https://delta.io/
 
-## Snowlake JSON
+## Snowflake JSON
 
 [semistructured in snowlake](https://docs.snowflake.com/en/user-guide/querying-semistructured)
 
@@ -404,3 +405,7 @@ Thrift is an interface definition language and binary communication protocol[2]
 used for defining and creating services for numerous programming languages.[3]
 It was developed at Facebook for "scalable cross-language services development"
 and as of 2020 is an open source project in the Apache Software Foundation.
+
+---
+
+**[Back: Specification Purpose](purpose.html)**

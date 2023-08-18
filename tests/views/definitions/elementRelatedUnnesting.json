@@ -1,0 +1,28 @@
+{
+  "name": "Element-related unnesting",
+  "resource": "Patient",
+  "select": [
+    {
+      "name": "id",
+      "expr": "id"
+    },
+    {
+      "forEach": "name",
+      "select": [
+        {
+          "name": "family_name",
+          "expr": "family"
+        },
+        {
+          "forEach": "given",
+          "select": [
+            {
+              "name": "given_name",
+              "expr": "$this"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
