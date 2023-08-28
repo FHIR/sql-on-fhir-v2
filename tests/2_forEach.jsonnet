@@ -70,11 +70,11 @@
       view: {
         resourceType: "Patient",
         select: [
-          {path: "id", name: "id"},
+          {expression: "id", name: "id"},
           {
             forEach: "name",
             select: [
-              {path: 'family'}
+              {expression: 'family'}
             ]
           }
         ]
@@ -94,23 +94,23 @@
       view: {
         resourceType: "Patient",
         select: [
-          {path: "id", name: "id"},
+          {expression: "id", name: "id"},
           {
             forEach: "contact",
             select: [
               {
-                path: "organization.getId()",
+                expression: "organization.getId()",
                 name: "org"
               },
               {
                 forEach: "telecom.where(system='phone')",
-                select: [{path: "value", name: "phone"}]
+                select: [{expression: "value", name: "phone"}]
               },
               {
                 forEach: "relationship",
                 select: [
-                  {path: "code", name: "rel_code"},
-                  {path: "system", name: "rel_system"},
+                  {expression: "code", name: "rel_code"},
+                  {expression: "system", name: "rel_system"},
                 ]
               },
             ]

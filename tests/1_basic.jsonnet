@@ -57,8 +57,8 @@ local pt3 = {
       view: {
         resourceType: "Patient",
         select: [
-          {path: "id", name: "id"},
-          {path: "birthDate",   name: "bod"}
+          {expression: "id", name: "id"},
+          {expression: "birthDate",   name: "bod"}
         ]
       },
       result: [
@@ -68,13 +68,13 @@ local pt3 = {
       ]
     },
     {
-      title: "path returns object",
+      title: "expression returns object",
       desc: "...",
       view: {
         resourceType: "Patient",
         select: [
-          {path: "id", name: "id"},
-          {path: "name.first()",  name: "name"},
+          {expression: "id", name: "id"},
+          {expression: "name.first()",  name: "name"},
         ]
       },
       result: [
@@ -89,10 +89,10 @@ local pt3 = {
       view: {
         resourceType: "Patient",
         select: [
-          {path: "id", name: "id"},
-          {path: "birthDate",   name: "bod"},
-          {path: "name.family.first()", name: "last_name"},
-          {path: "name.given.first()",  name: "first_name"},
+          {expression: "id", name: "id"},
+          {expression: "birthDate",   name: "bod"},
+          {expression: "name.family.first()", name: "last_name"},
+          {expression: "name.given.first()",  name: "first_name"},
         ]
       },
       result: [
@@ -107,8 +107,8 @@ local pt3 = {
       view: {
         resourceType: "Patient",
         select: [
-          {path: "id", name: "id"},
-          {path: "address.city.first()",  name: "city"},
+          {expression: "id", name: "id"},
+          {expression: "address.city.first()",  name: "city"},
         ]
       },
       result: [
@@ -123,8 +123,8 @@ local pt3 = {
       view: {
         resourceType: "Patient",
         select: [
-          {path: "id", name: "id"},
-          {path: "name.where(use='official').family.first()",  name: "ln"},
+          {expression: "id", name: "id"},
+          {expression: "name.where(use='official').family.first()",  name: "ln"},
         ]
       },
       result: [

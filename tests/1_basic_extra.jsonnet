@@ -60,8 +60,8 @@
       view: {
         resourceType: "Patient",
         select: [
-          {path: "id", name: "id"},
-          {path: "name.given",  name: "first_name"},
+          {expression: "id", name: "id"},
+          {expression: "name.given",  name: "first_name"},
         ]
       },
       result: [
@@ -76,8 +76,8 @@
       view: {
         resourceType: "Patient",
         select: [
-          {path: "id", name: "id"},
-          {path: "name.first()",  name: "name"},
+          {expression: "id", name: "id"},
+          {expression: "name.first()",  name: "name"},
         ]
       },
       result: [
