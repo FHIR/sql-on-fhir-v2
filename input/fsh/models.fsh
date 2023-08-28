@@ -6,42 +6,17 @@ underscore -- i.e. with a regular expression of: ^[^_][A-Za-z0-9_]+$
 This makes it usable as table names in a wide variety of databases.
 """
 Severity: #error
-Expression: "matches('^[^_][A-Za-z0-9_]+$')"
+Expression: "matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
 
+
+Invariant: sql-for-clauses
+Description: """
+Can only have only one of `from`, `forEach`, `forEachOrNull`
+"""
+Severity: #error
+Expression: "(expression | from | forEach | forEachOrNull).count() = 1"
 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
-
-Logical: ViewDefinitionMinimal
-Title: "View Definition: Minimal"
-Description: """
-View definition without canonical FHIR properties. 
-"""
-* name 1..1 string "Name of view definition (computer and database friendly)"
-* name obeys sql-name
-* resource 1..1 code "FHIR Resource for the ViewDefinition"
-* resource from http://hl7.org/fhir/ValueSet/resource-types
-* constant 0..* BackboneElement "Contant used in FHIRPath expressions"
-  * name 1..1 string "Name of constant (referred to in FHIRPath as %{name})"
-  * name obeys sql-name
-  * expression 1..1 string "FHIRPath expression"
-* select 0..* BackboneElement "The select stanza defines the actual content of the view itself"
-  * name 1..1 string "Name of field produced in the output."
-  * name obeys sql-name
-  * expression 1..1 string "FHIRPath expression, can include %constant"
-  * description 0..1 markdown "Description of the field"
-  * tag 0..1 BackboneElement "Optional metadata for the field"
-    * name 1..1 string "Name of tag (e.g. 'ansi/type')"
-    * value 1..1 string "Value of tag"
-  * from 0..1 BackboneElement "A convenience to select values relative to some parent FHIRPath."
-    * expression 1..1 string "FHIRPath expression for the parent path to select values from"
-    * select 0..* contentReference #ViewDefinitionMinimal.select "See select" "Nested select"
-  * forEach 0..1 BackboneElement "Expression unnest a new row for each item in the specified FHIRPath expression."
-    * expression 1..1 string "FHIRPath expression for the parent path to select values from"
-    * select 0..* contentReference #ViewDefinitionMinimal.select "See select" "Nested select"
-* where 0..* BackboneElement "Where filters care FHIRPath expressions joined with implicit 'and'"
-  * expression 1..1 string "FHIRPath expression for the filter"
-  * description 0..1 markdown "Description of the filter"
-
 Logical: ViewDefinition
 Title: "View Definition"
 Description: """
@@ -70,19 +45,17 @@ and criteria are defined by FHIRPath expressions.
   * name obeys sql-name
   * expression 1..1 string "FHIRPath expression"
 * select 0..* BackboneElement "The select stanza defines the actual content of the view itself"
-  * name 1..1 string "Name of field produced in the output."
+  * name 0..1 string "Name of field produced in the output."
   * name obeys sql-name
-  * expression 1..1 string "FHIRPath expression, can include %constant"
+  * expression 0..1 string "FHIRPath expression, can include %constant"
   * description 0..1 markdown "Description of the field"
-  * tag 0..1 BackboneElement "Optional metadata for the field"
+  * tag 0..* BackboneElement "Optional metadata for the field"
     * name 1..1 string "Name of tag (e.g. 'ansi/type')"
     * value 1..1 string "Value of tag"
-  * from 0..1 BackboneElement "A convenience to select values relative to some parent FHIRPath."
-    * expression 1..1 string "FHIRPath expression for the parent path to select values from"
-    * select 0..* contentReference #ViewDefinition.select "See select" "Nested select"
-  * forEach 0..1 BackboneElement "Expression unnest a new row for each item in the specified FHIRPath expression."
-    * expression 1..1 string "FHIRPath expression for the parent path to select values from"
-    * select 0..* contentReference #ViewDefinition.select "See select" "Nested select"
-* where 0..* BackboneElement "Where filters care FHIRPath expressions joined with implicit 'and'"
-  * expression 1..1 string "FHIRPath expression for the filter"
- 
+  * from 0..1 string "FHIRPath expression for the parent path to select values from"
+  * forEach 0..1 string "FHIRPath expression unnests a new row for each item in the specified"
+  * forEachOrNull 0..1 string "FHIRPath expression unnests a new row for each item in the specified or null"
+  // * union 0..1 string "FHIRPath expression"
+  * select 0..1 contentReference #ViewDefinition  "Nested select"
+* select obeys sql-for-clauses 
+* where 0..1 string "FHIRPath expression"

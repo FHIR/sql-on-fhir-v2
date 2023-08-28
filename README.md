@@ -17,3 +17,7 @@ This is a Sushi project and can use HL7 IG Publisher to build locally:
   3. Run `_genonce.sh` to generate the IG
   4. Run `open output/index.html` to view the IG website
 
+Build tests:
+
+  1. Install jsonnet - https://jsonnet.org/
+  2. Run `build_tests.sh`
