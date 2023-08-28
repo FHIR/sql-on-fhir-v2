@@ -1,0 +1,175 @@
+{
+   "description": "This features are optional",
+   "name": "basic extra views",
+   "resource": [
+      {
+         "address": [
+            {
+               "city": "C1.1"
+            }
+         ],
+         "birthDate": "1951",
+         "id": "pt1",
+         "name": [
+            {
+               "family": "F1",
+               "given": [
+                  "G1.1.1",
+                  "G1.1.2"
+               ]
+            },
+            {
+               "family": "F1'",
+               "given": [
+                  "G1.2.1",
+                  "G1.2.2"
+               ],
+               "use": "official"
+            }
+         ],
+         "resourceType": "Patient"
+      },
+      {
+         "birthDate": "1952",
+         "id": "pt2",
+         "name": [
+            {
+               "family": "F2.1",
+               "given": [
+                  "G2.1.1",
+                  "G2.1.2"
+               ],
+               "use": "official"
+            },
+            {
+               "family": "F2.2",
+               "given": [
+                  "G2.2.1",
+                  "G2.2.2"
+               ]
+            }
+         ],
+         "resourceType": "Patient"
+      },
+      {
+         "birthDate": "1953",
+         "id": "pt3",
+         "name": [
+            {
+               "family": "F3.1",
+               "given": [
+                  "G3.1.1",
+                  "G3.1.2"
+               ],
+               "use": "official"
+            },
+            {
+               "family": "F3.2",
+               "given": [
+                  "G3.2.1",
+                  "G3.2.2"
+               ]
+            }
+         ],
+         "resourceType": "Patient"
+      }
+   ],
+   "views": [
+      {
+         "desc": "...",
+         "extended": true,
+         "result": [
+            [
+               "pt1",
+               [
+                  "G1.1.1",
+                  "G1.1.2",
+                  "G1.2.1",
+                  "G1.2.2"
+               ]
+            ],
+            [
+               "pt2",
+               [
+                  "G2.1.1",
+                  "G2.1.2",
+                  "G2.2.1",
+                  "G2.2.2"
+               ]
+            ],
+            [
+               "pt2",
+               [
+                  "G3.1.1",
+                  "G3.1.2",
+                  "G3.2.1",
+                  "G3.2.2"
+               ]
+            ]
+         ],
+         "title": "path returns array",
+         "view": {
+            "resourceType": "Patient",
+            "select": [
+               {
+                  "expression": "id",
+                  "name": "id"
+               },
+               {
+                  "expression": "name.given",
+                  "name": "first_name"
+               }
+            ]
+         }
+      },
+      {
+         "desc": "...",
+         "result": [
+            {
+               "id": "pt1",
+               "name": {
+                  "family": "F1.1",
+                  "given": [
+                     "G1.1.1",
+                     "G1.1.2"
+                  ]
+               }
+            },
+            {
+               "id": "pt2",
+               "name": {
+                  "family": "F2.1",
+                  "given": [
+                     "G2.1.1",
+                     "G2.1.2"
+                  ]
+               }
+            },
+            {
+               "id": "pt3",
+               "name": {
+                  "family": "F3.1",
+                  "given": [
+                     "G2.1.1",
+                     "G2.1.2"
+                  ]
+               }
+            }
+         ],
+         "title": "path returns object",
+         "view": {
+            "resourceType": "Patient",
+            "select": [
+               {
+                  "expression": "id",
+                  "name": "id"
+               },
+               {
+                  "expression": "name.first()",
+                  "name": "name"
+               }
+            ]
+         }
+      }
+   ]
+}
