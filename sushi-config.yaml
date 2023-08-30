@@ -6,7 +6,7 @@
 id: hl7.fhir.uv.sql-on-fhir
 canonical: http://hl7.org/fhir/uv/sql-on-fhir
 name: SQLonFHIR
-# title: Example Title
+title: SQL on FHIR
 # description: Example Implementation Guide for getting started with SUSHI
 status: draft # draft | active | retired | unknown
 version: 0.0.1-pre
