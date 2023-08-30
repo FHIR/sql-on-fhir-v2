@@ -1,27 +1,28 @@
-The system consists of three logical layers: “Annotation”, “View” and “Analytics”. This specification focuses primarily upon the “View” layer. The “Annotation” and “Analytics” layers are optional, and are provided as general patterns to assist with implementation.
+The system consists of three logical layers as shown in the diagram below: the *Data Layer*, the *View Layer* and the *Analytics Layer*. This specification focuses primarily upon the View layer. The Data and Analytics layers are optional, and are provided as general patterns to assist with implementation.
 
-TODO: Diagram of layers
+![](layers-high-level.jpg)
 
-### The Annotation Layer
-The Annotation Layer is a set of lossless representations that collectively enable FHIR
+### The Data Layer
+The *Data Layer* is a set of lossless representations that collectively enable FHIR
 to be used with a wide variety of different query technologies. It may
 optionally be persisted and annotated to make it or implementations of the view
-layer more efficient, but no specific annotation layer structure will be required by
+layer more efficient, but no specific Data Layer structure will be required by
 this specification.
 
 Implementers may choose from several options from this layer, including but
 not limited to:
 
 * FHIR in the NDJSON bulk format on disk
+* FHIR in parquet format on disk
 * FHIR resources stored directly as JSON in a database
 * FHIR resources translated to a schematized structure within a database,
 such as each FHIR field expanded into separate database columns for query
 efficiency.
 
 Implementations are encouraged but not required to further annotate the FHIR
-resources to help "view" layer implementations run efficient queries. This
+resources to help View layer implementations run efficient queries. This
 primarily applies when the underlying FHIR resources are stored in databases
-that the "view" layer will query. Examples may include but are not limited to:
+that the View layer will query. Examples may include but are not limited to:
 
 * Hashing resource IDs so they are evenly distributed, which can help some
 database query engines.
@@ -37,7 +38,7 @@ described in *Analytics Layer* section below. Our goal here is simply to get
 the needed FHIR data in a form that matches user needs and common analytic
 patterns.
 
-The "view" layer itself has two key pieces:
+The View Layer itself has two key pieces:
 
 * *View Definitions*, allowing users to define flattened views of FHIR data that
 are portable between systems.
@@ -45,8 +46,8 @@ are portable between systems.
 the underlying annotation layer.
 
 We will fully define View Definitions in a section below, as that is the central
-aspect of this specification. View runners will be specific to the annotation
-layer they use. Each annotation layer may have one or more corresponding view
+aspect of this specification. View Runners will be specific to the annotation
+layer they use. Each data layer may have one or more corresponding view
 runners, but a given View Definition can be run by many runners over many
 annotation layers.
 
@@ -61,8 +62,38 @@ Example view runners may include:
 
 Finally, users must be able to easily leverage the above views with the analytic
 tools of their choice. This spec purposefully does not define what these are,
-but common use cases may be SQL queries by consuming applications or integration
-with business intelligence or data science tools.
+but common use cases may be SQL queries by consuming applications, dataframe-based data science tools in Python or R, or integration
+with business intelligence tools.
+
+
+
+### Archimate layered viewpoint
+
+To clarify the intention and purpose of the specification, consider the [Archimate](https://pubs.opengroup.org/architecture/archimate32-doc/) layered viewpoint detailing the the key Application elements (shown in blue) and Technology elements (green).
+
+![](layers-detailed.jpg)
+
+#### File-based vs. RDBMS-based storage
+
+TO DO: explain differences here, with pros and cons. File-based storage systems can be abstracted with generic file-system interface, such as fsspec in case of Python. Note that new technologies blur this difference: duckdb allow you to implement runners using SQL, whilst the duckdb runtime in fact only needs a file-based storage system Also relate to tech matrix
+
+
+#### View Definitions and View Runners
+
+TO DO: explain how this plays out in practice. Also clarify that specific implementation of Runners will be closely tied to choice storage. For example:
+
+- Spark and FHIRPath are designed to work on file-based storage systems
+- Can FHIRPath run on jsonb?
+
+
+#### Patterns for consumption of tabular views
+
+TO DO:
+
+- expain how views can be persisted (or are they intended to be generated on the fly at all times)?
+- does specification only allow for tabular view on single FHIR Resources, or also tabular views that combine different resources? For example, a `patient_timeline` table that includes all events (`encounter`, start of `EpisodeOfCare`, `Observation`)?
+
+
 
 ---
 
