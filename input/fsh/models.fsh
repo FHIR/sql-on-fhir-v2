@@ -88,7 +88,7 @@ criteria are defined by FHIRPath expressions.
     able to be implicitly converted to a common type according to the FHIRPath data type conversion 
     rules.
     """
-  * select 0..1 contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select  "Nested select relative to a parent from, forEach, or forEachOrNull expression"
+  * select 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select  "Nested select relative to a parent from, forEach, or forEachOrNull expression"
 * select obeys sql-for-clauses 
 * where 0..1 string "FHIRPath expression defining a filter condition" """
   A FHIRPath expression that defines a filter that must evaluate to true for a resource to be 
