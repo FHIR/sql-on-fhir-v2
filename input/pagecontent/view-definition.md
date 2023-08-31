@@ -363,4 +363,4 @@ This will result in a table like:
 
 ---
 
-**[Next: Columnar Databases](columnar.html)**
+**[Next: Columnar Databases](columnar_schema_guidance.html)**

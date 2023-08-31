@@ -1,7 +1,8 @@
 Invariant: sql-name
 Description: """
 Name is limited to letters, numbers, or underscores and cannot start with an
-underscore -- i.e. with a regular expression of: ^[^_][A-Za-z0-9_]+$ 
+underscore -- i.e. with a regular expression of: ^[^_][A-Za-z][A-Za-z0-9_]+$ 
+
 
 This makes it usable as table names in a wide variety of databases.
 """
@@ -11,10 +12,10 @@ Expression: "matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
 
 Invariant: sql-for-clauses
 Description: """
-Can only have only one of `expression`, `from`, `forEach` and `forEachOrNull`
+Can only have only one of `path`, `from`, `forEach`, and `forEachOrNull`
 """
 Severity: #error
-Expression: "(expression | from | forEach | forEachOrNull).count() = 1"
+Expression: "(path | from | forEach | forEachOrNull).count() = 1"
 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 Logical: ViewDefinition
@@ -87,7 +88,7 @@ criteria are defined by FHIRPath expressions.
     able to be implicitly converted to a common type according to the FHIRPath data type conversion 
     rules.
     """
-  * select 0..1 contentReference #ViewDefinition  "Nested select relative to a parent from, forEach, or forEachOrNull expression"
+  * select 0..1 contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select  "Nested select relative to a parent from, forEach, or forEachOrNull expression"
 * select obeys sql-for-clauses 
 * where 0..1 string "FHIRPath expression defining a filter condition" """
   A FHIRPath expression that defines a filter that must evaluate to true for a resource to be 
