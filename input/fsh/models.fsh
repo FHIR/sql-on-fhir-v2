@@ -43,10 +43,16 @@ criteria are defined by FHIRPath expressions.
 * description 0..1 markdown "Natural language description of the view definition"
 * useContext 0..* UsageContext "The context that the content is intended to support"
 * copyright 0..1 markdown "Use and/or publishing restrictions"
-* resource 1..1 code "FHIR Resource for the ViewDefinition" """
+* resource 1..1 code "FHIR resource for the ViewDefinition" """
   The FHIR resource that the view is based upon, e.g. 'Patient' or 'Observation'.
 """
 * resource from http://hl7.org/fhir/ValueSet/resource-types
+* resourceVersion 1..* code "FHIR version(s) of the resource for the ViewDefinition" """
+  The FHIR version(s) for the FHIR resource. The value of this element is the
+  formal version of the specification, without the revision number, e.g.
+  [publication].[major].[minor], which is 4.6.0. for this version.
+"""
+* resourceVersion from http://hl7.org/fhir/ValueSet/FHIR-version
 * constant 0..* BackboneElement "Constant that can be used in FHIRPath expressions" """
   A constant is a string that is injected into a FHIRPath expression through the use of a FHIRPath 
   external constant with the same name.
