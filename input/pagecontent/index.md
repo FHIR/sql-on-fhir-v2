@@ -67,6 +67,7 @@ FHIR® is the registered trademark of HL7 and is used with the permission of HL7
 * Ryan Brush @rbrush (Google)
 * Brian Kaney @bkaney (Vermonster)
 * Josh Mandel @jmandel (Microsoft)
+* John Grimes @johngrimes (CSIRO)
 * FHIR Community - https://chat.fhir.org/
 
 Work is sponsored and supported by:

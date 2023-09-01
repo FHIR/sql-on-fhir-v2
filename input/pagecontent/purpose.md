@@ -6,7 +6,39 @@ tools, regardless of the technology stack.
 
 *Note*: this is a work in progress and will have breaking changes without notice.
 
-### Non-Goals
+### Problem
+
+As the availability of FHIR data increases, there is a growing interest in
+utilising it for analytic purposes. However, to use FHIR effectively analysts
+require a thorough understanding of the specification, including its
+conventions, semantics, and data types.
+
+FHIR is represented as a graph of resources, each of which includes nested data
+elements. There are semantics defined for references between resources, data
+types, terminology, extensions, and many other aspects of the specification.
+
+Most analytic and machine learning use cases require the preparation of FHIR
+data using some sort of projection or transformation from its original form. The
+task of authoring these transformations is not trivial, and there is currently
+no standard mechanism for reuse.
+
+### Solution
+
+A standard format can be provided for defining use case-specific views of FHIR
+data. Tools can be developed that transform these definitions into queries that
+are capable of being executed by a wide variety of different query engines.
+
+These views can be made available to users as an easier way to consume FHIR
+data - simpler to understand and easier to process with generic analytic query
+tools.
+
+FHIR implementation guides could include definitions of simple, flattened views
+that comprise essential data elements. The availability of these view
+definitions will greatly reduce the need for analysts to perform repetitive and
+redundant transformation tasks for common use cases.
+
+### Non-goals
+
 This is not a full analytic toolchain, but an attempt to adapt FHIR to such
 toolchains. Therefore we scope this to create flat views of resources, and
 explicitly scope out higher-level analytic capabilities since many tools do
@@ -18,6 +50,7 @@ analyze at scale.
 * Any form of data aggregation or statistical analysis.
 
 ### Requirements
+
 The proposed system attempts to meet the following requirements:
 
 **A portable, unambiguous specification**
