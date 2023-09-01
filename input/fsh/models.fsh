@@ -47,10 +47,10 @@ criteria are defined by FHIRPath expressions.
   The FHIR resource that the view is based upon, e.g. 'Patient' or 'Observation'.
 """
 * resource from http://hl7.org/fhir/ValueSet/resource-types
-* resourceVersion 1..* code "FHIR version(s) of the resource for the ViewDefinition" """
+* resourceVersion 0..* code "FHIR version(s) of the resource for the ViewDefinition" """
   The FHIR version(s) for the FHIR resource. The value of this element is the
   formal version of the specification, without the revision number, e.g.
-  [publication].[major].[minor], which is 4.6.0. for this version.
+  [publication].[major].[minor].
 """
 * resourceVersion from http://hl7.org/fhir/ValueSet/FHIR-version
 * constant 0..* BackboneElement "Constant that can be used in FHIRPath expressions" """
