@@ -18,13 +18,14 @@ local pts = [pt1, pt2, pt3];
 
 {
   name: "basic views",
+  desc: " Trivial view definitions ",
   resource: [pt1, pt2, pt3],
   views: [
     {
       title: "basic query",
-      desc: "...",
+      desc: "",
       view: {
-        resourceType: "Patient",
+        resource: "Patient",
         select: [
           {expression: "id", name: "id"},
           {expression: "birthDate",   name: "bod"}
@@ -33,22 +34,10 @@ local pts = [pt1, pt2, pt3];
       result: [{id: pt1.id, bod: pt1.birthDate} for pt in pts]
     },
     {
-      title: "expression returns object",
-      desc: "...",
-      view: {
-        resourceType: "Patient",
-        select: [
-          {expression: "id", name: "id"},
-          {expression: "name.first()",  name: "name"},
-        ]
-      },
-      result: [{id: pt1.id, name: pt1.name[0]} for pt in pts]
-    },
-    {
       title: "first()",
-      desc: "...",
+      desc: "You can use `first()` function to select first element in path",
       view: {
-        resourceType: "Patient",
+        resource: "Patient",
         select: [
           {expression: "id", name: "id"},
           {expression: "birthDate",   name: "bod"},
@@ -62,10 +51,44 @@ local pts = [pt1, pt2, pt3];
       ]
     },
     {
-      title: "empty as nulls",
-      desc: "...",
+      title: "expression returns array",
+      desc: "If expression returns array of results, it's recommended to return this array",
       view: {
-        resourceType: "Patient",
+        resource: "Patient",
+        select: [
+          {expression: "id", name: "id"},
+          {expression: "birthDate",   name: "bod"},
+          {expression: "name.family", name: "last_name"},
+          {expression: "name.given",  name: "first_name"},
+        ]
+      },
+      result: [
+        {
+          id: pt.id,
+          name: pt.birthDate,
+          last_name: [x.family for x in pt.name],
+          first_name: std.flattenArrays([x.given for x in pt.name])
+        }
+        for pt in pts
+      ]
+    },
+    {
+      title: "expression returns object",
+      desc: "If expression returns object of results, it's recommended to return this array",
+      view: {
+        resource: "Patient",
+        select: [
+          {expression: "id", name: "id"},
+          {expression: "name.first()",  name: "name"},
+        ]
+      },
+      result: [{id: pt1.id, name: pt1.name[0]} for pt in pts]
+    },
+    {
+      title: "empty as nulls",
+      desc: "if expression returns empty set - return NULL in columns",
+      view: {
+        resource: "Patient",
         select: [
           {expression: "id", name: "id"},
           {expression: "address.city.first()",  name: "city"},
@@ -74,16 +97,16 @@ local pts = [pt1, pt2, pt3];
       result: [
         {
           id: pt.id,
-          city: [if std.objectHas(pt, 'address') then pt.address[0].city]
+          city: if std.objectHas(pt, 'address') then pt.address[0].city
         }
         for pt in pts
       ]
     },
     {
-      title: "use where",
-      desc: "...",
+      title: "filter with where",
+      desc: "To filter specific elements of array you can use where expression",
       view: {
-        resourceType: "Patient",
+        resource: "Patient",
         select: [
           {expression: "id", name: "id"},
           {expression: "name.where(use='official').family.first()",  name: "ln"},

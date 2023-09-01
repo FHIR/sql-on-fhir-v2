@@ -1,6 +1,6 @@
 {
   name: "basic extra views",
-  description: "This features are optional",
+  desc: "This features are optional",
   resource: [
     {
       resourceType: "Patient",
@@ -74,7 +74,7 @@
       title: "path returns object",
       desc: "...",
       view: {
-        resourceType: "Patient",
+        resource: "Patient",
         select: [
           {expression: "id", name: "id"},
           {expression: "name.first()",  name: "name"},

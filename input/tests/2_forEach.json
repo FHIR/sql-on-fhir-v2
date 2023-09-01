@@ -1,4 +1,5 @@
 {
+   "desc": "Flattening nested elements with `forEach`",
    "name": "forEach",
    "resource": [
       {
@@ -131,7 +132,7 @@
          ],
          "title": "basic forEach",
          "view": {
-            "resourceType": "Patient",
+            "resource": "Patient",
             "select": [
                {
                   "expression": "id",
@@ -178,7 +179,7 @@
          ],
          "title": "forEach in forEach",
          "view": {
-            "resourceType": "Patient",
+            "resource": "Patient",
             "select": [
                {
                   "expression": "id",

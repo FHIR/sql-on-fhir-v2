@@ -1,5 +1,5 @@
 {
-   "description": "This features are optional",
+   "desc": "This features are optional",
    "name": "basic extra views",
    "resource": [
       {
@@ -158,7 +158,7 @@
          ],
          "title": "path returns object",
          "view": {
-            "resourceType": "Patient",
+            "resource": "Patient",
             "select": [
                {
                   "expression": "id",
