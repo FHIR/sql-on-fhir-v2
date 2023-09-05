@@ -1,4 +1,7 @@
-The system consists of three logical layers as shown in the diagram below: the *Data Layer*, the *View Layer* and the *Analytics Layer*. This specification focuses primarily upon the View layer. The Data and Analytics layers are optional, and are provided as general patterns to assist with implementation.
+The system consists of three logical layers as shown in the diagram below:
+the *Data Layer*, the *View Layer* and the *Analytics Layer*. This specification
+focuses primarily upon the View layer. The Data and Analytics layers are optional,
+and are provided as general patterns to assist with implementation.
 
 ![](layers-high-level.jpg)
 
@@ -9,20 +12,69 @@ optionally be persisted and annotated to make it or implementations of the view
 layer more efficient, but no specific Data Layer structure will be required by
 this specification.
 
-Implementers may choose from several options from this layer, including but
-not limited to:
-
-* FHIR in the NDJSON bulk format on disk
-* FHIR in parquet format on disk
-* FHIR resources stored directly as JSON in a database
-* FHIR resources translated to a schematized structure within a database,
-such as each FHIR field expanded into separate database columns for query
-efficiency.
-
 Implementations are encouraged but not required to further annotate the FHIR
 resources to help View layer implementations run efficient queries. This
 primarily applies when the underlying FHIR resources are stored in databases
-that the View layer will query. Examples may include but are not limited to:
+that the View layer will query.
+
+### The View Layer
+The *View Layer* defines portable, tabular views of FHIR data that can more easily
+be consumed by a wide variety of analytic tools. The use of these tools is
+described in *Analytics Layer* section. Our goal here is simply to get
+the needed FHIR data in a form that matches user needs and common analytic
+patterns.
+
+The View Layer itself has two key components:
+
+* *View Definitions*, allowing users to define flattened views of FHIR data that
+are portable between systems.
+* *View Runners* are system-specific tools or libraries that apply view definitions to
+the underlying data layer, optionally making use of annotation to optimze performance.
+
+We will fully define View Definitions, as that is the central
+aspect of this specification. View Runners will be specific to the data
+layer they use. Each data layer may have one or more corresponding view
+runners, but a given View Definition can be run by many runners over many
+data layers.
+
+Example view runners may include:
+
+* A runner that creates a virtual, tabular view in an analytic database
+* A runner that queries FHIR JSON directly and creates a table in a web application
+* A runner that loads data directly into a notebook or other data analysis tool
+
+### The Analytics Layer
+
+Finally, users must be able to easily leverage the above views with the analytic
+tools of their choice. This spec purposefully does not define what these are,
+but common use cases may be SQL queries by consuming applications, dataframe-based
+data science tools in Python or R, or integration with business intelligence tools.
+
+### Examples
+
+To clarify the intention and purpose of the specification, consider the [Archimate](https://pubs.opengroup.org/architecture/archimate32-doc/) 
+layered viewpoint detailing the key Application elements (shown in blue) and Technology elements (green).
+Examples of possible implementations are given here as guidance. 
+
+![](layers-detailed.jpg)
+
+#### File-based vs. RDBMS-based storage for the data layer
+
+Implementers may choose from several options from the data layer, including but
+not limited to:
+
+* File-based, serverless storage using, for example, FHIR in NDJSON format on disk,
+or FHIR in parquet format on disk;
+* RDBMS-based (serverfull) storage using, for example, FHIR resources stored directly
+as JSON in a database, or FHIR resources translated to a schematized structure within
+a database, such as each FHIR field expanded into separate database columns for query efficiency.
+
+Note that that for new technlogies, this distinction may be less evident or relevant.
+For example, duckdb allow you to implement runners using SQL, whilst the duckdb runtime in fact
+only needs a file-based storage system. Please refer to the [technology matrix](tech-matrix.html) for more details.
+
+Depending on the the chosen storage technology, examples of annotation of the data layer
+may include but are not limited to:
 
 * Hashing resource IDs so they are evenly distributed, which can help some
 database query engines.
@@ -31,69 +83,26 @@ efficiently join between resources.
 * Expanding imprecise FHIR dates (e.g., those that have only a year) to
 effectively be periods to simplify honoring date comparison semantics in the view layer.
 
-### The View Layer
-The *View Layer* defines portable, tabular views of FHIR data that can more easily
-be consumed by a wide variety of analytic tools. The use of these tools is
-described in *Analytics Layer* section below. Our goal here is simply to get
-the needed FHIR data in a form that matches user needs and common analytic
-patterns.
 
-The View Layer itself has two key pieces:
+#### FHIRPath runner on NDJSON
 
-* *View Definitions*, allowing users to define flattened views of FHIR data that
-are portable between systems.
-* *View Runners* are system-specific tools or libraries that apply view definitions to
-the underlying annotation layer.
-
-We will fully define View Definitions in a section below, as that is the central
-aspect of this specification. View Runners will be specific to the annotation
-layer they use. Each data layer may have one or more corresponding view
-runners, but a given View Definition can be run by many runners over many
-annotation layers.
-
-Example view runners may include:
-
-* A runner that creates a virtual, tabular view in an analytic database
-* A runner that queries FHIR JSON directly and creates a table in a web application
-* A runner that loads data directly into a notebook or other data analysis tool
+TO DO: explain how FHIRPath + ndjson works. Can FHIRPath run on jsonb?
 
 
-### The Analytics Layer
+#### Spark runner on NDJSON or parquet
 
-Finally, users must be able to easily leverage the above views with the analytic
-tools of their choice. This spec purposefully does not define what these are,
-but common use cases may be SQL queries by consuming applications, dataframe-based data science tools in Python or R, or integration
-with business intelligence tools.
+TO DO: explain how spark runner works.
 
+#### PostgreSQL runner
 
-
-### Archimate layered viewpoint
-
-To clarify the intention and purpose of the specification, consider the [Archimate](https://pubs.opengroup.org/architecture/archimate32-doc/) layered viewpoint detailing the the key Application elements (shown in blue) and Technology elements (green).
-
-![](layers-detailed.jpg)
-
-#### File-based vs. RDBMS-based storage
-
-TO DO: explain differences here, with pros and cons. File-based storage systems can be abstracted with generic file-system interface, such as fsspec in case of Python. Note that new technologies blur this difference: duckdb allow you to implement runners using SQL, whilst the duckdb runtime in fact only needs a file-based storage system Also relate to tech matrix
-
-
-#### View Definitions and View Runners
-
-TO DO: explain how this plays out in practice. Also clarify that specific implementation of Runners will be closely tied to choice storage. For example:
-
-- Spark and FHIRPath are designed to work on file-based storage systems
-- Can FHIRPath run on jsonb?
-
+TO DO: explain how PostgreSQL runner works, with different storage versions within PostgreSQL (jsonb, relational)
 
 #### Patterns for consumption of tabular views
 
 TO DO:
-
 - expain how views can be persisted (or are they intended to be generated on the fly at all times)?
-- does specification only allow for tabular view on single FHIR Resources, or also tabular views that combine different resources? For example, a `patient_timeline` table that includes all events (`encounter`, start of `EpisodeOfCare`, `Observation`)?
-
-
+- does specification only allow for tabular view on single FHIR Resources, or also tabular views that
+combine different resources? For example, a `patient_timeline` table that includes all events (`encounter`, start of `EpisodeOfCare`, `Observation`)?
 
 ---
 
