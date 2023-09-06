@@ -3,7 +3,9 @@ the *Data Layer*, the *View Layer* and the *Analytics Layer*. This specification
 focuses primarily upon the View layer. The Data and Analytics layers are optional,
 and are provided as general patterns to assist with implementation.
 
-![](layers-high-level.jpg)
+<img src="layers-high-level.jpg" alt="High-level diagram of layers" style="float: none"/>
+
+**Figure 1: High-level diagram of layers**
 
 ### The Data Layer
 The *Data Layer* is a set of lossless representations that collectively enable FHIR
@@ -56,7 +58,10 @@ To clarify the intention and purpose of the specification, consider the [Archima
 layered viewpoint detailing the key Application elements (shown in blue) and Technology elements (green).
 Examples of possible implementations are given here as guidance. 
 
-![](layers-detailed.jpg)
+<img src="layers-detailed.jpg" alt="Detailed diagram of layers with examples" style="float: none"/>
+
+**Figure 2: Detailed diagram of layers with examples**
+
 
 #### File-based vs. RDBMS-based storage for the data layer
 
