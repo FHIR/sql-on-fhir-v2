@@ -1,0 +1,14 @@
+{
+  "name": "sof-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+      "lint": "node lint.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ajv": "^8.12.0"
+  }
+}
