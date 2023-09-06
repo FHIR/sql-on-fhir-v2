@@ -1,7 +1,7 @@
-name: Merge to Main
+name: build
 on:
   push:
-    branches: [ main ]
+    branches: [ '*' ]
 jobs:
   build:
     runs-on: ubuntu-latest
