@@ -1,4 +1,4 @@
-If you are looking for the early version of "SQL on FHIR" 
+If you are looking for the earlier version of "SQL on FHIR" 
 here is a link to [SQL on FHIR v1.0](https://github.com/FHIR/sql-on-fhir-archived)
 We are working to merge both into one!
 
@@ -26,7 +26,7 @@ how these fit together.
 The spec is targeting both Transactional (OLTP) & Analytical Use Cases (OLAP),
 and consists of:
 
-* "View definition" structures to project those forms into flat tables.
+* **[View definition](view-definition.html)** structures to project those forms into flat tables.
 * Guidance for underlying database schemas representing FHIR in JSON and columan
   forms.
 * Guidance for defining and working with code valuesets and terminologies in these systems.
