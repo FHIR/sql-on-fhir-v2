@@ -1,0 +1,113 @@
+{
+  "$id" : "https://sof.fhir.org/tests",
+  "$schema" : "https://json-schema.org/draft/2020-12/schema",
+  "title" : "SQL on FHIR Tests Schema",
+  "description" : "Schema for tests",
+  "type" : "object",
+  "required" : [ "title" ],
+  "properties" : {
+    "title" : {
+      "type" : "string"
+    },
+    "description" : {
+      "type" : "string"
+    },
+    "authors" : {
+      "type" : "array",
+      "items" : {
+        "type" : "string"
+      }
+    },
+    "generated" : {
+      "type" : "boolean"
+    },
+    "resources" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object"
+      }
+    },
+    "tests" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "required" : [ "title", "view", "expected" ],
+        "properties" : {
+          "title" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "view" : {
+            "$ref" : "#/$defs/view"
+          },
+          "expected" : {
+            "type" : "array",
+            "items" : {
+              "type" : "object"
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs" : {
+    "view" : {
+      "type" : "object",
+      "resource" : {
+        "type" : "string"
+      },
+      "select" : {
+        "type" : "array",
+        "items" : {
+          "type" : "object",
+          "properties" : {
+            "path" : {
+              "type" : "string"
+            },
+            "name" : {
+              "type" : "string"
+            },
+            "forEach" : {
+              "type" : "object"
+            },
+            "forOrNul" : {
+              "type" : "object"
+            },
+            "union" : {
+              "type" : "object"
+            },
+            "tags" : {
+              "type" : "array",
+              "items" : {
+                "type" : "object",
+                "required" : [ "name", "value" ],
+                "property" : {
+                  "name" : {
+                    "type" : "string"
+                  },
+                  "value" : {
+                    "type" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "where" : {
+        "type" : "array",
+        "items" : {
+          "type" : "object",
+          "required" : [ "path" ],
+          "properties" : {
+            "path" : {
+              "type" : "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
