@@ -12,16 +12,20 @@ fs.readdir(directoryPath, function (err, files) {
     if (err) {
         return console.log('Unable to scan directory: ' + err);
     }
+    let broken_views = 0;
     files.forEach(function (file) {
-        console.log(file);
         let test = JSON.parse(fs.readFileSync('v1/' + file));
         let res = validate(test);
-        console.log(res);
+        console.log('v1/')
         if(res == true){
-            console.log('file v1/' + file +  ' is good');
+            console.log('* ' + file +  ' is ok');
         } else {
-            console.error('broken file v1/' + file);
+            broken_views += 1;
+            console.error('* ' + file);
             console.error(JSON.stringify(validate.errors, true , " "));
         }
     });
+    if(broken_views > 0) {
+        process.exitCode = 1;
+    }
 });
