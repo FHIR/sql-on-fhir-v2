@@ -1,12 +1,22 @@
-A view is tabular projection of a FHIR resource with columns and inclusion 
-criteria defined using [FHIRPath](https://hl7.org/fhirpath/) expressions.
+A *view definiton* is the central piece of the [View Layer](layers.html#the-view-layer).
+It is is based on [FHIRPath](https://hl7.org/fhirpath/) expresssions to select fields and filtering 
+criteria, and is defined by the **[ViewDefinition](StructureDefinition-ViewDefinition.html)**
+logical model. 
 
-A view runner is an implementation that can execute a view definition and
-return the results as a table. This may be a SQL table, a CSV file, or any
-other format that is capable of representing rows and columns of data.
+The key elements of the ViewDefinition are:
 
-The structure of a view definition is defined using a FHIR logical model: 
-**[ViewDefinition](StructureDefinition-ViewDefinition.html)**
+* The FHIR [resource](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.resource) 
+that is the basis of the view, such as *Patient* or *Observation*.
+* A set of columns to include in the view, defined in the [select](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select) structure.
+* A set of criteria to filter which resources are used in the view, defined in 
+the [where](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.where) field.
+* Several fields such as an optional human-friendly view name, description, draft status, and so on.
+
+A system-specific *view runner* implementation can execute a view definition and
+return the results as a table easily used in the user's tech stack. See the [layers](layers.html) page for details. 
+
+The overall view definition structure can be see in the [ViewDefinition logical model](StructureDefinition-ViewDefinition.html),
+and [several examples are below](#examples).
 
 ### Supported FHIRPath functionality
 
