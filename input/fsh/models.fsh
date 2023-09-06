@@ -10,12 +10,12 @@ Severity: #error
 Expression: "matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
 
 
-Invariant: sql-for-clauses
+Invariant: sql-expressions
 Description: """
-Can only have only one of `path`, `from`, `forEach`, and `forEachOrNull`
+Can only have only one of `path`, `from`, `forEach`, `forEachOrNull`, and `union`
 """
 Severity: #error
-Expression: "(path | from | forEach | forEachOrNull).count() = 1"
+Expression: "(path | from | forEach | forEachOrNull | union).count() = 1"
 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 Logical: ViewDefinition
@@ -95,7 +95,7 @@ criteria are defined by FHIRPath expressions.
     rules.
     """
   * select 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select  "Nested select relative to a parent from, forEach, or forEachOrNull expression"
-* select obeys sql-for-clauses 
+* select obeys sql-expressions
 * where 0..1 string "FHIRPath expression defining a filter condition" """
   A FHIRPath expression that defines a filter that must evaluate to true for a resource to be 
   included in the output. The input context is the collection of resources of the type specified in 
