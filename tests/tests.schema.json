@@ -67,7 +67,7 @@
         },
         "select" : {
           "type" : "array",
-          "items" : {
+            "items" : {
             "type" : "object",
             "properties" : {
               "path" : {
@@ -79,7 +79,7 @@
               "forEach" : {
                 "type" : "object"
               },
-              "forOrNul" : {
+              "forEachOrNull" : {
                 "type" : "object"
               },
               "union" : {
