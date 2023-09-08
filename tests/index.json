@@ -1,0 +1,10 @@
+[
+  {
+    "file": "v1/basic.json",
+    "title": "Basic Tests"
+  },
+  {
+    "file": "v1/extensions.json",
+    "title": "Extensions"
+  }
+]
