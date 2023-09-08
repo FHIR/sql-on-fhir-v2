@@ -46,8 +46,6 @@ See the [View Definition page](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/vie
 * status from http://hl7.org/fhir/ValueSet/publication-status
 * experimental 0..1 boolean "For testing purposes, not real usage"
 * ephemeral 0..1 boolean "The view definition is an ephemeral view for onward transformation"
-  * ^isModifier = true
-  * ^isModifierReason = "Modifies the view defintion as being ephemeral, would never be presisted"
 * date 0..1 dateTime "Date last changed"
 * publisher 0..1 string "Name of the publisher/steward (organization or individual)"
 * contact 0..* ContactDetail "Contact details for the publisher"
