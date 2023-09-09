@@ -12,7 +12,7 @@
     "title": "traverse"
   },
   {
-    "file": "v1/first.json",
+    "file": "v1/fhirpath_first.json",
     "title": "first()"
   }
 ]
