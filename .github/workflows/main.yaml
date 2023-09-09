@@ -12,4 +12,4 @@ jobs:
         with:
           node-version: latest
       - run: cd tests && npm install
-      - run: cd tests && npm run lint
+      - run: cd tests && npm run build

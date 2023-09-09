@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "lint": "node lint.js"
+      "build": "node build.js"
   },
   "author": "",
   "license": "ISC",
