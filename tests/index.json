@@ -6,5 +6,9 @@
   {
     "file": "v1/extensions.json",
     "title": "Extensions"
+  },
+  {
+    "file": "v1/traverse.json",
+    "title": "traverse"
   }
 ]
