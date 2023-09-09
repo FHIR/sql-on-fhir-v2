@@ -7,7 +7,7 @@ underscore -- i.e. with a regular expression of: ^[^_][A-Za-z][A-Za-z0-9_]+$
 This makes it usable as table names in a wide variety of databases.
 """
 Severity: #error
-Expression: "matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
+Expression: "empty() or matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
 
 
 Invariant: sql-expressions
@@ -28,7 +28,7 @@ See the [View Definition page](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/vie
 """
 * url 0..1 uri "Canonical identifier for this view definition, represented as a URI (globally unique)"
 * identifier 0..1 Identifier "Additional identifier for the view definition"
-* name 1..1 string "Name of view definition (computer and database friendly)" """
+* name 0..1 string "Name of view definition (computer and database friendly)" """
   Name of the view definition, must be in a database-friendly format.
 """
 * name obeys sql-name
