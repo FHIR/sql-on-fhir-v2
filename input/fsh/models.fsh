@@ -9,14 +9,6 @@ This makes it usable as table names in a wide variety of databases.
 Severity: #error
 Expression: "matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
 
-
-Invariant: sql-expressions
-Description: """
-Can only have only one of `path`, `from`, `forEach`, `forEachOrNull`, and `union`
-"""
-Severity: #error
-Expression: "(path | from | forEach | forEachOrNull | union).count() = 1"
-
 Invariant: sql-name-requirement
 Description: "Name is required unless ephemeral is true"
 Severity: #error
@@ -45,7 +37,6 @@ See the [View Definition page](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/vie
 * status 1..1 code "draft | active | retired | unknown"
 * status from http://hl7.org/fhir/ValueSet/publication-status
 * experimental 0..1 boolean "For testing purposes, not real usage"
-* ephemeral 0..1 boolean "The view definition is an ephemeral view for onward transformation"
 * date 0..1 dateTime "Date last changed"
 * publisher 0..1 string "Name of the publisher/steward (organization or individual)"
 * contact 0..* ContactDetail "Contact details for the publisher"
