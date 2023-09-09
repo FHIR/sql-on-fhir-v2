@@ -1,0 +1,78 @@
+{
+  "title": "union",
+  "description": "Union used to unify different branches of resource into flat table",
+  "resources": [
+    {
+      "id": "pt1",
+      "contact": [
+        {
+          "telecom": [
+            {
+              "system": "phone",
+              "value": "1"
+            },
+            {
+              "system": "phone",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "telecom": [
+        {
+          "system": "phone",
+          "value": "3"
+        },
+        {
+          "system": "phone",
+          "value": "4"
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "title": "",
+      "description": "union all telecoms",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "alias": "id",
+            "path": "id"
+          },
+          {
+            "union": [
+              {
+                "alias": "phone",
+                "path": "telecom.value"
+              },
+              {
+                "alias": "phone",
+                "path": "contact.telecom.value"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "phone": "1"
+        },
+        {
+          "id": "pt1",
+          "phone": "2"
+        },
+        {
+          "id": "pt1",
+          "phone": "3"
+        },
+        {
+          "id": "pt1",
+          "phone": "4"
+        }
+      ]
+    }
+  ]
+}

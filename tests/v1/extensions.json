@@ -101,11 +101,11 @@
         "resource": "Patient",
         "select": [
           {
-            "name": "id",
+            "alias": "id",
             "path": "id"
           },
           {
-            "name": "birthsex",
+            "alias": "birthsex",
             "path": "extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex').value.ofType(Code).first()"
           }
         ]
@@ -132,11 +132,11 @@
         "resource": "Patient",
         "select": [
           {
-            "name": "id",
+            "alias": "id",
             "path": "id"
           },
           {
-            "name": "race_code",
+            "alias": "race_code",
             "path": "extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-race').extension('ombCategory').value.ofType(Coding).code.first()"
           }
         ]

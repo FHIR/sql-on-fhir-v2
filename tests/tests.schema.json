@@ -43,79 +43,86 @@
             "$ref": "#/$defs/view"
           },
           "expect": {
-            "type": "array",
-            "items": {
+            "type": "array", "items": {
               "type": "object"
             }
           }
         }
       }
     }
-  },
-  "$defs": {
-    "view": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "resource": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "select": {
-          "type": "array",
-          "items": {
+  } ,
+    "$defs": {
+        "_item":
+        {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
-              "path": {
-                "type": "string"
-              },
-              "alias": {
-                "type": "string"
-              },
-              "forEach": {
-                "type": "object"
-              },
-              "forEachOrNull": {
-                "type": "object"
-              },
-              "union": {
-                "type": "object"
-              },
-              "tags": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "required": ["name", "value"],
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "value": {
-                      "type": "string"
+                "select": {
+                    "type": "array",
+                    "items": {"$ref": "#/$defs/_item"}
+                },
+                "path": {
+                    "type": "string"
+                },
+                "alias": {
+                    "type": "string"
+                },
+                "forEach": {
+                    "type": "string"
+                },
+                "forEachOrNull": {
+                    "type": "string"
+                },
+                "union": {
+                    "type": "array",
+                    "items": {"type": "object"}
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["name", "value"],
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "value": {
+                                "type": "string"
+                            }
+                        }
                     }
-                  }
                 }
-              }
             }
-          }
-        },
-        "where": {
-          "type": "array",
-          "items": {
+        } ,
+        "view": {
             "type": "object",
-            "required": ["path"],
             "properties": {
-              "path": {
-                "type": "string"
-              }
+                "name": {
+                    "type": "string"
+                },
+                "resource": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "select": {
+                    "type": "array",
+                    "items": {"$ref": "#/$defs/_item"}
+                },
+                "where": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["path"],
+                        "properties": {
+                            "path": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }
-  }
 }
