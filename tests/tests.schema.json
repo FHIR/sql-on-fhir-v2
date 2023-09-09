@@ -1,101 +1,101 @@
 {
-  "$id" : "http://hl7.org/fhir/uv/sql-on-fhir/tests",
-  "title" : "SQL on FHIR Tests Schema",
-  "description" : "Schema for tests",
-  "type" : "object",
-  "required" : [ "title", "resources", "tests" ],
-  "properties" : {
-    "title" : {
-      "type" : "string"
+  "$id": "http://hl7.org/fhir/uv/sql-on-fhir/tests",
+  "title": "SQL on FHIR Tests Schema",
+  "description": "Schema for tests",
+  "type": "object",
+  "required": ["title", "resources", "tests"],
+  "properties": {
+    "title": {
+      "type": "string"
     },
-    "description" : {
-      "type" : "string"
+    "description": {
+      "type": "string"
     },
-    "authors" : {
-      "type" : "array",
-      "items" : {
-        "type" : "string"
+    "authors": {
+      "type": "array",
+      "items": {
+        "type": "string"
       }
     },
-    "generated" : {
-      "type" : "boolean"
+    "generated": {
+      "type": "boolean"
     },
-    "resources" : {
-      "type" : "array",
-      "items" : {
-        "type" : "object"
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object"
       }
     },
-    "tests" : {
-      "type" : "array",
-      "minItems" : 1,
-      "items" : {
-        "type" : "object",
-        "required" : [ "title", "view", "expect" ],
-        "properties" : {
-          "title" : {
-            "type" : "string"
+    "tests": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["title", "view", "expect"],
+        "properties": {
+          "title": {
+            "type": "string"
           },
-          "description" : {
-            "type" : "string"
+          "description": {
+            "type": "string"
           },
-          "view" : {
-            "$ref" : "#/$defs/view"
+          "view": {
+            "$ref": "#/$defs/view"
           },
-          "expect" : {
-            "type" : "array",
-            "items" : {
-              "type" : "object"
+          "expect": {
+            "type": "array",
+            "items": {
+              "type": "object"
             }
           }
         }
       }
     }
   },
-  "$defs" : {
-    "view" : {
-      "type" : "object",
-      "properties" : {
-        "name" : {
-          "type" : "string"
+  "$defs": {
+    "view": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
         },
-        "resource" : {
-          "type" : "string"
+        "resource": {
+          "type": "string"
         },
-        "description" : {
-          "type" : "string"
+        "description": {
+          "type": "string"
         },
-        "select" : {
-          "type" : "array",
-            "items" : {
-            "type" : "object",
-            "properties" : {
-              "path" : {
-                "type" : "string"
+        "select": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
               },
-              "alias" : {
-                "type" : "string"
+              "alias": {
+                "type": "string"
               },
-              "forEach" : {
-                "type" : "object"
+              "forEach": {
+                "type": "object"
               },
-              "forEachOrNull" : {
-                "type" : "object"
+              "forEachOrNull": {
+                "type": "object"
               },
-              "union" : {
-                "type" : "object"
+              "union": {
+                "type": "object"
               },
-              "tags" : {
-                "type" : "array",
-                "items" : {
-                  "type" : "object",
-                  "required" : [ "name", "value" ],
-                  "properties" : {
-                    "name" : {
-                      "type" : "string"
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "value"],
+                  "properties": {
+                    "name": {
+                      "type": "string"
                     },
-                    "value" : {
-                      "type" : "string"
+                    "value": {
+                      "type": "string"
                     }
                   }
                 }
@@ -103,14 +103,14 @@
             }
           }
         },
-        "where" : {
-          "type" : "array",
-          "items" : {
-            "type" : "object",
-            "required" : [ "path" ],
-            "properties" : {
-              "path" : {
-                "type" : "string"
+        "where": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["path"],
+            "properties": {
+              "path": {
+                "type": "string"
               }
             }
           }
