@@ -6,7 +6,7 @@
       "resourceType": "Patient",
       "id": "pt1",
       "birthDate": "1980",
-      "identifier": [{ "value": "ssn1" }]
+      "identifier": [{ "value": "ssn1.1" }]
     },
     {
       "resourceType": "Patient",
@@ -16,29 +16,37 @@
   ],
   "tests": [
     {
-      "title": "top element",
-      "description": "how do we handle nulls? ",
-      "view": {
-        "resource": "Patient",
-        "select": [{ "path": "id" }, { "path": "birthDate" }]
-      },
-      "expect": [
-        { "id": "pt1", "birthDate": "1980" },
-        { "id": "pt2", "bithDate": null }
-      ]
-    },
-    {
-      "title": "top element",
-      "description": "how do we handle nulls? ",
+      "title": "by default take first",
+      "description": " ",
       "view": {
         "resource": "Patient",
         "select": [
           { "path": "id" },
+          { "path": "birthDate" },
           { "path": "identifier.value", "alias": "identifier" }
         ]
       },
       "expect": [
-        { "id": "pt1", "identifier": ["ssn1"] },
+        { "id": "pt1", "identifier": "ssn1.1", "birthDate": "1980" },
+        { "id": "pt2", "identifier": "ssn2.1", "bithDate": null }
+      ]
+    },
+    {
+      "title": "return collection",
+      "description": " ",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          { "path": "id" },
+          {
+            "path": "identifier.value",
+            "alias": "identifier",
+            "return": "collection"
+          }
+        ]
+      },
+      "expect": [
+        { "id": "pt1", "identifier": ["ssn1.1"] },
         { "id": "pt2", "identifier": ["ssn2.1", "ssn2.2"] }
       ]
     }
