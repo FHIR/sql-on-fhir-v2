@@ -1,0 +1,392 @@
+{
+	"title": "logic",
+	"description": "test out basic logical operands AND, OR, NOT",
+	"resources": [{
+			"resourceType": "Patient",
+			"id": "pt1",
+			"gender": "male",
+			"birthDate": "1944-11-17",
+			"deceasedBoolean": false
+		},
+		{
+			"resourceType": "Patient",
+			"id": "pt2",
+			"gender": "female",
+			"birthDate": "1944-11-17",
+			"deceasedBoolean": null
+		},
+		{
+			"resourceType": "Patient",
+			"id": "pt3",
+			"gender": null,
+			"birthDate": "1944-11-17",
+			"deceasedBoolean": true
+		},
+		{
+			"resourceType": "Patient",
+			"id": "pt4",
+			"gender": null,
+			"birthDate": "1944-11-17",
+			"deceasedBoolean": null
+		}
+	],
+	"tests": [{
+			"title": "handle AND operator - first true, second true",
+			"description": "handle AND operator - first true, second true",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'male'"
+					},
+					{
+						"path": "deceasedFlag.use = false",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": true
+			}]
+		},
+		{
+			"title": "handle AND operator - first true, second false",
+			"description": "handle AND operator - first true, second false",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = false",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": false
+			}]
+		},
+		{
+			"title": "handle AND operator - first true, second empty",
+			"description": "handle AND operator - first true, second empty",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'male'"
+					},
+					{
+						"path": "deceasedFlag.use = true",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{}]
+		},
+
+		{
+			"title": "AND operator",
+			"description": "handle AND operator - first false, second true",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = false",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": false
+			}]
+		},
+		{
+			"title": "AND operator",
+			"description": "handle AND operator - first false, second false",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = false",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": false
+			}]
+		},
+		{
+			"title": "AND operator",
+			"description": "handle AND operator - first false, second empty",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = true",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{}]
+		},
+
+		{
+			"title": "AND operator",
+			"description": "handle AND operator - first empty, second true",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = true",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{}]
+		},
+		{
+			"title": "AND operator",
+			"description": "handle AND operator - first empty, second false",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = false",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": false
+			}]
+		},
+		{
+			"title": "AND operator",
+			"description": "handle AND operator - first empty, second empty",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = true",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{}]
+		},
+
+
+		{
+			"title": "OR operator",
+			"description": "handle OR operator - first true, second true",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'male'"
+					},
+					{
+						"path": "deceasedFlag.use = false",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": true
+			}]
+		},
+		{
+			"title": "OR operator",
+			"description": "handle OR operator - first true, second false",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = false",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": true
+			}]
+		},
+		{
+			"title": "OR operator",
+			"description": "handle AND operator - first true, second empty",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'male'"
+					},
+					{
+						"path": "deceasedFlag.use = true",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": true
+			}]
+		},
+
+		{
+			"title": "OR operator",
+			"description": "handle OR operator - first false, second true",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = false",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": true
+			}]
+		},
+		{
+			"title": "OR operator",
+			"description": "handle OR operator - first false, second false",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = false",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": false
+			}]
+		},
+		{
+			"title": "OR operator",
+			"description": "handle OR operator - first false, second empty",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = true",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{}]
+		},
+
+		{
+			"title": "OR operator",
+			"description": "handle OR operator - first empty, second true",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = true",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{
+				"isDeceased": true
+			}]
+		},
+		{
+			"title": "OR operator",
+			"description": "handle OR operator - first empty, second false",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = false",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{}]
+		},
+		{
+			"title": "OR operator",
+			"description": "handle OR operator - first empty, second empty",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+						"path": "gender.use = 'female'"
+					},
+					{
+						"path": "deceasedFlag.use = true",
+						"alias": "isDeceased"
+					}
+				]
+			},
+			"expect": [{}]
+		},
+
+		{
+			"title": "handle NOT operator - true",
+			"description": "handle NOT operator - true",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+					"path": "deceasedFlag.use = false",
+					"alias": "isDeceased"
+				}]
+			},
+			"expect": [{
+				"isDeceased": true
+			}]
+		},
+		{
+			"title": "handle NOT operator - false",
+			"description": "handle NOT operator - false",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+					"path": "deceasedFlag.use = true",
+					"alias": "isDeceased"
+				}]
+			},
+			"expect": [{
+				"isDeceased": false
+			}]
+		},
+		{
+			"title": "handle NOT operator - empty",
+			"description": "handle NOT operator - empty",
+			"view": {
+				"resource": "Patient",
+				"select": [{
+					"path": "deceasedFlag.use = true",
+					"alias": "isDeceased"
+				}]
+			},
+			"expect": [{}]
+		}
+
+	]
+}
