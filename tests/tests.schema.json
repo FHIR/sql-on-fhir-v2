@@ -73,7 +73,7 @@
               "path" : {
                 "type" : "string"
               },
-              "name" : {
+              "alias" : {
                 "type" : "string"
               },
               "forEach" : {
