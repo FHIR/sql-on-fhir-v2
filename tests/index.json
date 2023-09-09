@@ -10,9 +10,6 @@
   {
     "file": "v1/traverse.json",
     "title": "traverse"
-  },
-  {
-    "file": "v1/fhirpath_first.json",
-    "title": "first()"
   }
+  
 ]

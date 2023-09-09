@@ -1,36 +1,63 @@
-If you are looking for the earlier version of "SQL on FHIR" 
-here is a link to [SQL on FHIR v1.0](https://github.com/FHIR/sql-on-fhir-archived)
-We are working to merge both into one!
+_This is an evolution of the original "SQL on FHIR" draft, which can 
+[still be found here](https://github.com/FHIR/sql-on-fhir-archived)._
+
+### Intro
+The [FHIR®](https://hl7.org/fhir) standard is a great fit for RESTful and JSON-based 
+systems, helping make healthcare data liquidity real. This spec aims to take FHIR usage a step
+futher, making FHIR work well with familiar and efficient SQL engines and surrounding ecosystems. 
+
+We do this by creating simple, tabular *views* of the underlying FHIR data that are tailored
+to specific needs. Views are defined with [FHIRPath](https://hl7.org/fhirpath/) expressions in
+a logical structure to specify things like column aliases and unnested items.
+
+Let's start with a simple example, defining a "patient_demographics" view with the following
+[ViewDefinition](view-definition.html) structure:
+
+```js
+{
+  "name": "patient_demographics",
+  "resource": "Patient",
+  "description": "A view of simple patient demographics",
+  "select": [
+    { "path": "id" },
+    { "path": "gender" },
+    {
+      // Select nested fields from the first official name.
+      "from": "name.where(use = 'official').first()",
+      "select": [
+        {
+          "path": "given.join(' ')",
+          "alias": "given_name"
+        },
+        {
+          "path": "family",
+          "alias": "family_name"
+        }
+      ]
+    }
+  ]
+}
+```
+
+This will result in a table like this, which can be persistend and queried in your database of choice:
+
+| id | gender | given_name    | family_name |
+|----|--------|---------------|-------------|
+| 1  | female | Malvina Gerda | Vicario     |
+| 2  | male   | Yolotzin Adel | Bristow     |
+| 3  | other  | Jin Gomer     | Aarens      |
+
+Such tabular views can be created for any FHIR resource, with
+[more examples here](view-definition.html#examples). See the 
+[View Definition page](view-definition.html) for details, and the
+[System Layers](layers.html) page for how views fit into a larger analytic ecosystem.
+
+### Contributing
+Contributors and early users are welcome! Here are some places to start:
 
 * Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions)
 * Join us on [Weekly Meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
-* Ask any questios in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
-* Checkout the interactive [demo](http://142.132.196.32:7777/#/console)
-
-### Intro
-Healthcare data is increasingly becoming available in the [FHIR®](https://hl7.org/fhir)
-standard, leading to the need to make that data to work well with in widely-used data
-analysis tools. But here we encounter a mismatch: the RESTful, resource-centric
-design of FHIR is great for that use case but its structure is difficult to use
-in analytic databases and tools built on top of them. *SQL on FHIR* is an effort to
-address that gap.
-
-The *SQL on FHIR* approach is centered on portable projections of FHIR resources onto
-flattened views, defined by [View Definition](view-definition.html) structures
-that build on existing FHIR constructs, like FHIRPath. Implementations of this spec can
-then apply these view definitions to variety of underlying data models, such as
-JSON databases, columnar databases, or the raw FHIR data itself. See the
-[System Layers](layers.html) page for details on
-how these fit together.
-
-The spec is targeting both Transactional (OLTP) & Analytical Use Cases (OLAP),
-and consists of:
-
-* **[View definition](view-definition.html)** structures to project those forms into flat tables.
-* Guidance for underlying database schemas representing FHIR in JSON and columan
-  forms.
-* Guidance for defining and working with code valuesets and terminologies in these systems.
-* Patterns for building analytics on top of the underlying structures.
+* Ask any questions in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
 
 ### How to read this guide
 * **[Home](index.html)**: Intro of the project
