@@ -45,7 +45,7 @@
         "path" : "birthDate"
       } ]
     },
-    "expected" : [ {
+    "expect" : [ {
       "id" : "pt1",
       "gender" : "male",
       "bod" : "1950-01-01"
@@ -69,7 +69,7 @@
         "path" : "name.given"
       } ]
     },
-    "expected" : [ {
+    "expect" : [ {
       "id" : "pt1",
       "last_name" : [ "f1.1", "f1.2" ],
       "first_name" : [ "g1.1", "g1.2", "g1.3" ]
@@ -93,7 +93,7 @@
         "path" : "name.given.first()"
       } ]
     },
-    "expected" : [ {
+    "expect" : [ {
       "id" : "pt1",
       "last_name" : "f1.1",
       "first_name" : "g1.1"
@@ -117,7 +117,7 @@
         "path" : "name.where(use='official').given.first()"
       } ]
     },
-    "expected" : [ {
+    "expect" : [ {
       "id" : "pt1",
       "last_name" : "f1.1",
       "first_name" : "g1.1"
@@ -138,7 +138,7 @@
         "path" : "address.city.first()"
       } ]
     },
-    "expected" : [ {
+    "expect" : [ {
       "id" : "pt1",
       "city" : "c1"
     }, {

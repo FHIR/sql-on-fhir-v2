@@ -31,7 +31,7 @@
       "minItems" : 1,
       "items" : {
         "type" : "object",
-        "required" : [ "title", "view", "expected" ],
+        "required" : [ "title", "view", "expect" ],
         "properties" : {
           "title" : {
             "type" : "string"
@@ -42,7 +42,7 @@
           "view" : {
             "$ref" : "#/$defs/view"
           },
-          "expected" : {
+          "expect" : {
             "type" : "array",
             "items" : {
               "type" : "object"
