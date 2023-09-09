@@ -85,18 +85,18 @@ for each patient:
   "resource": "Patient",
   "select": [
     {
-      "name": "patient_id",
+      "alias": "patient_id",
       "path": "id"
     },
     {
       "forEach": "address",
       "select": [
         {
-          "name": "city",
+          "alias": "city",
           "path": "city"
         },
         {
-          "name": "zip",
+          "alias": "zip",
           "path": "postalCode"
         }
       ]
@@ -133,11 +133,11 @@ common and can simplify analysis in some systems.
   "description": "A view of simple patient birth dates",
   "select": [
     {
-      "name": "id",
+      "alias": "id",
       "path": "id"
     },
     {
-      "name": "birth_date",
+      "alias": "birth_date",
       "path": "birthDate",
       "tags": [
         {
@@ -172,22 +172,22 @@ The `join` function is used to create a single given name field.
   "desc": "A view of simple patient demographics",
   "select": [
     {
-      "name": "id",
+      "alias": "id",
       "path": "id"
     },
     {
-      "name": "gender",
+      "alias": "gender",
       "path": "gender"
     },
     {
       "from": "name.where(use = 'official').first()",
       "select": [
         {
-          "name": "given_name",
+          "alias": "given_name",
           "path": "given.join(' ')"
         },
         {
-          "name": "family_name",
+          "alias": "family_name",
           "path": "family"
         }
       ]
@@ -219,27 +219,27 @@ into separate rows. The `join` function is used to create a single address line.
   "resource": "Patient",
   "select": [
     {
-      "name": "patient_id",
+      "alias": "patient_id",
       "path": "id"
     },
     {
       "forEach": "address",
       "select": [
         {
-          "name": "street",
+          "alias": "street",
           "path": "line.join('\n')",
           "description": "The full street address, including newlines if present."
         },
         {
-          "name": "use",
+          "alias": "use",
           "path": "use"
         },
         {
-          "name": "city",
+          "alias": "city",
           "path": "city"
         },
         {
-          "name": "zip",
+          "alias": "zip",
           "path": "postalCode"
         }
       ]
@@ -293,34 +293,34 @@ data absent reason for the systolic or diastolic component.
   ],
   "select": [
     {
-      "name": "id",
+      "alias": "id",
       "path": "id"
     },
     {
-      "name": "patient_id",
+      "alias": "patient_id",
       "path": "subject.getId()"
     },
     {
-      "name": "effective_date_time",
+      "alias": "effective_date_time",
       "path": "effective.ofType(dateTime)"
     },
     {
       "from": "%sbp_component",
       "select": [
         {
-          "name": "sbp_quantity_system",
+          "alias": "sbp_quantity_system",
           "path": "value.ofType(Quantity).system"
         },
         {
-          "name": "sbp_quantity_code",
+          "alias": "sbp_quantity_code",
           "path": "value.ofType(Quantity).code"
         },
         {
-          "name": "sbp_quantity_display",
+          "alias": "sbp_quantity_display",
           "path": "value.ofType(Quantity).unit"
         },
         {
-          "name": "sbp_quantity_value",
+          "alias": "sbp_quantity_value",
           "path": "value.ofType(Quantity).value"
         }
       ]
@@ -329,19 +329,19 @@ data absent reason for the systolic or diastolic component.
       "from": "%dbp_component",
       "select": [
         {
-          "name": "dbp_quantity_system",
+          "alias": "dbp_quantity_system",
           "path": "value.ofType(Quantity).system"
         },
         {
-          "name": "dbp_quantity_code",
+          "alias": "dbp_quantity_code",
           "path": "value.ofType(Quantity).code"
         },
         {
-          "name": "dbp_quantity_display",
+          "alias": "dbp_quantity_display",
           "path": "value.ofType(Quantity).unit"
         },
         {
-          "name": "dbp_quantity_value",
+          "alias": "dbp_quantity_value",
           "path": "value.ofType(Quantity).value"
         }
       ]
