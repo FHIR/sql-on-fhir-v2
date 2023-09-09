@@ -1,5 +1,6 @@
 .DS_Store
 Thumbs.db
+node_modules
 /fsh-generated
 /input-cache
 /output

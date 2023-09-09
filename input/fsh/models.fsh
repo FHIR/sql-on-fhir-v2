@@ -7,7 +7,7 @@ underscore -- i.e. with a regular expression of: ^[^_][A-Za-z][A-Za-z0-9_]+$
 This makes it usable as table names in a wide variety of databases.
 """
 Severity: #error
-Expression: "matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
+Expression: "empty() or matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
 
 
 Invariant: sql-expressions
@@ -28,7 +28,7 @@ See the [View Definition page](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/vie
 """
 * url 0..1 uri "Canonical identifier for this view definition, represented as a URI (globally unique)"
 * identifier 0..1 Identifier "Additional identifier for the view definition"
-* name 1..1 string "Name of view definition (computer and database friendly)" """
+* name 0..1 string "Name of view definition (computer and database friendly)" """
   Name of the view definition, must be in a database-friendly format.
 """
 * name obeys sql-name
@@ -65,10 +65,10 @@ See the [View Definition page](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/vie
     The string that will be substituted in place of the constant reference
   """
 * select 0..* BackboneElement "Defines the content of a column within the view"
-  * name 0..1 string "Name of column produced in the output" """
-    Name of the column produced in the output, must be in a database-friendly format.
+  * alias 0..1 string "Column alias produced in the output" """
+    Alias of the column produced in the output, must be in a database-friendly format.
   """
-  * name obeys sql-name
+  * alias obeys sql-name
   * path 0..1 string "FHIRPath expression that creates a column and defines its content" """
     A FHIRPath expression that evaluates to the value that will be output in the column for each 
     resource. The input context is the collection of resources of the type specified in the resource 

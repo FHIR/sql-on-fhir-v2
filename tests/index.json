@@ -10,9 +10,5 @@
   {
     "file": "v1/traverse.json",
     "title": "traverse"
-  },
-  {
-    "file": "v1/union.json",
-    "title": "union"
   }
 ]
