@@ -5,7 +5,7 @@
   "resources": [
     {
       "id": "pt1",
-      "name": [
+      "alias": [
         {
           "use": "official",
           "family": "f1.1",
@@ -26,7 +26,7 @@
     },
     {
       "id": "pt2",
-      "name": [
+      "alias": [
         {
           "family": "f2.1",
           "given": ["g2.1"]
@@ -48,15 +48,15 @@
         "resource": "Patient",
         "select": [
           {
-            "name": "id",
+            "alias": "id",
             "path": "id"
           },
           {
-            "name": "gender",
+            "alias": "gender",
             "path": "gender"
           },
           {
-            "name": "bod",
+            "alias": "bod",
             "path": "birthDate"
           }
         ]
@@ -80,15 +80,15 @@
         "resource": "Patient",
         "select": [
           {
-            "name": "id",
+            "alias": "id",
             "path": "id"
           },
           {
-            "name": "last_name",
+            "alias": "last_name",
             "path": "name.family"
           },
           {
-            "name": "first_name",
+            "alias": "first_name",
             "path": "name.given"
           }
         ]
@@ -112,15 +112,15 @@
         "resource": "Patient",
         "select": [
           {
-            "name": "id",
+            "alias": "id",
             "path": "id"
           },
           {
-            "name": "last_name",
+            "alias": "last_name",
             "path": "name.family.first()"
           },
           {
-            "name": "first_name",
+            "alias": "first_name",
             "path": "name.given.first()"
           }
         ]
@@ -144,15 +144,15 @@
         "resource": "Patient",
         "select": [
           {
-            "name": "id",
+            "alias": "id",
             "path": "id"
           },
           {
-            "name": "last_name",
+            "alias": "last_name",
             "path": "name.where(use='official').family.first()"
           },
           {
-            "name": "first_name",
+            "alias": "first_name",
             "path": "name.where(use='official').given.first()"
           }
         ]
@@ -176,11 +176,11 @@
         "resource": "Patient",
         "select": [
           {
-            "name": "id",
+            "alias": "id",
             "path": "id"
           },
           {
-            "name": "city",
+            "alias": "city",
             "path": "address.city.first()"
           }
         ]

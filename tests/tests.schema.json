@@ -53,6 +53,47 @@
     }
   },
   "$defs": {
+    "_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "select": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/_item" }
+        },
+        "path": {
+          "type": "string"
+        },
+        "alias": {
+          "type": "string"
+        },
+        "forEach": {
+          "type": "string"
+        },
+        "forEachOrNull": {
+          "type": "string"
+        },
+        "union": {
+          "type": "array",
+          "items": { "type": "object" }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "value"],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
     "view": {
       "type": "object",
       "properties": {
@@ -67,41 +108,7 @@
         },
         "select": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "path": {
-                "type": "string"
-              },
-              "alias": {
-                "type": "string"
-              },
-              "forEach": {
-                "type": "object"
-              },
-              "forEachOrNull": {
-                "type": "object"
-              },
-              "union": {
-                "type": "object"
-              },
-              "tags": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "required": ["name", "value"],
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "value": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          }
+          "items": { "$ref": "#/$defs/_item" }
         },
         "where": {
           "type": "array",
