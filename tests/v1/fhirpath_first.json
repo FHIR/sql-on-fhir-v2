@@ -40,7 +40,7 @@
         "select": [
           {
             "path": "name.first().given.first()",
-            "name": "given"
+            "alias": "given"
           }
         ]
       },
