@@ -1,7 +1,5 @@
 {
   "title": "Basic Tests",
-  "authors": ["niquola"],
-  "generated": true,
   "resources": [
     {
       "resourceType": "Patient",
