@@ -67,6 +67,9 @@
         "alias": {
           "type": "string"
         },
+        "from": {
+          "type": "string"
+        },
         "forEach": {
           "type": "string"
         },

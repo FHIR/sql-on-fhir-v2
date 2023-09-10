@@ -5,13 +5,14 @@
   "main": "index.js",
   "scripts": {
     "fmt": "npx prettier . --write",
-    "build": "node build.js"
+    "build": "node build.mjs"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "ajv": "^8.12.0",
-    "prettier": "^3.0.3"
+    "prettier": "^3.0.3",
+    "fhirpath": "^3.6.1"
   },
   "prettier": {
     "trailingComma": "es5",

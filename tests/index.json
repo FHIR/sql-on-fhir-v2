@@ -1,18 +1,6 @@
 [
   {
-    "file": "v1/basic.json",
-    "title": "Basic Tests"
-  },
-  {
-    "file": "v1/extensions.json",
-    "title": "Extensions"
-  },
-  {
-    "file": "v1/fhirpath_first.json",
-    "title": "first()"
-  },
-  {
-    "file": "v1/union.json",
-    "title": "union"
+    "file": "v1/test-where.json",
+    "title": "where"
   }
 ]
