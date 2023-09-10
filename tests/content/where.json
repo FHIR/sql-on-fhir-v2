@@ -1,0 +1,141 @@
+{
+  "title": "where",
+  "resources": [
+    {
+      "resourceType": "Patient",
+      "id": "p1",
+      "name": [
+        {
+          "use": "official",
+          "family": "f1"
+        }
+      ]
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p2",
+      "name": [
+        {
+          "use": "nickname",
+          "family": "f2"
+        }
+      ]
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p3",
+      "name": [
+        {
+          "use": "nickname",
+          "given": ["g3"],
+          "family": "f3"
+        }
+      ]
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o1",
+      "valueInteger": 12
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o2",
+      "valueInteger": 10
+    }
+  ],
+  "tests": [
+    {
+      "title": "simple where path with result",
+      "view": {
+        "resource": "Patient",
+        "select": [{ "path": "id" }],
+        "where": [{ "path": "name.use = 'official'" }]
+      },
+      "expect": [{ "id": "p1" }]
+    },
+    {
+      "title": "simple where path with no results",
+      "view": {
+        "resource": "Patient",
+        "select": [{ "path": "id" }],
+        "where": [{ "path": "name.use = 'maiden'" }]
+      },
+      "expect": []
+    },
+    {
+      "title": "simple where path with greater than inequality",
+      "view": {
+        "resource": "Observation",
+        "select": [{ "path": "id" }],
+        "where": [{ "path": "valueInteger > 11" }]
+      },
+      "expect": [{ "id": "o1" }]
+    },
+    {
+      "title": "simple where path with less than inequality",
+      "view": {
+        "resource": "Observation",
+        "select": [{ "path": "id" }],
+        "where": [{ "path": "valueInteger < 11" }]
+      },
+      "expect": [{ "id": "o2" }]
+    },
+    {
+      "title": "multiple where paths",
+      "view": {
+        "resource": "Patient",
+        "select": [{ "path": "id" }],
+        "where": [
+          { "path": "name.use = 'official'" },
+          { "path": "name.family = 'f1'" }
+        ]
+      },
+      "expect": [{ "id": "p1" }]
+    },
+    {
+      "title": "where path with an empty string should error",
+      "view": {
+        "resource": "Patient",
+        "select": [{ "path": "id" }],
+        "where": [{ "path": "" }]
+      },
+      "expectError": true
+    },
+    {
+      "title": "where path with an 'and' connector",
+      "view": {
+        "resource": "Patient",
+        "select": [{ "path": "id" }],
+        "where": [{ "path": "name.use = 'official' and name.family = 'f1'" }]
+      },
+      "expect": [{ "id": "p1" }]
+    },
+    {
+      "title": "where path with an 'or' connector",
+      "view": {
+        "resource": "Patient",
+        "select": [{ "path": "id" }],
+        "where": [{ "path": "name.use = 'official' or name.family = 'f2'" }]
+      },
+      "expect": [{ "id": "p1" }, { "id": "p2" }]
+    },
+    {
+      "title": "where path with a where function (and)",
+      "view": {
+        "resource": "Patient",
+        "select": [{ "path": "id" }],
+        "where": [{ "path": "name.where(use = 'official' and family = 'f1')" }]
+      },
+      "expect": [{ "id": "p1" }]
+    },
+    {
+      "title": "where path with a where function (or)",
+      "view": {
+        "resource": "Patient",
+        "select": [{ "path": "id" }],
+        "where": [{ "path": "name.where(use = 'official' or family = 'f2')" }]
+      },
+      "expect": [{ "id": "p1" }, { "id": "p2" }]
+    }
+  ]
+}
