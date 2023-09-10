@@ -9,8 +9,8 @@ export async function* processResources(resourceGenerator, configIn) {
   compileViewDefinition(config)
   for await (const resource of resourceGenerator) {
     if ((config?.$resource || ((r) => r))(resource).length) {
-      yield* extract(resource, config, context)
-    }
+      yield* extract(resource, {select: [config]}, context)
+    } 
   }
 }
 
@@ -50,24 +50,21 @@ function compileViewDefinition(viewDefinition) {
         .filter((p) => !p.includes('('))
         .slice(-1)[0]
   }
+
   if (viewDefinition.path) {
     viewDefinition.$path = compile(viewDefinition.path)
-  }
-  if (viewDefinition.from) {
-    viewDefinition.$from = compile(viewDefinition.from, viewDefinition.where)
-  }
-  if (viewDefinition.forEach) {
+  } else if (viewDefinition.forEach) {
     viewDefinition.$forEach = compile(
       viewDefinition.forEach,
       viewDefinition.where
     )
-  }
-  if (viewDefinition.forEachOrNull) {
+  } else if (viewDefinition.forEachOrNull) {
     viewDefinition.$forEachOrNull = compile(
       viewDefinition.forEachOrNull,
       viewDefinition.where
     )
   }
+
   if (viewDefinition.resource) {
     viewDefinition.$resource = compile(
       viewDefinition.resource,
@@ -88,30 +85,21 @@ function cartesianProduct([first, ...rest]) {
   )
 }
 
+const identity = (v) => [v]
+
 function extractFields(obj, viewDefinition, context = {}) {
   let fields = []
   for (let field of viewDefinition) {
-    let { name, alias, path, $path, $forEach, $forEachOrNull, select, $from } =
-      field
-    alias = alias ?? name
-    if (alias && $path) {
+    let { alias, path, $path, $forEach, $forEachOrNull, select, $from } = field
+    if (alias && path) {
       const result = $path(obj, context)
-      if (result.length === 1) {
-        fields.push([{ [alias]: result[0] }])
-      } else if (result.length > 1) {
-        throw `alias=${alias} from path=${path} matched more than one element`
+      if (result.length <= 1) {
+        fields.push([{ [alias]: result?.[0] ?? null }])
       } else {
-        fields.push([])
+        throw `alias=${alias} from path=${path} matched more than one element`
       }
-    } else if (($forEach || $forEachOrNull || $from) && select) {
-      let nestedObjects = ($forEach || $forEachOrNull || $from)(obj, context)
-      if ($from && nestedObjects.length > 1) {
-        console.error(
-          `Used $from keyword but matched >1 row`,
-          field.from,
-          nestedObjects
-        )
-      }
+    } else if (select) {
+      let nestedObjects = ($forEach ?? $forEachOrNull ?? identity)(obj, context)
       let rows = []
 
       for (let nestedObject of nestedObjects) {
@@ -126,7 +114,7 @@ function extractFields(obj, viewDefinition, context = {}) {
       }
       fields.push(rows)
     } else {
-      console.error('Bad path', viewDefinition)
+      console.error('Bad path', JSON.stringify(viewDefinition))
     }
   }
   return fields
@@ -197,6 +185,7 @@ export async function runTests(source) {
         observed,
       }
     } catch (error) {
+      console.log(error)
       t.result = {
         passed: false,
         error,
