@@ -137,6 +137,12 @@ function extract(obj, viewDefinition, context = {}) {
   return cartesianProduct(fields)
 }
 
+export async function* fromArray(resources) {
+  for (const r of resources) {
+    yield r
+  }
+}
+
 export async function* fromUrl(url) {
   const response = await fetch(url)
   yield* fromNdjsonResponse(response)
@@ -178,22 +184,18 @@ export async function* fromNdjsonResponse(response) {
 
 export async function runTests(source) {
   const results = JSON.parse(JSON.stringify(source))
-  results.implementation = 'https://github.com/jmandel/fhir-view-to-array'
+  results.implementation = 'https://github.com/fhir/sql-on-fhir-v2'
   for (const t of results.tests) {
     try {
-      const resources = async function* () {
-        for (const r of results.resources) {
-          yield r
-        }
-      }
-      const processor = processResources(resources(), t.view)
-      const rows = []
+      const processor = processResources(fromArray(results.resources), t.view)
+      const observed = []
       for await (const row of processor) {
-        rows.push(row)
+        observed.push(row)
       }
-      const result = arraysMatch(rows, t.expect)
-      t.result = result.passed ? { ...result, message: undefined } : result
-      t.result.observed = rows
+      t.result = {
+          ...arraysMatch(observed, t.expect),
+          observed
+      }
     } catch (error) {
       t.result = {
         passed: false,
@@ -259,9 +261,7 @@ function arraysMatch(arr1, arr2) {
     }
   }
 
-  // If all checks passed, arrays match
   return {
     passed: true,
-    message: 'Arrays match successfully.',
   }
 }
