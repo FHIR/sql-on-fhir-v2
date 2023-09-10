@@ -197,9 +197,16 @@ export async function runTests(source) {
         observed,
       }
     } catch (error) {
-      t.result = {
-        passed: false,
-        error,
+      if (t.expectError) {
+        t.result = {
+          passed: true,
+          error,
+        }
+      } else {
+        t.result = {
+          passed: false,
+          error,
+        }
       }
     }
   }

@@ -60,5 +60,3 @@ if (broken_views > 0) {
   console.log(`Broken tests: ${broken_views}. Exiting with error.`)
   process.exit(1)
 }
-console.log('Success, writing index')
-await fs.writeFile('index.json', JSON.stringify(tests, null, 2), 'utf8')

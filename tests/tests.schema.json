@@ -31,7 +31,7 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["title", "view", "expect"],
+        "required": ["title", "view"],
         "properties": {
           "title": {
             "type": "string"
@@ -47,7 +47,11 @@
             "items": {
               "type": "object"
             }
+          },
+          "expectError": {
+            "type": "boolean"
           }
+
         }
       }
     }
