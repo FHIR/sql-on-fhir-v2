@@ -96,8 +96,10 @@ function extractFields(obj, viewDefinition, context = {}) {
     alias = alias ?? name
     if (alias && $path) {
       const result = $path(obj, context)
-      if (result.length) {
+      if (result.length === 1) {
         fields.push([{ [alias]: result[0] }])
+      } else if (result.length > 1) {
+          throw `alias=${alias} from path=${path} matched more than one element`
       } else {
         fields.push([])
       }
@@ -191,9 +193,7 @@ export async function runTests(source) {
       }
       const result = arraysMatch(rows, t.expect)
       t.result = result.passed ? { ...result, message: undefined } : result
-      if (!t.result.passed) {
-        t.observed = rows
-      }
+      t.result.observed = rows
     } catch (error) {
       t.result = {
         passed: false,

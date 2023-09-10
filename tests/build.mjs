@@ -13,6 +13,8 @@ const schema = JSON.parse(await fs.readFile('./tests.schema.json'))
 const validate = ajv.compile(schema)
 
 const files = await fs.readdir('./v1')
+console.log('v1/')
+
 let broken_views = 0
 for (const file of files) {
   if (path.extname(file) !== '.json') {
@@ -21,10 +23,12 @@ for (const file of files) {
 
   let test = JSON.parse(await fs.readFile('v1/' + file))
   let res = validate(test)
-  console.log('v1/')
+
   if (res == true) {
     console.log('* ' + file + ' is schema-valid')
     const testResults = await runTests(test)
+    console.log("TR", testResults);
+
     if (testResults.tests.every((r) => r.result.passed)) {
       console.log('* ' + file + ' tests all pass')
       tests.push({ file: 'v1/' + file, title: test.title })
@@ -38,7 +42,7 @@ for (const file of files) {
             .map((t) => ({
               title: t.title,
               expect: t.expect,
-              observed: t.observed,
+              result: t.result
             })),
           true,
           ' '
