@@ -67,6 +67,9 @@
         "alias": {
           "type": "string"
         },
+        "collection": {
+          "type": "boolean"
+        },
         "from": {
           "type": "string"
         },

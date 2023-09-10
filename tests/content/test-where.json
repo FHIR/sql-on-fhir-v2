@@ -77,35 +77,33 @@
       "title": "where in select path",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "name.where(use='nickname').family" }]
-      },
-      "expect": [{ "family": "f2" }, { "family": "f3" }]
-    },
-    {
-      "title": "where in from path",
-      "view": {
-        "resource": "Patient",
         "select": [
-          {
-            "from": "name.where(use='nickname')",
-            "select": [{ "path": "family" }]
-          }
+          { "path": "id" },
+          { "path": "name.where(use='nickname').family" }
         ]
       },
-      "expect": [{ "family": "f2" }, { "family": "f3" }]
+      "expect": [
+        { "id": "p1", "family": null },
+        { "id": "p2", "family": "f2" },
+        { "id": "p3", "family": "f3" }
+      ]
     },
     {
       "title": "where in forEach expression",
       "view": {
         "resource": "Patient",
         "select": [
+          { "path": "id" },
           {
             "forEach": "name.where(use='nickname')",
             "select": [{ "path": "family" }]
           }
         ]
       },
-      "expect": [{ "family": "f2" }, { "family": "f3" }]
+      "expect": [
+        { "id": "p2", "family": "f2" },
+        { "id": "p3", "family": "f3" }
+      ]
     }
   ]
 }

@@ -75,7 +75,7 @@
       ]
     },
     {
-      "title": "chains without first",
+      "title": "`collection` true",
       "view": {
         "resource": "Patient",
         "select": [
@@ -85,11 +85,13 @@
           },
           {
             "alias": "last_name",
-            "path": "name.family"
+            "path": "name.family",
+            "collection": true
           },
           {
             "alias": "first_name",
-            "path": "name.given"
+            "path": "name.given",
+            "collection": true
           }
         ]
       },

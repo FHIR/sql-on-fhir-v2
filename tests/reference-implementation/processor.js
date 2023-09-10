@@ -9,8 +9,8 @@ export async function* processResources(resourceGenerator, configIn) {
   compileViewDefinition(config)
   for await (const resource of resourceGenerator) {
     if ((config?.$resource || ((r) => r))(resource).length) {
-      yield* extract(resource, {select: [config]}, context)
-    } 
+      yield* extract(resource, { select: [config] }, context)
+    }
   }
 }
 
@@ -90,11 +90,22 @@ const identity = (v) => [v]
 function extractFields(obj, viewDefinition, context = {}) {
   let fields = []
   for (let field of viewDefinition) {
-    let { alias, path, $path, $forEach, $forEachOrNull, select, $from } = field
+    let {
+      alias,
+      path,
+      collection,
+      $path,
+      $forEach,
+      $forEachOrNull,
+      select,
+      $from,
+    } = field
     if (alias && path) {
       const result = $path(obj, context)
       if (result.length <= 1) {
         fields.push([{ [alias]: result?.[0] ?? null }])
+      } else if (collection) {
+        fields.push([{ [alias]: result ?? null }])
       } else {
         throw `alias=${alias} from path=${path} matched more than one element`
       }
@@ -195,6 +206,16 @@ export async function runTests(source) {
   return JSON.parse(JSON.stringify(results))
 }
 
+function isEqual(a, b) {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return (
+      a.length === b.length && a.every((val, index) => isEqual(val, b[index]))
+    )
+  } else {
+    return a === b
+  }
+}
+
 function arraysMatch(arr1, arr2) {
   // Canonicalize arrays
   const canonicalize = (arr) => {
@@ -241,7 +262,7 @@ function arraysMatch(arr1, arr2) {
 
     // Check if keys and values match for both objects
     for (const key of keys1) {
-      if (obj1[key] !== obj2[key]) {
+      if (!isEqual(obj1[key], obj2[key])) {
         return {
           passed: false,
           message: `Mismatch at index ${i} for key "${key}". Expected "${obj2[key]}" but got "${obj1[key]}".`,
