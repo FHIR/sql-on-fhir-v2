@@ -1,7 +1,8 @@
 ## For test contributors
 
 - Create json file in `content` with test case
-- Before committing tests - run `npm run fmt` for uniform formatting and `npm run build` to validate the tests structure
+- Run `npm test` to ensure tests are passing
+- Before committing tests - run `npm run fmt` for uniform formatting
 
 ## For implementers
 
