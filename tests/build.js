@@ -1,4 +1,4 @@
-import { runTests } from './reference-implementation/processor.mjs'
+import { runTests } from './reference-implementation/processor.js'
 
 import Ajv from 'ajv'
 const ajv = new Ajv({ allErrors: true })

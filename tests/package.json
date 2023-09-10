@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "fmt": "npx prettier . --write",
-    "build": "node build.mjs"
+    "build": "node build.js"
   },
   "author": "",
   "license": "ISC",
