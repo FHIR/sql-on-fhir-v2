@@ -1,5 +1,6 @@
 {
   "title": "where",
+  "author": ["gotdan"],
   "resources": [
     {
       "resourceType": "Patient",

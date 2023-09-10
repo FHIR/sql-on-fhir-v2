@@ -1,48 +1,51 @@
 {
-	"title": "fn_join",
-	"resources": [{
-		"resourceType": "Patient",
-		"id": "p1",
-		"name" : [{
-			"use" : "official",
-			"given" : ["p1.g1", "p1.g2"]
-		}]
-	}],
-	"tests": [{
-		"title": "join with comma",
-		"view": {
-			"resource": "Patient",
-			"select": [
-				{"path": "id"},
-				{"path": "name.given.join(',')", "alias": "given"}
-			]
-		},
-		"expect": [
-			{"id": "p1", "given": "p1.g1,p1.g2"}
-		]
-	},{
-		"title": "join with empty value",
-		"view": {
-			"resource": "Patient",
-			"select": [
-				{"path": "id"},
-				{"path": "name.given.join('')", "alias": "given"}
-			]
-		},
-		"expect": [
-			{"id": "p1", "given": "p1.g1p1.g2"}
-		]
-	},{
-		"title": "join with no value - default to no separator",
-		"view": {
-			"resource": "Patient",
-			"select": [
-				{"path": "id"},
-				{"path": "name.given.join()", "alias": "given"}
-			]
-		},
-		"expect": [
-			{"id": "p1", "given": "p1.g1p1.g2"}
-		]
-	}]
+  "title": "fn_join",
+  "author": ["gotdan"],
+  "resources": [
+    {
+      "resourceType": "Patient",
+      "id": "p1",
+      "name": [
+        {
+          "use": "official",
+          "given": ["p1.g1", "p1.g2"]
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "title": "join with comma",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          { "path": "id" },
+          { "path": "name.given.join(',')", "alias": "given" }
+        ]
+      },
+      "expect": [{ "id": "p1", "given": "p1.g1,p1.g2" }]
+    },
+    {
+      "title": "join with empty value",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          { "path": "id" },
+          { "path": "name.given.join('')", "alias": "given" }
+        ]
+      },
+      "expect": [{ "id": "p1", "given": "p1.g1p1.g2" }]
+    },
+    {
+      "title": "join with no value - default to no separator",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          { "path": "id" },
+          { "path": "name.given.join()", "alias": "given" }
+        ]
+      },
+      "expect": [{ "id": "p1", "given": "p1.g1p1.g2" }]
+    }
+  ]
 }
