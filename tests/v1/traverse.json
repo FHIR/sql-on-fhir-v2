@@ -16,14 +16,14 @@
   ],
   "tests": [
     {
-      "title": "by default take first",
+      "title": "...",
       "description": " ",
       "view": {
         "resource": "Patient",
         "select": [
           { "path": "id" },
           { "path": "birthDate" },
-          { "path": "identifier.value", "alias": "identifier" }
+          { "path": "identifier.value.first()", "alias": "identifier" }
         ]
       },
       "expect": [
@@ -32,8 +32,23 @@
       ]
     },
     {
+      "title": "by default it fails in runtime",
+      "description": "Should fail in runtime or compilation if path expression returns or may return more than one element",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          { "path": "id" },
+          { "path": "birthDate" },
+          { "path": "identifier.value", "alias": "identifier" }
+        ]
+      },
+      "expectError": {
+        "description": "Runtime Or Compile-time error"
+      }
+    },
+    {
       "title": "return collection",
-      "description": " ",
+      "description": "Explicitly specify collection should be returned ",
       "view": {
         "resource": "Patient",
         "select": [
