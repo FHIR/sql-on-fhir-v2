@@ -1,23 +1,3 @@
-A *view definiton* is the central piece of the [View Layer](layers.html#the-view-layer).
-It is is based on [FHIRPath](https://hl7.org/fhirpath/) expresssions to select fields and filtering 
-criteria, and is defined by the **[ViewDefinition](StructureDefinition-ViewDefinition.html)**
-logical model. 
-
-The key elements of the ViewDefinition are:
-
-* The FHIR [resource](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.resource) 
-that is the basis of the view, such as *Patient* or *Observation*.
-* A set of columns to include in the view, defined in the [select](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select) structure.
-* A set of criteria to filter which resources are used in the view, defined in 
-the [where](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.where) field.
-* Several fields such as an optional human-friendly view name, description, draft status, and so on.
-
-A system-specific *view runner* implementation can execute a view definition and
-return the results as a table easily used in the user's tech stack. See the [layers](layers.html) page for details. 
-
-The overall view definition structure can be see in the [ViewDefinition logical model](StructureDefinition-ViewDefinition.html),
-and [several examples are here](artifacts.html#example-example-instances).
-
 ### Supported FHIRPath functionality
 
 The FHIRPath expressions used in views are evaluated by the view runner. A
@@ -73,8 +53,8 @@ instance, patient addresses are repeated fields on the Patient resource, so that
 may be extracted to 'patient_address' table, with a row for each.
 
 This is accomplished with
-the [forEach](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach)
-or [forEachOrNull](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull)
+the [forEach](#diff_ViewDefinition.select.forEach)
+or [forEachOrNull](#diff_ViewDefinition.select.forEachOrNull)
 elements. Here is a simple example creating rows for the city and postal code
 for each patient:
 
@@ -154,10 +134,3 @@ Another use case may be for users to select database-specific numeric types.
 
 Behavior is undefined and left to the runner if the expression returns a value
 that is incompatible with the underlying database type.
-
-See the [ViewDefinition logical model](StructureDefinition-ViewDefinition.html),
-and [examples here](artifacts.html#example-example-instances) for more.
-
----
-
-**[Next: Columnar Databases](columnar_schema_guidance.html)**

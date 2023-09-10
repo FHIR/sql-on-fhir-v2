@@ -23,8 +23,6 @@ Title: "View Definition"
 Description: """
 View definitions represent a tabular projection of a FHIR resource, where the columns and inclusion 
 criteria are defined by FHIRPath expressions. 
-
-See the [View Definition page](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/view-definition.html) for details.
 """
 * url 0..1 uri "Canonical identifier for this view definition, represented as a URI (globally unique)"
 * identifier 0..1 Identifier "Additional identifier for the view definition"

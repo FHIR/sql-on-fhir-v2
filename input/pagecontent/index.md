@@ -11,7 +11,7 @@ to specific needs. Views are defined with [FHIRPath](https://hl7.org/fhirpath/) 
 a logical structure to specify things like column aliases and unnested items.
 
 Let's start with a simple example, defining a "patient_demographics" view with the following
-[ViewDefinition](view-definition.html) structure:
+[ViewDefinition](StructureDefinition-ViewDefinition.html) structure:
 
 ```js
 {
