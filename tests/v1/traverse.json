@@ -6,12 +6,23 @@
       "resourceType": "Patient",
       "id": "pt1",
       "birthDate": "1980",
-      "identifier": [{ "value": "ssn1.1" }]
+      "identifier": [
+        {
+          "value": "ssn1"
+        }
+      ]
     },
     {
       "resourceType": "Patient",
       "id": "pt2",
-      "identifier": [{ "value": "ssn2.1" }, { "value": "ssn2.3" }]
+      "identifier": [
+        {
+          "value": "ssn2.1"
+        },
+        {
+          "value": "ssn2.3"
+        }
+      ]
     }
   ],
   "tests": [
