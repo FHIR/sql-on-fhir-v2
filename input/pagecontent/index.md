@@ -23,7 +23,7 @@ Let's start with a simple example, defining a "patient_demographics" view with t
     { "path": "gender" },
     {
       // Select nested fields from the first official name.
-      "from": "name.where(use = 'official').first()",
+      "forEach": "name.where(use = 'official').first()",
       "select": [
         {
           "path": "given.join(' ')",
