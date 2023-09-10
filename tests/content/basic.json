@@ -73,7 +73,8 @@
           "bod": "1950-01-01"
         }
       ]
-    },{
+    },
+    {
       "title": "Fail when `collection` is not true",
       "view": {
         "resource": "Patient",

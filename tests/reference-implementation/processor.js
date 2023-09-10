@@ -29,12 +29,12 @@ export function getColumns(viewDefinition) {
 
 function compile(eIn, where) {
   let e = eIn === '$this' ? 'trace()' : eIn
-  const ofTypeRegex = /\.ofType\(([^)]+)\)/g;
+  const ofTypeRegex = /\.ofType\(([^)]+)\)/g
 
-  let match;
+  let match
   while ((match = ofTypeRegex.exec(e)) !== null) {
-    const replacement = match[1].charAt(0).toUpperCase() + match[1].slice(1);
-    e = e.replace(match[0], `${replacement}`);
+    const replacement = match[1].charAt(0).toUpperCase() + match[1].slice(1)
+    e = e.replace(match[0], `${replacement}`)
   }
 
   if (Array.isArray(where)) {
@@ -86,7 +86,6 @@ function cartesianProduct([first, ...rest]) {
     first.map((f) => ({ ...f, ...r }))
   )
 }
-
 
 function extractFields(obj, viewDefinition, context = {}) {
   let fields = []
