@@ -87,11 +87,10 @@ See the [View Definition page](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/vie
       be used to represent the value within an ANSI SQL database.
     """
     * value 1..1 string "Value of tag"
-  * from 0..1 string "Creates a scope for selection relative to a parent FHIRPath expression"
   * forEach 0..1 string "Same as from, but unnests a new row for each item in the collection"
   * forEachOrNull 0..1 string "Same as forEach, but produces a single row with a null value if the collection is empty"
-  * union 0..1 string "Same as from, but creates a union of the results of the selection" """
-    The result of each selection within the union will be combined according to the semantics of the 
+  * union 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select "TODO: Describe" """
+    TODO: Update this -- The result of each selection within the union will be combined according to the semantics of the 
     union operator in FHIRPath. The results of the selected expressions must be of the same type, or 
     able to be implicitly converted to a common type according to the FHIRPath data type conversion 
     rules.
