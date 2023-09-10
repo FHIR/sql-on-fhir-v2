@@ -94,4 +94,5 @@ Usage: #example
   * select[+]
     * alias = "dbp_quantity_value"
     * path = "value.ofType(Quantity).value"
-* where = "code.coding.exists(system='http://loinc.org' and code='85354-9')"
+* where[+]
+  * path = "code.coding.exists(system='http://loinc.org' and code='85354-9')"

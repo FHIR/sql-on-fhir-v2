@@ -95,9 +95,14 @@ criteria are defined by FHIRPath expressions.
     """
   * select 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select  "Nested select relative to a parent from, forEach, or forEachOrNull expression"
 * select obeys sql-expressions
-* where 0..1 string "FHIRPath expression defining a filter condition" """
-  A FHIRPath expression that defines a filter that must evaluate to true for a resource to be 
-  included in the output. The input context is the collection of resources of the type specified in 
-  the resource element. Constants defined in Reference({constant}) can be referenced as %[name]. The 
-  result of the expression must of type Boolean.
-"""
+* where 0..* BackboneElement "A series of zero or more FHIRPath constraints to filter resourses for the view." """
+  A series of zero or more FHIRPath constraints to filter resourses for the view. Every constraint
+  must evaluate to true for the resource to be included in the view.
+  """
+  * path 1..1 string "A FHIRPath expression defining a filter condition" """
+    A FHIRPath expression that defines a filter that must evaluate to true for a resource to be
+    included in the output. The input context is the collection of resources of the type specified in
+    the resource element. Constants defined in Reference({constant}) can be referenced as %[name]. The
+    result of the expression must of type Boolean.
+    """
+  * description 0..1 string "A human-readable description of the above where constraint."
