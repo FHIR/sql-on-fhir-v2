@@ -3,6 +3,7 @@
   "description": "Union used to unify different branches of resource into flat table",
   "resources": [
     {
+      "resourceType": "Patient",
       "id": "pt1",
       "contact": [
         {

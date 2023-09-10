@@ -4,8 +4,9 @@
   "generated": true,
   "resources": [
     {
+      "resourceType": "Patient",
       "id": "pt1",
-      "alias": [
+      "name": [
         {
           "use": "official",
           "family": "f1.1",
@@ -25,8 +26,9 @@
       ]
     },
     {
+      "resourceType": "Patient",
       "id": "pt2",
-      "alias": [
+      "name": [
         {
           "family": "f2.1",
           "given": ["g2.1"]
