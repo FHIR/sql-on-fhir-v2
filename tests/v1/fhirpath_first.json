@@ -18,7 +18,9 @@
           "use": "maiden",
           "family": "f3",
           "given": ["g3.1", "g3.2"],
-          "period": { "end": "2002" }
+          "period": {
+            "end": "2002"
+          }
         }
       ],
       "identifier": []
@@ -29,9 +31,17 @@
       "title": "table level first()",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "name.first().use" }]
+        "select": [
+          {
+            "path": "name.first().use"
+          }
+        ]
       },
-      "expect": [{ "use": "official" }]
+      "expect": [
+        {
+          "use": "official"
+        }
+      ]
     },
     {
       "title": "table and field level first()",
@@ -44,13 +54,21 @@
           }
         ]
       },
-      "expect": [{ "given": "g1.1" }]
+      "expect": [
+        {
+          "given": "g1.1"
+        }
+      ]
     },
     {
       "title": "table level first() when empty",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "identifier.first()" }]
+        "select": [
+          {
+            "path": "identifier.first()"
+          }
+        ]
       },
       "expect": []
     },
@@ -58,7 +76,11 @@
       "title": "table level and field first() when empty",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "name.first().prefix.first()" }]
+        "select": [
+          {
+            "path": "name.first().prefix.first()"
+          }
+        ]
       },
       "expect": []
     }
