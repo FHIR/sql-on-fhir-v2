@@ -1,14 +1,14 @@
 [
   {
-    "file": "v1/basic.json",
+    "file": "content/basic.json",
     "title": "Basic Tests"
   },
   {
-    "file": "v1/extensions.json",
+    "file": "content/extensions.json",
     "title": "Extensions"
   },
   {
-    "file": "v1/test-where.json",
+    "file": "content/test-where.json",
     "title": "where"
   }
 ]

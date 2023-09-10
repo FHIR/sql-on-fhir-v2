@@ -31,7 +31,7 @@ for (const file of files) {
 
     if (testResults.tests.every((r) => r.result.passed)) {
       console.log('* ' + file + ' tests all pass')
-      tests.push({ file: 'v1/' + file, title: test.title })
+      tests.push({ file: CONTENT.slice(2) + file, title: test.title })
     } else {
       broken_views += 1
       console.error('* ' + file + ' has failed tests')

@@ -1,5 +1,6 @@
 import fhirpath from 'fhirpath'
 
+const identity = (v) => [v]
 export async function* processResources(resourceGenerator, configIn) {
   const config = JSON.parse(JSON.stringify(configIn))
   const context = (config.constants || []).reduce((acc, next) => {
@@ -8,7 +9,7 @@ export async function* processResources(resourceGenerator, configIn) {
   }, {})
   compileViewDefinition(config)
   for await (const resource of resourceGenerator) {
-    if ((config?.$resource || ((r) => r))(resource).length) {
+    if ((config?.$resource || identity)(resource).length) {
       yield* extract(resource, { select: [config] }, context)
     }
   }
@@ -28,11 +29,12 @@ export function getColumns(viewDefinition) {
 
 function compile(eIn, where) {
   let e = eIn === '$this' ? 'trace()' : eIn
-  const ofTypeRegex = /\.ofType\(([^)]+)\)/
-  const match = e.match(ofTypeRegex)
-  if (match) {
-    const replacement = match[1].charAt(0).toUpperCase() + match[1].slice(1)
-    e = e.replace(ofTypeRegex, `${replacement}`)
+  const ofTypeRegex = /\.ofType\(([^)]+)\)/g;
+
+  let match;
+  while ((match = ofTypeRegex.exec(e)) !== null) {
+    const replacement = match[1].charAt(0).toUpperCase() + match[1].slice(1);
+    e = e.replace(match[0], `${replacement}`);
   }
 
   if (Array.isArray(where)) {
@@ -85,7 +87,6 @@ function cartesianProduct([first, ...rest]) {
   )
 }
 
-const identity = (v) => [v]
 
 function extractFields(obj, viewDefinition, context = {}) {
   let fields = []
@@ -196,7 +197,6 @@ export async function runTests(source) {
         observed,
       }
     } catch (error) {
-      console.log(error)
       t.result = {
         passed: false,
         error,
