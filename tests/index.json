@@ -8,7 +8,15 @@
     "title": "Extensions"
   },
   {
+    "file": "v1/fhirpath_first.json",
+    "title": "first()"
+  },
+  {
     "file": "v1/traverse.json",
     "title": "traverse"
+  },
+  {
+    "file": "v1/union.json",
+    "title": "union"
   }
 ]
