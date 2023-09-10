@@ -27,7 +27,6 @@ for (const file of files) {
   if (res == true) {
     console.log('* ' + file + ' is schema-valid')
     const testResults = await runTests(test)
-    console.log("TR", testResults);
 
     if (testResults.tests.every((r) => r.result.passed)) {
       console.log('* ' + file + ' tests all pass')
