@@ -4,9 +4,9 @@ The FHIRPath expressions used in views are evaluated by the view runner. A
 subset of FHIRPath features is required to be supported by all view runners, and
 a set of additional features can be optionally supported.
 
-#### Core required features
+#### Core FHIRPath expressions required
 
-All view runners must implement these features:
+All view runners must implement these FHIRPath capabilities:
 
 * [Literals](https://hl7.org/fhirpath/#literals) for String, Integer and Decimal
 * [where](https://hl7.org/fhirpath/#wherecriteria-expression-collection) function
@@ -46,54 +46,18 @@ broader set of use cases:
 * [memberOf](https://hl7.org/fhir/R4/fhirpath.html#functions) function
 * [toQuantity](https://hl7.org/fhirpath/#toquantityunit-string-quantity) function
 
-### Unnesting
+### Unnesting semantics
 
 It is often desirable to unnest repeated fields into a row for each item. For 
 instance, patient addresses are repeated fields on the Patient resource, so that 
 may be extracted to 'patient_address' table, with a row for each.
 
 This is accomplished with
-the [forEach](#diff_ViewDefinition.select.forEach)
-or [forEachOrNull](#diff_ViewDefinition.select.forEachOrNull)
-elements. Here is a simple example creating rows for the city and postal code
-for each patient:
+the [forEach](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach)
+or [forEachOrNull](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull)
+elements. 
 
-```json
-{
-  "resourceType": "ViewDefinition",
-  "name": "patient_address",
-  "resource": "Patient",
-  "select": [
-    {
-      "alias": "patient_id",
-      "path": "id"
-    },
-    {
-      "forEach": "address",
-      "select": [
-        {
-          "alias": "city",
-          "path": "city"
-        },
-        {
-          "alias": "zip",
-          "path": "postalCode"
-        }
-      ]
-    }
-  ]
-}
-```
-
-This will result in a table like:
-
-| patient_id | city        | zip   |
-|------------|-------------|-------|
-| 1          | San Diego   | 92101 |
-| 1          | New York    | 10001 |
-| 2          | Los Angeles | 90001 |
-| 3          | Chicago     | 60601 |
-| 3          | Houston     | 77001 |
+See the [PatientAddresses example](Binary-PatientAddresses.html) to see an instance of this.
 
 ### Database type hints
 
@@ -112,10 +76,7 @@ common and can simplify analysis in some systems.
   "resource": "Patient",
   "description": "A view of simple patient birth dates",
   "select": [
-    {
-      "alias": "id",
-      "path": "id"
-    },
+    { "path": "id" },
     {
       "alias": "birth_date",
       "path": "birthDate",
