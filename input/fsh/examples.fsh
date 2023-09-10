@@ -12,7 +12,7 @@ Usage:  #example
 * select[+]
   * path = "gender"
 * select[+]
-  * from = "name.where(use = 'official').first()"
+  * forEach = "name.where(use = 'official').first()"
   * select[+]
     * path = "given.join(' ')"
     * alias = "given_name"
@@ -67,7 +67,7 @@ Usage: #example
   * path =  "effective.ofType(dateTime)"
   * alias = "effective_date_time"
 * select[+]
-  * from = "component.where(code.coding.exists(system='http://loinc.org' and code='8480-6')).first()"
+  * forEach = "component.where(code.coding.exists(system='http://loinc.org' and code='8480-6')).first()"
   * select[+]
     * alias = "sbp_quantity_system"
     * path = "value.ofType(Quantity).system"
@@ -81,7 +81,7 @@ Usage: #example
     * alias = "sbp_quantity_value"
     * path = "value.ofType(Quantity).value"
 * select[+]
-  * from = "component.where(code.coding.exists(system='http://loinc.org' and code='8462-4')).first()"
+  * forEach = "component.where(code.coding.exists(system='http://loinc.org' and code='8462-4')).first()"
   * select[+]
     * alias = "dbp_quantity_system"
     * path = "value.ofType(Quantity).system"
