@@ -12,10 +12,10 @@ Expression: "empty() or matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
 
 Invariant: sql-expressions
 Description: """
-Can only have only one of `path`, `from`, `forEach`, `forEachOrNull`, and `union`
+Can only have only one of `path`, `forEach`, `forEachOrNull`, and `union`
 """
 Severity: #error
-Expression: "(path | from | forEach | forEachOrNull | union).count() = 1"
+Expression: "(path | forEach | forEachOrNull | union).count() = 1"
 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 Logical: ViewDefinition
