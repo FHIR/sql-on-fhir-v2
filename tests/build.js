@@ -55,6 +55,7 @@ for (const file of files) {
     console.error(JSON.stringify(validate.errors, true, ' '))
   }
 }
+
 if (broken_views > 0) {
   console.log(`Broken tests: ${broken_views}. Exiting with error.`)
   process.exit(1)

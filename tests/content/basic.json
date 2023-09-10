@@ -1,0 +1,200 @@
+{
+  "title": "Basic Tests",
+  "resources": [
+    {
+      "resourceType": "Patient",
+      "id": "pt1",
+      "name": [
+        {
+          "use": "official",
+          "family": "f1.1",
+          "given": ["g1.1"]
+        },
+        {
+          "family": "f1.2",
+          "given": ["g1.2", "g1.3"]
+        }
+      ],
+      "gender": "male",
+      "birthDate": "1950-01-01",
+      "address": [
+        {
+          "city": "c1"
+        }
+      ]
+    },
+    {
+      "resourceType": "Patient",
+      "id": "pt2",
+      "name": [
+        {
+          "family": "f2.1",
+          "given": ["g2.1"]
+        },
+        {
+          "use": "official",
+          "family": "f2.2",
+          "given": ["g2.2", "g2.3"]
+        }
+      ],
+      "gender": "female",
+      "birthDate": "1950-01-01"
+    }
+  ],
+  "tests": [
+    {
+      "title": "top level elements",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "alias": "id",
+            "path": "id"
+          },
+          {
+            "alias": "gender",
+            "path": "gender"
+          },
+          {
+            "alias": "bod",
+            "path": "birthDate"
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "gender": "male",
+          "bod": "1950-01-01"
+        },
+        {
+          "id": "pt2",
+          "gender": "female",
+          "bod": "1950-01-01"
+        }
+      ]
+    },
+    {
+      "title": "chains without first",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "alias": "id",
+            "path": "id"
+          },
+          {
+            "alias": "last_name",
+            "path": "name.family"
+          },
+          {
+            "alias": "first_name",
+            "path": "name.given"
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "last_name": ["f1.1", "f1.2"],
+          "first_name": ["g1.1", "g1.2", "g1.3"]
+        },
+        {
+          "id": "pt2",
+          "last_name": ["f2.1", "f2.2"],
+          "first_name": ["g2.1", "g2.2", "g2.3"]
+        }
+      ]
+    },
+    {
+      "title": "chains with first",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "alias": "id",
+            "path": "id"
+          },
+          {
+            "alias": "last_name",
+            "path": "name.family.first()"
+          },
+          {
+            "alias": "first_name",
+            "path": "name.given.first()"
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "last_name": "f1.1",
+          "first_name": "g1.1"
+        },
+        {
+          "id": "pt2",
+          "last_name": "f2.1",
+          "first_name": "g2.1"
+        }
+      ]
+    },
+    {
+      "title": "chains with where",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "alias": "id",
+            "path": "id"
+          },
+          {
+            "alias": "last_name",
+            "path": "name.where(use='official').family.first()"
+          },
+          {
+            "alias": "first_name",
+            "path": "name.where(use='official').given.first()"
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "last_name": "f1.1",
+          "first_name": "g1.1"
+        },
+        {
+          "id": "pt2",
+          "last_name": "f2.2",
+          "first_name": "g2.2"
+        }
+      ]
+    },
+    {
+      "title": "null values",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "alias": "id",
+            "path": "id"
+          },
+          {
+            "alias": "city",
+            "path": "address.city.first()"
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "city": "c1"
+        },
+        {
+          "id": "pt2",
+          "city": null
+        }
+      ]
+    }
+  ]
+}
