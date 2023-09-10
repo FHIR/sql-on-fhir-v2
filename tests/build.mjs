@@ -12,8 +12,9 @@ import fs from 'fs/promises'
 const schema = JSON.parse(await fs.readFile('./tests.schema.json'))
 const validate = ajv.compile(schema)
 
-const files = await fs.readdir('./v1')
-console.log('v1/')
+const CONTENT = './content/'
+const files = await fs.readdir(CONTENT)
+console.log(CONTENT)
 
 let broken_views = 0
 for (const file of files) {
@@ -21,7 +22,7 @@ for (const file of files) {
     continue
   }
 
-  let test = JSON.parse(await fs.readFile('v1/' + file))
+  let test = JSON.parse(await fs.readFile(CONTENT + file))
   let res = validate(test)
 
   if (res == true) {
@@ -41,7 +42,7 @@ for (const file of files) {
             .map((t) => ({
               title: t.title,
               expect: t.expect,
-              result: t.result
+              result: t.result,
             })),
           true,
           ' '

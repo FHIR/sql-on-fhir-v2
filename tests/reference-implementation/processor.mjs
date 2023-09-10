@@ -99,7 +99,7 @@ function extractFields(obj, viewDefinition, context = {}) {
       if (result.length === 1) {
         fields.push([{ [alias]: result[0] }])
       } else if (result.length > 1) {
-          throw `alias=${alias} from path=${path} matched more than one element`
+        throw `alias=${alias} from path=${path} matched more than one element`
       } else {
         fields.push([])
       }
@@ -193,8 +193,8 @@ export async function runTests(source) {
         observed.push(row)
       }
       t.result = {
-          ...arraysMatch(observed, t.expect),
-          observed
+        ...arraysMatch(observed, t.expect),
+        observed,
       }
     } catch (error) {
       t.result = {
