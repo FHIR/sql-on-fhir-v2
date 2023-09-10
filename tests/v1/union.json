@@ -44,13 +44,11 @@
           },
           {
             "union": [
+              { "select": [{ "alias": "phone", "path": "telecom.value" }] },
               {
-                "alias": "phone",
-                "path": "telecom.value"
-              },
-              {
-                "alias": "phone",
-                "path": "contact.telecom.value"
+                "select": [
+                  { "alias": "phone", "path": "contact.telecom.value" }
+                ]
               }
             ]
           }

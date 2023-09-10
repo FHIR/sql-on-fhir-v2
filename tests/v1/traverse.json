@@ -27,54 +27,53 @@
   ],
   "tests": [
     {
-      "title": "top element",
-      "description": "how do we handle nulls? ",
+      "title": "...",
+      "description": " ",
       "view": {
         "resource": "Patient",
         "select": [
-          {
-            "path": "id"
-          },
-          {
-            "path": "birthDate"
-          }
+          { "path": "id" },
+          { "path": "birthDate" },
+          { "path": "identifier.value.first()", "alias": "identifier" }
         ]
       },
       "expect": [
-        {
-          "id": "pt1",
-          "birthDate": "1980"
-        },
-        {
-          "id": "pt2",
-          "bithDate": null
-        }
+        { "id": "pt1", "identifier": "ssn1.1", "birthDate": "1980" },
+        { "id": "pt2", "identifier": "ssn2.1", "bithDate": null }
       ]
     },
     {
-      "title": "top element",
-      "description": "how do we handle nulls? ",
+      "title": "by default it fails in runtime",
+      "description": "Should fail in runtime or compilation if path expression returns or may return more than one element",
       "view": {
         "resource": "Patient",
         "select": [
-          {
-            "path": "id"
-          },
+          { "path": "id" },
+          { "path": "birthDate" },
+          { "path": "identifier.value", "alias": "identifier" }
+        ]
+      },
+      "expectError": {
+        "description": "Runtime Or Compile-time error"
+      }
+    },
+    {
+      "title": "return collection",
+      "description": "Explicitly specify collection should be returned ",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          { "path": "id" },
           {
             "path": "identifier.value",
-            "alias": "identifier"
+            "alias": "identifier",
+            "return": "collection"
           }
         ]
       },
       "expect": [
-        {
-          "id": "pt1",
-          "identifier": ["ssn1"]
-        },
-        {
-          "id": "pt2",
-          "identifier": ["ssn2.1", "ssn2.2"]
-        }
+        { "id": "pt1", "identifier": ["ssn1.1"] },
+        { "id": "pt2", "identifier": ["ssn2.1", "ssn2.2"] }
       ]
     }
   ]
