@@ -1,6 +1,10 @@
+
 The system consists of three logical layers as shown in the diagram below:
-the *Data Layer*, the *View Layer* and the *Analytics Layer*. This specification
-focuses primarily upon the View layer. The Data and Analytics layers are optional,
+- the *Data Layer*
+- the *View Layer*
+- and the *Analytics Layer*. 
+
+This specification focuses primarily upon the View layer. The Data and Analytics layers are optional,
 and are provided as general patterns to assist with implementation.
 
 <img src="layers-high-level.jpg" alt="High-level diagram of layers" style="float: none"/>
