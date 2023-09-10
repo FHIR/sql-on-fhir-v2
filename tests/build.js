@@ -1,7 +1,19 @@
 import { runTests } from './reference-implementation/processor.js'
-
+import fhirpath from 'fhirpath'
 import Ajv from 'ajv'
 const ajv = new Ajv({ allErrors: true })
+
+ajv.addFormat('fhirpath-expression', {
+  type: 'string',
+  validate: (v) => {
+    try {
+      fhirpath.compile(v)
+      return true
+    } catch (err) {
+      return false
+    }
+  },
+})
 
 import path from 'path'
 

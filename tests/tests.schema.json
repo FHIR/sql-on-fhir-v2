@@ -73,22 +73,27 @@
           "items": { "$ref": "#/$defs/_item" }
         },
         "path": {
-          "type": "string"
+          "type": "string",
+          "format": "fhirpath-expression"
         },
         "alias": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "collection": {
           "type": "boolean"
         },
         "from": {
-          "type": "string"
+          "type": "string",
+          "format": "fhirpath-expression"
         },
         "forEach": {
-          "type": "string"
+          "type": "string",
+          "format": "fhirpath-expression"
         },
         "forEachOrNull": {
-          "type": "string"
+          "type": "string",
+          "format": "fhirpath-expression"
         },
         "union": {
           "type": "array",
@@ -118,7 +123,8 @@
           "type": "string"
         },
         "resource": {
-          "type": "string"
+          "type": "string",
+          "format": "fhirpath-expression"
         },
         "description": {
           "type": "string"
@@ -134,7 +140,8 @@
             "required": ["path"],
             "properties": {
               "path": {
-                "type": "string"
+                "type": "string",
+                "format": "fhirpath-expression"
               }
             }
           }
