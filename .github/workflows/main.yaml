@@ -13,3 +13,4 @@ jobs:
           node-version: latest
       - run: cd tests && npm ci
       - run: cd tests && npm run build
+      - run: cd test_report && npm run prepare && npm run build
