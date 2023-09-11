@@ -49,7 +49,7 @@ This will result in a table like this, which can be persistend and queried in yo
 
 Such tabular views can be created for any FHIR resource, with
 [more examples here](artifacts.html#example-example-instances). See the 
-[View Definition page](view-definition.html) for details, and the
+[View Definition page](StructureDefinition-ViewDefinition.html) for details, and the
 [System Layers](layers.html) page for how views fit into a larger analytic ecosystem.
 
 ### Contributing
