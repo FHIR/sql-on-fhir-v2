@@ -59,6 +59,28 @@ elements.
 
 See the [PatientAddresses example](Binary-PatientAddresses.html) to see an instance of this.
 
+### Using constants
+ViewDefinitions may include one or more of constants, which are simple values that can be reused
+in FHIRPath expressions. This can improve readability and reduce redundancy. Constants can be
+used in expression by simply using `%[name]`. This effectively converts the FHIR literal used
+in the ViewDefinition to a FHIRPath literal used in the path expression.
+
+Here's an example of a constant used in the `where` constraint of a view:
+
+```
+{
+  <snip>
+  "constant": [{
+    "name": "bp_code",
+      "valueCode": "8480-6"
+  }],
+  <snip>
+ "where": [{
+    "path": "code.coding.exists(system='http://loinc.org' and code=%bp_code)"
+  }],
+}
+```
+
 ### Database type hints
 
 Since these analytic views are often used as SQL tables, it can be useful to

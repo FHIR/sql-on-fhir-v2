@@ -54,13 +54,17 @@ criteria are defined by FHIRPath expressions.
 """
 * resourceVersion from http://hl7.org/fhir/ValueSet/FHIR-version
 * constant 0..* BackboneElement "Constant that can be used in FHIRPath expressions" """
-  A constant is a string that is injected into a FHIRPath expression through the use of a FHIRPath 
+  A constant is a value that is injected into a FHIRPath expression through the use of a FHIRPath
   external constant with the same name.
 """
   * name 1..1 string "Name of constant (referred to in FHIRPath as %[name])"
   * name obeys sql-name
-  * value 1..1 string "Value of constant" """
-    The string that will be substituted in place of the constant reference
+  * value[x] 1..1 base64Binary or boolean or canonical or code or date or dateTime or decimal or id or instant or integer or integer64 or oid or string or positiveInt or time or unsignedInt or uri or url or uuid   "Value of constant" """
+    The value that will be substituted in place of the constant reference. This
+    is done by including `%your_constant_name` in a FHIRPath expression, which effectively converts
+    the FHIR literal defined here to a FHIRPath literal used in the path expression.
+
+    Support for additional types may be added in the future.
   """
 * select 0..* BackboneElement "Defines the content of a column within the view"
   * alias 0..1 string "Column alias produced in the output" """
