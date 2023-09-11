@@ -64,7 +64,7 @@ Contributors and early users are welcome! Here are some places to start:
 * Specification:
   * **[Purpose](purpose.html)**: Backround and purpose of this project
   * **[System Layers](layers.html)**: Conceptual layers in this specification
-  * **[View Definition](view-definition.html)**: A tabular projection of a FHIR resource
+  * **[View Definition](StructureDefinition-ViewDefinition.html)**: A tabular projection of a FHIR resource
   * **[JSON Schema Guidance](json_schema_guidance.html)**: Schema guidance for JSON-centered
     databases
   * **[Columnar Schema Guidance](columnar_schema_guidance.html)**: Schema guidance for columnar databases
