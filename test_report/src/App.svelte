@@ -14,14 +14,13 @@
  }
 
  onMount(async function () {
-     menu = [await load('tests/v1/basic.json')];
-     console.log(menu);
+     menu = await load('tests.json');
      current = menu[0];
  });
 
  export function columns(data){
      let cols = {};
-     data.forEach((x)=>{
+     data?.forEach((x)=>{
          for(var k in x){
              cols[k]=true;
          }
@@ -72,15 +71,15 @@
                     <table>
                         <thead>
                             <tr>
-                                {#each columns(test.expected) || [] as col}
+                                {#each columns(test.expect) || [] as col}
                                     <th class="px-2 py-1 bg-gray-100 border">{col}</th>
                                 {/each}
                             </tr>
                         </thead>
                         <tbody>
-                            {#each test.expected || [] as row}
+                            {#each test.expect || [] as row}
                                 <tr>
-                                    {#each columns(test.expected) || [] as col}
+                                    {#each columns(test.expect) || [] as col}
                                         <td class="px-2 py-1 border">{pp(row[col])}</td>
                                     {/each}
                                 </tr>
