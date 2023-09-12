@@ -32,6 +32,9 @@ function compile(eIn, where) {
   const ofTypeRegex = /\.ofType\(([^)]+)\)/g
 
   let match
+  // HACK: fhirpath.js only knows that `Observation.value.ofType(Quantity)`
+  // refers to `Observation.valueQuantity` if load FHIR models... which
+  // we otherwise don't need. So here, just wrestle into explicit properties.
   while ((match = ofTypeRegex.exec(e)) !== null) {
     const replacement = match[1].charAt(0).toUpperCase() + match[1].slice(1)
     e = e.replace(match[0], `${replacement}`)
