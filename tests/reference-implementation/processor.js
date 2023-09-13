@@ -1,12 +1,40 @@
-import fhirpath from 'fhirpath'
+import fhirpath from './fhirpath.js'
 
 const identity = (v) => [v]
+
+function getRowKey(nodes, resource) {
+  return nodes.flatMap(({ data: node }) => {
+    let type
+    let key
+    if (node.resourceType) {
+      type = node.resourceType
+      key = `${node.resourceType}/${node.id}`
+    } else {
+      const parts = node.reference
+        .replaceAll('//', '')
+        .split('/_history')[0]
+        .split('/')
+      type = parts.slice(-2)[0]
+      key = parts.slice(-2).join('/')
+    }
+    return !resource || resource === type ? [key] : []
+  })
+}
+
 export async function* processResources(resourceGenerator, configIn) {
   const config = JSON.parse(JSON.stringify(configIn))
-  const context = (config.constants || []).reduce((acc, next) => {
-    acc[next.name] = next.value
-    return acc
-  }, {})
+  const context = (config.constants || []).reduce(
+    (acc, next) => {
+      acc[next.name] = next.value
+      return acc
+    },
+    {
+      _fns: {
+        pow: (inputs, pow = 2) => inputs.map((i) => Math.pow(i, pow)),
+        getRowKey,
+      },
+    }
+  )
   compileViewDefinition(config)
   for await (const resource of resourceGenerator) {
     if ((config?.$resource || identity)(resource).length) {
@@ -29,10 +57,13 @@ export function getColumns(viewDefinition) {
 
 function compile(eIn, where) {
   let e = eIn === '$this' ? 'trace()' : eIn
-  const ofTypeRegex = /\.ofType\(([^)]+)\)/g
 
+  if (Array.isArray(where)) {
+    e += `.where(${where.map((w) => w.path).join(' and ')})`
+  }
+  const ofTypeRegex = /\.ofType\(([^)]+)\)/g
   let match
-  // HACK: fhirpath.js only knows that `Observation.value.ofType(Quantity)`
+  // HACKS: fhirpath.js only knows that `Observation.value.ofType(Quantity)`
   // refers to `Observation.valueQuantity` if load FHIR models... which
   // we otherwise don't need. So here, just wrestle into explicit properties.
   while ((match = ofTypeRegex.exec(e)) !== null) {
@@ -40,9 +71,6 @@ function compile(eIn, where) {
     e = e.replace(match[0], `${replacement}`)
   }
 
-  if (Array.isArray(where)) {
-    e += `.where(${where.map((w) => w.path).join(' and ')})`
-  }
   return fhirpath.compile(e)
 }
 
@@ -54,6 +82,9 @@ function compileViewDefinition(viewDefinition) {
         .split('.')
         .filter((p) => !p.includes('('))
         .slice(-1)[0]
+    if (!viewDefinition.alias) {
+      throw `No alias set for column: ${JSON.stringify(viewDefinition)}'`
+    }
   }
 
   if (viewDefinition.path) {
@@ -194,9 +225,17 @@ export async function runTests(source) {
       for await (const row of processor) {
         observed.push(row)
       }
-      t.result = {
-        ...arraysMatch(observed, t.expect),
-        observed,
+      if (t.expectCount) {
+        t.result = {
+          passed: t.expectCount === observed.length,
+          observedCount: observed.length,
+          observed,
+        }
+      } else {
+        t.result = {
+          ...arraysMatch(observed, t.expect),
+          observed,
+        }
       }
     } catch (error) {
       if (t.expectError) {
@@ -205,6 +244,7 @@ export async function runTests(source) {
           error,
         }
       } else {
+        console.log(error)
         t.result = {
           passed: false,
           error,

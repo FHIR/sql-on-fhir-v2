@@ -53,6 +53,7 @@ for (const file of files) {
             .filter((t) => !t.result.passed)
             .map((t) => ({
               title: t.title,
+              expectCount: t.expectCount,
               expect: t.expect,
               result: t.result,
             })),

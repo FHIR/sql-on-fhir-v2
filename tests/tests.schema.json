@@ -37,6 +37,9 @@
             "required": ["expect"]
           },
           {
+            "required": ["expectCount"]
+          },
+          {
             "required": ["expectError"]
           }
         ],
@@ -55,6 +58,9 @@
             "items": {
               "type": "object"
             }
+          },
+          "expectCount": {
+            "type": "number"
           },
           "expectError": {
             "type": "boolean"
