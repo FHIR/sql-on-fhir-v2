@@ -15,7 +15,14 @@
 
  onMount(async function () {
      menu = await load('tests.json');
+     let hash = window.location.hash.substring(1);
      current = menu[0];
+     menu.forEach((x)=> {
+         console.log('*',hash, x.file);
+         if(x.file == hash) {
+             current = x
+         };
+     })
  });
 
  export function columns(data){
@@ -43,6 +50,10 @@
          return JSON.stringify(x);
      }
  }
+ export function select(item) {
+     current = item;
+     window.location.hash = item.file
+ }
 
 </script>
 
@@ -53,7 +64,7 @@
         <nav class="w-100 bg-gray-100 py-4 px-2 border-r" id="menu" style="width:15em;">
             {#each menu as item}
                 <a class="p-2 block cursor-pointer bg-fuchsia-600 text-gray-500 hover:text-blue-500 hover:bg-gray-150"
-                   on:click={()=> current = item} >
+                   on:click={select(item)} >
                     {item.title}
                 </a>
             {/each}
@@ -76,7 +87,7 @@
             <h2 class="mt-6 mb-2 text-sm font-bold text-gray-500">Tests</h2>
             {#each current?.tests || [] as test}
                 <div class="my-4">
-                    <h2 class="text-2xl my-3 border-b">{test.title}</h2>
+                    <a class="text-2xl my-3 border-b block" href={'#' + current.file + '/' }>{test.title}</a>
                     <p class="my-2 text-gray-600">{test?.description || ''}</p>
                     <div class="flex space-x-4 items-start">
                         <pre class="flex-1 text-xs p-2 border rounded bg-gray-100">{JSON.stringify(test.view,null,2) }</pre>
