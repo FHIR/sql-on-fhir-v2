@@ -28,15 +28,24 @@ All view runners must implement these FHIRPath capabilities:
 All view runners must implement these functions that do not exist in the
 FHIRPath specification but are necessary in the context of defining views:
 
-##### getId()
+##### getRowKey([resource: ResourceTypeCode]) : String
 
-Returns the resource ID from
-a [reference](https://hl7.org/fhir/references.html#Reference) element. This
-function has no parameters. Note that implementations of `getId` may differ
-based on the structure of the underlying data being queried. For example,
-potential approaches could include dynamically extracting the last segment from
-the reference URL, looking up the ID from an annotation stored in the annotation
-layer, or calculating a hash of the full reference URL.
+Returns a string that can be used as a database key. It can be invoked as a function on 
+two data types:
+
+* A FHIR [Resource](https://build.fhir.org/resource.html) itself, which would return a key that 
+could be used as the primary key for the resource in the database. In many cases this may 
+just be the resource `id`, but exceptions are described below. 
+* A [Reference](https://hl7.org/fhir/references.html#Reference), in which case `getRowKey()`
+returns a row key that matches the corresponding resource.
+
+Users may pass an optional resource type code (e.g. 'Patient' or 'Observation') to indicate
+the expected type that the reference should point to. `getRowKey` will return an empty collection 
+(`{}`, effectively `null` since FHIRPath always returns collections) if the referece is not of the 
+expected type. For example, `Observation.subject.getRowKey('Patient')` would return a row key if the
+subject is a patient, or `{}` if not. 
+
+See the [Row Keys and Joins](#row-keys-and-joins) section below for details.
 
 #### Optional features
 
@@ -45,6 +54,69 @@ broader set of use cases:
 
 * [memberOf](https://hl7.org/fhir/R4/fhirpath.html#functions) function
 * [toQuantity](https://hl7.org/fhirpath/#toquantityunit-string-quantity) function
+
+### Row Keys and Joins 
+While FHIR ViewDefinitions do not directly implement cross-resource joins, the 
+views produced should be easily joined by the database or analytic tools of the 
+user's choice. This can be done by including primary and foreign keys as part of the tabular
+view output, which can be done with the [getRowKey()](#getrowkeyresource-resourcetypecode--string) 
+function. 
+
+Users may call [getRowKey()](#getrowkeyresource-resourcetypecode--string) to obtain primary 
+keys for rows from a resource and to get corresponding foreign keys from references. For example, 
+a minimal view of Patients could look like this:
+
+```js
+{
+  "name": "active_patients",
+  "resource": "Patient"
+  "select": [
+    {
+      "path": "getRowKey()",
+      "alias": "id"
+    },
+    {
+      "path": "active"
+    },
+  ]
+}
+```
+
+An observation view would then have its own row key and a foreign key to easily join to patient,
+like this:
+
+```js
+{
+  "name": "simple_obs",
+  "resource": "Observation"
+  "select": [
+    {
+      "path": "getRowKey()",
+      "alias": "id"
+    },
+    {
+      // The 'Patient' parameter is optional, but ensures the returned value
+      // will either be a patient row key or null.
+      "path": "subject.getRowKey('Patient')",
+      "alias": "patient_id",
+    },
+  ],
+  "where": [
+   // An expression that selects observations that have a patient subject.
+  ] 
+}
+```
+
+SQL-on-FHIR users could then join `simple_obs.patient_id` to `active_patients.id` using common
+join semantics. 
+
+#### Why not just use resource.id fields?
+In many cases simply using resource ids and relative values from Reference will meet this need, 
+but this is not guaranteed. Our example Observation.subject have an external or fully-qualified reference,
+requiring the `getRowKey()` implementaton to convert it to a key used in the local view.
+
+Of course, if an implementation can guarantee the FHIR resources in question all have relative ids, 
+the can have a minimmal `getRowKey()` implementation that simply returns the corresponding simple id.
 
 ### Unnesting semantics
 
@@ -67,15 +139,15 @@ in the ViewDefinition to a FHIRPath literal used in the path expression.
 
 Here's an example of a constant used in the `where` constraint of a view:
 
-```
+```js
 {
-  <snip>
+  // <snip>
   "constant": [{
     "name": "bp_code",
       "valueCode": "8480-6"
   }],
-  <snip>
- "where": [{
+  // <snip>
+  "where": [{
     "path": "code.coding.exists(system='http://loinc.org' and code=%bp_code)"
   }],
 }
