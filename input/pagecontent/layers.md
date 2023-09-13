@@ -113,4 +113,4 @@ combine different resources? For example, a `patient_timeline` table that includ
 
 ---
 
-**[Next: View Definitions](view-definition.html)**
+**[Next: View Definitions](StructureDefinition-ViewDefinition.html)**
