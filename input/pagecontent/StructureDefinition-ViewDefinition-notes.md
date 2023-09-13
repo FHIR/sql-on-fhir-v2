@@ -102,6 +102,8 @@ common and can simplify analysis in some systems.
     {
       "alias": "birth_date",
       "path": "birthDate",
+      "type" : "date",
+      "repeating" : false,
       "tags": [
         {
           "name": "ansi/type",

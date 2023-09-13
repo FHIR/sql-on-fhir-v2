@@ -79,6 +79,8 @@ criteria are defined by FHIRPath expressions.
   * description 0..1 markdown "Description of the column" """
     A human-readable description of the column.
   """
+  * type 0..1 uri "The FHIR Type that the FHIRPath statement that selects data for the column returns. Required if path is present"
+  * repeating 0..1 boolean "Whether the column FHIRPath statement that returns the data can return more than one item of data"
   * tag 0..* BackboneElement "Additional metadata describing the column" """
     Tags can be used to attach additional metadata to columns, such as implementation-specific 
     directives or database-specific type hints.
@@ -110,3 +112,4 @@ criteria are defined by FHIRPath expressions.
     result of the expression must of type Boolean.
     """
   * description 0..1 string "A human-readable description of the above where constraint."
+

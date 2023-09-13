@@ -17,9 +17,13 @@ Usage:  #example
     * path = "given.join(' ')"
     * alias = "given_name"
     * description = "A single given name field with all names joined together."
+    * type = "string"
+    * repeating = false
   * select[+]
     * path = "family"
     * alias = "family_name"
+    * type = "string"
+    * repeating = false
 
 Instance:   PatientAddresses
 InstanceOf: ViewDefinition
@@ -42,13 +46,21 @@ Usage:  #example
     * path = "line.join('\n')"
     * alias = "street"
     * description = "The full street address, including newlines if present."
+    * type = "string"
+    * repeating = false
   * select[+]
     * path = "use"
+    * type = "code"
+    * repeating = false
   * select[+]
     * path = "city"
+    * type = "string"
+    * repeating = false
   * select[+]
     * path = "postalCode"
     * alias = "zip"
+    * type = "string"
+    * repeating = false
 
 Instance: UsCoreBloodPressures
 InstanceOf: ViewDefinition
@@ -80,28 +92,44 @@ Usage: #example
   * select[+]
     * alias = "sbp_quantity_system"
     * path = "value.ofType(Quantity).system"
+    * type = "uri"
+    * repeating = false
   * select[+]
     * alias = "sbp_quantity_code"
     * path = "value.ofType(Quantity).code"
+    * type = "code"
+    * repeating = false
   * select[+]
     * alias = "sbp_quantity_display"
     * path = "value.ofType(Quantity).unit"
+    * type = "string"
+    * repeating = false
   * select[+]
     * alias = "sbp_quantity_value"
     * path = "value.ofType(Quantity).value"
+    * type = "decimal"
+    * repeating = false
 * select[+]
   * forEach = "component.where(code.coding.exists(system='http://loinc.org' and code=%diastolic_bp)).first()"
   * select[+]
     * alias = "dbp_quantity_system"
     * path = "value.ofType(Quantity).system"
+    * type = "uri"
+    * repeating = false
   * select[+]
     * alias = "dbp_quantity_code"
     * path = "value.ofType(Quantity).code"
+    * type = "code"
+    * repeating = false
   * select[+]
     * alias = "dbp_quantity_display"
     * path = "value.ofType(Quantity).unit"
+    * type = "string"
+    * repeating = false
   * select[+]
     * alias = "dbp_quantity_value"
     * path = "value.ofType(Quantity).value"
+    * type = "decimal"
+    * repeating = false
 * where[+]
   * path = "code.coding.exists(system='http://loinc.org' and code=%bp_code)"
