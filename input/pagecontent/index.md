@@ -1,10 +1,10 @@
-_This is an evolution of the original "SQL on FHIR" draft, which can 
+_This is an evolution of the original "SQL on FHIR" draft, which can
 [still be found here](https://github.com/FHIR/sql-on-fhir-archived)._
 
 ### Intro
-The [FHIR®](https://hl7.org/fhir) standard is a great fit for RESTful and JSON-based 
+The [FHIR®](https://hl7.org/fhir) standard is a great fit for RESTful and JSON-based
 systems, helping make healthcare data liquidity real. This spec aims to take FHIR usage a step
-futher, making FHIR work well with familiar and efficient SQL engines and surrounding ecosystems. 
+futher, making FHIR work well with familiar and efficient SQL engines and surrounding ecosystems.
 
 We do this by creating simple, tabular *views* of the underlying FHIR data that are tailored
 to specific needs. Views are defined with [FHIRPath](https://hl7.org/fhirpath/) expressions in
@@ -48,7 +48,7 @@ This will result in a table like this, which can be persistend and queried in yo
 | 3  | other  | Jin Gomer     | Aarens      |
 
 Such tabular views can be created for any FHIR resource, with
-[more examples here](artifacts.html#example-example-instances). See the 
+[more examples here](artifacts.html#example-example-instances). See the
 [View Definition page](StructureDefinition-ViewDefinition.html) for details, and the
 [System Layers](layers.html) page for how views fit into a larger analytic ecosystem.
 
@@ -71,7 +71,7 @@ Contributors and early users are welcome! Here are some places to start:
   * **[Tech Matrix](tech-matrix.html)**: Database analysis
 * **[Artifacts](artifacts.html)**: Logical model
 
-## Principles 
+### Principles
 
 [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/44)
 
