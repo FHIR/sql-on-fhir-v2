@@ -7,8 +7,8 @@ Usage:  #example
 * status = #draft
 * resource = #Patient
 * select[+]
-  * path = "id"
-  * description = "The patient identifier."
+  * path = "getRowKey()"
+  * alias = "id"
 * select[+]
   * path = "gender"
 * select[+]
@@ -34,7 +34,7 @@ Usage:  #example
 * status = #draft
 * resource = #Patient
 * select[+]
-  * path = "id"
+  * path = "getRowKey()"
   * alias = "patient_id"
 * select[+]
   * forEach = "address"
@@ -68,10 +68,12 @@ Usage: #example
   * name = "bp_code"
   * valueCode = #85354-9
 * select[+]
-  * path = "id"
+  * path = "getRowKey()"
+  * alias = "id"
 * select[+]
-  * path = "subject.getId()"
+  * path = "subject.getRowKey('Patient')"
   * alias = "patient_id"
+  * description = "Can be used to join to patient tables created by other views."
 * select[+]
   * path =  "effective.ofType(dateTime)"
   * alias = "effective_date_time"
