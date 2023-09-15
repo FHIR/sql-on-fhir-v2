@@ -7,8 +7,8 @@ Usage:  #example
 * status = #draft
 * resource = #Patient
 * select[+]
-  * path = "id"
-  * description = "The patient identifier."
+  * path = "getRowKey()"
+  * alias = "id"
 * select[+]
   * path = "gender"
 * select[+]
@@ -34,7 +34,7 @@ Usage:  #example
 * status = #draft
 * resource = #Patient
 * select[+]
-  * path = "id"
+  * path = "getRowKey()"
   * alias = "patient_id"
 * select[+]
   * forEach = "address"
@@ -58,16 +58,27 @@ Usage: #example
 * name =  "us_core_blood_pressure"
 * status = #draft
 * resource =  #Observation
+* constant[+]
+  * name = "systolic_bp"
+  * valueCode = #8480-6
+* constant[+]
+  * name = "diastolic_bp"
+  * valueCode = #8462-4
+* constant[+]
+  * name = "bp_code"
+  * valueCode = #85354-9
 * select[+]
-  * path = "id"
+  * path = "getRowKey()"
+  * alias = "id"
 * select[+]
-  * path = "subject.getId()"
+  * path = "subject.getRowKey('Patient')"
   * alias = "patient_id"
+  * description = "Can be used to join to patient tables created by other views."
 * select[+]
   * path =  "effective.ofType(dateTime)"
   * alias = "effective_date_time"
 * select[+]
-  * forEach = "component.where(code.coding.exists(system='http://loinc.org' and code='8480-6')).first()"
+  * forEach = "component.where(code.coding.exists(system='http://loinc.org' and code=%systolic_bp)).first()"
   * select[+]
     * alias = "sbp_quantity_system"
     * path = "value.ofType(Quantity).system"
@@ -81,7 +92,7 @@ Usage: #example
     * alias = "sbp_quantity_value"
     * path = "value.ofType(Quantity).value"
 * select[+]
-  * forEach = "component.where(code.coding.exists(system='http://loinc.org' and code='8462-4')).first()"
+  * forEach = "component.where(code.coding.exists(system='http://loinc.org' and code=%diastolic_bp)).first()"
   * select[+]
     * alias = "dbp_quantity_system"
     * path = "value.ofType(Quantity).system"
@@ -94,4 +105,5 @@ Usage: #example
   * select[+]
     * alias = "dbp_quantity_value"
     * path = "value.ofType(Quantity).value"
-* where = "code.coding.exists(system='http://loinc.org' and code='85354-9')"
+* where[+]
+  * path = "code.coding.exists(system='http://loinc.org' and code=%bp_code)"

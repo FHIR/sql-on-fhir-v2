@@ -1,7 +1,19 @@
 import { runTests } from './reference-implementation/processor.js'
-
+import fhirpath from 'fhirpath'
 import Ajv from 'ajv'
 const ajv = new Ajv({ allErrors: true })
+
+ajv.addFormat('fhirpath-expression', {
+  type: 'string',
+  validate: (v) => {
+    try {
+      fhirpath.compile(v)
+      return true
+    } catch (err) {
+      return false
+    }
+  },
+})
 
 import path from 'path'
 
@@ -31,7 +43,7 @@ for (const file of files) {
 
     if (testResults.tests.every((r) => r.result.passed)) {
       console.log('* ' + file + ' tests all pass')
-      tests.push({ file: 'v1/' + file, title: test.title })
+      tests.push({ file: CONTENT.slice(2) + file, title: test.title })
     } else {
       broken_views += 1
       console.error('* ' + file + ' has failed tests')
@@ -41,6 +53,7 @@ for (const file of files) {
             .filter((t) => !t.result.passed)
             .map((t) => ({
               title: t.title,
+              expectCount: t.expectCount,
               expect: t.expect,
               result: t.result,
             })),
@@ -60,5 +73,3 @@ if (broken_views > 0) {
   console.log(`Broken tests: ${broken_views}. Exiting with error.`)
   process.exit(1)
 }
-console.log('Success, writing index')
-await fs.writeFile('index.json', JSON.stringify(tests, null, 2), 'utf8')

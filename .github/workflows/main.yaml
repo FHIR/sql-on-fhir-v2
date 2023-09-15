@@ -2,6 +2,10 @@ name: build
 on:
   push:
     branches: [ '*' ]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,3 +17,18 @@ jobs:
           node-version: latest
       - run: cd tests && npm ci
       - run: cd tests && npm run build
+      - run: cd test_report && npm install && npm run prepare && npm run build
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - run: cd tests && bun build reference-implementation/processor.js  > ../test_report/public/processor.js
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'test_report/public'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
+

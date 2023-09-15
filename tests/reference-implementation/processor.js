@@ -1,16 +1,45 @@
-import fhirpath from 'fhirpath'
+import fhirpath from './fhirpath.js'
+
+const identity = (v) => [v]
+
+function getRowKey(nodes, resource) {
+  return nodes.flatMap(({ data: node }) => {
+    let type
+    let key
+    if (node.resourceType) {
+      type = node.resourceType
+      key = `${node.resourceType}/${node.id}`
+    } else {
+      const parts = node.reference
+        .replaceAll('//', '')
+        .split('/_history')[0]
+        .split('/')
+      type = parts.slice(-2)[0]
+      key = parts.slice(-2).join('/')
+    }
+    return !resource || resource === type ? [key] : []
+  })
+}
 
 export async function* processResources(resourceGenerator, configIn) {
   const config = JSON.parse(JSON.stringify(configIn))
-  const context = (config.constants || []).reduce((acc, next) => {
-    acc[next.name] = next.value
-    return acc
-  }, {})
+  const context = (config.constants || []).reduce(
+    (acc, next) => {
+      acc[next.name] = next.value
+      return acc
+    },
+    {
+      _fns: {
+        pow: (inputs, pow = 2) => inputs.map((i) => Math.pow(i, pow)),
+        getRowKey,
+      },
+    }
+  )
   compileViewDefinition(config)
   for await (const resource of resourceGenerator) {
-    if ((config?.$resource || ((r) => r))(resource).length) {
-      yield* extract(resource, {select: [config]}, context)
-    } 
+    if ((config?.$resource || identity)(resource).length) {
+      yield* extract(resource, { select: [config] }, context)
+    }
   }
 }
 
@@ -28,16 +57,20 @@ export function getColumns(viewDefinition) {
 
 function compile(eIn, where) {
   let e = eIn === '$this' ? 'trace()' : eIn
-  const ofTypeRegex = /\.ofType\(([^)]+)\)/
-  const match = e.match(ofTypeRegex)
-  if (match) {
-    const replacement = match[1].charAt(0).toUpperCase() + match[1].slice(1)
-    e = e.replace(ofTypeRegex, `${replacement}`)
-  }
 
   if (Array.isArray(where)) {
     e += `.where(${where.map((w) => w.path).join(' and ')})`
   }
+  const ofTypeRegex = /\.ofType\(([^)]+)\)/g
+  let match
+  // HACKS: fhirpath.js only knows that `Observation.value.ofType(Quantity)`
+  // refers to `Observation.valueQuantity` if load FHIR models... which
+  // we otherwise don't need. So here, just wrestle into explicit properties.
+  while ((match = ofTypeRegex.exec(e)) !== null) {
+    const replacement = match[1].charAt(0).toUpperCase() + match[1].slice(1)
+    e = e.replace(match[0], `${replacement}`)
+  }
+
   return fhirpath.compile(e)
 }
 
@@ -49,6 +82,9 @@ function compileViewDefinition(viewDefinition) {
         .split('.')
         .filter((p) => !p.includes('('))
         .slice(-1)[0]
+    if (!viewDefinition.alias) {
+      throw `No alias set for column: ${JSON.stringify(viewDefinition)}'`
+    }
   }
 
   if (viewDefinition.path) {
@@ -85,16 +121,25 @@ function cartesianProduct([first, ...rest]) {
   )
 }
 
-const identity = (v) => [v]
-
 function extractFields(obj, viewDefinition, context = {}) {
   let fields = []
   for (let field of viewDefinition) {
-    let { alias, path, $path, $forEach, $forEachOrNull, select, $from } = field
+    let {
+      alias,
+      path,
+      collection,
+      $path,
+      $forEach,
+      $forEachOrNull,
+      select,
+      $from,
+    } = field
     if (alias && path) {
       const result = $path(obj, context)
       if (result.length <= 1) {
         fields.push([{ [alias]: result?.[0] ?? null }])
+      } else if (collection) {
+        fields.push([{ [alias]: result ?? null }])
       } else {
         throw `alias=${alias} from path=${path} matched more than one element`
       }
@@ -180,19 +225,44 @@ export async function runTests(source) {
       for await (const row of processor) {
         observed.push(row)
       }
-      t.result = {
-        ...arraysMatch(observed, t.expect),
-        observed,
+      if (t.expectCount) {
+        t.result = {
+          passed: t.expectCount === observed.length,
+          observedCount: observed.length,
+          observed,
+        }
+      } else {
+        t.result = {
+          ...arraysMatch(observed, t.expect),
+          observed,
+        }
       }
     } catch (error) {
-      console.log(error)
-      t.result = {
-        passed: false,
-        error,
+      if (t.expectError) {
+        t.result = {
+          passed: true,
+          error,
+        }
+      } else {
+        console.log(error)
+        t.result = {
+          passed: false,
+          error,
+        }
       }
     }
   }
   return JSON.parse(JSON.stringify(results))
+}
+
+function isEqual(a, b) {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return (
+      a.length === b.length && a.every((val, index) => isEqual(val, b[index]))
+    )
+  } else {
+    return a === b
+  }
 }
 
 function arraysMatch(arr1, arr2) {
@@ -241,7 +311,7 @@ function arraysMatch(arr1, arr2) {
 
     // Check if keys and values match for both objects
     for (const key of keys1) {
-      if (obj1[key] !== obj2[key]) {
+      if (!isEqual(obj1[key], obj2[key])) {
         return {
           passed: false,
           message: `Mismatch at index ${i} for key "${key}". Expected "${obj2[key]}" but got "${obj1[key]}".`,

@@ -37,7 +37,7 @@ are portable between systems.
 * *View Runners* are system-specific tools or libraries that apply view definitions to
 the underlying data layer, optionally making use of annotation to optimze performance.
 
-See the [View Definition documentation](view-definition.html) for details and examples; 
+See the [View Definition documentation](StructureDefinition-ViewDefinition.html) for details and examples; 
 these are the central piece of this specification.
 
 View Runners will be specific to the data
@@ -117,4 +117,4 @@ combine different resources? For example, a `patient_timeline` table that includ
 
 ---
 
-**[Next: View Definitions](view-definition.html)**
+**[Next: View Definitions](StructureDefinition-ViewDefinition.html)**
