@@ -79,6 +79,21 @@ criteria are defined by FHIRPath expressions.
   * description 0..1 markdown "Description of the column" """
     A human-readable description of the column.
   """
+  * collection 0..1 boolean "Indicates whether the column may have multiple values." """
+  Indicates whether the column may have multiple values. Defaults to `false` if unset.
+  
+  ViewDefinitions must have this set to `true` if multiple values may be returned. Implementations SHALL
+  report an error if multiple values are produced when that is not the case.
+  """
+  * type 0..1 uri "A FHIR StructureDefinition URI for the column's type." """
+  A FHIR StructureDefinition URI for the column's type. Relative URIs are implicitly given
+  the 'http://hl7.org/fhir/StructureDefinition/' prefix. The URI may also use FHIR element ID notation to indicate
+  a backbone element within a structure. For instance, `Observation.referenceRange` may be specified to indicate
+  the returned type is that backbone element.
+
+  This field *must* be provided if a ViewDefinition returns a non-primitive type. Implementations should report an error
+  if the returned type does not match the type set here, or if a non-primitive type is returned but this field is unset.
+  """
   * tag 0..* BackboneElement "Additional metadata describing the column" """
     Tags can be used to attach additional metadata to columns, such as implementation-specific 
     directives or database-specific type hints.

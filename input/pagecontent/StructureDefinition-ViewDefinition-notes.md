@@ -212,6 +212,36 @@ Here's an example of a constant used in the `where` constraint of a view:
 }
 ```
 
+### Column types
+All values in a given column must be of a single type that can be determined by the ViewDefinition alone. The
+type can be explicitly specified in the
+[collection](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.collection) and
+[type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.type) fields for a
+given path.
+
+In most cases, the column type can be determined by the expression itself, allowing users to interactively
+build and evaluate ViewDefinitions without needing to look up and explicitly specify the type.
+
+If the column is a primitive type (typical of tabular output), its type is inferred under the following conditions:
+
+1. If [collection](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.collection) is not
+set to `true`, the returned type must be a single value.
+2. If the path is a series of `parent.child.subPath` navigation steps from a known type -- either from the root resource
+or a child  of an `.ofType()` function -- then the column type is determined by the structure definition it comes from.
+3. If the terminal expression is one of the [required FHIRPath functions](#core-fhirpath-expressions-required) with a
+defined return type, then the column will be of that type. For instance, if the path ends in `.exists()` or `.lowBoundary()`,
+the column type would be boolean or an instant type, respectively.
+4. A path that ends in `.ofType()` will be of the type given to that function.
+
+**Note**: _Non-primitive output types will not be supported by all implementations, and therefore must always be explicitly
+set in the [type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.type)_ so users and
+implementations can easily determine when this is the case.
+
+Importantly, the above determines the FHIR type produced for the column. How that type is physically manifested depends
+on the implementation. Implementations may map these to native database types or have each column simply produce a string,
+as would be done in a CSV-based implementation. See the [database type hints](#database-type-hints) section below if finer
+database-specific type control is needed.
+
 ### Database type hints
 
 Since these analytic views are often used as SQL tables, it can be useful to
