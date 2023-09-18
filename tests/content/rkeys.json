@@ -1,5 +1,5 @@
 {
-  "title": "rowkey",
+  "title": "resourceKey and referenceKey",
   "author": ["jmandel"],
   "resources": [
     {
@@ -14,28 +14,28 @@
   ],
   "tests": [
     {
-      "title": "rowkey at observation level",
+      "title": "get resource key",
       "view": {
         "resource": "Observation",
-        "select": [{ "path": "getRowKey()", "alias": "id" }]
+        "select": [{ "path": "getResourceKey()", "alias": "id" }]
       },
       "expectCount": 1
     },
     {
-      "title": "rowkey at reference level",
+      "title": "get reference key",
       "view": {
         "resource": "Observation",
         "forEach": "basedOn",
-        "select": [{ "alias": "rid", "path": "getRowKey()" }]
+        "select": [{ "alias": "rid", "path": "getReferenceKey()" }]
       },
       "expectCount": 3
     },
     {
-      "title": "rowkey at reference level with resource param",
+      "title": "get reference key with resource param",
       "view": {
         "resource": "Observation",
-        "forEach": "basedOn.where(getRowKey('CarePlan').exists())",
-        "select": [{ "alias": "rid", "path": "getRowKey()" }]
+        "forEach": "basedOn.where(getReferenceKey('CarePlan').exists())",
+        "select": [{ "alias": "rid", "path": "getReferenceKey()" }]
       },
       "expectCount": 1
     }

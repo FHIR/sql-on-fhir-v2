@@ -2,24 +2,26 @@ import fhirpath from './fhirpath.js'
 
 const identity = (v) => [v]
 
-function getRowKey(nodes, resource) {
+function getResourceKey(nodes, resource) {
   return nodes.flatMap(({ data: node }) => {
-    let type
-    let key
-    if (node.resourceType) {
-      type = node.resourceType
-      key = `${node.resourceType}/${node.id}`
-    } else {
+    const type = node.resourceType
+    const key = `${node.resourceType}/${node.id}`
+    return !resource || resource === type ? [key] : []
+  })
+}
+
+function getReferenceKey(nodes, resource) {
+  return nodes.flatMap(({ data: node }) => {
       const parts = node.reference
         .replaceAll('//', '')
         .split('/_history')[0]
         .split('/')
-      type = parts.slice(-2)[0]
-      key = parts.slice(-2).join('/')
-    }
+      const type = parts.slice(-2)[0]
+      const key = parts.slice(-2).join('/')
     return !resource || resource === type ? [key] : []
   })
 }
+
 
 export async function* processResources(resourceGenerator, configIn) {
   const config = JSON.parse(JSON.stringify(configIn))
@@ -31,7 +33,8 @@ export async function* processResources(resourceGenerator, configIn) {
     {
       _fns: {
         pow: (inputs, pow = 2) => inputs.map((i) => Math.pow(i, pow)),
-        getRowKey,
+        getResourceKey,
+        getReferenceKey
       },
     }
   )
