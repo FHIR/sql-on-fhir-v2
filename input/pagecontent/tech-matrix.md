@@ -14,6 +14,7 @@ JSON Database Features:
 | Snowflake    | yes     | yes      | yes       | yes                 | no             | no          |
 | Athena SQL   | yes     | yes      | yes       | yes                 | no             | no          |
 | DuckDB       | no      | no       | yes       | no                  | no             | no          |
+{:.table-data}
 
 
 Schemas & Formats datatypes:

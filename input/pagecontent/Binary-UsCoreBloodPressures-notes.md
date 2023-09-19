@@ -7,3 +7,4 @@ This will result in a table like:
 | 3  | 2          | 2020-01-03T00:00:00 | http://unitsofmeasure.org | mmHg              | mm[Hg]               | 140                | http://unitsofmeasure.org | mmHg              | mm[Hg]               | 100                |
 | 4  | 3          | 2020-01-04T00:00:00 | http://unitsofmeasure.org | mmHg              | mm[Hg]               | 150                | http://unitsofmeasure.org | mmHg              | mm[Hg]               | 110                |
 | 5  | 3          | 2020-01-05T00:00:00 | http://unitsofmeasure.org | mmHg              | mm[Hg]               | 160                | http://unitsofmeasure.org | mmHg              | mm[Hg]               | 120                |
+{:.table-data}

@@ -7,3 +7,4 @@ This will result in a table like:
 | 2          | 789 Brookside Ave\nApt 3 | home     | Los Angeles | 90001 |
 | 3          | 987 Pinehurst Rd\nApt 4  | home     | Chicago     | 60601 |
 | 3          | 654 Evergreen Tce\nApt 5 | work     | Houston     | 77001 |
+{:.table-data}
