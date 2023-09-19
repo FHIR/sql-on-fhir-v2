@@ -19,7 +19,7 @@ Let's start with a simple example, defining a "patient_demographics" view with t
   "resource": "Patient",
   "description": "A view of simple patient demographics",
   "select": [
-    { "path": "getRowKey()", "alias": "id" },
+    { "path": "getResourceKey()", "alias": "id" },
     { "path": "gender" },
     {
       // Select nested fields from the first official name.
