@@ -76,6 +76,7 @@ menu:
     JSON Schema Guidance: json_schema_guidance.html
     Columnar Schema Guidance: columnar_schema_guidance.html
     Tech Matrix: tech-matrix.html
+    Miscellanea: miscellanea.html
   Artifacts: artifacts.html
 
 # ╭───────────────────────────Less Common Implementation Guide Properties──────────────────────────╮
