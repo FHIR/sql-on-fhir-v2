@@ -1,6 +1,5 @@
 {
-  "title": "exists()",
-  "author": ["gotdan"],
+  "title": "exists function",
   "resources": [
     {
       "resourceType": "Patient",
