@@ -1,0 +1,72 @@
+{
+  "title": "simple path traversal",
+  "author": ["gotdan"],
+  "resources": [
+    {
+      "resourceType": "Observation",
+      "status": "preliminary",
+      "valueString": "positive",
+      "subject": { "reference": "Patient/123" },
+      "code": {
+        "coding": [{ "code": "123" }]
+      },
+      "component": [
+        {
+          "code": {
+            "coding": [{ "code": "456" }]
+          }
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "title": "single segment",
+      "view": {
+        "resource": "Observation",
+        "select": [{ "path": "status" }]
+      },
+      "expect": [{ "status": "preliminary" }]
+    },
+    {
+      "title": "single segment with alias",
+      "view": {
+        "resource": "Observation",
+        "select": [{ "path": "status", "alias": "ob_status" }]
+      },
+      "expect": [{ "ob_status": "preliminary" }]
+    },
+    {
+      "title": "segment with choice type",
+      "view": {
+        "resource": "Observation",
+        "select": [{ "path": "value.ofType(string)", "alias": "valueString" }]
+      },
+      "expect": [{ "valueString": "positive" }]
+    },
+    {
+      "title": "multiple segments",
+      "view": {
+        "resource": "Observation",
+        "select": [{ "path": "subject.reference" }]
+      },
+      "expect": [{ "reference": "Patient/123" }]
+    },
+    {
+      "title": "multiple segments, one level of nesting",
+      "view": {
+        "resource": "Observation",
+        "select": [{ "path": "code.coding.code" }]
+      },
+      "expect": [{ "code": "123" }]
+    },
+    {
+      "title": "multiple segments, multiple level of nesting ",
+      "view": {
+        "resource": "Observation",
+        "select": [{ "path": "component.code.coding.code" }]
+      },
+      "expect": [{ "code": "456" }]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "title": "exists()",
+  "author": ["gotdan"],
+  "resources": [
+    {
+      "resourceType": "Patient",
+      "id": "p1",
+      "name": [
+        {
+          "use": "official",
+          "family": "f1"
+        }
+      ]
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p2"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p3",
+      "name": [
+        {
+          "use": "nickname",
+          "given": ["g3"]
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "title": "exists in field path",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          { "path": "id" },
+          { "path": "name.exists()", "alias": "has_name" }
+        ]
+      },
+      "expect": [
+        { "id": "p1", "has_name": true },
+        { "id": "p2", "has_name": false },
+        { "id": "p3", "has_name": true }
+      ]
+    },
+    {
+      "title": "nested exists in field path",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          { "path": "id" },
+          { "path": "name.given.exists()", "alias": "has_name" }
+        ]
+      },
+      "expect": [
+        { "id": "p1", "has_name": false },
+        { "id": "p2", "has_name": false },
+        { "id": "p3", "has_name": true }
+      ]
+    },
+    {
+      "title": "exists in where path",
+      "view": {
+        "resource": "Patient",
+        "select": [{ "path": "id" }],
+        "where": [
+          {
+            "path": "name.exists()"
+          }
+        ]
+      },
+      "expect": [{ "id": "p1" }, { "id": "p3" }]
+    },
+    {
+      "title": "nested exists in where path",
+      "view": {
+        "resource": "Patient",
+        "select": [{ "path": "id" }],
+        "where": [
+          {
+            "path": "name.given.exists()"
+          }
+        ]
+      },
+      "expect": [{ "id": "p3" }]
+    },
+    {
+      "title": "exists in forEach path",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "forEach": "where(name.exists())",
+            "select": [{ "path": "id" }]
+          }
+        ]
+      },
+      "expect": [{ "id": "p1" }, { "id": "p3" }]
+    }
+  ]
+}
