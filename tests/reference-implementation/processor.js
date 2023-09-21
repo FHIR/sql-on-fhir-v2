@@ -23,7 +23,7 @@ function getReferenceKey(nodes, resource) {
 }
 
 
-export async function* processResources(resourceGenerator, configIn, options) {
+export async function* processResources(resourceGenerator, configIn, options={enforceFhirpathSubset: false}) {
   const config = JSON.parse(JSON.stringify(configIn))
   const context = (config.constants || []).reduce(
     (acc, next) => {
@@ -124,7 +124,7 @@ function validatePathToSubset(path) {
   return validateChildren(ast);
 }
 
-function compileViewDefinition(viewDefinition, options={}) {
+function compileViewDefinition(viewDefinition, options) {
   if (viewDefinition.path && !viewDefinition.alias) {
     viewDefinition.alias =
       viewDefinition.name ??
@@ -139,18 +139,18 @@ function compileViewDefinition(viewDefinition, options={}) {
 
   if (viewDefinition.path) {
     viewDefinition.$path = 
-      compile(viewDefinition.path, null, options.validatePathToSubset)
+      compile(viewDefinition.path, null, options.enforceFhirpathSubset)
   } else if (viewDefinition.forEach) {
     viewDefinition.$forEach = compile(
       viewDefinition.forEach,
       viewDefinition.where,
-      options.validatePathToSubset
+      options.enforceFhirpathSubset
     )
   } else if (viewDefinition.forEachOrNull) {
     viewDefinition.$forEachOrNull = compile(
       viewDefinition.forEachOrNull,
       viewDefinition.where,
-      options.validatePathToSubset
+      options.enforceFhirpathSubset
     )
   }
 
@@ -158,7 +158,7 @@ function compileViewDefinition(viewDefinition, options={}) {
     viewDefinition.$resource = compile(
       viewDefinition.resource,
       viewDefinition.where,
-      options.validatePathToSubset
+      options.enforceFhirpathSubset
     )
   }
   for (let field of viewDefinition.select || []) {
@@ -274,7 +274,7 @@ export async function runTests(source) {
   results.implementation = 'https://github.com/fhir/sql-on-fhir-v2'
   for (const t of results.tests) {
     try {
-      const processor = processResources(fromArray(results.resources), t.view, {validatePathToSubset: true})
+      const processor = processResources(fromArray(results.resources), t.view, {enforceFhirpathSubset: true})
       const observed = []
       for await (const row of processor) {
         observed.push(row)

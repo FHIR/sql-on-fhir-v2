@@ -30,7 +30,7 @@
 		"view": {
 		  "resource": "Patient",
 		  "select": [
-			{ "path": "name.first().given.exclude('g2').first()" }
+			{ "path": "name.last().use" }
 		  ]
 		},
 		"expectError": true
