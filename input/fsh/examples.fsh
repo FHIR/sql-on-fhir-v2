@@ -55,7 +55,7 @@ InstanceOf: ViewDefinition
 Description: """A simple view of blood pressure observations, with separate columns for 
 systolic and diastolic values."""
 Usage: #example
-* name =  "us_core_blood_pressure"
+* name =  "us_core_blood_pressures"
 * status = #draft
 * resource =  #Observation
 * constant[+]

@@ -1,4 +1,4 @@
-The resulting table will look like this:
+This will result in a "patient_demographics" table that loooks like this:
 
 | id | gender | given_name    | family_name |
 |----|--------|---------------|-------------|

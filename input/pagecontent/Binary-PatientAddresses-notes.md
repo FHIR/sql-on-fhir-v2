@@ -1,4 +1,4 @@
-This will result in a table like:
+This will result in a "patient_addresses" table that loooks like this:
 
 | patient_id | street                   | use      | city        | zip   |
 |------------|--------------------------|----------|-------------|-------|
