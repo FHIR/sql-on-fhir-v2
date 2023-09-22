@@ -11,6 +11,9 @@
     "description": {
       "type": "string"
     },
+    "allowExtendedFhirpath": {
+      "type": "boolean"
+    },
     "authors": {
       "type": "array",
       "items": {
