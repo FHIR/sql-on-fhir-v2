@@ -1,8 +1,5 @@
 {
-  "title": "Extensions",
-  "description": "flatten extensions",
-  "authors": ["niquola"],
-  "generated": true,
+  "title": "extension function",
   "resources": [
     {
       "resourceType": "Patient",
@@ -101,7 +98,6 @@
         "resource": "Patient",
         "select": [
           {
-            "alias": "id",
             "path": "id"
           },
           {
@@ -132,7 +128,6 @@
         "resource": "Patient",
         "select": [
           {
-            "alias": "id",
             "path": "id"
           },
           {

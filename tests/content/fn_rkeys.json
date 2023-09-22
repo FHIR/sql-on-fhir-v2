@@ -1,6 +1,5 @@
 {
-  "title": "resourceKey and referenceKey",
-  "author": ["jmandel"],
+  "title": "resourceKey and referenceKey functions",
   "resources": [
     {
       "resourceType": "Observation",

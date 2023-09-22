@@ -1,6 +1,5 @@
 {
-  "title": "fn_join",
-  "author": ["gotdan"],
+  "title": "join function",
   "resources": [
     {
       "resourceType": "Patient",

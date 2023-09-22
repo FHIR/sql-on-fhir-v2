@@ -1,6 +1,5 @@
 {
   "title": "simple path traversal",
-  "author": ["gotdan"],
   "resources": [
     {
       "resourceType": "Observation",
@@ -67,6 +66,27 @@
         "select": [{ "path": "component.code.coding.code" }]
       },
       "expect": [{ "code": "456" }]
+    },
+    {
+      "title": "null values",
+      "view": {
+        "resource": "Observation",
+        "select": [
+          {
+            "path": "status"
+          },
+          {
+            "alias": "identifier_value",
+            "path": "identifier.first().value"
+          }
+        ]
+      },
+      "expect": [
+        {
+          "status": "preliminary",
+          "identifier_value": null
+        }
+      ]
     }
   ]
 }
