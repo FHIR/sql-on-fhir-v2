@@ -23,7 +23,7 @@ function getReferenceKey(nodes, resource) {
 }
 
 
-export async function* processResources(resourceGenerator, configIn, options={enforceFhirpathSubset: false}) {
+export async function* processResources(resourceGenerator, configIn) {
   const config = JSON.parse(JSON.stringify(configIn))
   const context = (config.constants || []).reduce(
     (acc, next) => {
@@ -38,7 +38,7 @@ export async function* processResources(resourceGenerator, configIn, options={en
       },
     }
   )
-  compileViewDefinition(config, options)
+  compileViewDefinition(config)
   for await (const resource of resourceGenerator) {
     if ((config?.$resource || identity)(resource).length) {
       yield* extract(resource, { select: [config] }, context)
@@ -58,7 +58,7 @@ export function getColumns(viewDefinition) {
   })
 }
 
-function compile(eIn, where, validate) {
+function compile(eIn, where) {
   let e = eIn === '$this' ? 'trace()' : eIn
 
   if (Array.isArray(where)) {
@@ -73,58 +73,11 @@ function compile(eIn, where, validate) {
     const replacement = match[1].charAt(0).toUpperCase() + match[1].slice(1)
     e = e.replace(match[0], `${replacement}`)
   }
-  if (validate) {
-    const validationError = validatePathToSubset(e);
-    if (validationError) throw(validationError);
-  }
+
   return fhirpath.compile(e)
 }
 
-function validatePathToSubset(path) {
-  const nodeTypeAllowList = [
-    "EntireExpression", "TermExpression", "InvocationExpression",
-    "MultiplicativeExpression", "AdditiveExpression", "InequalityExpression",
-    "EqualityExpression", "AndExpression", "OrExpression", "Identifier",
-    "LiteralTerm", "BooleanLiteral", "StringLiteral", "NumberLiteral",
-    "MemberInvocation", "FunctionInvocation", "ThisInvocation",
-    "InvocationTerm", "ExternalConstantTerm", "ExternalConstant", 
-    "Functn", "ParamList", 
-  ]
-  const fnAllowList = [
-    "join", "first", "extension", "getResourceKey", "getReferenceKey",
-    "exists", "where", "empty", "ofType", "lowBoundary", "highBoundary" 
-  ]
-  function validateChildren(node) {
-    for (let i=0; i<node.children.length; i++) {
-      const child = node.children[i];
-      if (nodeTypeAllowList.indexOf(child.type) == -1)
-        return `Unsupported node type: ${child.type}`;
-      if (child.type == "AdditiveExpression" && child.terminalNodeText.indexOf("&") > -1)
-        return "Unsupported use of &";
-      if (child.type == "MultiplicativeExpression" && 
-        (child.terminalNodeText.indexOf("mod") > -1 || child.terminalNodeText.indexOf("div") > -1)
-      ) return `Unsupported use of ${child.terminalNodeText.indexOf("mod") > -1 ? "mod" : "div"}`;
-      if (child.type == "EqualityExpression" && 
-        (child.terminalNodeText.indexOf("~") > -1 || child.terminalNodeText.indexOf("!~") > -1)
-      ) return "Unsupported use of ~";
-      if (child.type == "OrExpression" && child.terminalNodeText.indexOf("xor") > -1)
-        return "Unsupported use of xor";
-      if (child.type == "Functn") {
-        const fnIdentifier = child.children.find( c => c.type == "Identifier" );
-        if (fnAllowList.indexOf(fnIdentifier.text) == -1)
-          return `Unsupported function: ${fnIdentifier.text}`;
-      }
-      if (child.children) { 
-        const validationError = validateChildren(child);
-        if (validationError) return validationError;
-      }
-    };
-  }
-  const ast = fhirpath.parse(path);
-  return validateChildren(ast);
-}
-
-function compileViewDefinition(viewDefinition, options) {
+function compileViewDefinition(viewDefinition) {
   if (viewDefinition.path && !viewDefinition.alias) {
     viewDefinition.alias =
       viewDefinition.name ??
@@ -138,31 +91,27 @@ function compileViewDefinition(viewDefinition, options) {
   }
 
   if (viewDefinition.path) {
-    viewDefinition.$path = 
-      compile(viewDefinition.path, null, options.enforceFhirpathSubset)
+    viewDefinition.$path = compile(viewDefinition.path)
   } else if (viewDefinition.forEach) {
     viewDefinition.$forEach = compile(
       viewDefinition.forEach,
-      viewDefinition.where,
-      options.enforceFhirpathSubset
+      viewDefinition.where
     )
   } else if (viewDefinition.forEachOrNull) {
     viewDefinition.$forEachOrNull = compile(
       viewDefinition.forEachOrNull,
-      viewDefinition.where,
-      options.enforceFhirpathSubset
+      viewDefinition.where
     )
   }
 
   if (viewDefinition.resource) {
     viewDefinition.$resource = compile(
       viewDefinition.resource,
-      viewDefinition.where,
-      options.enforceFhirpathSubset
+      viewDefinition.where
     )
   }
   for (let field of viewDefinition.select || []) {
-    compileViewDefinition(field, options)
+    compileViewDefinition(field)
   }
 }
 
@@ -274,7 +223,7 @@ export async function runTests(source) {
   results.implementation = 'https://github.com/fhir/sql-on-fhir-v2'
   for (const t of results.tests) {
     try {
-      const processor = processResources(fromArray(results.resources), t.view, {enforceFhirpathSubset: true})
+      const processor = processResources(fromArray(results.resources), t.view)
       const observed = []
       for await (const row of processor) {
         observed.push(row)
