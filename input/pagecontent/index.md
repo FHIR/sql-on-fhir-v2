@@ -39,13 +39,15 @@ Let's start with a simple example, defining a "patient_demographics" view with t
 }
 ```
 
-This will result in a table like this, which can be persistend and queried in your database of choice:
+This will result in a "patient_demographics" table that looks like this. The table can be persisted and queried
+in your database of choice, using the view name as the table name:
 
 | id | gender | given_name    | family_name |
 |----|--------|---------------|-------------|
 | 1  | female | Malvina Gerda | Vicario     |
 | 2  | male   | Yolotzin Adel | Bristow     |
 | 3  | other  | Jin Gomer     | Aarens      |
+{:.table-data}
 
 Such tabular views can be created for any FHIR resource, with
 [more examples here](artifacts.html#example-example-instances). See the

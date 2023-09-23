@@ -179,16 +179,23 @@ and intentionally leaves the specific mechanism to the implementation.
 
 ### Unnesting semantics
 
-It is often desirable to unnest repeated fields into a row for each item. For 
-instance, patient addresses are repeated fields on the Patient resource, so that 
-may be extracted to 'patient_address' table, with a row for each.
+It is often desirable to unroll repeated fields into a row for each item. For instance, each Patient resource
+can have multiple addresses, which users can expand into a separate "patient_addresses" table that has
+one row per address. Each row would still have a `patient_id` field to know which patient that address row is
+associated with.
 
-This is accomplished with
-the [forEach](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach)
-or [forEachOrNull](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull)
-elements. 
+This is done with [forEach](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach)
+or [forEachOrNull](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull),
+unrolling repeated structures into separate rows to meet this need. You can see this in the
+[PatientAddresses example](Binary-PatientAddresses.html), which unrolls addresses as described above.
 
-See the [PatientAddresses example](Binary-PatientAddresses.html) to see an instance of this.
+The key difference between these is [forEach](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach)
+will produce one row per repeated item under the `forEach` expression, so the [PatientAddresses example](Binary-PatientAddresses.html)
+will have rows only for Patient resources that have one or more addresses. In contrast,
+[forEachOrNull](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull) will produce a row
+even if the collection under that `forEachOrNull` expression is empty. So if we updated the patient addresses example to
+use `forEachorNull`, each Patient resource with no addresses would still produce a row, just with the address-related
+columns set to `null`.
 
 ### Using constants
 ViewDefinitions may include one or more of constants, which are simple values that can be reused
