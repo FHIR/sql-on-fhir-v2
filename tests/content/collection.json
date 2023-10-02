@@ -54,7 +54,7 @@
           {
             "alias": "last_name",
             "path": "name.family",
-            "collection": true
+            "collection": false
           },
           {
             "alias": "first_name",
