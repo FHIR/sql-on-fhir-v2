@@ -102,7 +102,7 @@
           },
           {
             "alias": "birthsex",
-            "path": "extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex').value.ofType(Code).first()"
+            "path": "extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex').value.ofType(code).first()"
           }
         ]
       },
