@@ -49,34 +49,34 @@
       "view": {
         "resource": "Patient",
         "select": [{ "path": "id" }],
-        "where": [{ "path": "name.use = 'official'" }]
+        "where": [{ "path": "name.where(use = 'official').exists()" }]
       },
       "expect": [{ "id": "p1" }]
     },
     {
-      "title": "simple where path with no results",
+      "title": "where path with no results",
       "view": {
         "resource": "Patient",
         "select": [{ "path": "id" }],
-        "where": [{ "path": "name.use = 'maiden'" }]
+        "where": [{ "path": "name.where(use = 'maiden').exists()" }]
       },
       "expect": []
     },
     {
-      "title": "simple where path with greater than inequality",
+      "title": "where path with greater than inequality",
       "view": {
         "resource": "Observation",
         "select": [{ "path": "id" }],
-        "where": [{ "path": "valueInteger > 11" }]
+        "where": [{ "path": "where(valueInteger > 11).exists()" }]
       },
       "expect": [{ "id": "o1" }]
     },
     {
-      "title": "simple where path with less than inequality",
+      "title": "where path with less than inequality",
       "view": {
         "resource": "Observation",
         "select": [{ "path": "id" }],
-        "where": [{ "path": "valueInteger < 11" }]
+        "where": [{ "path": "where(valueInteger < 11).exists()" }]
       },
       "expect": [{ "id": "o2" }]
     },
@@ -86,8 +86,8 @@
         "resource": "Patient",
         "select": [{ "path": "id" }],
         "where": [
-          { "path": "name.use = 'official'" },
-          { "path": "name.family = 'f1'" }
+          { "path": "name.where(use = 'official').exists()" },
+          { "path": "name.where(family = 'f1').exists()" }
         ]
       },
       "expect": [{ "id": "p1" }]
@@ -97,7 +97,7 @@
       "view": {
         "resource": "Patient",
         "select": [{ "path": "id" }],
-        "where": [{ "path": "name.use = 'official' and name.family = 'f1'" }]
+        "where": [{ "path": "name.where(use = 'official' and family = 'f1').exists()" }]
       },
       "expect": [{ "id": "p1" }]
     },
@@ -106,27 +106,18 @@
       "view": {
         "resource": "Patient",
         "select": [{ "path": "id" }],
-        "where": [{ "path": "name.use = 'official' or name.family = 'f2'" }]
+        "where": [{ "path": "name.where(use = 'official' or family = 'f2').exists()" }]
       },
       "expect": [{ "id": "p1" }, { "id": "p2" }]
     },
     {
-      "title": "where path with a where function (and)",
+      "title": "where path that evaluates to true when empty",
       "view": {
         "resource": "Patient",
         "select": [{ "path": "id" }],
-        "where": [{ "path": "name.where(use = 'official' and family = 'f1')" }]
+        "where": [{ "path": "name.where(family = 'f2').empty()" }]
       },
-      "expect": [{ "id": "p1" }]
-    },
-    {
-      "title": "where path with a where function (or)",
-      "view": {
-        "resource": "Patient",
-        "select": [{ "path": "id" }],
-        "where": [{ "path": "name.where(use = 'official' or family = 'f2')" }]
-      },
-      "expect": [{ "id": "p1" }, { "id": "p2" }]
+      "expect": [{ "id": "p1" }, { "id": "p3" }]
     }
   ]
 }
