@@ -67,7 +67,7 @@
       "view": {
         "resource": "Observation",
         "select": [{ "path": "id" }],
-        "where": [{ "path": "where(valueInteger > 11).exists()" }]
+        "where": [{ "path": "where(value > 11).exists()" }]
       },
       "expect": [{ "id": "o1" }]
     },
@@ -76,7 +76,7 @@
       "view": {
         "resource": "Observation",
         "select": [{ "path": "id" }],
-        "where": [{ "path": "where(valueInteger < 11).exists()" }]
+        "where": [{ "path": "where(value < 11).exists()" }]
       },
       "expect": [{ "id": "o2" }]
     },
