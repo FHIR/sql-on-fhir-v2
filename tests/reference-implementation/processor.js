@@ -234,6 +234,11 @@ export async function runTests(source) {
           observedCount: observed.length,
           observed,
         }
+      } else if (t.expectError) {
+        t.result = {
+          passed: false,
+          error: "Expected an error"
+        }
       } else {
         t.result = {
           ...arraysMatch(observed, t.expect),
