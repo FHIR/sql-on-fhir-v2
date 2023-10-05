@@ -4,6 +4,7 @@
   "description": "Schema for tests",
   "type": "object",
   "required": ["title", "resources", "tests"],
+  "additionalProperties": false,
   "properties": {
     "title": {
       "type": "string"
@@ -127,6 +128,7 @@
     },
     "view": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "name": {
           "type": "string"
