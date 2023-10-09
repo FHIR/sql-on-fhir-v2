@@ -7,17 +7,18 @@ Usage:  #example
 * status = #draft
 * resource = #Patient
 * select[+]
-  * path = "getResourceKey()"
-  * alias = "id"
-* select[+]
-  * path = "gender"
+  * column[+]
+    * path = "getResourceKey()"
+    * alias = "id"
+  * column[+]
+    * path = "gender"
 * select[+]
   * forEach = "name.where(use = 'official').first()"
-  * select[+]
+  * column[+]
     * path = "given.join(' ')"
     * alias = "given_name"
     * description = "A single given name field with all names joined together."
-  * select[+]
+  * column[+]
     * path = "family"
     * alias = "family_name"
 
@@ -34,19 +35,20 @@ Usage:  #example
 * status = #draft
 * resource = #Patient
 * select[+]
-  * path = "getResourceKey()"
-  * alias = "patient_id"
+  * column[+]
+    * path = "getResourceKey()"
+    * alias = "patient_id"
 * select[+]
   * forEach = "address"
-  * select[+]
+  * column[+]
     * path = "line.join('\n')"
     * alias = "street"
     * description = "The full street address, including newlines if present."
-  * select[+]
+  * column[+]
     * path = "use"
-  * select[+]
+  * column[+]
     * path = "city"
-  * select[+]
+  * column[+]
     * path = "postalCode"
     * alias = "zip"
 
@@ -68,41 +70,42 @@ Usage: #example
   * name = "bp_code"
   * valueCode = #85354-9
 * select[+]
-  * path = "getResourceKey()"
-  * alias = "id"
-* select[+]
-  * path = "subject.getReferenceKey('Patient')"
-  * alias = "patient_id"
-  * description = "Can be used to join to patient tables created by other views."
-* select[+]
-  * path =  "effective.ofType(dateTime)"
-  * alias = "effective_date_time"
+  * column[+]
+    * path = "getResourceKey()"
+    * alias = "id"
+  * column[+]
+    * path = "subject.getReferenceKey('Patient')"
+    * alias = "patient_id"
+    * description = "Can be used to join to patient tables created by other views."
+  * column[+]
+    * path =  "effective.ofType(dateTime)"
+    * alias = "effective_date_time"
 * select[+]
   * forEach = "component.where(code.coding.exists(system='http://loinc.org' and code=%systolic_bp)).first()"
-  * select[+]
+  * column[+]
     * alias = "sbp_quantity_system"
     * path = "value.ofType(Quantity).system"
-  * select[+]
+  * column[+]
     * alias = "sbp_quantity_code"
     * path = "value.ofType(Quantity).code"
-  * select[+]
+  * column[+]
     * alias = "sbp_quantity_display"
     * path = "value.ofType(Quantity).unit"
-  * select[+]
+  * column[+]
     * alias = "sbp_quantity_value"
     * path = "value.ofType(Quantity).value"
 * select[+]
   * forEach = "component.where(code.coding.exists(system='http://loinc.org' and code=%diastolic_bp)).first()"
-  * select[+]
+  * column[+]
     * alias = "dbp_quantity_system"
     * path = "value.ofType(Quantity).system"
-  * select[+]
+  * column[+]
     * alias = "dbp_quantity_code"
     * path = "value.ofType(Quantity).code"
-  * select[+]
+  * column[+]
     * alias = "dbp_quantity_display"
     * path = "value.ofType(Quantity).unit"
-  * select[+]
+  * column[+]
     * alias = "dbp_quantity_value"
     * path = "value.ofType(Quantity).value"
 * where[+]

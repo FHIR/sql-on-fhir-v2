@@ -12,10 +12,10 @@ Expression: "empty() or matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
 
 Invariant: sql-expressions
 Description: """
-Can only have only one of `path`, `forEach`, `forEachOrNull`, and `union`
+Can only have only one of `forEach`, `forEachOrNull`, and `union`
 """
 Severity: #error
-Expression: "(path | forEach | forEachOrNull | union).count() = 1"
+Expression: "(forEach | forEachOrNull | union).count() = 1"
 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 Logical: ViewDefinition
@@ -66,54 +66,60 @@ criteria are defined by FHIRPath expressions.
 
     Support for additional types may be added in the future.
   """
-* select 0..* BackboneElement "Defines the content of a column within the view"
-  * alias 0..1 string "Column alias produced in the output" """
-    Alias of the column produced in the output, must be in a database-friendly format.
-  """
-  * alias obeys sql-name
-  * path 0..1 string "FHIRPath expression that creates a column and defines its content" """
-    A FHIRPath expression that evaluates to the value that will be output in the column for each 
-    resource. The input context is the collection of resources of the type specified in the resource 
-    element. Constants defined in Reference({constant}) can be referenced as %[name].
-  """
-  * description 0..1 markdown "Description of the column" """
-    A human-readable description of the column.
-  """
-  * collection 0..1 boolean "Indicates whether the column may have multiple values." """
-  Indicates whether the column may have multiple values. Defaults to `false` if unset.
-  
-  ViewDefinitions must have this set to `true` if multiple values may be returned. Implementations SHALL
-  report an error if multiple values are produced when that is not the case.
-  """
-  * type 0..1 uri "A FHIR StructureDefinition URI for the column's type." """
-  A FHIR StructureDefinition URI for the column's type. Relative URIs are implicitly given
-  the 'http://hl7.org/fhir/StructureDefinition/' prefix. The URI may also use FHIR element ID notation to indicate
-  a backbone element within a structure. For instance, `Observation.referenceRange` may be specified to indicate
-  the returned type is that backbone element.
-
-  This field *must* be provided if a ViewDefinition returns a non-primitive type. Implementations should report an error
-  if the returned type does not match the type set here, or if a non-primitive type is returned but this field is unset.
-  """
-  * tag 0..* BackboneElement "Additional metadata describing the column" """
-    Tags can be used to attach additional metadata to columns, such as implementation-specific 
-    directives or database-specific type hints.
-  """
-    * name 1..1 string "Name of tag" """
-      A name that identifies the meaning of the tag. A namespace should be used to scope the tag to 
-      a particular context. For example, 'ansi/type' could be used to indicate the type that should 
-      be used to represent the value within an ANSI SQL database.
+* select 1..* BackboneElement "A collection of columns and nested selects to include in the view." """
+  The select structure defines the columns to be used in the resulting view. These are expressed
+  in the `column` structure below, or in nested `select`s for nested resorces.
+"""
+  * column 0..* BackboneElement "A column to be produced in the resuting table." """
+    A column to be produced in the resuting table. The column is relative to the select structure
+    that contains it.
     """
-    * value 1..1 string "Value of tag"
-  * forEach 0..1 string "Creates a row for each of the elements in the given expression." """
-    Creates a row for each of the elements in the given expression, where the columns of these rows
-    are in the `select` expression that is a sibling of the `forEach` in the ViewDefinition.
+    * path 0..1 string "FHIRPath expression that creates a column and defines its content" """
+      A FHIRPath expression that evaluates to the value that will be output in the column for each 
+      resource. The input context is the collection of resources of the type specified in the resource 
+      element. Constants defined in Reference({constant}) can be referenced as %[name].
+    """
+    * alias 0..1 string "Column alias produced in the output" """
+      Alias of the column produced in the output, must be in a database-friendly format.
+    """
+    * alias obeys sql-name
+    * description 0..1 markdown "Description of the column" """
+      A human-readable description of the column.
+    """
+    * collection 0..1 boolean "Indicates whether the column may have multiple values." """
+    Indicates whether the column may have multiple values. Defaults to `false` if unset.
+  
+    ViewDefinitions must have this set to `true` if multiple values may be returned. Implementations SHALL
+    report an error if multiple values are produced when that is not the case.
+    """
+    * type 0..1 uri "A FHIR StructureDefinition URI for the column's type." """
+    A FHIR StructureDefinition URI for the column's type. Relative URIs are implicitly given
+    the 'http://hl7.org/fhir/StructureDefinition/' prefix. The URI may also use FHIR element ID notation to indicate
+    a backbone element within a structure. For instance, `Observation.referenceRange` may be specified to indicate
+    the returned type is that backbone element.
 
-    Values from expressions above the forEach will be repeated for each nested row. For instance, this
-    can be used to create a separate row per patient address, while having a patient_id value from the
-    resource repeated in each of those rows.
+    This field *must* be provided if a ViewDefinition returns a non-primitive type. Implementations should report an error
+    if the returned type does not match the type set here, or if a non-primitive type is returned but this field is unset.
+    """
+    * tag 0..* BackboneElement "Additional metadata describing the column" """
+      Tags can be used to attach additional metadata to columns, such as implementation-specific 
+      directives or database-specific type hints.
+    """
+      * name 1..1 string "Name of tag" """
+        A name that identifies the meaning of the tag. A namespace should be used to scope the tag to 
+        a particular context. For example, 'ansi/type' could be used to indicate the type that should 
+        be used to represent the value within an ANSI SQL database.
+      """
+      * value 1..1 string "Value of tag"
+  * forEach 0..1 string "A FHIRPath expression to retrieve the parent element(s) used in the containing select. The default is effectively `$this`." """
+    A FHIRPath expression to retrieve the parent element(s) used in the containing select, relative to the root resource or parent `select`,
+    if applicable. `forEach` will produce a row for each element selected in the expression. For example, using forEach on `address` in Patient will
+    generate a new row for each address, with columns defined in the corresponding `column` structure.
   """
   * forEachOrNull 0..1 string "Same as forEach, but will produce a row with null values if the collection is empty." """
-    Same as forEach, but produces a single row with null values in the nested foreach expression if the collection is empty.
+    Same as forEach, but produces a single row with null values in the nested expression if the collection is empty. For example,
+    with a Patient resouce, a `forEachOrNull` on address will produce a row for each patient even if there are no addresses; it will
+    simply set the address columns to `null`.
   """
   * union 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select "TODO: Describe" """
     TODO: Update this -- The result of each selection within the union will be combined according to the semantics of the 

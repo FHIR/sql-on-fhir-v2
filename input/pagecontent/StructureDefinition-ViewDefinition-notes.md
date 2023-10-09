@@ -85,15 +85,17 @@ For example, a minimal view of Patients could look like this:
 {
   "name": "active_patients",
   "resource": "Patient"
-  "select": [
-    {
-      "path": "getResourceKey()",
-      "alias": "id"
-    },
-    {
-      "path": "active"
-    },
-  ]
+  "select": [{
+    "column": [
+      {
+        "path": "getResourceKey()",
+        "alias": "id"
+      },
+      {
+        "path": "active"
+      },
+    ]
+  }]
 }
 ```
 
@@ -104,18 +106,20 @@ like this:
 {
   "name": "simple_obs",
   "resource": "Observation"
-  "select": [
-    {
-      "path": "getResourceKey()",
-      "alias": "id"
-    },
-    {
-      // The 'Patient' parameter is optional, but ensures the returned value
-      // will either be a patient row key or null.
-      "path": "subject.getReferenceKey('Patient')",
-      "alias": "patient_id",
-    },
-  ],
+  "select": [{
+    "column": [
+      {
+        "path": "getResourceKey()",
+        "alias": "id"
+      },
+      {
+        // The 'Patient' parameter is optional, but ensures the returned value
+        // will either be a patient row key or null.
+        "path": "subject.getReferenceKey('Patient')",
+        "alias": "patient_id",
+      },
+    ]
+  }],
   "where": [
    // An expression that selects observations that have a patient subject.
   ] 
@@ -197,6 +201,19 @@ even if the collection under that `forEachOrNull` expression is empty. So if we 
 use `forEachorNull`, each Patient resource with no addresses would still produce a row, just with the address-related
 columns set to `null`.
 
+### Multiple select expressions
+ViewDefinitions may have multiple `select` expressions, which can be organized as siblings or parent/child relationships. This is typically done as different selects may use different `forEach` or `forEachOrNull` expressions to unroll
+different parts of the resource.
+
+The multiple rows produced by `forEach`-style selects are joined to others with the following rules:
+
+* Parent/child selects will repeat values from the parent select for each item in the child select. 
+* Sibling select expressions are effectively cross joined, where each row in each `select` is dublicated for every row
+in sibiling `select`s. (In practice, however, a given `select` in a ViewDefinition will produce only a single row
+for the resource.)
+
+The [example view definitions](StructureDefinition-ViewDefinition-examples.html) illustrate this behavior.
+
 ### Using constants
 ViewDefinitions may include one or more of constants, which are simple values that can be reused
 in FHIRPath expressions. This can improve readability and reduce redundancy. Constants can be
@@ -265,19 +282,21 @@ common and can simplify analysis in some systems.
   "name": "patient_birth_date",
   "resource": "Patient",
   "description": "A view of simple patient birth dates",
-  "select": [
-    { "path": "id" },
-    {
-      "alias": "birth_date",
-      "path": "birthDate",
-      "tags": [
-        {
-          "name": "ansi/type",
-          "value": "DATE"
-        }
-      ]
-    }
-  ]
+  "select": [{
+    "column": [
+      { "path": "id" },
+      {
+        "alias": "birth_date",
+        "path": "birthDate",
+        "tags": [
+          {
+            "name": "ansi/type",
+            "value": "DATE"
+          }
+        ]
+      }
+    ]
+  }]
 }
 ```
 
