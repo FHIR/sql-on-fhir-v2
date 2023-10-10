@@ -99,36 +99,37 @@ for (const file of files) {
     const testResults = await runTests(test)
     results[file] = testResults;
 
-    if (testResults.tests.every((r) => r.result.passed)) {
-      console.log('* ' + file + ' tests all pass')
-      tests.push({ file: CONTENT.slice(2) + file, title: test.title })
-    } else {
-      broken_views += 1
-      console.error('* ' + file + ' has failed tests')
-      console.error(
-        JSON.stringify(
-          testResults.tests
-            .filter((t) => !t.result.passed)
-            .map((t) => ({
-              title: t.title,
-              expectCount: t.expectCount,
-              expect: t.expect,
-              result: t.result,
-            })),
-          true,
-          ' '
-        )
-      )
-    }
+      if (testResults.tests.every((r) => r.result.passed)) {
+          console.log('* ' + file + ' tests all pass')
+          tests.push({ file: CONTENT.slice(2) + file, title: test.title })
+      } else {
+          broken_views += 1
+          console.error('* ' + file + ' has failed tests')
+          console.error(
+              JSON.stringify(
+                  testResults.tests
+                      .filter((t) => !t.result.passed)
+                      .map((t) => ({
+                          title: t.title,
+                          expectCount: t.expectCount,
+                          expect: t.expect,
+                          result: t.result,
+                      })),
+                  true,
+                  ' '
+              )
+          )
+      }
   } else {
-    broken_views += 1
-    console.error(`* ERROR: invalid view definition in ${file}`)
-    console.error(JSON.stringify(validate.errors, true, ' '))
+      broken_views += 1
+      console.error(`* ERROR: invalid view definition in ${file}`)
+      console.error(JSON.stringify(validate.errors, true, ' '))
   }
 }
 
 
-await fs.writeFile( 'test-results.json', JSON.stringify(results, null, " "))
+await fs.writeFile( '../test_report/public/tests.json', JSON.stringify(tests, null, " "))
+await fs.writeFile( '../test_report/public/test-results.json', JSON.stringify(results, null, " "))
 
 if (broken_views > 0) {
   console.log(`Broken tests: ${broken_views}. Exiting with error.`)

@@ -1,8 +1,32 @@
 [
     {
-        "name": "reference implementation",
+        "name": "Ref.Impl",
         "url": "https://github.com/FHIR/sql-on-fhir-v2",
         "description": "Official reference implementation in JavaScript",
         "testResultsUrl": "https://fhir.github.io/sql-on-fhir-v2/test-results.json"
+    },
+    {
+        "name": "Aidbox",
+        "url": "https://docs.aidbox.app/storage-1/sql-on-fhir",
+        "description": "FHIR++ Platform by Health Samurai",
+        "testResultsUrl": "TBD"
+    },
+    {
+        "name": "Google",
+        "url": "TBD",
+        "description": "TBD",
+        "testResultsUrl": "TBD"
+    },
+    {
+        "name": "Pathling",
+        "url": "TBD",
+        "description": "TBD",
+        "testResultsUrl": "TBD"
+    },
+    {
+        "name": "Grahame Impl",
+        "url": "TBD",
+        "description": "TBD",
+        "testResultsUrl": "TBD"
     }
 ]
