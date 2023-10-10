@@ -57,6 +57,8 @@ publisher:
 #
 parameters:
   excludettl: true
+  path-test: tests
+  
 #   validation: [allow-any-extensions, no-broken-links]
 #
 # ╭────────────────────────────────────────────menu.xml────────────────────────────────────────────╮
