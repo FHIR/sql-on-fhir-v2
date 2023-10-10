@@ -83,6 +83,8 @@ const files = await fs.readdir(CONTENT)
 console.log(CONTENT)
 
 let broken_views = 0
+
+let results = {};
 for (const file of files) {
   if (path.extname(file) !== '.json') {
     continue
@@ -93,8 +95,9 @@ for (const file of files) {
   let res = validate(test)
 
   if (res == true) {
-    console.log('* ' + file + ' is schema-valid')
+    console.log(`* ${file} is schema-valid`)
     const testResults = await runTests(test)
+    results[file] = testResults;
 
     if (testResults.tests.every((r) => r.result.passed)) {
       console.log('* ' + file + ' tests all pass')
@@ -119,10 +122,13 @@ for (const file of files) {
     }
   } else {
     broken_views += 1
-    console.error('* ' + file)
+    console.error(`* ERROR: invalid view definition in ${file}`)
     console.error(JSON.stringify(validate.errors, true, ' '))
   }
 }
+
+
+await fs.writeFile( 'test-results.json', JSON.stringify(results, null, " "))
 
 if (broken_views > 0) {
   console.log(`Broken tests: ${broken_views}. Exiting with error.`)
