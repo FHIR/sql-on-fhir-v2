@@ -50,7 +50,7 @@
                             <a href={"#tests/" + test.file}> {test.title} </a>
                         </td>
                     </tr>
-                    {#each test.tests as t, i}
+                    {#each test?.tests || [] as t, i}
                         <tr>
                             <td class="px-6 py-1 border ">
                                 <a href={"#tests/" + test.file}> {t.title} </a>
