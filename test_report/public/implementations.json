@@ -9,24 +9,21 @@
         "name": "Aidbox",
         "url": "https://docs.aidbox.app/storage-1/sql-on-fhir",
         "description": "FHIR++ Platform by Health Samurai",
-        "testResultsUrl": "TBD"
+        "testResultsUrl": "https://storage.googleapis.com/aidbox-public/sof-test-results.json"
     },
     {
         "name": "Google",
         "url": "TBD",
-        "description": "TBD",
-        "testResultsUrl": "TBD"
+        "description": "TBD"
     },
     {
         "name": "Pathling",
         "url": "TBD",
-        "description": "TBD",
-        "testResultsUrl": "TBD"
+        "description": "TBD"
     },
     {
         "name": "Grahame Impl",
         "url": "TBD",
-        "description": "TBD",
-        "testResultsUrl": "TBD"
+        "description": "TBD"
     }
 ]
