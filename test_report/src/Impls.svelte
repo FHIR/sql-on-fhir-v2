@@ -9,11 +9,13 @@
          return null
      }
  }
+
  export let impls = [];
  export let tests = [];
 
  onMount(async function () {
      tests = await load('tests.json');
+     console.log('tests',tests);
      var tmp = await load('implementations.json');
      for (const impl of tmp) {
          if (impl.testResultsUrl){
@@ -22,7 +24,7 @@
              console.log('res', res);
          }
      }
-     console.log(tmp);
+     console.log('impls', tmp);
      impls = tmp;
 
  });
