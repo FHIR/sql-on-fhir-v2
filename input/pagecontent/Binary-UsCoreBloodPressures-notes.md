@@ -1,4 +1,4 @@
-This will result in a "us_core_blood_pressures" table that loooks like this:
+This will result in a "us_core_blood_pressures" table as:
 
 | id | patient_id | effective_date_time | sbp_quantity_system       | sbp_quantity_code | sbp_quantity_display | sbp_quantity_value | dbp_quantity_system       | dbp_quantity_code | dbp_quantity_display | dbp_quantity_value |
 |----|------------|---------------------|---------------------------|-------------------|----------------------|--------------------|---------------------------|-------------------|----------------------|--------------------|
