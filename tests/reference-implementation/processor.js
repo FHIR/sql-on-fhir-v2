@@ -92,24 +92,14 @@ function compileViewDefinition(viewDefinition) {
     })
   }
 
-  if (viewDefinition.forEach) {
-    viewDefinition.$forEach = compile(
-      viewDefinition.forEach,
-      viewDefinition.where
-    )
-  } else if (viewDefinition.forEachOrNull) {
-    viewDefinition.$forEachOrNull = compile(
-      viewDefinition.forEachOrNull,
-      viewDefinition.where
-    )
-  }
-
-  if (viewDefinition.resource) {
-    viewDefinition.$resource = compile(
-      viewDefinition.resource,
-      viewDefinition.where
-    )
-  }
+  ;['forEach', 'forEachOrNull', 'resource'].forEach((param) => {
+    if (viewDefinition[param]) {
+      viewDefinition[`$${param}`] = compile(
+        viewDefinition[param],
+        viewDefinition.where
+      )
+    }
+  })
 
   const subViews = (viewDefinition.select ?? []).concat(
     viewDefinition.union ?? []
