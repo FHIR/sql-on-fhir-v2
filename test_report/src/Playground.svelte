@@ -88,7 +88,7 @@
       {/each}
     </select>
 
-    <textarea
+    <textarea style={`height: ${initializedFromStore.views[selectedTestIndex].split("\n").length * 1.5}em`}
       id="view-definition"
       bind:value={initializedFromStore.views[selectedTestIndex]}
     />
@@ -97,7 +97,7 @@
   <!-- Resources Array Panel -->
   <div class="panel right-panel">
     <h2>Resources Array</h2>
-    <textarea
+    <textarea style={`height: ${initializedFromStore.resources.split("\n").length * 1.5}em`}
       id="resources-array"
       bind:value={initializedFromStore.resources}
     />
@@ -106,7 +106,7 @@
   <!-- Expected Results Panel -->
   <div class="panel">
     <h2>Expected Results</h2>
-    <textarea
+    <textarea style={`height: ${initializedFromStore.expected[selectedTestIndex].split("\n").length * 1.5}em`}
       id="expected-results"
       bind:value={initializedFromStore.expected[selectedTestIndex]}
     />
@@ -134,6 +134,7 @@
 
   .left-panel {
     grid-column: 1 / 2;
+    grid-row: 1 / 4;
   }
 
   .right-panel {
@@ -160,6 +161,8 @@
     .left-panel,
     .right-panel {
       grid-column: 1 / 2;
+      min-height: fit-content;
+      grid-row:unset;
     }
   }
 </style>
