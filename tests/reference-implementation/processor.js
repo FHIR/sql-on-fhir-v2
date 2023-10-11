@@ -12,16 +12,15 @@ function getResourceKey(nodes, resource) {
 
 function getReferenceKey(nodes, resource) {
   return nodes.flatMap(({ data: node }) => {
-      const parts = node.reference
-        .replaceAll('//', '')
-        .split('/_history')[0]
-        .split('/')
-      const type = parts.slice(-2)[0]
-      const key = parts.slice(-2).join('/')
+    const parts = node.reference
+      .replaceAll('//', '')
+      .split('/_history')[0]
+      .split('/')
+    const type = parts.slice(-2)[0]
+    const key = parts.slice(-2).join('/')
     return !resource || resource === type ? [key] : []
   })
 }
-
 
 export async function* processResources(resourceGenerator, configIn) {
   const config = JSON.parse(JSON.stringify(configIn))
@@ -34,7 +33,7 @@ export async function* processResources(resourceGenerator, configIn) {
       _fns: {
         pow: (inputs, pow = 2) => inputs.map((i) => Math.pow(i, pow)),
         getResourceKey,
-        getReferenceKey
+        getReferenceKey,
       },
     }
   )
@@ -48,8 +47,8 @@ export async function* processResources(resourceGenerator, configIn) {
 
 export function getColumns(viewDefinition) {
   return (viewDefinition.select || []).flatMap((c) => {
-    if (c.path) {
-      return [c]
+    if (c.column) {
+      return c.column
     }
     if (c.select) {
       return getColumns(c)
@@ -78,21 +77,22 @@ function compile(eIn, where) {
 }
 
 function compileViewDefinition(viewDefinition) {
-  if (viewDefinition.path && !viewDefinition.alias) {
-    viewDefinition.alias =
-      viewDefinition.name ??
-      viewDefinition.path
-        .split('.')
-        .filter((p) => !p.includes('('))
-        .slice(-1)[0]
-    if (!viewDefinition.alias) {
-      throw `No alias set for column: ${JSON.stringify(viewDefinition)}'`
-    }
+  if (viewDefinition.column) {
+    viewDefinition.column.forEach((c) => {
+      c.$path = compile(c.path)
+      if (c.path && !c.alias) {
+        c.alias = c.path
+          .split('.')
+          .filter((p) => !p.includes('('))
+          .at(-1)
+        if (!c.alias) {
+          throw `No alias set for column: ${JSON.stringify(c)}'`
+        }
+      }
+    })
   }
 
-  if (viewDefinition.path) {
-    viewDefinition.$path = compile(viewDefinition.path)
-  } else if (viewDefinition.forEach) {
+  if (viewDefinition.forEach) {
     viewDefinition.$forEach = compile(
       viewDefinition.forEach,
       viewDefinition.where
@@ -110,7 +110,11 @@ function compileViewDefinition(viewDefinition) {
       viewDefinition.where
     )
   }
-  for (let field of viewDefinition.select || []) {
+
+  const subViews = (viewDefinition.select ?? []).concat(
+    viewDefinition.union ?? []
+  )
+  for (let field of subViews) {
     compileViewDefinition(field)
   }
 }
@@ -127,25 +131,23 @@ function cartesianProduct([first, ...rest]) {
 function extractFields(obj, viewDefinition, context = {}) {
   let fields = []
   for (let field of viewDefinition) {
-    let {
-      alias,
-      path,
-      collection,
-      $path,
-      $forEach,
-      $forEachOrNull,
-      select,
-      $from,
-    } = field
-    if (alias && path) {
-      const result = $path(obj, context)
-      if (result.length <= 1) {
-        fields.push([{ [alias]: result?.[0] ?? null }])
-      } else if (collection) {
-        fields.push([{ [alias]: result ?? null }])
-      } else {
-        throw `alias=${alias} from path=${path} matched more than one element`
-      }
+    let { column, $forEach, $forEachOrNull, select, $from } = field
+    if (column?.length) {
+      const columnBindings = column.reduce(
+        (bindings, { alias, path, $path, collection }) => {
+          const result = $path(obj, context)
+          if (result.length <= 1) {
+            bindings[alias] = result?.[0] ?? null
+          } else if (collection) {
+            bindings[alias] = result ?? null
+          } else {
+            throw `alias=${alias} from path=${path} matched more than one element`
+          }
+          return bindings
+        },
+        {}
+      )
+      fields.push([columnBindings])
     } else if (select) {
       let nestedObjects = ($forEach ?? $forEachOrNull ?? identity)(obj, context)
       let rows = []
@@ -237,7 +239,7 @@ export async function runTests(source) {
       } else if (t.expectError) {
         t.result = {
           passed: false,
-          error: "Expected an error"
+          error: 'Expected an error',
         }
       } else {
         t.result = {

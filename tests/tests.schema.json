@@ -74,24 +74,56 @@
     }
   },
   "$defs": {
+    "_tag": {
+        "type": "object",
+        "required": ["name", "value"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+    },
+    "_column":{
+      "properties": {
+        "additionalProperties": false,
+          "path": {
+            "type": "string",
+            "format": "fhirpath-expression"
+          },
+          "alias": {
+            "type": "string",
+            "minLength": 1
+          },
+          "collection": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "array",
+            "items": {"$ref": "#/$defs/_tag"}
+          }
+      }
+
+    },
     "_item": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
+        "column": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/_column" }
+        },
         "select": {
           "type": "array",
           "items": { "$ref": "#/$defs/_item" }
-        },
-        "path": {
-          "type": "string",
-          "format": "fhirpath-expression"
-        },
-        "alias": {
-          "type": "string",
-          "minLength": 1
-        },
-        "collection": {
-          "type": "boolean"
         },
         "from": {
           "type": "string",
@@ -107,22 +139,11 @@
         },
         "union": {
           "type": "array",
-          "items": { "type": "object" }
+          "items": {"$ref": "#/$defs/_item"}
         },
-        "tags": {
+        "tag": {
           "type": "array",
-          "items": {
-            "type": "object",
-            "required": ["name", "value"],
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              }
-            }
-          }
+          "items": {"$ref": "#/$defs/_tag"}
         }
       }
     },

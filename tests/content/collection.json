@@ -46,7 +46,7 @@
       "title": "Fail when `collection` is not true",
       "view": {
         "resource": "Patient",
-        "select": [
+        "select":[{"column": [
           {
             "alias": "id",
             "path": "id"
@@ -61,7 +61,7 @@
             "path": "name.given",
             "collection": true
           }
-        ]
+        ]}] 
       },
       "expectError": true
     },
@@ -69,7 +69,7 @@
       "title": "`collection` true",
       "view": {
         "resource": "Patient",
-        "select": [
+        "select": [{"column": [
           {
             "alias": "id",
             "path": "id"
@@ -84,7 +84,7 @@
             "path": "name.given",
             "collection": true
           }
-        ]
+        ]}]
       },
       "expect": [
         {
