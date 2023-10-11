@@ -27,7 +27,7 @@
       "title": "table level first()",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "name.first().use" }]
+        "select": [{ "column": [{ "path": "name.first().use" }] }]
       },
       "expect": [{ "use": "official" }]
     },
@@ -37,8 +37,12 @@
         "resource": "Patient",
         "select": [
           {
-            "path": "name.first().given.first()",
-            "alias": "given"
+            "column": [
+              {
+                "path": "name.first().given.first()",
+                "alias": "given"
+              }
+            ]
           }
         ]
       },

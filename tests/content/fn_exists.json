@@ -32,8 +32,12 @@
       "view": {
         "resource": "Patient",
         "select": [
-          { "path": "id" },
-          { "path": "name.exists()", "alias": "has_name" }
+          {
+            "column": [
+              { "path": "id" },
+              { "path": "name.exists()", "alias": "has_name" }
+            ]
+          }
         ]
       },
       "expect": [
@@ -47,8 +51,12 @@
       "view": {
         "resource": "Patient",
         "select": [
-          { "path": "id" },
-          { "path": "name.given.exists()", "alias": "has_name" }
+          {
+            "column": [
+              { "path": "id" },
+              { "path": "name.given.exists()", "alias": "has_name" }
+            ]
+          }
         ]
       },
       "expect": [
@@ -61,7 +69,7 @@
       "title": "exists in where path",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "id" }],
+        "select": [{ "column": [{ "path": "id" }] }],
         "where": [
           {
             "path": "name.exists()"
@@ -74,7 +82,7 @@
       "title": "nested exists in where path",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "id" }],
+        "select": [{ "column": [{ "path": "id" }] }],
         "where": [
           {
             "path": "name.given.exists()"
@@ -90,7 +98,7 @@
         "select": [
           {
             "forEach": "where(name.exists())",
-            "select": [{ "path": "id" }]
+            "column": [{ "path": "id" }]
           }
         ]
       },

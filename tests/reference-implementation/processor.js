@@ -132,10 +132,13 @@ function extractFields(obj, viewDefinition, context = {}) {
   let fields = []
   for (let field of viewDefinition) {
     let { column, $forEach, $forEachOrNull, select, $from } = field
-    if (column?.length) {
-      const columnBindings = column.reduce(
+    let nestedObjects = ($forEach ?? $forEachOrNull ?? identity)(obj, context)
+    let rows = []
+
+    for (let nestedObject of nestedObjects) {
+      const columnBindings = (column ?? []).reduce(
         (bindings, { alias, path, $path, collection }) => {
-          const result = $path(obj, context)
+          const result = $path(nestedObject, context)
           if (result.length <= 1) {
             bindings[alias] = result?.[0] ?? null
           } else if (collection) {
@@ -147,31 +150,22 @@ function extractFields(obj, viewDefinition, context = {}) {
         },
         {}
       )
-      fields.push([columnBindings])
-    } else if (select) {
-      let nestedObjects = ($forEach ?? $forEachOrNull ?? identity)(obj, context)
-      let rows = []
-
-      for (let nestedObject of nestedObjects) {
-        for (let row of extract(nestedObject, { select }, context)) {
-          rows.push(row)
-        }
+      for (let row of extract(nestedObject, { select }, context) ?? [{}]) {
+        rows.push({ ...columnBindings, ...row })
       }
-      if ($forEachOrNull && nestedObjects.length === 0) {
-        const nulls = {}
-        getColumns(field).forEach((c) => (nulls[c.alias] = null))
-        rows.push(nulls)
-      }
-      fields.push(rows)
-    } else {
-      console.error('Bad path', JSON.stringify(viewDefinition))
     }
+    if ($forEachOrNull && nestedObjects.length === 0) {
+      const nulls = {}
+      getColumns(field).forEach((c) => (nulls[c.alias] = null))
+      rows.push(nulls)
+    }
+    fields.push(rows)
   }
   return fields
 }
 
 function extract(obj, viewDefinition, context = {}) {
-  let fields = extractFields(obj, viewDefinition.select, context)
+  let fields = extractFields(obj, viewDefinition.select ?? [], context)
   return cartesianProduct(fields)
 }
 

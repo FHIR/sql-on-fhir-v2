@@ -16,7 +16,9 @@
       "title": "get resource key",
       "view": {
         "resource": "Observation",
-        "select": [{ "path": "getResourceKey()", "alias": "id" }]
+        "select": [
+          { "column": [{ "path": "getResourceKey()", "alias": "id" }] }
+        ]
       },
       "expectCount": 1
     },
@@ -27,7 +29,7 @@
         "select": [
           {
             "forEach": "basedOn",
-            "select": [{ "alias": "rid", "path": "getReferenceKey()" }]
+            "column": [{ "alias": "rid", "path": "getReferenceKey()" }]
           }
         ]
       },
@@ -40,7 +42,7 @@
         "select": [
           {
             "forEach": "basedOn.where(getReferenceKey('CarePlan').exists())",
-            "select": [{ "alias": "rid", "path": "getReferenceKey()" }]
+            "column": [{ "alias": "rid", "path": "getReferenceKey()" }]
           }
         ]
       },
