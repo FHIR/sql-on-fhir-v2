@@ -12,10 +12,10 @@ Expression: "empty() or matches('^[^_][A-Za-z][A-Za-z0-9_]+$')"
 
 Invariant: sql-expressions
 Description: """
-Can only have only one of `forEach`, `forEachOrNull`, and `union`
+Can only have at most one of `forEach`, `forEachOrNull`, and `union`
 """
 Severity: #error
-Expression: "(forEach | forEachOrNull | union).count() = 1"
+Expression: "(forEach | forEachOrNull | union).count() <= 1"
 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 Logical: ViewDefinition
@@ -111,6 +111,9 @@ criteria are defined by FHIRPath expressions.
         be used to represent the value within an ANSI SQL database.
       """
       * value 1..1 string "Value of tag"
+  * select 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select  "Nested select relative to a parent expression." """
+  Nested select relative to a parent expression. If the parent `select` has a `forEach` or `forEachOrNull`, this child select will apply for each item in that expression. 
+  """
   * forEach 0..1 string "A FHIRPath expression to retrieve the parent element(s) used in the containing select. The default is effectively `$this`." """
     A FHIRPath expression to retrieve the parent element(s) used in the containing select, relative to the root resource or parent `select`,
     if applicable. `forEach` will produce a row for each element selected in the expression. For example, using forEach on `address` in Patient will
@@ -127,7 +130,6 @@ criteria are defined by FHIRPath expressions.
     able to be implicitly converted to a common type according to the FHIRPath data type conversion 
     rules.
     """
-  * select 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select  "Nested select relative to a parent from, forEach, or forEachOrNull expression"
 * select obeys sql-expressions
 * where 0..* BackboneElement "A series of zero or more FHIRPath constraints to filter resourses for the view." """
   A series of zero or more FHIRPath constraints to filter resourses for the view. Every constraint
