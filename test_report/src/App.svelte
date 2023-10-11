@@ -24,7 +24,7 @@
 
 <Tailwindcss />
 
-<div>
+<div class="flex flex-col" style="height: 100%">
     <div class="flex space-x-4 px-4 py-2 border-b items-center" style="background-color: rgb(239 253 254);">
         <a href="" class="flex items-center px-4 text-lg"> 
             <img src="logo.jpeg" class="w-12 h-12" style="" /> SQL on FHIR 2.0
