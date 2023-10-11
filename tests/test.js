@@ -4,46 +4,84 @@ import Ajv from 'ajv'
 
 function validatePathToSubset(path) {
   const nodeTypeAllowList = [
-    "EntireExpression", "TermExpression", "InvocationExpression",
-    "MultiplicativeExpression", "AdditiveExpression", "InequalityExpression",
-    "EqualityExpression", "AndExpression", "OrExpression", "Identifier",
-    "LiteralTerm", "BooleanLiteral", "StringLiteral", "NumberLiteral",
-    "MemberInvocation", "FunctionInvocation", "ThisInvocation",
-    "InvocationTerm", "ExternalConstantTerm", "ExternalConstant", 
-    "Functn", "ParamList", 
+    'EntireExpression',
+    'TermExpression',
+    'InvocationExpression',
+    'MultiplicativeExpression',
+    'AdditiveExpression',
+    'InequalityExpression',
+    'EqualityExpression',
+    'AndExpression',
+    'OrExpression',
+    'Identifier',
+    'LiteralTerm',
+    'BooleanLiteral',
+    'StringLiteral',
+    'NumberLiteral',
+    'MemberInvocation',
+    'FunctionInvocation',
+    'ThisInvocation',
+    'InvocationTerm',
+    'ExternalConstantTerm',
+    'ExternalConstant',
+    'Functn',
+    'ParamList',
   ]
   const fnAllowList = [
-    "join", "first", "extension", "getResourceKey", "getReferenceKey",
-    "exists", "where", "empty", "ofType", "lowBoundary", "highBoundary" 
+    'join',
+    'first',
+    'extension',
+    'getResourceKey',
+    'getReferenceKey',
+    'exists',
+    'where',
+    'empty',
+    'ofType',
+    'lowBoundary',
+    'highBoundary',
   ]
   function validateChildren(node) {
-    for (let i=0; i<node.children.length; i++) {
-      const child = node.children[i];
+    for (let i = 0; i < node.children.length; i++) {
+      const child = node.children[i]
       if (nodeTypeAllowList.indexOf(child.type) == -1)
-        return `Unsupported node type: ${child.type}`;
-      if (child.type == "AdditiveExpression" && child.terminalNodeText.indexOf("&") > -1)
-        return "Unsupported use of &";
-      if (child.type == "MultiplicativeExpression" && 
-        (child.terminalNodeText.indexOf("mod") > -1 || child.terminalNodeText.indexOf("div") > -1)
-      ) return `Unsupported use of ${child.terminalNodeText.indexOf("mod") > -1 ? "mod" : "div"}`;
-      if (child.type == "EqualityExpression" && 
-        (child.terminalNodeText.indexOf("~") > -1 || child.terminalNodeText.indexOf("!~") > -1)
-      ) return "Unsupported use of ~";
-      if (child.type == "OrExpression" && child.terminalNodeText.indexOf("xor") > -1)
-        return "Unsupported use of xor";
-      if (child.type == "Functn") {
-        const fnIdentifier = child.children.find( c => c.type == "Identifier" );
+        return `Unsupported node type: ${child.type}`
+      if (
+        child.type == 'AdditiveExpression' &&
+        child.terminalNodeText.indexOf('&') > -1
+      )
+        return 'Unsupported use of &'
+      if (
+        child.type == 'MultiplicativeExpression' &&
+        (child.terminalNodeText.indexOf('mod') > -1 ||
+          child.terminalNodeText.indexOf('div') > -1)
+      )
+        return `Unsupported use of ${
+          child.terminalNodeText.indexOf('mod') > -1 ? 'mod' : 'div'
+        }`
+      if (
+        child.type == 'EqualityExpression' &&
+        (child.terminalNodeText.indexOf('~') > -1 ||
+          child.terminalNodeText.indexOf('!~') > -1)
+      )
+        return 'Unsupported use of ~'
+      if (
+        child.type == 'OrExpression' &&
+        child.terminalNodeText.indexOf('xor') > -1
+      )
+        return 'Unsupported use of xor'
+      if (child.type == 'Functn') {
+        const fnIdentifier = child.children.find((c) => c.type == 'Identifier')
         if (fnAllowList.indexOf(fnIdentifier.text) == -1)
-          return `Unsupported function: ${fnIdentifier.text}`;
+          return `Unsupported function: ${fnIdentifier.text}`
       }
-      if (child.children) { 
-        const validationError = validateChildren(child);
-        if (validationError) return validationError;
+      if (child.children) {
+        const validationError = validateChildren(child)
+        if (validationError) return validationError
       }
-    };
+    }
   }
-  const ast = fhirpath.parse(path);
-  return validateChildren(ast);
+  const ast = fhirpath.parse(path)
+  return validateChildren(ast)
 }
 
 function buildFhirpathFormat(allowExtendedFhirpath) {
@@ -51,14 +89,13 @@ function buildFhirpathFormat(allowExtendedFhirpath) {
     type: 'string',
     validate: (v) => {
       try {
-        if (!allowExtendedFhirpath && validatePathToSubset(v))
-          return false;
+        if (!allowExtendedFhirpath && validatePathToSubset(v)) return false
         fhirpath.compile(v)
         return true
       } catch (err) {
         return false
       }
-    }
+    },
   }
 }
 

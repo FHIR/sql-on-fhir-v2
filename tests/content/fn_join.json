@@ -18,8 +18,12 @@
       "view": {
         "resource": "Patient",
         "select": [
-          { "path": "id" },
-          { "path": "name.given.join(',')", "alias": "given" }
+          {
+            "column": [
+              { "path": "id" },
+              { "path": "name.given.join(',')", "alias": "given" }
+            ]
+          }
         ]
       },
       "expect": [{ "id": "p1", "given": "p1.g1,p1.g2" }]
@@ -29,8 +33,12 @@
       "view": {
         "resource": "Patient",
         "select": [
-          { "path": "id" },
-          { "path": "name.given.join('')", "alias": "given" }
+          {
+            "column": [
+              { "path": "id" },
+              { "path": "name.given.join('')", "alias": "given" }
+            ]
+          }
         ]
       },
       "expect": [{ "id": "p1", "given": "p1.g1p1.g2" }]
@@ -40,8 +48,12 @@
       "view": {
         "resource": "Patient",
         "select": [
-          { "path": "id" },
-          { "path": "name.given.join()", "alias": "given" }
+          {
+            "column": [
+              { "path": "id" },
+              { "path": "name.given.join()", "alias": "given" }
+            ]
+          }
         ]
       },
       "expect": [{ "id": "p1", "given": "p1.g1p1.g2" }]

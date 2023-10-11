@@ -85,15 +85,17 @@ For example, a minimal view of Patients could look like this:
 {
   "name": "active_patients",
   "resource": "Patient"
-  "select": [
-    {
-      "path": "getResourceKey()",
-      "alias": "id"
-    },
-    {
-      "path": "active"
-    },
-  ]
+  "select": [{
+    "column": [
+      {
+        "path": "getResourceKey()",
+        "alias": "id"
+      },
+      {
+        "path": "active"
+      },
+    ]
+  }]
 }
 ```
 
@@ -104,18 +106,20 @@ like this:
 {
   "name": "simple_obs",
   "resource": "Observation"
-  "select": [
-    {
-      "path": "getResourceKey()",
-      "alias": "id"
-    },
-    {
-      // The 'Patient' parameter is optional, but ensures the returned value
-      // will either be a patient row key or null.
-      "path": "subject.getReferenceKey('Patient')",
-      "alias": "patient_id",
-    },
-  ],
+  "select": [{
+    "column": [
+      {
+        "path": "getResourceKey()",
+        "alias": "id"
+      },
+      {
+        // The 'Patient' parameter is optional, but ensures the returned value
+        // will either be a patient row key or null.
+        "path": "subject.getReferenceKey('Patient')",
+        "alias": "patient_id",
+      },
+    ]
+  }],
   "where": [
    // An expression that selects observations that have a patient subject.
   ] 
@@ -197,6 +201,69 @@ even if the collection under that `forEachOrNull` expression is empty. So if we 
 use `forEachorNull`, each Patient resource with no addresses would still produce a row, just with the address-related
 columns set to `null`.
 
+`forEach` and `forEachOrNull` apply both to the columns within a select and to any nested select. Therefore the following
+select structures will produce the same results:
+
+```js
+"select": [{
+  "forEach": "address",
+  "column": [{"path": "line"}]
+}]
+```
+
+```js
+"select": [{
+  "forEach": "address",
+  "select": [{"column": [{"path": "line"}]}]
+}]
+```
+
+### Multiple select expressions
+ViewDefinitions may have multiple `select` expressions, which can be organized as siblings or parent/child relationships. This is typically done
+as different selects may use different `forEach` or `forEachOrNull` expressions to unroll different parts of the resource.
+
+The multiple rows produced by `forEach`-style selects are joined to others with the following rules:
+
+* Parent/child selects will repeat values from the parent select for each item in the child select. 
+* Sibling select expressions are effectively cross joined, where each row in each `select` is dublicated for every row
+in sibiling `select`s. (In practice, however, a given `select` in a ViewDefinition will produce only a single row
+for the resource.)
+
+The [example view definitions](StructureDefinition-ViewDefinition-examples.html) illustrate this behavior.
+
+### Column ordering
+ViewDefiniton runners MUST produce columns in the same order as they appear in the views. `select` structures that have nested selects
+will place the column of the parent select before the columns of the nested select.
+
+For example, the columns in this ViewDefinition will appear in alphabetical order:
+
+```js
+{
+  "name": "column_order_example",
+  "resource": "..."
+  "select": [{
+    "column": [
+      { "path": "'A'", "alias": "a" },
+      { "path": "'B'", "alias": "b" },
+    ]
+    "select": [{
+      "forEach": "aNestedStructure",
+      "column": [
+        { "path": "'C'", "alias": "c" },
+        { "path": "'D'", "alias": "d" },
+      ]
+    }]
+  },
+  {
+    "column": [
+      { "path": "'E'", "alias": "e" },
+      { "path": "'F'", "alias": "f" },
+    ]
+  }]
+}
+```
+
+
 ### Using constants
 ViewDefinitions may include one or more of constants, which are simple values that can be reused
 in FHIRPath expressions. This can improve readability and reduce redundancy. Constants can be
@@ -222,8 +289,8 @@ Here's an example of a constant used in the `where` constraint of a view:
 ### Column types
 All values in a given column must be of a single type that can be determined by the ViewDefinition alone. The
 type can be explicitly specified in the
-[collection](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.collection) and
-[type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.type) fields for a
+[collection](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.collection) and
+[type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type) fields for a
 given path.
 
 In most cases, the column type can be determined by the expression itself, allowing users to interactively
@@ -231,7 +298,7 @@ build and evaluate ViewDefinitions without needing to look up and explicitly spe
 
 If the column is a primitive type (typical of tabular output), its type is inferred under the following conditions:
 
-1. If [collection](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.collection) is not
+1. If [collection](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.collection) is not
 set to `true`, the returned type must be a single value.
 2. If the path is a series of `parent.child.subPath` navigation steps from a known type -- either from the root resource
 or a child  of an `.ofType()` function -- then the column type is determined by the structure definition it comes from.
@@ -241,7 +308,7 @@ the column type would be boolean or an instant type, respectively.
 4. A path that ends in `.ofType()` will be of the type given to that function.
 
 **Note**: _Non-primitive output types will not be supported by all implementations, and therefore must always be explicitly
-set in the [type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.type)_ so users and
+set in the [type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type)_ so users and
 implementations can easily determine when this is the case.
 
 Importantly, the above determines the FHIR type produced for the column. How that type is physically manifested depends
@@ -265,19 +332,21 @@ common and can simplify analysis in some systems.
   "name": "patient_birth_date",
   "resource": "Patient",
   "description": "A view of simple patient birth dates",
-  "select": [
-    { "path": "id" },
-    {
-      "alias": "birth_date",
-      "path": "birthDate",
-      "tags": [
-        {
-          "name": "ansi/type",
-          "value": "DATE"
-        }
-      ]
-    }
-  ]
+  "select": [{
+    "column": [
+      { "path": "id" },
+      {
+        "alias": "birth_date",
+        "path": "birthDate",
+        "tags": [
+          {
+            "name": "ansi/type",
+            "value": "DATE"
+          }
+        ]
+      }
+    ]
+  }]
 }
 ```
 

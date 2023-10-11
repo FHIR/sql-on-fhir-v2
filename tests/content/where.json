@@ -48,7 +48,7 @@
       "title": "simple where path with result",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "id" }],
+        "select": [{ "column": [{ "path": "id" }] }],
         "where": [{ "path": "name.where(use = 'official').exists()" }]
       },
       "expect": [{ "id": "p1" }]
@@ -57,7 +57,7 @@
       "title": "where path with no results",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "id" }],
+        "select": [{ "column": [{ "path": "id" }] }],
         "where": [{ "path": "name.where(use = 'maiden').exists()" }]
       },
       "expect": []
@@ -66,7 +66,7 @@
       "title": "where path with greater than inequality",
       "view": {
         "resource": "Observation",
-        "select": [{ "path": "id" }],
+        "select": [{ "column": [{ "path": "id" }] }],
         "where": [{ "path": "where(value.ofType(integer) > 11).exists()" }]
       },
       "expect": [{ "id": "o1" }]
@@ -75,7 +75,7 @@
       "title": "where path with less than inequality",
       "view": {
         "resource": "Observation",
-        "select": [{ "path": "id" }],
+        "select": [{ "column": [{ "path": "id" }] }],
         "where": [{ "path": "where(value.ofType(integer) < 11).exists()" }]
       },
       "expect": [{ "id": "o2" }]
@@ -84,7 +84,7 @@
       "title": "multiple where paths",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "id" }],
+        "select": [{ "column": [{ "path": "id" }] }],
         "where": [
           { "path": "name.where(use = 'official').exists()" },
           { "path": "name.where(family = 'f1').exists()" }
@@ -96,8 +96,10 @@
       "title": "where path with an 'and' connector",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "id" }],
-        "where": [{ "path": "name.where(use = 'official' and family = 'f1').exists()" }]
+        "select": [{ "column": [{ "path": "id" }] }],
+        "where": [
+          { "path": "name.where(use = 'official' and family = 'f1').exists()" }
+        ]
       },
       "expect": [{ "id": "p1" }]
     },
@@ -105,8 +107,10 @@
       "title": "where path with an 'or' connector",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "id" }],
-        "where": [{ "path": "name.where(use = 'official' or family = 'f2').exists()" }]
+        "select": [{ "column": [{ "path": "id" }] }],
+        "where": [
+          { "path": "name.where(use = 'official' or family = 'f2').exists()" }
+        ]
       },
       "expect": [{ "id": "p1" }, { "id": "p2" }]
     },
@@ -114,7 +118,7 @@
       "title": "where path that evaluates to true when empty",
       "view": {
         "resource": "Patient",
-        "select": [{ "path": "id" }],
+        "select": [{ "column": [{ "path": "id" }] }],
         "where": [{ "path": "name.where(family = 'f2').empty()" }]
       },
       "expect": [{ "id": "p1" }, { "id": "p3" }]

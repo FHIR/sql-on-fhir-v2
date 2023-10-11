@@ -23,7 +23,7 @@
       "title": "single segment",
       "view": {
         "resource": "Observation",
-        "select": [{ "path": "status" }]
+        "select": [{ "column": [{ "path": "status" }] }]
       },
       "expect": [{ "status": "preliminary" }]
     },
@@ -31,7 +31,7 @@
       "title": "single segment with alias",
       "view": {
         "resource": "Observation",
-        "select": [{ "path": "status", "alias": "ob_status" }]
+        "select": [{ "column": [{ "path": "status", "alias": "ob_status" }] }]
       },
       "expect": [{ "ob_status": "preliminary" }]
     },
@@ -39,7 +39,13 @@
       "title": "segment with choice type",
       "view": {
         "resource": "Observation",
-        "select": [{ "path": "value.ofType(string)", "alias": "valueString" }]
+        "select": [
+          {
+            "column": [
+              { "path": "value.ofType(string)", "alias": "valueString" }
+            ]
+          }
+        ]
       },
       "expect": [{ "valueString": "positive" }]
     },
@@ -47,7 +53,7 @@
       "title": "multiple segments",
       "view": {
         "resource": "Observation",
-        "select": [{ "path": "subject.reference" }]
+        "select": [{ "column": [{ "path": "subject.reference" }] }]
       },
       "expect": [{ "reference": "Patient/123" }]
     },
@@ -55,7 +61,7 @@
       "title": "multiple segments, one level of nesting",
       "view": {
         "resource": "Observation",
-        "select": [{ "path": "code.coding.code" }]
+        "select": [{ "column": [{ "path": "code.coding.code" }] }]
       },
       "expect": [{ "code": "123" }]
     },
@@ -63,7 +69,7 @@
       "title": "multiple segments, multiple level of nesting ",
       "view": {
         "resource": "Observation",
-        "select": [{ "path": "component.code.coding.code" }]
+        "select": [{ "column": [{ "path": "component.code.coding.code" }] }]
       },
       "expect": [{ "code": "456" }]
     },
@@ -73,11 +79,15 @@
         "resource": "Observation",
         "select": [
           {
-            "path": "status"
-          },
-          {
-            "alias": "identifier_value",
-            "path": "identifier.first().value"
+            "column": [
+              {
+                "path": "status"
+              },
+              {
+                "alias": "identifier_value",
+                "path": "identifier.first().value"
+              }
+            ]
           }
         ]
       },

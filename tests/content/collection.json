@@ -48,18 +48,22 @@
         "resource": "Patient",
         "select": [
           {
-            "alias": "id",
-            "path": "id"
-          },
-          {
-            "alias": "last_name",
-            "path": "name.family",
-            "collection": false
-          },
-          {
-            "alias": "first_name",
-            "path": "name.given",
-            "collection": true
+            "column": [
+              {
+                "alias": "id",
+                "path": "id"
+              },
+              {
+                "alias": "last_name",
+                "path": "name.family",
+                "collection": false
+              },
+              {
+                "alias": "first_name",
+                "path": "name.given",
+                "collection": true
+              }
+            ]
           }
         ]
       },
@@ -71,18 +75,22 @@
         "resource": "Patient",
         "select": [
           {
-            "alias": "id",
-            "path": "id"
-          },
-          {
-            "alias": "last_name",
-            "path": "name.family",
-            "collection": true
-          },
-          {
-            "alias": "first_name",
-            "path": "name.given",
-            "collection": true
+            "column": [
+              {
+                "alias": "id",
+                "path": "id"
+              },
+              {
+                "alias": "last_name",
+                "path": "name.family",
+                "collection": true
+              },
+              {
+                "alias": "first_name",
+                "path": "name.given",
+                "collection": true
+              }
+            ]
           }
         ]
       },

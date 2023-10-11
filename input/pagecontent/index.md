@@ -16,18 +16,22 @@ Let's start with a simple example, defining a "patient_demographics" view with t
 ```js
 {
   "name": "patient_demographics",
-  "resource": "Patient",
-  "description": "A view of simple patient demographics",
+  "resource": "Patient"
   "select": [
-    { "path": "getResourceKey()", "alias": "id" },
-    { "path": "gender" },
     {
-      // Select nested fields from the first official name.
-      "forEach": "name.where(use = 'official').first()",
-      "select": [
+      "column": [
+        { "path": "getResourceKey()", "alias": "id" },
+        { "path": "gender" }
+      ]
+    },
+    {
+      // Create columns from the official name selected here.
+      "forEach": "name.where(use = 'official').first()"
+      "column": [
         {
           "path": "given.join(' ')",
-          "alias": "given_name"
+          "alias": "given_name",
+          "description": "A single given name field with all names joined together."
         },
         {
           "path": "family",
