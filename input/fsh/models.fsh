@@ -7,7 +7,7 @@ underscore -- i.e. with a regular expression of: ^[A-Za-z][A-Za-z0-9_]+$
 This makes it usable as table names in a wide variety of databases.
 """
 Severity: #error
-Expression: "empty() or matches('^[A-Za-z][A-Za-z0-9_]+$')"
+Expression: "empty() or matches('^[A-Za-z][A-Za-z0-9_]*$')"
 
 
 Invariant: sql-expressions
