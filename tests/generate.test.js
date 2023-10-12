@@ -117,7 +117,9 @@ await Promise.all(
 allResults.forEach(({ testData, file, validate }) => {
   describe(`${file}`, () => {
     test(`Validate Schema for ${file}`, () => {
-      expect(validate(testData)).toBe(true)
+      if (!validate(testData)) {
+        throw 'Validation failed: ' + JSON.stringify(validate.errors, null, 2)
+      }
     })
 
     testData.tests.forEach((tDef, i) => {
