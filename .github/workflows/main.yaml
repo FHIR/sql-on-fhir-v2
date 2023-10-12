@@ -19,7 +19,7 @@ jobs:
           cd tests
           bun install
           bun test
-          bun build reference-implementation/processor.js  > ../test_report/public/processor.js
+          bun build reference-implementation/index.js  > ../test_report/public/processor.js
       - uses: actions/setup-node@v3
         with:
           node-version: latest
