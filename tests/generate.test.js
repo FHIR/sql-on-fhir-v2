@@ -1,6 +1,8 @@
 import { runTests } from './reference-implementation/processor.js'
 import fhirpath from 'fhirpath'
 import Ajv from 'ajv'
+import fs from 'fs'
+import path from 'path'
 
 function validatePathToSubset(path) {
   const nodeTypeAllowList = [
@@ -99,7 +101,7 @@ function buildFhirpathFormat(allowExtendedFhirpath) {
   }
 }
 
-const schema = JSON.parse(await fs.readFile('./tests.schema.json'))
+const schema = JSON.parse(fs.readFileSync('./tests.schema.json'))
 
 const ajv = new Ajv({ allErrors: true })
 ajv.addFormat('fhirpath-expression', buildFhirpathFormat(true))
@@ -109,66 +111,42 @@ const ajvSubset = new Ajv({ allErrors: true })
 ajvSubset.addFormat('fhirpath-expression', buildFhirpathFormat())
 const validateSubset = ajvSubset.compile(schema)
 
-import path from 'path'
-
-console.log('Linting tests...')
-
-let tests = []
-import fs from 'fs/promises'
 const CONTENT = './content/'
-const files = await fs.readdir(CONTENT)
-console.log(CONTENT)
+const files = fs.readdirSync(CONTENT)
 
-let broken_views = 0
+const allResults = []
+await Promise.all(
+  files.map(async (file) => {
+    if (path.extname(file) !== '.json') return
+    let testData
+    let validate
+    let testResults
+    testData = JSON.parse(await fs.promises.readFile(CONTENT + file))
+    validate = testData.allowExtendedFhirpath ? validateFull : validateSubset
+    testResults = await runTests(testData)
+    allResults.push({ testResults, testData, file, validate })
+  })
+)
 
-let results = {};
-for (const file of files) {
-  if (path.extname(file) !== '.json') {
-    continue
-  }
+allResults.forEach(({ testData, testResults, file, validate }) => {
+  describe(`${file}`, () => {
+    test(`Validate Schema for ${file}`, () => {
+      expect(validate(testData)).toBe(true)
+    })
 
-  let test = JSON.parse(await fs.readFile(CONTENT + file))
-  let validate = test.allowExtendedFhirpath ? validateFull : validateSubset
-  let res = validate(test)
-
-  if (res == true) {
-    console.log(`* ${file} is schema-valid`)
-    const testResults = await runTests(test)
-    results[file] = testResults;
-
-      if (testResults.tests.every((r) => r.result.passed)) {
-          console.log('* ' + file + ' tests all pass')
-          tests.push({ file: CONTENT.slice(2) + file, title: test.title })
-      } else {
-          broken_views += 1
-          console.error('* ' + file + ' has failed tests')
-          console.error(
-              JSON.stringify(
-                  testResults.tests
-                      .filter((t) => !t.result.passed)
-                      .map((t) => ({
-                          title: t.title,
-                          expectCount: t.expectCount,
-                          expect: t.expect,
-                          result: t.result,
-                      })),
-                  true,
-                  ' '
-              )
+    testResults.tests.forEach((t) => {
+      test(t.title, () => {
+        if (!t.result.passed) {
+          throw new Error(
+            `Expected: ${JSON.stringify(
+              t.expect,
+              null,
+              2
+            )}, Observed: ${JSON.stringify(t.result.observed, null, 2)}`
           )
-      }
-  } else {
-      broken_views += 1
-      console.error(`* ERROR: invalid view definition in ${file}`)
-      console.error(JSON.stringify(validate.errors, true, ' '))
-  }
-}
-
-
-await fs.writeFile( '../test_report/public/tests.json', JSON.stringify(tests, null, " "))
-await fs.writeFile( '../test_report/public/test-results.json', JSON.stringify(results, null, " "))
-
-if (broken_views > 0) {
-  console.log(`Broken tests: ${broken_views}. Exiting with error.`)
-  process.exit(1)
-}
+        }
+        expect(t.result.passed).toBe(true)
+      })
+    })
+  })
+})

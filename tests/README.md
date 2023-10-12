@@ -1,8 +1,9 @@
 ## For test contributors
 
 - Create json file in `content` with test case
-- Run `npm test` to ensure tests are passing
-- Before committing tests - run `npm run fmt` for uniform formatting
+- Run `bun install` to install dependencies
+- Run `bun test` to ensure tests are passing
+- Before committing tests - run `bun fmt` for uniform formatting
 
 ## For implementers
 

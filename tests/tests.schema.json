@@ -87,6 +87,7 @@
         }
     },
     "_column":{
+        "type": "object",
       "properties": {
         "additionalProperties": false,
           "path": {

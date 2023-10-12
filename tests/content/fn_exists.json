@@ -103,6 +103,20 @@
         ]
       },
       "expect": [{ "id": "p1" }, { "id": "p3" }]
+    },
+    {
+      "title": "Empty sub-select kills results",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "forEach": "where(name.exists())",
+            "column": [{ "path": "id" }],
+            "select": []
+          }
+        ]
+      },
+      "expect": []
     }
   ]
 }

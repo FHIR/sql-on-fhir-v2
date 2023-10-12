@@ -5,9 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "fmt": "npx prettier content --write",
-    "build": "node test.js",
-    "test": "node test.js"
+    "fmt": "npx prettier content --write"
   },
   "author": "",
   "license": "ISC",
@@ -21,5 +19,7 @@
     "tabWidth": 2,
     "semi": false,
     "singleQuote": true
+  },
+  "devDependencies": {
   }
 }

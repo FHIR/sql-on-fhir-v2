@@ -46,15 +46,7 @@ export async function* processResources(resourceGenerator, configIn) {
 }
 
 export function getColumns(viewDefinition) {
-  return (viewDefinition.select || []).flatMap((c) => {
-    if (c.column) {
-      return c.column
-    }
-    if (c.select) {
-      return getColumns(c)
-    }
-    return []
-  })
+  return (viewDefinition.column || []).concat((viewDefinition.select || []).flatMap(getColumns))
 }
 
 function compile(eIn, where) {
@@ -118,45 +110,67 @@ function cartesianProduct([first, ...rest]) {
   )
 }
 
+// TODO have this take just a single select object, skipping fields?
+// that means handling the array of selects in `extract`
+// and managing cartesian product there
 function extractFields(obj, viewDefinition, context = {}) {
-  let fields = []
-  for (let field of viewDefinition) {
-    let { column, $forEach, $forEachOrNull, select, $from } = field
-    let nestedObjects = ($forEach ?? $forEachOrNull ?? identity)(obj, context)
-    let rows = []
+  const nestedFields = []
 
-    for (let nestedObject of nestedObjects) {
-      const columnBindings = (column ?? []).reduce(
-        (bindings, { alias, path, $path, collection }) => {
-          const result = $path(nestedObject, context)
-          if (result.length <= 1) {
-            bindings[alias] = result?.[0] ?? null
-          } else if (collection) {
-            bindings[alias] = result ?? null
-          } else {
-            throw `alias=${alias} from path=${path} matched more than one element`
-          }
-          return bindings
-        },
-        {}
-      )
-      for (let row of extract(nestedObject, { select }, context) ?? [{}]) {
-        rows.push({ ...columnBindings, ...row })
+  let { $forEach, $forEachOrNull, column, select, union } = viewDefinition
+  let nestedObjects = ($forEach ?? $forEachOrNull ?? identity)(obj, context)
+  // console.log("NO", nestedObjects)
+
+  for (let nestedObject of nestedObjects) {
+    const columnBindings = []
+    for (const { alias, path, $path, collection } of column ?? []) {
+      const result = $path(nestedObject, context)
+      if (result.length <= 1) {
+        columnBindings.push([{ [alias]: result?.[0] ?? null }])
+      } else if (collection) {
+        columnBindings.push([{ [alias]: result ?? null }])
+      } else {
+        throw `alias=${alias} from path=${path} matched more than one element`
       }
     }
-    if ($forEachOrNull && nestedObjects.length === 0) {
-      const nulls = {}
-      getColumns(field).forEach((c) => (nulls[c.alias] = null))
-      rows.push(nulls)
+
+    const selectBindings = []
+    if (select?.length) {
+      for (const r of extract(nestedObject, { select }, context)) {
+        selectBindings.push(r)
+      }
     }
-    fields.push(rows)
+
+    const unionBindings = []
+    for (const u of union ?? []) {
+      for (const r of extract(nestedObject, { select: [u] }, context)) {
+        unionBindings.push(r)
+      }
+    }
+
+    nestedFields.push(
+      ...cartesianProduct([
+        ...(column ? columnBindings : []),
+        ...(select ? [selectBindings] : []),
+        ...(union ? [unionBindings] : []),
+      ])
+    )
   }
-  return fields
+
+  if ($forEachOrNull && nestedObjects.length === 0) {
+    const nulls = {}
+    getColumns(viewDefinition).forEach((c) => (nulls[c.alias] = null))
+    nestedFields.push(nulls)
+  }
+
+  return nestedFields
 }
 
 function extract(obj, viewDefinition, context = {}) {
-  let fields = extractFields(obj, viewDefinition.select ?? [], context)
-  return cartesianProduct(fields)
+  const fields = (viewDefinition.select ?? []).map((s) =>
+    extractFields(obj, s, context)
+  )
+  // console.log("CART", fields, cartesianProduct(fields));
+  return cartesianProduct(fields) ?? []
 }
 
 export async function* fromArray(resources) {

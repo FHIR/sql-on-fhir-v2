@@ -1,0 +1,48 @@
+{
+  "title": "forEach, forEachOrNull",
+  "resources": [
+    {
+      "resourceType": "Patient",
+      "id": "p1",
+      "name": [
+        {
+          "use": "official",
+          "family": "f1"
+        }
+      ],
+      "contact": [
+        {
+          "gender": "other"
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "title": "forEach matching none",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "forEach": "nonmatching.selector",
+            "column": [{ "path": "id" }]
+          }
+        ]
+      },
+      "expect": []
+    },
+    {
+      "title": "forEachOrNull matching none",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "forEachOrNull": "nonmatching.selector",
+            "column": [{ "path": "id" }]
+          }
+        ]
+      },
+      "expect": [{ "id": null }]
+    }
+  ]
+}
