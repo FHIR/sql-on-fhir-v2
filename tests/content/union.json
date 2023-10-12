@@ -30,11 +30,11 @@
             "union": [
               {
                 "forEach": "name",
-                "column": [{ "path": "family" }]
+                "column": [{ "path": "family", "alias": "family" }]
               },
               {
                 "forEach": "contact.name",
-                "column": [{ "path": "family" }]
+                "column": [{ "path": "family", "alias": "family" }]
               }
             ]
           }
@@ -72,11 +72,11 @@
             "union": [
               {
                 "forEach": "name",
-                "column": [{ "path": "family" }]
+                "column": [{ "path": "family", "alias": "family" }]
               },
               {
                 "forEach": "contact.name",
-                "column": [{ "path": "family" }]
+                "column": [{ "path": "family", "alias": "family" }]
               }
             ]
           }

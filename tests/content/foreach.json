@@ -25,7 +25,7 @@
         "select": [
           {
             "forEach": "name",
-            "column": [{ "path": "family" }]
+            "column": [{ "path": "family", "alias": "family" }]
           }
         ]
       },
@@ -64,7 +64,7 @@
         "select": [
           {
             "forEach": "nonmatching.selector",
-            "column": [{ "path": "id" }]
+            "column": [{ "path": "id", "alias": "id" }]
           }
         ]
       },
@@ -77,7 +77,7 @@
         "select": [
           {
             "forEachOrNull": "nonmatching.selector",
-            "column": [{ "path": "id" }]
+            "column": [{ "path": "id", "alias": "id" }]
           }
         ]
       },

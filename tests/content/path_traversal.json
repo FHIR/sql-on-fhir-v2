@@ -23,7 +23,7 @@
       "title": "single segment",
       "view": {
         "resource": "Observation",
-        "select": [{ "column": [{ "path": "status" }] }]
+        "select": [{ "column": [{ "path": "status", "alias": "status" }] }]
       },
       "expect": [{ "status": "preliminary" }]
     },
@@ -51,7 +51,7 @@
       "title": "multiple segments",
       "view": {
         "resource": "Observation",
-        "select": [{ "column": [{ "path": "subject.reference" }] }]
+        "select": [{ "column": [{ "path": "subject.reference", "alias": "reference" }] }]
       },
       "expect": [{ "reference": "Patient/123" }]
     },
@@ -59,7 +59,7 @@
       "title": "multiple segments, one level of nesting",
       "view": {
         "resource": "Observation",
-        "select": [{ "column": [{ "path": "code.coding.code" }] }]
+        "select": [{ "column": [{ "path": "code.coding.code", "alias": "code" }] }]
       },
       "expect": [{ "code": "123" }]
     },
@@ -67,7 +67,7 @@
       "title": "multiple segments, multiple level of nesting ",
       "view": {
         "resource": "Observation",
-        "select": [{ "column": [{ "path": "component.code.coding.code" }] }]
+        "select": [{ "column": [{ "path": "component.code.coding.code", "alias": "code" }] }]
       },
       "expect": [{ "code": "456" }]
     },
@@ -78,9 +78,7 @@
         "select": [
           {
             "column": [
-              {
-                "path": "status"
-              },
+              { "path": "status", "alias": "status" },
               {
                 "alias": "identifier_value",
                 "path": "identifier.first().value"

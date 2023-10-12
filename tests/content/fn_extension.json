@@ -94,7 +94,8 @@
           {
             "column": [
               {
-                "path": "id"
+                "path": "id",
+                "alias": "id"
               },
               {
                 "alias": "birthsex",
@@ -128,7 +129,8 @@
           {
             "column": [
               {
-                "path": "id"
+                "path": "id",
+                "alias": "id"
               },
               {
                 "alias": "race_code",
