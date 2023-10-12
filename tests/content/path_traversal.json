@@ -41,9 +41,7 @@
         "resource": "Observation",
         "select": [
           {
-            "column": [
-              { "path": "value.ofType(string)", "alias": "valueString" }
-            ]
+            "column": [{ "path": "value.ofType(string)", "alias": "valueString" }]
           }
         ]
       },

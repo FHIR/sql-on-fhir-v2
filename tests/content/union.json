@@ -12,13 +12,13 @@
       ],
       "contact": [
         {
-          "name": {"family": "f2"}
+          "name": { "family": "f2" }
         }
       ]
     }
   ],
   "tests": [
-   {
+    {
       "title": "Union of names",
       "view": {
         "resource": "Patient",
@@ -27,44 +27,42 @@
             "union": [
               {
                 "forEach": "name",
-                "column": [{"path": "family"}]
+                "column": [{ "path": "family" }]
               },
               {
                 "forEach": "contact.name",
-                "column": [{"path": "family"}]
+                "column": [{ "path": "family" }]
               }
             ]
           }
         ]
       },
-      "expect": [
-        {"family": "f1"},
-        {"family": "f2"}
-      ]
-    },{
+      "expect": [{ "family": "f1" }, { "family": "f2" }]
+    },
+    {
       "title": "Union of names with top-level context",
       "view": {
         "resource": "Patient",
         "select": [
           {
-            "column": [{"path": "'x'", "alias": "common"}],
+            "column": [{ "path": "'x'", "alias": "common" }],
             "union": [
               {
                 "forEach": "name",
-                "column": [{"path": "family"}]
+                "column": [{ "path": "family" }]
               },
               {
                 "forEach": "contact.name",
-                "column": [{"path": "family"}]
+                "column": [{ "path": "family" }]
               }
             ]
           }
         ]
       },
       "expect": [
-        {"common":"x", "family": "f1"},
-        {"common":"x", "family": "f2"}
+        { "common": "x", "family": "f1" },
+        { "common": "x", "family": "f2" }
       ]
-    } 
+    }
   ]
 }

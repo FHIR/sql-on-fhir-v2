@@ -33,10 +33,7 @@
         "resource": "Patient",
         "select": [
           {
-            "column": [
-              { "path": "id" },
-              { "path": "name.exists()", "alias": "has_name" }
-            ]
+            "column": [{ "path": "id" }, { "path": "name.exists()", "alias": "has_name" }]
           }
         ]
       },
@@ -52,10 +49,7 @@
         "resource": "Patient",
         "select": [
           {
-            "column": [
-              { "path": "id" },
-              { "path": "name.given.exists()", "alias": "has_name" }
-            ]
+            "column": [{ "path": "id" }, { "path": "name.given.exists()", "alias": "has_name" }]
           }
         ]
       },

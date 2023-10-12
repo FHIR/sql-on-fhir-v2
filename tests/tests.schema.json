@@ -75,44 +75,43 @@
   },
   "$defs": {
     "_tag": {
-        "type": "object",
-        "required": ["name", "value"],
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "value": {
-            "type": "string"
-          }
+      "type": "object",
+      "required": ["name", "value"],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
         }
+      }
     },
-    "_column":{
-        "type": "object",
+    "_column": {
+      "type": "object",
       "properties": {
         "additionalProperties": false,
-          "path": {
-            "type": "string",
-            "format": "fhirpath-expression"
-          },
-          "alias": {
-            "type": "string",
-            "minLength": 1
-          },
-          "collection": {
-            "type": "boolean"
-          },
-          "description": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "tag": {
-            "type": "array",
-            "items": {"$ref": "#/$defs/_tag"}
-          }
+        "path": {
+          "type": "string",
+          "format": "fhirpath-expression"
+        },
+        "alias": {
+          "type": "string",
+          "minLength": 1
+        },
+        "collection": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "tag": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/_tag" }
+        }
       }
-
     },
     "_item": {
       "type": "object",
@@ -140,11 +139,11 @@
         },
         "union": {
           "type": "array",
-          "items": {"$ref": "#/$defs/_item"}
+          "items": { "$ref": "#/$defs/_item" }
         },
         "tag": {
           "type": "array",
-          "items": {"$ref": "#/$defs/_tag"}
+          "items": { "$ref": "#/$defs/_tag" }
         }
       }
     },

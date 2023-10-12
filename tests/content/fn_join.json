@@ -19,10 +19,7 @@
         "resource": "Patient",
         "select": [
           {
-            "column": [
-              { "path": "id" },
-              { "path": "name.given.join(',')", "alias": "given" }
-            ]
+            "column": [{ "path": "id" }, { "path": "name.given.join(',')", "alias": "given" }]
           }
         ]
       },
@@ -34,10 +31,7 @@
         "resource": "Patient",
         "select": [
           {
-            "column": [
-              { "path": "id" },
-              { "path": "name.given.join('')", "alias": "given" }
-            ]
+            "column": [{ "path": "id" }, { "path": "name.given.join('')", "alias": "given" }]
           }
         ]
       },
@@ -49,10 +43,7 @@
         "resource": "Patient",
         "select": [
           {
-            "column": [
-              { "path": "id" },
-              { "path": "name.given.join()", "alias": "given" }
-            ]
+            "column": [{ "path": "id" }, { "path": "name.given.join()", "alias": "given" }]
           }
         ]
       },

@@ -97,9 +97,7 @@
       "view": {
         "resource": "Patient",
         "select": [{ "column": [{ "path": "id" }] }],
-        "where": [
-          { "path": "name.where(use = 'official' and family = 'f1').exists()" }
-        ]
+        "where": [{ "path": "name.where(use = 'official' and family = 'f1').exists()" }]
       },
       "expect": [{ "id": "p1" }]
     },
@@ -108,9 +106,7 @@
       "view": {
         "resource": "Patient",
         "select": [{ "column": [{ "path": "id" }] }],
-        "where": [
-          { "path": "name.where(use = 'official' or family = 'f2').exists()" }
-        ]
+        "where": [{ "path": "name.where(use = 'official' or family = 'f2').exists()" }]
       },
       "expect": [{ "id": "p1" }, { "id": "p2" }]
     },

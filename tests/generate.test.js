@@ -45,36 +45,24 @@ function validatePathToSubset(path) {
   function validateChildren(node) {
     for (let i = 0; i < node.children.length; i++) {
       const child = node.children[i]
-      if (nodeTypeAllowList.indexOf(child.type) == -1)
-        return `Unsupported node type: ${child.type}`
-      if (
-        child.type == 'AdditiveExpression' &&
-        child.terminalNodeText.indexOf('&') > -1
-      )
+      if (nodeTypeAllowList.indexOf(child.type) == -1) return `Unsupported node type: ${child.type}`
+      if (child.type == 'AdditiveExpression' && child.terminalNodeText.indexOf('&') > -1)
         return 'Unsupported use of &'
       if (
         child.type == 'MultiplicativeExpression' &&
-        (child.terminalNodeText.indexOf('mod') > -1 ||
-          child.terminalNodeText.indexOf('div') > -1)
+        (child.terminalNodeText.indexOf('mod') > -1 || child.terminalNodeText.indexOf('div') > -1)
       )
-        return `Unsupported use of ${
-          child.terminalNodeText.indexOf('mod') > -1 ? 'mod' : 'div'
-        }`
+        return `Unsupported use of ${child.terminalNodeText.indexOf('mod') > -1 ? 'mod' : 'div'}`
       if (
         child.type == 'EqualityExpression' &&
-        (child.terminalNodeText.indexOf('~') > -1 ||
-          child.terminalNodeText.indexOf('!~') > -1)
+        (child.terminalNodeText.indexOf('~') > -1 || child.terminalNodeText.indexOf('!~') > -1)
       )
         return 'Unsupported use of ~'
-      if (
-        child.type == 'OrExpression' &&
-        child.terminalNodeText.indexOf('xor') > -1
-      )
+      if (child.type == 'OrExpression' && child.terminalNodeText.indexOf('xor') > -1)
         return 'Unsupported use of xor'
       if (child.type == 'Functn') {
         const fnIdentifier = child.children.find((c) => c.type == 'Identifier')
-        if (fnAllowList.indexOf(fnIdentifier.text) == -1)
-          return `Unsupported function: ${fnIdentifier.text}`
+        if (fnAllowList.indexOf(fnIdentifier.text) == -1) return `Unsupported function: ${fnIdentifier.text}`
       }
       if (child.children) {
         const validationError = validateChildren(child)
@@ -120,32 +108,31 @@ await Promise.all(
     if (path.extname(file) !== '.json') return
     let testData
     let validate
-    let testResults
     testData = JSON.parse(await fs.promises.readFile(CONTENT + file))
     validate = testData.allowExtendedFhirpath ? validateFull : validateSubset
-    testResults = await runTests(testData)
-    allResults.push({ testResults, testData, file, validate })
-  })
+    allResults.push({ testData, file, validate })
+  }),
 )
 
-allResults.forEach(({ testData, testResults, file, validate }) => {
+allResults.forEach(({ testData, file, validate }) => {
   describe(`${file}`, () => {
     test(`Validate Schema for ${file}`, () => {
       expect(validate(testData)).toBe(true)
     })
 
-    testResults.tests.forEach((t) => {
-      test(t.title, () => {
-        if (!t.result.passed) {
+    testData.tests.forEach((tDef, i) => {
+      test(tDef.title, async () => {
+        let testOutput = (await runTests({ ...testData, tests: [tDef] })).tests[0]
+        if (!testOutput.result.passed) {
           throw new Error(
-            `Expected: ${JSON.stringify(
-              t.expect,
+            `Expected: ${JSON.stringify(testOutput.expect, null, 2)}, Observed: ${JSON.stringify(
+              testOutput.result.observed,
               null,
-              2
-            )}, Observed: ${JSON.stringify(t.result.observed, null, 2)}`
+              2,
+            )}`,
           )
         }
-        expect(t.result.passed).toBe(true)
+        expect(testOutput.result.passed).toBe(true)
       })
     })
   })

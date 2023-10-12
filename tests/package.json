@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "fmt": "npx prettier content --write"
+    "fmt": "prettier  --write *.js *.json content/*.json reference-implementation/processor.js "
   },
   "author": "",
   "license": "ISC",
@@ -15,11 +15,10 @@
     "prettier": "^3.0.3"
   },
   "prettier": {
-    "trailingComma": "es5",
+    "printWidth": 110,
     "tabWidth": 2,
     "semi": false,
     "singleQuote": true
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

@@ -12,10 +12,7 @@ function getResourceKey(nodes, resource) {
 
 function getReferenceKey(nodes, resource) {
   return nodes.flatMap(({ data: node }) => {
-    const parts = node.reference
-      .replaceAll('//', '')
-      .split('/_history')[0]
-      .split('/')
+    const parts = node.reference.replaceAll('//', '').split('/_history')[0].split('/')
     const type = parts.slice(-2)[0]
     const key = parts.slice(-2).join('/')
     return !resource || resource === type ? [key] : []
@@ -35,7 +32,7 @@ export async function* processResources(resourceGenerator, configIn) {
         getResourceKey,
         getReferenceKey,
       },
-    }
+    },
   )
   compileViewDefinition(config)
   for await (const resource of resourceGenerator) {
@@ -86,16 +83,11 @@ function compileViewDefinition(viewDefinition) {
 
   ;['forEach', 'forEachOrNull', 'resource'].forEach((param) => {
     if (viewDefinition[param]) {
-      viewDefinition[`$${param}`] = compile(
-        viewDefinition[param],
-        viewDefinition.where
-      )
+      viewDefinition[`$${param}`] = compile(viewDefinition[param], viewDefinition.where)
     }
   })
 
-  const subViews = (viewDefinition.select ?? []).concat(
-    viewDefinition.union ?? []
-  )
+  const subViews = (viewDefinition.select ?? []).concat(viewDefinition.union ?? [])
   for (let field of subViews) {
     compileViewDefinition(field)
   }
@@ -105,9 +97,7 @@ function cartesianProduct([first, ...rest]) {
   if (rest.length === 0) {
     return first
   }
-  return cartesianProduct(rest).flatMap((r) =>
-    first.map((f) => ({ ...f, ...r }))
-  )
+  return cartesianProduct(rest).flatMap((r) => first.map((f) => ({ ...f, ...r })))
 }
 
 // TODO have this take just a single select object, skipping fields?
@@ -152,7 +142,7 @@ function extractFields(obj, viewDefinition, context = {}) {
         ...(column ? columnBindings : []),
         ...(select ? [selectBindings] : []),
         ...(union ? [unionBindings] : []),
-      ])
+      ]),
     )
   }
 
@@ -166,9 +156,7 @@ function extractFields(obj, viewDefinition, context = {}) {
 }
 
 function extract(obj, viewDefinition, context = {}) {
-  const fields = (viewDefinition.select ?? []).map((s) =>
-    extractFields(obj, s, context)
-  )
+  const fields = (viewDefinition.select ?? []).map((s) => extractFields(obj, s, context))
   // console.log("CART", fields, cartesianProduct(fields));
   return cartesianProduct(fields) ?? []
 }
@@ -265,9 +253,7 @@ export async function runTests(source) {
 
 function isEqual(a, b) {
   if (Array.isArray(a) && Array.isArray(b)) {
-    return (
-      a.length === b.length && a.every((val, index) => isEqual(val, b[index]))
-    )
+    return a.length === b.length && a.every((val, index) => isEqual(val, b[index]))
   } else {
     return a === b
   }

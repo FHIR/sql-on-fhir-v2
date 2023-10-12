@@ -16,9 +16,7 @@
       "title": "get resource key",
       "view": {
         "resource": "Observation",
-        "select": [
-          { "column": [{ "path": "getResourceKey()", "alias": "id" }] }
-        ]
+        "select": [{ "column": [{ "path": "getResourceKey()", "alias": "id" }] }]
       },
       "expectCount": 1
     },

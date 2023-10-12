@@ -5,9 +5,7 @@
       "resourceType": "Patient",
       "id": "pt1",
       "meta": {
-        "profile": [
-          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"
-        ]
+        "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"]
       },
       "extension": [
         {
@@ -44,9 +42,7 @@
       "resourceType": "Patient",
       "id": "pt2",
       "meta": {
-        "profile": [
-          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"
-        ]
+        "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"]
       },
       "extension": [
         {
@@ -83,9 +79,7 @@
       "resourceType": "Patient",
       "id": "pt3",
       "meta": {
-        "profile": [
-          "http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"
-        ]
+        "profile": ["http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient"]
       },
       "extension": []
     }
