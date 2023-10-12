@@ -43,6 +43,26 @@
       "expect": [{ "family": "f1" }, { "family": "f2" }, { "family": "f3" }]
     },
     {
+      "title": "Union with forEachOrNull",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "forEachOrNull": "badPath",
+            "union": [
+              {
+                "column": [{ "path": "'a'", "alias": "letter" }]
+              },
+              {
+                "column": [{ "path": "'b'", "alias": "letter" }]
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [{ "letter": null }]
+    },
+    {
       "title": "Union of names with column",
       "view": {
         "resource": "Patient",

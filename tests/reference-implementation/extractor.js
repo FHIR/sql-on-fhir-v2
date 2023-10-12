@@ -30,6 +30,7 @@ export async function* processResources(resourceGenerator, configIn) {
       userInvocationTable: {
         'getResourceKey': {fn: getResourceKey, arity: {0: [], 1: ['TypeSpecifier']}},
         'getReferenceKey': {fn: getReferenceKey, arity: {0: [], 1: ['TypeSpecifier']}},
+        'identity': {fn: (nodes)=>nodes, arity: {0: []}},
       },
     },
   )
@@ -41,19 +42,23 @@ export async function* processResources(resourceGenerator, configIn) {
   }
 }
 
+const subViews = (viewDefinition) => (viewDefinition.select ?? []).concat(viewDefinition.union ?? [])
+
 export function getColumns(viewDefinition) {
-  return (viewDefinition.column || []).concat((viewDefinition.select || []).flatMap(getColumns))
+  return (viewDefinition.column || []).concat(subViews(viewDefinition).flatMap(getColumns))
 }
 
 function compile(eIn, where) {
-  let e = eIn === '$this' ? 'trace()' : eIn
+  // HACK: "$this" isn't supported in a path context, so "identity()" no-op rescues it
+  let e = eIn.startsWith('$this') ? "identity()" + eIn.slice("$this".length) : eIn
 
   if (Array.isArray(where)) {
     e += `.where(${where.map((w) => w.path).join(' and ')})`
   }
+
   const ofTypeRegex = /\.ofType\(([^)]+)\)/g
   let match
-  // HACKS: fhirpath.js only knows that `Observation.value.ofType(Quantity)`
+  // HACK: fhirpath.js only knows that `Observation.value.ofType(Quantity)`
   // refers to `Observation.valueQuantity` if load FHIR models... which
   // we otherwise don't need. So here, just wrestle into explicit properties.
   while ((match = ofTypeRegex.exec(e)) !== null) {
@@ -80,14 +85,13 @@ function compileViewDefinition(viewDefinition) {
     })
   }
 
-  ;['forEach', 'forEachOrNull', 'resource'].forEach((param) => {
+  ['forEach', 'forEachOrNull', 'resource'].forEach((param) => {
     if (viewDefinition[param]) {
       viewDefinition[`$${param}`] = compile(viewDefinition[param], viewDefinition.where)
     }
   })
 
-  const subViews = (viewDefinition.select ?? []).concat(viewDefinition.union ?? [])
-  for (let field of subViews) {
+  for (let field of subViews(viewDefinition)) {
     compileViewDefinition(field)
   }
 }

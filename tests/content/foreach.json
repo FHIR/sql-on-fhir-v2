@@ -19,6 +19,45 @@
   ],
   "tests": [
     {
+      "title": "forEach matching some",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "forEach": "name",
+            "column": [{ "path": "family" }]
+          }
+        ]
+      },
+      "expect": [{ "family": "f1" }]
+    },
+    {
+      "title": "forEach matching some, using $this",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "forEach": "name",
+            "column": [{ "path": "$this.family", "alias": "family" }]
+          }
+        ]
+      },
+      "expect": [{ "family": "f1" }]
+    },
+    {
+      "title": "forEach matching some, using $this",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "forEach": "name.family",
+            "column": [{ "path": "$this", "alias": "family" }]
+          }
+        ]
+      },
+      "expect": [{ "family": "f1" }]
+    },
+    {
       "title": "forEach matching none",
       "view": {
         "resource": "Patient",
