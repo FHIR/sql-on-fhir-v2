@@ -13,6 +13,9 @@
       "contact": [
         {
           "name": { "family": "f2" }
+        },
+        {
+          "name": { "family": "f3" }
         }
       ]
     }
@@ -37,10 +40,10 @@
           }
         ]
       },
-      "expect": [{ "family": "f1" }, { "family": "f2" }]
+      "expect": [{ "family": "f1" }, { "family": "f2" }, { "family": "f3" }]
     },
     {
-      "title": "Union of names with top-level context",
+      "title": "Union of names with column",
       "view": {
         "resource": "Patient",
         "select": [
@@ -61,7 +64,67 @@
       },
       "expect": [
         { "common": "x", "family": "f1" },
-        { "common": "x", "family": "f2" }
+        { "common": "x", "family": "f2" },
+        { "common": "x", "family": "f3" }
+      ]
+    },
+    {
+      "title": "Union of names with column and select",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "column": [{ "path": "'x'", "alias": "commonx" }],
+            "select": [
+              {
+                "forEach": "contact.name",
+                "column": [{ "path": "family", "alias": "c_family" }]
+              }
+            ],
+            "union": [
+              {
+                "forEach": "name",
+                "column": [{ "path": "family", "alias": "p_family" }]
+              },
+              {
+                "forEach": "contact.name",
+                "column": [{ "path": "family", "alias": "p_family" }]
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "commonx": "x",
+          "c_family": "f2",
+          "p_family": "f1"
+        },
+        {
+          "commonx": "x",
+          "c_family": "f3",
+          "p_family": "f1"
+        },
+        {
+          "commonx": "x",
+          "c_family": "f2",
+          "p_family": "f2"
+        },
+        {
+          "commonx": "x",
+          "c_family": "f3",
+          "p_family": "f2"
+        },
+        {
+          "commonx": "x",
+          "c_family": "f2",
+          "p_family": "f3"
+        },
+        {
+          "commonx": "x",
+          "c_family": "f3",
+          "p_family": "f3"
+        }
       ]
     }
   ]
