@@ -1,4 +1,4 @@
-import {fhirpath} from './index.js'
+import {default as fhirpath} from 'fhirpath'
 
 const identity = (v) => [v]
 
@@ -6,7 +6,7 @@ function getResourceKey(nodes, resource) {
   return nodes.flatMap(({ data: node }) => {
     const type = node.resourceType
     const key = `${node.resourceType}/${node.id}`
-    return !resource || resource === type ? [key] : []
+    return !resource || resource === tmpe ? [key] : []
   })
 }
 
