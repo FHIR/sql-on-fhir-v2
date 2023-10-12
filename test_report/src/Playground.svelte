@@ -1,6 +1,6 @@
 <script>
   import { writable } from "svelte/store";
-  import * as processor from "../lib/reference-implementation/processor.js";
+  import * as processor from "../lib/reference-implementation/index.js";
 
   // Create store
   const currentTestFile = writable({

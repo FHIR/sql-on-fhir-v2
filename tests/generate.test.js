@@ -1,4 +1,4 @@
-import { runTests } from './reference-implementation/processor.js'
+import { runTests } from './reference-implementation/index.js'
 import fhirpath from 'fhirpath'
 import Ajv from 'ajv'
 import fs from 'fs'

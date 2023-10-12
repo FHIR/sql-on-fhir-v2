@@ -39,7 +39,7 @@
         "resource": "Observation",
         "select": [
           {
-            "forEach": "basedOn.where(getReferenceKey('CarePlan').exists())",
+            "forEach": "basedOn.where(getReferenceKey(CarePlan).exists())",
             "column": [{ "alias": "rid", "path": "getReferenceKey()" }]
           }
         ]

@@ -5,13 +5,13 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "fmt": "prettier  --write *.js *.json content/*.json reference-implementation/processor.js "
+    "fmt": "prettier  --write *.js *.json content/*.json reference-implementation/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "ajv": "^8.12.0",
-    "fhirpath": "^3.6.1",
+    "fhirpath": "github:jmandel/fhirpath.js-1#custom-fns-in-context",
     "prettier": "^3.0.3"
   },
   "prettier": {
@@ -19,6 +19,5 @@
     "tabWidth": 2,
     "semi": false,
     "singleQuote": true
-  },
-  "devDependencies": {}
+  }
 }
