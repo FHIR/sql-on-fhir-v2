@@ -1,7 +1,5 @@
 import {default as fhirpath} from 'fhirpath'
 
-const identity = (v) => [v]
-
 function getResourceKey(nodes, resource) {
   return nodes.flatMap(({ data: node }) => {
     const type = node.resourceType
@@ -103,9 +101,6 @@ function cartesianProduct([first, ...rest]) {
   return cartesianProduct(rest).flatMap((r) => first.map((f) => ({ ...f, ...r })))
 }
 
-// TODO have this take just a single select object, skipping fields?
-// that means handling the array of selects in `extract`
-// and managing cartesian product there
 function extractFields(obj, viewDefinition, context = {}) {
   const nestedFields = []
 
