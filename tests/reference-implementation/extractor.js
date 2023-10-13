@@ -71,15 +71,6 @@ function compileViewDefinition(viewDefinition) {
   if (viewDefinition.column) {
     viewDefinition.column.forEach((c) => {
       c.$path = compile(c.path)
-      if (c.path && !c.alias) {
-        c.alias = c.path
-          .split('.')
-          .filter((p) => !p.includes('('))
-          .at(-1)
-        if (!c.alias) {
-          throw `No alias set for column: ${JSON.stringify(c)}'`
-        }
-      }
     })
   }
 
