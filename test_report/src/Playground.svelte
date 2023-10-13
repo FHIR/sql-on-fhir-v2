@@ -25,7 +25,7 @@
           select: [
             {
               column: [
-                { path: "id" },
+                { path: "id", alias: "id" },
                 { path: "name.given.join(',')", alias: "given" },
               ],
             },
@@ -40,7 +40,7 @@
           select: [
             {
               column: [
-                { path: "id" },
+                { path: "id", alias: "id" },
                 { path: "name.given.join()", alias: "given" },
               ],
             },
