@@ -1,5 +1,7 @@
 import {default as fhirpath} from 'fhirpath'
 
+const identity = (v) => [v]
+
 function getResourceKey(nodes, resource) {
   return nodes.flatMap(({ data: node }) => {
     const type = node.resourceType
