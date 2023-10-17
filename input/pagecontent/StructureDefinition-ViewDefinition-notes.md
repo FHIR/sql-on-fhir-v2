@@ -89,7 +89,7 @@ For example, a minimal view of Patients could look like this:
     "column": [
       {
         "path": "getResourceKey()",
-        "alias": "id"
+        "name": "id"
       },
       {
         "path": "active"
@@ -110,13 +110,13 @@ like this:
     "column": [
       {
         "path": "getResourceKey()",
-        "alias": "id"
+        "name": "id"
       },
       {
         // The 'Patient' parameter is optional, but ensures the returned value
         // will either be a patient row key or null.
         "path": "subject.getReferenceKey('Patient')",
-        "alias": "patient_id",
+        "name": "patient_id",
       },
     ]
   }],
@@ -243,21 +243,21 @@ For example, the columns in this ViewDefinition will appear in alphabetical orde
   "resource": "..."
   "select": [{
     "column": [
-      { "path": "'A'", "alias": "a" },
-      { "path": "'B'", "alias": "b" },
+      { "path": "'A'", "name": "a" },
+      { "path": "'B'", "name": "b" },
     ]
     "select": [{
       "forEach": "aNestedStructure",
       "column": [
-        { "path": "'C'", "alias": "c" },
-        { "path": "'D'", "alias": "d" },
+        { "path": "'C'", "name": "c" },
+        { "path": "'D'", "name": "d" },
       ]
     }]
   },
   {
     "column": [
-      { "path": "'E'", "alias": "e" },
-      { "path": "'F'", "alias": "f" },
+      { "path": "'E'", "name": "e" },
+      { "path": "'F'", "name": "f" },
     ]
   }]
 }
@@ -336,7 +336,7 @@ common and can simplify analysis in some systems.
     "column": [
       { "path": "id" },
       {
-        "alias": "birth_date",
+        "name": "birth_date",
         "path": "birthDate",
         "tags": [
           {
