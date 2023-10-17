@@ -66,7 +66,7 @@ Contributors and early users are welcome! Here are some places to start:
 * Ask any questions in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
 
 ### How to read this guide
-* **[Home](index.html)**: Intro of the project
+* **[Home](index.html)**: Intro to the project
 * Specification:
   * **[Purpose](purpose.html)**: Backround and purpose of this project
   * **[System Layers](layers.html)**: Conceptual layers in this specification
@@ -77,22 +77,10 @@ Contributors and early users are welcome! Here are some places to start:
   * **[Tech Matrix](tech-matrix.html)**: Database analysis
 * **[Artifacts](artifacts.html)**: Logical model
 
-### Principles
-
-[Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/44)
-
-- Cover most of popular technologies - see [tech matrix](https://github.com/FHIR/sql-on-fhir-v2/blob/master/tech-matrix.md)
-- Queries written against the spec should be portable between institutions and
-  translatable between database engines that have JSON  or nested datastructures support (i.e., avoiding features that are not widely implemented)
-- Basic schemas and transformations should depend as little as possible on specific FHIR versions and profiles. Schema-driven implementations (like Avro, ProtoBuf) may depend on Profiles.
-- It should be possible to run transformations on raw data or within a database using SQL (ELT)
-
 ### License
-
 FHIR® is the registered trademark of HL7 and is used with the permission of HL7. Use of the FHIR trademark does not constitute endorsement of the contents of this repository by HL7, nor affirmation that this data is conformant to the various applicable standards
 
 ### Credits
-
 * Nikolai Ryzhikov @niquola (Health Samurai)
 * Dan Gottlieb @gotdan (Central Square Solutions)
 * Vadim Peretokin @vadi2 (Philips)
@@ -108,6 +96,3 @@ Work is sponsored and supported by:
 * [FHIR Foundation](https://fhir.org/)
 * [Health Dev Hub](https://www.healthdevhub.com/)
 * Interested in helping to support this work - contact us!
-
-
-This work is rethink of [SQL on FHIR 1.0](https://github.com/FHIR/sql-on-fhir/blob/master/sql-on-fhir.md)
