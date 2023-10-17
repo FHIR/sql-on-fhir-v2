@@ -34,8 +34,8 @@
         "select": [
           {
             "column": [
-              { "path": "id", "alias": "id" },
-              { "path": "name.exists()", "alias": "has_name" }
+              { "path": "id", "name": "id" },
+              { "path": "name.exists()", "name": "has_name" }
             ]
           }
         ]
@@ -53,8 +53,8 @@
         "select": [
           {
             "column": [
-              { "path": "id", "alias": "id" },
-              { "path": "name.given.exists()", "alias": "has_name" }
+              { "path": "id", "name": "id" },
+              { "path": "name.given.exists()", "name": "has_name" }
             ]
           }
         ]
@@ -69,7 +69,7 @@
       "title": "exists in where path",
       "view": {
         "resource": "Patient",
-        "select": [{ "column": [{ "path": "id", "alias": "id" }] }],
+        "select": [{ "column": [{ "path": "id", "name": "id" }] }],
         "where": [
           {
             "path": "name.exists()"
@@ -82,7 +82,7 @@
       "title": "nested exists in where path",
       "view": {
         "resource": "Patient",
-        "select": [{ "column": [{ "path": "id", "alias": "id" }] }],
+        "select": [{ "column": [{ "path": "id", "name": "id" }] }],
         "where": [
           {
             "path": "name.given.exists()"
@@ -98,7 +98,7 @@
         "select": [
           {
             "forEach": "where(name.exists())",
-            "column": [{ "path": "id", "alias": "id" }]
+            "column": [{ "path": "id", "name": "id" }]
           }
         ]
       },
@@ -111,11 +111,11 @@
         "select": [
           {
             "forEach": "where(name.exists())",
-            "column": [{ "path": "id", "alias": "id" }],
+            "column": [{ "path": "id", "name": "id" }],
             "select": [
               {
                 "forEach": "name.where(text='never-match')",
-                "column": [{ "path": "'never'", "alias": "never" }]
+                "column": [{ "path": "'never'", "name": "never" }]
               }
             ]
           }

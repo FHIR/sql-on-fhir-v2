@@ -20,8 +20,8 @@
         "select": [
           {
             "column": [
-              { "path": "id", "alias": "id" },
-              { "path": "name.given.join(',')", "alias": "given" }
+              { "path": "id", "name": "id" },
+              { "path": "name.given.join(',')", "name": "given" }
             ]
           }
         ]
@@ -35,8 +35,8 @@
         "select": [
           {
             "column": [
-              { "path": "id", "alias": "id" },
-              { "path": "name.given.join('')", "alias": "given" }
+              { "path": "id", "name": "id" },
+              { "path": "name.given.join('')", "name": "given" }
             ]
           }
         ]
@@ -50,8 +50,8 @@
         "select": [
           {
             "column": [
-              { "path": "id", "alias": "id" },
-              { "path": "name.given.join()", "alias": "given" }
+              { "path": "id", "name": "id" },
+              { "path": "name.given.join()", "name": "given" }
             ]
           }
         ]

@@ -23,15 +23,15 @@
       "title": "single segment",
       "view": {
         "resource": "Observation",
-        "select": [{ "column": [{ "path": "status", "alias": "status" }] }]
+        "select": [{ "column": [{ "path": "status", "name": "status" }] }]
       },
       "expect": [{ "status": "preliminary" }]
     },
     {
-      "title": "single segment with alias",
+      "title": "single segment with name",
       "view": {
         "resource": "Observation",
-        "select": [{ "column": [{ "path": "status", "alias": "ob_status" }] }]
+        "select": [{ "column": [{ "path": "status", "name": "ob_status" }] }]
       },
       "expect": [{ "ob_status": "preliminary" }]
     },
@@ -41,7 +41,7 @@
         "resource": "Observation",
         "select": [
           {
-            "column": [{ "path": "value.ofType(string)", "alias": "valueString" }]
+            "column": [{ "path": "value.ofType(string)", "name": "valueString" }]
           }
         ]
       },
@@ -51,7 +51,7 @@
       "title": "multiple segments",
       "view": {
         "resource": "Observation",
-        "select": [{ "column": [{ "path": "subject.reference", "alias": "reference" }] }]
+        "select": [{ "column": [{ "path": "subject.reference", "name": "reference" }] }]
       },
       "expect": [{ "reference": "Patient/123" }]
     },
@@ -59,7 +59,7 @@
       "title": "multiple segments, one level of nesting",
       "view": {
         "resource": "Observation",
-        "select": [{ "column": [{ "path": "code.coding.code", "alias": "code" }] }]
+        "select": [{ "column": [{ "path": "code.coding.code", "name": "code" }] }]
       },
       "expect": [{ "code": "123" }]
     },
@@ -67,7 +67,7 @@
       "title": "multiple segments, multiple level of nesting ",
       "view": {
         "resource": "Observation",
-        "select": [{ "column": [{ "path": "component.code.coding.code", "alias": "code" }] }]
+        "select": [{ "column": [{ "path": "component.code.coding.code", "name": "code" }] }]
       },
       "expect": [{ "code": "456" }]
     },
@@ -78,9 +78,9 @@
         "select": [
           {
             "column": [
-              { "path": "status", "alias": "status" },
+              { "path": "status", "name": "status" },
               {
-                "alias": "identifier_value",
+                "name": "identifier_value",
                 "path": "identifier.first().value"
               }
             ]

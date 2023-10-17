@@ -25,7 +25,7 @@
         "select": [
           {
             "forEach": "name",
-            "column": [{ "path": "family", "alias": "family" }]
+            "column": [{ "path": "family", "name": "family" }]
           }
         ]
       },
@@ -38,7 +38,7 @@
         "select": [
           {
             "forEach": "name",
-            "column": [{ "path": "$this.family", "alias": "family" }]
+            "column": [{ "path": "$this.family", "name": "family" }]
           }
         ]
       },
@@ -51,7 +51,7 @@
         "select": [
           {
             "forEach": "name.family",
-            "column": [{ "path": "$this", "alias": "family" }]
+            "column": [{ "path": "$this", "name": "family" }]
           }
         ]
       },
@@ -64,7 +64,7 @@
         "select": [
           {
             "forEach": "address.where(text='never-match')",
-            "column": [{ "path": "id", "alias": "id" }]
+            "column": [{ "path": "id", "name": "id" }]
           }
         ]
       },
@@ -77,7 +77,7 @@
         "select": [
           {
             "forEachOrNull": "address.where(text='never-match')",
-            "column": [{ "path": "id", "alias": "id" }]
+            "column": [{ "path": "id", "name": "id" }]
           }
         ]
       },

@@ -103,14 +103,14 @@ function extractFields(obj, viewDefinition, context = {}) {
 
   for (let nestedObject of nestedObjects) {
     const columnBindings = []
-    for (const { alias, path, $path, collection } of column ?? []) {
+    for (const { name, path, $path, collection } of column ?? []) {
       const result = $path(nestedObject, context)
       if (result.length <= 1) {
-        columnBindings.push([{ [alias]: result?.[0] ?? null }])
+        columnBindings.push([{ [name]: result?.[0] ?? null }])
       } else if (collection) {
-        columnBindings.push([{ [alias]: result ?? null }])
+        columnBindings.push([{ [name]: result ?? null }])
       } else {
-        throw `alias=${alias} from path=${path} matched more than one element`
+        throw `name=${name} from path=${path} matched more than one element`
       }
     }
 
@@ -124,7 +124,7 @@ function extractFields(obj, viewDefinition, context = {}) {
     const unionBindings = []
     const unionColumns = getColumns({ union })
       .reduce((acc, c) => {
-      acc[c.alias] = null
+      acc[c.name] = null
       return acc
     }, {})
 
@@ -145,7 +145,7 @@ function extractFields(obj, viewDefinition, context = {}) {
 
   if ($forEachOrNull && nestedObjects.length === 0) {
     const nulls = {}
-    getColumns(viewDefinition).forEach((c) => (nulls[c.alias] = null))
+    getColumns(viewDefinition).forEach((c) => (nulls[c.name] = null))
     nestedFields.push(nulls)
   }
 

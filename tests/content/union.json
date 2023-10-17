@@ -30,11 +30,11 @@
             "union": [
               {
                 "forEach": "name",
-                "column": [{ "path": "family", "alias": "family" }]
+                "column": [{ "path": "family", "name": "family" }]
               },
               {
                 "forEach": "contact.name",
-                "column": [{ "path": "family", "alias": "family" }]
+                "column": [{ "path": "family", "name": "family" }]
               }
             ]
           }
@@ -51,11 +51,11 @@
             "union": [
               {
                 "forEach": "name",
-                "column": [{ "path": "family", "alias": "a" }]
+                "column": [{ "path": "family", "name": "a" }]
               },
               {
                 "forEach": "contact.name",
-                "column": [{ "path": "family", "alias": "b" }]
+                "column": [{ "path": "family", "name": "b" }]
               }
             ]
           }
@@ -76,10 +76,10 @@
             "forEachOrNull": "badPath",
             "union": [
               {
-                "column": [{ "path": "'a'", "alias": "letter" }]
+                "column": [{ "path": "'a'", "name": "letter" }]
               },
               {
-                "column": [{ "path": "'b'", "alias": "letter" }]
+                "column": [{ "path": "'b'", "name": "letter" }]
               }
             ]
           }
@@ -93,15 +93,15 @@
         "resource": "Patient",
         "select": [
           {
-            "column": [{ "path": "'x'", "alias": "common" }],
+            "column": [{ "path": "'x'", "name": "common" }],
             "union": [
               {
                 "forEach": "name",
-                "column": [{ "path": "family", "alias": "family" }]
+                "column": [{ "path": "family", "name": "family" }]
               },
               {
                 "forEach": "contact.name",
-                "column": [{ "path": "family", "alias": "family" }]
+                "column": [{ "path": "family", "name": "family" }]
               }
             ]
           }
@@ -119,21 +119,21 @@
         "resource": "Patient",
         "select": [
           {
-            "column": [{ "path": "'x'", "alias": "commonx" }],
+            "column": [{ "path": "'x'", "name": "commonx" }],
             "select": [
               {
                 "forEach": "contact.name",
-                "column": [{ "path": "family", "alias": "c_family" }]
+                "column": [{ "path": "family", "name": "c_family" }]
               }
             ],
             "union": [
               {
                 "forEach": "name",
-                "column": [{ "path": "family", "alias": "p_family" }]
+                "column": [{ "path": "family", "name": "p_family" }]
               },
               {
                 "forEach": "contact.name",
-                "column": [{ "path": "family", "alias": "p_family" }]
+                "column": [{ "path": "family", "name": "p_family" }]
               }
             ]
           }

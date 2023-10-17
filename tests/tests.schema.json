@@ -88,14 +88,14 @@
     },
     "_column": {
       "type": "object",
-      "required": ["path", "alias"],
+      "required": ["path", "name"],
       "properties": {
         "additionalProperties": false,
         "path": {
           "type": "string",
           "format": "fhirpath-expression"
         },
-        "alias": {
+        "name": {
           "type": "string",
           "minLength": 1
         },

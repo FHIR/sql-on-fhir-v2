@@ -95,10 +95,10 @@
             "column": [
               {
                 "path": "id",
-                "alias": "id"
+                "name": "id"
               },
               {
-                "alias": "birthsex",
+                "name": "birthsex",
                 "path": "extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex').value.ofType(code).first()"
               }
             ]
@@ -130,10 +130,10 @@
             "column": [
               {
                 "path": "id",
-                "alias": "id"
+                "name": "id"
               },
               {
-                "alias": "race_code",
+                "name": "race_code",
                 "path": "extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-race').extension('ombCategory').value.ofType(Coding).code.first()"
               }
             ]
