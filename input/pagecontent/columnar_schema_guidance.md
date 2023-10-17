@@ -138,7 +138,7 @@ by SQL users is even more marginal. Therefore SQL views of FHIR data may handle 
 
 First, fields for primitive extensions may be omitted from the SQL schema presented to the user if no such extensions are defined in the StructureDefinition used to generate the schema -- as is the common case. This keeps the schema small and simple by not including fields that will never be used. Note that the underlying *physical* storage may still have this content; we simply provide an easier-to-consume schema to SQL users.
 
-When primtives extensions do exist, they should be stored in a ```STRUCT``` that is sibling to primitive field prefixed by an underscore. This is analogous to how the JSON representation handles this need. This approach keeps the common case simpler at the cost of additional complexity in the unusual case. That tradeoff is preferred for this workload, since many analytic users of this data may never need to work with primitive extensions at all.
+When primitive extensions do exist, they should be stored in a ```STRUCT``` that is sibling to primitive field prefixed by an underscore. This is analogous to how the JSON representation handles this need. This approach keeps the common case simpler at the cost of additional complexity in the unusual case. That tradeoff is preferred for this workload, since many analytic users of this data may never need to work with primitive extensions at all.
 
 ### Recursive Structures
 Many databases require a fully-defined schema that cannot contain recursive structures with unbounded depth.

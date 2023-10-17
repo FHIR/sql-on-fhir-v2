@@ -50,7 +50,7 @@ be equal to the [getResourceKey()](#getresourcekey--keytype) value returned on t
 
 Users may pass an optional resource type code (e.g. 'Patient' or 'Observation') to indicate
 the expected type that the reference should point to. `getReferenceKey` will return an empty collection 
-(effectively `null` since FHIRPath always returns collections) if the referece is not of the 
+(effectively `null` since FHIRPath always returns collections) if the reference is not of the 
 expected type. For example, `Observation.subject.getReferenceKey('Patient')` would return a row key if the
 subject is a patient, or the empty collection (`{}`) if not. 
 
@@ -147,9 +147,9 @@ return those values. This is the simplest case, and will apply to many (but not 
 ##### Return a "primary" identifier for the resource
 Since the resource `id` is by definition an system-specific identifier, it may change as FHIR data
 is exported and loaded between systems, and therefore not be a reliable target for references. For
-instance, a bulk export from some set of source systems could into a target sytem that has applies
+instance, a bulk export from some set of source systems could into a target system that has applies
 its own `id`s to resources when they are loaded -- requiring that joins be done on resource 
-`identifier` fields rathern than `id`.
+`identifier` fields rather than `id`.
 
 In this case, implementations will need to determine row keys based on the resource identifier and
 corresponding identifiers in references. 
@@ -225,14 +225,14 @@ as different selects may use different `forEach` or `forEachOrNull` expressions 
 The multiple rows produced by `forEach`-style selects are joined to others with the following rules:
 
 * Parent/child selects will repeat values from the parent select for each item in the child select. 
-* Sibling select expressions are effectively cross joined, where each row in each `select` is dublicated for every row
-in sibiling `select`s. (In practice, however, a given `select` in a ViewDefinition will produce only a single row
+* Sibling select expressions are effectively cross joined, where each row in each `select` is duplicated for every row
+in sibling `select`s. (In practice, however, a given `select` in a ViewDefinition will produce only a single row
 for the resource.)
 
 The [example view definitions](StructureDefinition-ViewDefinition-examples.html) illustrate this behavior.
 
 ### Column ordering
-ViewDefiniton runners MUST produce columns in the same order as they appear in the views. `select` structures that have nested selects
+ViewDefinition runners MUST produce columns in the same order as they appear in the views. `select` structures that have nested selects
 will place the column of the parent select before the columns of the nested select.
 
 For example, the columns in this ViewDefinition will appear in alphabetical order:

@@ -1,4 +1,4 @@
-Copyright (c) 2018-2023 Nikolai Ryzhikov, Dan Gottlieb, FHIR Comminity, Health Samurai
+Copyright (c) 2018-2023 Nikolai Ryzhikov, Dan Gottlieb, FHIR Community, Health Samurai
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

@@ -20,8 +20,8 @@ CREATE TABLE "patient" (
 
 [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/50)
 
-TODO: Define intermidiate representation of FHIR Profiles and framework to generate
-schemas for Avro, Protobuf, Parquet and db specific hierarchical datastructres (ClickHouse, Snowflake etc)
+TODO: Define intermediate representation of FHIR Profiles and framework to generate
+schemas for Avro, Protobuf, Parquet and db specific hierarchical data structures (ClickHouse, Snowflake etc)
 
 It should be easy to convert between JSON and binary representations.
 

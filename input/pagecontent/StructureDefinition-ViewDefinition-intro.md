@@ -1,5 +1,5 @@
-A *view definiton* is the central piece of the [View Layer](layers.html#the-view-layer).
-It is is based on [FHIRPath](https://hl7.org/fhirpath/) expresssions to select fields and filtering 
+A *view definition* is the central piece of the [View Layer](layers.html#the-view-layer).
+It is is based on [FHIRPath](https://hl7.org/fhirpath/) expressions to select fields and filtering 
 criteria, and is defined by the ViewDefinition logical model seen below. 
 
 ### Key ViewDefinition elements
