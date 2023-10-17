@@ -74,15 +74,15 @@ criteria are defined by FHIRPath expressions.
     A column to be produced in the resuting table. The column is relative to the select structure
     that contains it.
     """
-    * path 0..1 string "FHIRPath expression that creates a column and defines its content" """
+    * path 1..1 string "FHIRPath expression that creates a column and defines its content" """
       A FHIRPath expression that evaluates to the value that will be output in the column for each 
       resource. The input context is the collection of resources of the type specified in the resource 
       element. Constants defined in Reference({constant}) can be referenced as %[name].
     """
-    * alias 0..1 string "Column alias produced in the output" """
-      Alias of the column produced in the output, must be in a database-friendly format.
+    * name 1..1 string "Column name produced in the output" """
+      Name of the column produced in the output, must be in a database-friendly format.
     """
-    * alias obeys sql-name
+    * name obeys sql-name
     * description 0..1 markdown "Description of the column" """
       A human-readable description of the column.
     """
