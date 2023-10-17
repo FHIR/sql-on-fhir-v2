@@ -85,6 +85,18 @@ function compileViewDefinition(viewDefinition) {
   for (let field of subViews(viewDefinition)) {
     compileViewDefinition(field)
   }
+
+  const cols = (viewDefinition.union ?? [])
+    .map((u) =>
+      getColumns({ select: [u] })
+        .reduce((acc, c) => acc.concat(c.name), [])
+        .sort(),
+    )
+    .map((u) => JSON.stringify(u))
+
+  if (cols.some((c) => c !== cols[0])) {
+    throw `Unions use different columns: ${cols}`
+  }
 }
 
 function cartesianProduct([first, ...rest]) {
@@ -122,15 +134,9 @@ function extractFields(obj, viewDefinition, context = {}) {
     }
 
     const unionBindings = []
-    const unionColumns = getColumns({ union })
-      .reduce((acc, c) => {
-      acc[c.name] = null
-      return acc
-    }, {})
-
     for (const u of union ?? []) {
       for (const r of extract(nestedObject, { select: [u] }, context)) {
-        unionBindings.push({ ...unionColumns, ...r })
+        unionBindings.push(r)
       }
     }
 

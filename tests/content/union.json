@@ -51,11 +51,17 @@
             "union": [
               {
                 "forEach": "name",
-                "column": [{ "path": "family", "name": "a" }]
+                "column": [
+                  { "path": "family", "name": "a" },
+                  { "path": "{}", "name": "b" }
+                ]
               },
               {
                 "forEach": "contact.name",
-                "column": [{ "path": "family", "name": "b" }]
+                "column": [
+                  { "path": "family", "name": "b" },
+                  { "path": "{}", "name": "a" }
+                ]
               }
             ]
           }
@@ -66,6 +72,25 @@
         { "a": null, "b": "f2" },
         { "a": null, "b": "f3" }
       ]
+    },
+    {
+      "title": "Union with mismatching branches",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "union": [
+              {
+                "column": [{ "path": "'a'", "name": "a" }]
+              },
+              {
+                "column": [{ "path": "'b'", "name": "b" }]
+              }
+            ]
+          }
+        ]
+      },
+      "expectError": true
     },
     {
       "title": "Union with forEachOrNull",
