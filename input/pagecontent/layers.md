@@ -35,7 +35,7 @@ The View Layer itself has two key components:
 * *View Definitions*, allowing users to define flattened views of FHIR data that
 are portable between systems.
 * *View Runners* are system-specific tools or libraries that apply view definitions to
-the underlying data layer, optionally making use of annotation to optimze performance.
+the underlying data layer, optionally making use of annotations to optimize performance.
 
 See the [View Definition documentation](StructureDefinition-ViewDefinition.html) for details and examples; 
 these are the central piece of this specification.

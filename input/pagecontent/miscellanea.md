@@ -18,11 +18,11 @@ not limited to:
 
 * File-based, serverless storage using, for example, FHIR in NDJSON format on disk,
 or FHIR in parquet format on disk;
-* RDBMS-based (serverfull) storage using, for example, FHIR resources stored directly
+* RDBMS-based (server-based) storage using, for example, FHIR resources stored directly
 as JSON in a database, or FHIR resources translated to a schematized structure within
 a database, such as each FHIR field expanded into separate database columns for query efficiency.
 
-Note that that for new technlogies, this distinction may be less evident or relevant.
+Note that that for new technologies, this distinction may be less evident or relevant.
 For example, duckdb allow you to implement runners using SQL, whilst the duckdb runtime in fact
 only needs a file-based storage system. Please refer to the [technology matrix](tech-matrix.html) for more details.
 
@@ -53,6 +53,6 @@ TO DO: explain how PostgreSQL runner works, with different storage versions with
 #### Patterns for consumption of tabular views
 
 TO DO:
-- expain how views can be persisted (or are they intended to be generated on the fly at all times)?
+- explain how views can be persisted (or are they intended to be generated on the fly at all times)?
 - does specification only allow for tabular view on single FHIR Resources, or also tabular views that
 combine different resources? For example, a `patient_timeline` table that includes all events (`encounter`, start of `EpisodeOfCare`, `Observation`)?

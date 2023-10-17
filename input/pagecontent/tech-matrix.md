@@ -155,7 +155,7 @@ https://delta.io/
 
 ## Snowflake JSON
 
-[semistructured in snowlake](https://docs.snowflake.com/en/user-guide/querying-semistructured)
+[semistructured in snowflake](https://docs.snowflake.com/en/user-guide/querying-semistructured)
 
 JSON limited field access support by `:` member access and by FLATTEN (unnest)
 
