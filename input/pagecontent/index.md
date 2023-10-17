@@ -8,7 +8,7 @@ futher, making FHIR work well with familiar and efficient SQL engines and surrou
 
 We do this by creating simple, tabular *views* of the underlying FHIR data that are tailored
 to specific needs. Views are defined with [FHIRPath](https://hl7.org/fhirpath/) expressions in
-a logical structure to specify things like column aliases and unnested items.
+a logical structure to specify things like column names and unnested items.
 
 Let's start with a simple example, defining a "patient_demographics" view with the following
 [ViewDefinition](StructureDefinition-ViewDefinition.html) structure:
@@ -20,8 +20,8 @@ Let's start with a simple example, defining a "patient_demographics" view with t
   "select": [
     {
       "column": [
-        { "path": "getResourceKey()", "alias": "id" },
-        { "path": "gender" }
+        { "path": "getResourceKey()", "name": "id" },
+        { "path": "gender", "name": "gender }
       ]
     },
     {
@@ -30,12 +30,12 @@ Let's start with a simple example, defining a "patient_demographics" view with t
       "column": [
         {
           "path": "given.join(' ')",
-          "alias": "given_name",
+          "name": "given_name",
           "description": "A single given name field with all names joined together."
         },
         {
           "path": "family",
-          "alias": "family_name"
+          "name": "family_name"
         }
       ]
     }

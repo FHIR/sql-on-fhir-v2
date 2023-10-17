@@ -14,8 +14,8 @@ observations, and so on.
 
 #### The selected fields
 The ViewDefinition has a [select](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select) structure that uses [FHIRPath]
-(https://hl7.org/fhirpath/)  expressions to select fields from the FHIR structure and an optional
-alias for the output field name.
+(https://hl7.org/fhirpath/)  expressions to select fields from the FHIR structure and place them in the column with the specified name.
+
 
 #### The "where" criteria
 The [where](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.where) field determines which resources should be used in the view.
