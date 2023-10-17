@@ -12,6 +12,7 @@ Usage:  #example
     * name = "id"
   * column[+]
     * path = "gender"
+    * name = "gender"
 * select[+]
   * forEach = "name.where(use = 'official').first()"
   * column[+]
@@ -46,8 +47,10 @@ Usage:  #example
     * description = "The full street address, including newlines if present."
   * column[+]
     * path = "use"
+    * name = "use"
   * column[+]
     * path = "city"
+    * name = "city"
   * column[+]
     * path = "postalCode"
     * name = "zip"

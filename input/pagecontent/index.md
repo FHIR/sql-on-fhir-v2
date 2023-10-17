@@ -20,8 +20,8 @@ Let's start with a simple example, defining a "patient_demographics" view with t
   "select": [
     {
       "column": [
-        { "path": "getResourceKey()", "alias": "id" },
-        { "path": "gender" }
+        { "path": "getResourceKey()", "name": "id" },
+        { "path": "gender", "name": "gender }
       ]
     },
     {
@@ -30,12 +30,12 @@ Let's start with a simple example, defining a "patient_demographics" view with t
       "column": [
         {
           "path": "given.join(' ')",
-          "alias": "given_name",
+          "name": "given_name",
           "description": "A single given name field with all names joined together."
         },
         {
           "path": "family",
-          "alias": "family_name"
+          "name": "family_name"
         }
       ]
     }
