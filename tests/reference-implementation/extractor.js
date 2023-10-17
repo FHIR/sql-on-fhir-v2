@@ -1,4 +1,4 @@
-import {default as fhirpath} from 'fhirpath'
+import { default as fhirpath } from 'fhirpath'
 
 const identity = (v) => [v]
 
@@ -10,7 +10,7 @@ function getResourceKey(nodes, resource) {
   })
 }
 
-function getReferenceKey(nodes, {name: resource}={name: undefined}) {
+function getReferenceKey(nodes, { name: resource } = { name: undefined }) {
   return nodes.flatMap(({ data: node }) => {
     const parts = node.reference.replaceAll('//', '').split('/_history')[0].split('/')
     const type = parts.slice(-2)[0]
@@ -28,9 +28,9 @@ export async function* processResources(resourceGenerator, configIn) {
     },
     {
       userInvocationTable: {
-        'getResourceKey': {fn: getResourceKey, arity: {0: [], 1: ['TypeSpecifier']}},
-        'getReferenceKey': {fn: getReferenceKey, arity: {0: [], 1: ['TypeSpecifier']}},
-        'identity': {fn: (nodes)=>nodes, arity: {0: []}},
+        getResourceKey: { fn: getResourceKey, arity: { 0: [], 1: ['TypeSpecifier'] } },
+        getReferenceKey: { fn: getReferenceKey, arity: { 0: [], 1: ['TypeSpecifier'] } },
+        identity: { fn: (nodes) => nodes, arity: { 0: [] } },
       },
     },
   )
@@ -50,7 +50,7 @@ export function getColumns(viewDefinition) {
 
 function compile(eIn, where) {
   // HACK: "$this" isn't supported in a path context, so "identity()" no-op rescues it
-  let e = eIn.startsWith('$this') ? "identity()" + eIn.slice("$this".length) : eIn
+  let e = eIn.startsWith('$this') ? 'identity()' + eIn.slice('$this'.length) : eIn
 
   if (Array.isArray(where)) {
     e += `.where(${where.map((w) => w.path).join(' and ')})`
@@ -76,7 +76,7 @@ function compileViewDefinition(viewDefinition) {
     })
   }
 
-  ['forEach', 'forEachOrNull', 'resource'].forEach((param) => {
+  ;['forEach', 'forEachOrNull', 'resource'].forEach((param) => {
     if (viewDefinition[param]) {
       viewDefinition[`$${param}`] = compile(viewDefinition[param], viewDefinition.where)
     }
@@ -122,9 +122,15 @@ function extractFields(obj, viewDefinition, context = {}) {
     }
 
     const unionBindings = []
+    const unionColumns = getColumns({ union })
+      .reduce((acc, c) => {
+      acc[c.alias] = null
+      return acc
+    }, {})
+
     for (const u of union ?? []) {
       for (const r of extract(nestedObject, { select: [u] }, context)) {
-        unionBindings.push(r)
+        unionBindings.push({ ...unionColumns, ...r })
       }
     }
 

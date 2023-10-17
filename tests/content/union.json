@@ -43,6 +43,31 @@
       "expect": [{ "family": "f1" }, { "family": "f2" }, { "family": "f3" }]
     },
     {
+      "title": "Union with different internal column names",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "union": [
+              {
+                "forEach": "name",
+                "column": [{ "path": "family", "alias": "a" }]
+              },
+              {
+                "forEach": "contact.name",
+                "column": [{ "path": "family", "alias": "b" }]
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        { "a": "f1", "b": null },
+        { "a": null, "b": "f2" },
+        { "a": null, "b": "f3" }
+      ]
+    },
+    {
       "title": "Union with forEachOrNull",
       "view": {
         "resource": "Patient",
