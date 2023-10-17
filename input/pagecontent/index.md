@@ -8,7 +8,7 @@ futher, making FHIR work well with familiar and efficient SQL engines and surrou
 
 We do this by creating simple, tabular *views* of the underlying FHIR data that are tailored
 to specific needs. Views are defined with [FHIRPath](https://hl7.org/fhirpath/) expressions in
-a logical structure to specify things like column aliases and unnested items.
+a logical structure to specify things like column names and unnested items.
 
 Let's start with a simple example, defining a "patient_demographics" view with the following
 [ViewDefinition](StructureDefinition-ViewDefinition.html) structure:
