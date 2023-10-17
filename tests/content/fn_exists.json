@@ -112,7 +112,12 @@
           {
             "forEach": "where(name.exists())",
             "column": [{ "path": "id", "alias": "id" }],
-            "select": []
+            "select": [
+              {
+                "forEach": "name.where(text='never-match')",
+                "column": [{ "path": "'never'", "alias": "never" }]
+              }
+            ]
           }
         ]
       },
