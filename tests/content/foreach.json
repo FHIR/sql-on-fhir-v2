@@ -64,7 +64,7 @@
         "select": [
           {
             "forEach": "Patient.where(id = 'XX')",
-            "column": [{ "path": "id", "alias": "id" }]
+            "column": [{ "path": "id", "name": "id" }]
           }
         ]
       },
@@ -77,7 +77,7 @@
         "select": [
           {
             "forEachOrNull": "Patient.where(id = 'XX')",
-            "column": [{ "path": "id", "alias": "id" }]
+            "column": [{ "path": "id", "name": "id" }]
           }
         ]
       },
