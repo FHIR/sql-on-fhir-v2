@@ -63,7 +63,7 @@
         "resource": "Patient",
         "select": [
           {
-            "forEach": "Patient.where(id = 'XX')",
+            "forEach": "address.where(text='never-match')",
             "column": [{ "path": "id", "name": "id" }]
           }
         ]
@@ -76,7 +76,7 @@
         "resource": "Patient",
         "select": [
           {
-            "forEachOrNull": "Patient.where(id = 'XX')",
+            "forEachOrNull": "address.where(text='never-match')",
             "column": [{ "path": "id", "name": "id" }]
           }
         ]
