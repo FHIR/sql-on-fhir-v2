@@ -68,10 +68,10 @@ criteria are defined by FHIRPath expressions.
   """
 * select 1..* BackboneElement "A collection of columns and nested selects to include in the view." """
   The select structure defines the columns to be used in the resulting view. These are expressed
-  in the `column` structure below, or in nested `select`s for nested resorces.
+  in the `column` structure below, or in nested `select`s for nested resources.
 """
-  * column 0..* BackboneElement "A column to be produced in the resuting table." """
-    A column to be produced in the resuting table. The column is relative to the select structure
+  * column 0..* BackboneElement "A column to be produced in the resulting table." """
+    A column to be produced in the resulting table. The column is relative to the select structure
     that contains it.
     """
     * path 1..1 string "FHIRPath expression that creates a column and defines its content" """
@@ -121,7 +121,7 @@ criteria are defined by FHIRPath expressions.
   """
   * forEachOrNull 0..1 string "Same as forEach, but will produce a row with null values if the collection is empty." """
     Same as forEach, but produces a single row with null values in the nested expression if the collection is empty. For example,
-    with a Patient resouce, a `forEachOrNull` on address will produce a row for each patient even if there are no addresses; it will
+    with a Patient resource, a `forEachOrNull` on address will produce a row for each patient even if there are no addresses; it will
     simply set the address columns to `null`.
   """
   * union 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select "TODO: Describe" """
@@ -131,8 +131,8 @@ criteria are defined by FHIRPath expressions.
     rules.
     """
 * select obeys sql-expressions
-* where 0..* BackboneElement "A series of zero or more FHIRPath constraints to filter resourses for the view." """
-  A series of zero or more FHIRPath constraints to filter resourses for the view. Every constraint
+* where 0..* BackboneElement "A series of zero or more FHIRPath constraints to filter resources for the view." """
+  A series of zero or more FHIRPath constraints to filter resources for the view. Every constraint
   must evaluate to true for the resource to be included in the view.
   """
   * path 1..1 string "A FHIRPath expression defining a filter condition" """
