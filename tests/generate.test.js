@@ -1,4 +1,4 @@
-import { runTests } from './reference-implementation/index.js'
+import { runTests, getColumns } from './reference-implementation/index.js'
 import fhirpath from 'fhirpath'
 import Ajv from 'ajv'
 import fs from 'fs'
@@ -18,6 +18,7 @@ function validatePathToSubset(path) {
     'Identifier',
     'LiteralTerm',
     'BooleanLiteral',
+    'NullLiteral',
     'StringLiteral',
     'NumberLiteral',
     'MemberInvocation',
@@ -71,7 +72,10 @@ function validatePathToSubset(path) {
     }
   }
   const ast = fhirpath.parse(path)
-  return validateChildren(ast)
+  const problems = validateChildren(ast)
+  if (problems) {
+    throw problems
+  }
 }
 
 function buildFhirpathFormat(allowExtendedFhirpath) {
@@ -79,10 +83,13 @@ function buildFhirpathFormat(allowExtendedFhirpath) {
     type: 'string',
     validate: (v) => {
       try {
-        if (!allowExtendedFhirpath && validatePathToSubset(v)) return false
+        if (!allowExtendedFhirpath) {
+          validatePathToSubset(v)
+        }
         fhirpath.compile(v)
         return true
       } catch (err) {
+        console.log('Invalid fhirpath', v, err)
         return false
       }
     },
