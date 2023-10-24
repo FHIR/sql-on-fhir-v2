@@ -42,7 +42,7 @@ export async function* processResources(resourceGenerator, configIn) {
   }
 }
 
-const subViews = (viewDefinition) => (viewDefinition.select ?? []).concat(viewDefinition.union ?? [])
+const subViews = (viewDefinition) => (viewDefinition.select ?? []).concat(viewDefinition.unionAll ?? [])
 
 export function getColumns(viewDefinition) {
   return (viewDefinition.column || []).concat(subViews(viewDefinition).flatMap(getColumns))
@@ -86,7 +86,7 @@ function compileViewDefinition(viewDefinition) {
     compileViewDefinition(field)
   }
 
-  const cols = (viewDefinition.union ?? [])
+  const cols = (viewDefinition.unionAll ?? [])
     .map((u) =>
       getColumns({ select: [u] })
         .reduce((acc, c) => acc.concat(c.name), [])
@@ -109,7 +109,7 @@ function cartesianProduct([first, ...rest]) {
 function extractFields(obj, viewDefinition, context = {}) {
   const nestedFields = []
 
-  let { $forEach, $forEachOrNull, column, select, union } = viewDefinition
+  let { $forEach, $forEachOrNull, column, select, unionAll } = viewDefinition
   let nestedObjects = ($forEach ?? $forEachOrNull ?? identity)(obj, context)
   // console.log("NO", nestedObjects)
 
@@ -133,10 +133,10 @@ function extractFields(obj, viewDefinition, context = {}) {
       }
     }
 
-    const unionBindings = []
-    for (const u of union ?? []) {
+    const unionAllBindings = []
+    for (const u of unionAll ?? []) {
       for (const r of extract(nestedObject, { select: [u] }, context)) {
-        unionBindings.push(r)
+        unionAllBindings.push(r)
       }
     }
 
@@ -144,7 +144,7 @@ function extractFields(obj, viewDefinition, context = {}) {
       ...cartesianProduct([
         ...(column ? columnBindings : []),
         ...(select ? [selectBindings] : []),
-        ...(union ? [unionBindings] : []),
+        ...(unionAll ? [unionAllBindings] : []),
       ]),
     )
   }

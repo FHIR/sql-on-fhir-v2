@@ -1,5 +1,5 @@
 {
-  "title": "union",
+  "title": "unionAll",
   "resources": [
     {
       "resourceType": "Patient",
@@ -22,12 +22,12 @@
   ],
   "tests": [
     {
-      "title": "Union of names",
+      "title": "unionAll of names",
       "view": {
         "resource": "Patient",
         "select": [
           {
-            "union": [
+            "unionAll": [
               {
                 "forEach": "name",
                 "column": [{ "path": "family", "name": "family" }]
@@ -43,12 +43,12 @@
       "expect": [{ "family": "f1" }, { "family": "f2" }, { "family": "f3" }]
     },
     {
-      "title": "Union with different internal column names",
+      "title": "unionAll with different internal column names",
       "view": {
         "resource": "Patient",
         "select": [
           {
-            "union": [
+            "unionAll": [
               {
                 "forEach": "name",
                 "column": [
@@ -74,12 +74,12 @@
       ]
     },
     {
-      "title": "Union with mismatching branches",
+      "title": "unionAll with mismatching branches",
       "view": {
         "resource": "Patient",
         "select": [
           {
-            "union": [
+            "unionAll": [
               {
                 "column": [{ "path": "'a'", "name": "a" }]
               },
@@ -93,13 +93,13 @@
       "expectError": true
     },
     {
-      "title": "Union with forEachOrNull",
+      "title": "unionAll with forEachOrNull",
       "view": {
         "resource": "Patient",
         "select": [
           {
             "forEachOrNull": "badPath",
-            "union": [
+            "unionAll": [
               {
                 "column": [{ "path": "'a'", "name": "letter" }]
               },
@@ -113,13 +113,13 @@
       "expect": [{ "letter": null }]
     },
     {
-      "title": "Union of names with column",
+      "title": "unionAll of names with column",
       "view": {
         "resource": "Patient",
         "select": [
           {
             "column": [{ "path": "'x'", "name": "common" }],
-            "union": [
+            "unionAll": [
               {
                 "forEach": "name",
                 "column": [{ "path": "family", "name": "family" }]
@@ -139,7 +139,7 @@
       ]
     },
     {
-      "title": "Union of names with column and select",
+      "title": "unionAll of names with column and select",
       "view": {
         "resource": "Patient",
         "select": [
@@ -151,7 +151,7 @@
                 "column": [{ "path": "family", "name": "c_family" }]
               }
             ],
-            "union": [
+            "unionAll": [
               {
                 "forEach": "name",
                 "column": [{ "path": "family", "name": "p_family" }]
