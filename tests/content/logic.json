@@ -30,15 +30,17 @@
       "title": "filtering with 'and'",
       "view": {
         "resource": "Patient",
-        "where": [{"path": "gender = 'male' and deceased.ofType(boolean) = false"}],
-        "select": [{
-          "column": [
-            {
-              "path": "id",
-              "name": "id"
-            }
-          ]
-        }]
+        "where": [{ "path": "gender = 'male' and deceased.ofType(boolean) = false" }],
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              }
+            ]
+          }
+        ]
       },
       "expect": [
         {
@@ -50,15 +52,17 @@
       "title": "filtering with 'or'",
       "view": {
         "resource": "Patient",
-        "where": [{"path": "gender = 'male' or deceased.ofType(boolean) = false"}],
-        "select": [{
-          "column": [
-            {
-              "path": "id",
-              "name": "id"
-            }
-          ]
-        }]
+        "where": [{ "path": "gender = 'male' or deceased.ofType(boolean) = false" }],
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              }
+            ]
+          }
+        ]
       },
       "expect": [
         {
@@ -66,7 +70,8 @@
         },
         {
           "id": "m1"
-        },{
+        },
+        {
           "id": "f0"
         }
       ]
@@ -75,15 +80,17 @@
       "title": "filtering with 'not'",
       "view": {
         "resource": "Patient",
-        "where": [{"path": "(gender = 'male').not()"}],
-        "select": [{
-          "column": [
-            {
-              "path": "id",
-              "name": "id"
-            }
-          ]
-        }]
+        "where": [{ "path": "(gender = 'male').not()" }],
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              }
+            ]
+          }
+        ]
       },
       "expect": [
         {
