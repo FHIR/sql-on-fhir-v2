@@ -12,10 +12,10 @@ Expression: "empty() or matches('^[A-Za-z][A-Za-z0-9_]*$')"
 
 Invariant: sql-expressions
 Description: """
-Can only have at most one of `forEach`, `forEachOrNull`, and `union`
+Can only have at most one of `forEach` or `forEachOrNull`.
 """
 Severity: #error
-Expression: "(forEach | forEachOrNull | union).count() <= 1"
+Expression: "(forEach | forEachOrNull).count() <= 1"
 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 Logical: ViewDefinition
@@ -124,11 +124,9 @@ criteria are defined by FHIRPath expressions.
     with a Patient resource, a `forEachOrNull` on address will produce a row for each patient even if there are no addresses; it will
     simply set the address columns to `null`.
   """
-  * union 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select "TODO: Describe" """
-    TODO: Update this -- The result of each selection within the union will be combined according to the semantics of the 
-    union operator in FHIRPath. The results of the selected expressions must be of the same type, or 
-    able to be implicitly converted to a common type according to the FHIRPath data type conversion 
-    rules.
+  * unionAll 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select  "Creates a union of all rows in the given selection structures." """
+    A `unionAll` combines the results of multiple selection structures. Each structure under the `unionAll` must produce the same column names
+    and types. The results from each nested selection will then have their own row.
     """
 * select obeys sql-expressions
 * where 0..* BackboneElement "A series of zero or more FHIRPath constraints to filter resources for the view." """

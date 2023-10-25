@@ -231,9 +231,51 @@ for the resource.)
 
 The [example view definitions](StructureDefinition-ViewDefinition-examples.html) illustrate this behavior.
 
+### unionAll expressions
+A selection structure has one optional array called `unionAll`, which contains a list of selection structures to be unioned. This `unionAll` array
+effectively concatenates the results of the nested selection structures that it contains, but without a guarantee that row ordering will be preserved.
+Each selection structure contained in the `unionAll` must produce the same column names and FHIR types.
+
+For instance, suppose we want to create a table of all patient and contact addresses. Here's a snippet of what the `unionAll` could look like for that:
+
+```js
+"select": {
+  "unionAll": [
+    {
+      "forEach": "address",
+      "column": [
+        {"path": "postalCode", "name": "zip"},
+        {"path": "true", "name": "is_patient"}
+      ]
+    },
+    {
+      "forEach": "contact.address",
+      "column": [
+        {"path": "postalCode", "name": "zip"}
+        {"path": "false", "name": "is_patient"}
+      ]
+    }
+  ]
+}
+```
+
+The above example uses `forEach` to select parts of the resource for each select to be unioned, but other use cases may get the needed columns directly
+in the select. See the [PatientAndContactAdddressUnion example](Binary-PatientAndContactAddressUnion.html) for a complete version of the above.
+
+The columns produced from the `unionAll` list are effectively added to the parent selection structure, following any other columns in that parent structure
+for column ordering. See the [column ordering](#column-ordering) section below for details. 
+
+Notice that a single selection structure can contain zero or one `unionAll` lists -- where the list contains the items to be combined in a single, logical
+union all. Users needing multiple `unionAll`s within a single view will need to move them to separate selection structures.
+
+#### unionAll column requirements
+The select structures in a `unionAll` array must having matching columns. Specifically, each nested selection structure must produce the same number of columns
+with the same names and order, and the column values must be the same types as determined by the [column types](#column-types) part of this specification.
+
 ### Column ordering
 ViewDefinition runners MUST produce columns in the same order as they appear in the views. `select` structures that have nested selects
-will place the column of the parent select before the columns of the nested select.
+will place the column of the parent select before the columns of the nested select, and the columns from a `unionAll` list are placed last. Users looking
+to change the column ordering may place the columns or the `unionAll` in a nested select, which can be ordered relative to other nested selects as desired.
 
 For example, the columns in this ViewDefinition will appear in alphabetical order:
 
@@ -252,12 +294,25 @@ For example, the columns in this ViewDefinition will appear in alphabetical orde
         { "path": "'C'", "name": "c" },
         { "path": "'D'", "name": "d" },
       ]
-    }]
+    }],
+    "unionAll" : [{
+      "column": [
+        { "path": "'E1'", "name": "e" },
+        { "path": "'F1'", "name": "f" },
+      ]
+    },
+    {
+      "column": [
+        { "path": "'E2'", "name": "e" },
+        { "path": "'F2'", "name": "f" },
+      ]
+    }
+    ]
   },
   {
     "column": [
-      { "path": "'E'", "name": "e" },
-      { "path": "'F'", "name": "f" },
+      { "path": "'G'", "name": "g" },
+      { "path": "'H'", "name": "h" },
     ]
   }]
 }
