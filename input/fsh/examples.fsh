@@ -55,6 +55,48 @@ Usage:  #example
     * path = "postalCode"
     * name = "zip"
 
+Instance:   PatientAndContactAddressUnion
+InstanceOf: ViewDefinition
+Description: """An example of unnesting patient addresses and contact addresss
+into multiple rows, which are unioned together into a single table.
+"""
+Usage:  #example
+* name = "patient_and_contact_addresses"
+* status = #draft
+* resource = #Patient
+* select[+]
+  * column[+]
+    * path = "getResourceKey()"
+    * name = "resource_id"
+  * unionAll[+]
+    * forEach = "address"
+    * column[+]
+      * path = "line.join('\n')"
+      * name = "street"
+    * column[+]
+      * path = "city"
+      * name = "city"
+    * column[+]
+      * path = "postalCode"
+      * name = "zip"
+    * column[+]
+      * path = "true"
+      * name = "is_patient"
+  * unionAll[+]
+    * forEach = "contact.address"
+    * column[+]
+      * path = "line.join('\n')"
+      * name = "street"
+    * column[+]
+      * path = "city"
+      * name = "city"
+    * column[+]
+      * path = "postalCode"
+      * name = "zip"
+    * column[+]
+      * path = "false"
+      * name = "is_patient"
+
 Instance: UsCoreBloodPressures
 InstanceOf: ViewDefinition
 Description: """A simple view of blood pressure observations, with separate columns for 
