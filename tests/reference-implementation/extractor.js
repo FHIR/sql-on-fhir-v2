@@ -90,7 +90,6 @@ function compileViewDefinition(viewDefinition) {
     .map((u) =>
       getColumns({ select: [u] })
         .reduce((acc, c) => acc.concat(c.name), [])
-        .sort(),
     )
     .map((u) => JSON.stringify(u))
 

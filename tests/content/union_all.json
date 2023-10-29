@@ -59,8 +59,8 @@
               {
                 "forEach": "contact.name",
                 "column": [
-                  { "path": "family", "name": "b" },
-                  { "path": "{}", "name": "a" }
+                  { "path": "{}", "name": "a" },
+                  { "path": "family", "name": "b" }
                 ]
               }
             ]
