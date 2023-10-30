@@ -42,17 +42,28 @@ types may meet this need.
 
 See the [Resource Keys and Joins](#resource-keys-and-joins) section below for details.
 
-##### getReferenceKey([resource: ResourceTypeCode]) : KeyType
+##### getReferenceKey([resource: type specifier]) : KeyType
 
 This is invoked on [Reference](https://hl7.org/fhir/references.html#Reference) elements and returns
-an opaque value that represents for the database key of the row being referenced. The value returned must
+an opaque value that represents the database key of the row being referenced. The value returned must
 be equal to the [getResourceKey()](#getresourcekey--keytype) value returned on the resource itself.
 
-Users may pass an optional resource type code (e.g. 'Patient' or 'Observation') to indicate
+Users may pass an optional resource type (e.g. `Patient` or `Observation`) to indicate
 the expected type that the reference should point to. `getReferenceKey` will return an empty collection 
 (effectively `null` since FHIRPath always returns collections) if the reference is not of the 
-expected type. For example, `Observation.subject.getReferenceKey('Patient')` would return a row key if the
+expected type. For example, `Observation.subject.getReferenceKey(Patient)` would return a row key if the
 subject is a patient, or the empty collection (`{}`) if not. 
+
+Implementations MUST support the relative literal form of reference (e.g. `Patient/123`), and MAY support 
+other types of references. If the implementation does not support the reference type, or is unable to 
+resolve the reference, it MUST return the empty collection (`{}`).
+
+Implementations MAY generate a list of unprocessable references through query responses, logging or 
+reporting. The details of how this information would be provided to the user is implementation specific.
+
+Resolution of contained resources is not required by this specification. Therefore, it is recommended 
+that contained resources be extracted into separate resources and given their own identity as part of a 
+pre-processing step, to maximise compatibility with view runners.
 
 The returned `<KeyType>` is implementation dependent, but must be a FHIR primitive type that can be used
 for efficient joins in the system's underlying data storage. Integers, strings, UUIDs, and other primitive
