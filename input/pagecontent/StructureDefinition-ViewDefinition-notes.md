@@ -284,9 +284,11 @@ The select structures in a `unionAll` array must having matching columns. Specif
 with the same names and order, and the column values must be the same types as determined by the [column types](#column-types) part of this specification.
 
 ### Column ordering
-ViewDefinition runners MUST produce columns in the same order as they appear in the views. `select` structures that have nested selects
-will place the column of the parent select before the columns of the nested select, and the columns from a `unionAll` list are placed last. Users looking
-to change the column ordering may place the columns or the `unionAll` in a nested select, which can be ordered relative to other nested selects as desired.
+ViewDefinition runners MUST produce output in the same order as the column structures seen in the ViewDefinition instances. 
+
+`select` structures that have nested selects will place the column of the parent select before the columns of the nested select, and the columns from a 
+`unionAll` list are placed last. Users looking to change the column ordering may place the columns or the `unionAll` in a nested select, which can be ordered
+relative to other nested selects as desired.
 
 For example, the columns in this ViewDefinition will appear in alphabetical order:
 
