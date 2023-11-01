@@ -1,11 +1,9 @@
-## Processing Algorithm (Model)
-
 The following description provides an algorithm for how to process a FHIR
 resource as input for a `ViewDefinition`. Implementations do not need to follow
 this algorithm directly, but their outputs should be consistent with what this
 model produces.
 
-### Validate Columns
+### Validate Columns (entry point)
 
 **Purpose**: This step ensures that a ViewDefinition's columns are valid, by setting up a recursive call.
 
@@ -14,7 +12,7 @@ model produces.
 
 1. Call `ValidateColumns([], V)` according to the recursive step below.
 
-#### `ValidateColumns(S, C)` (Recursive Step)
+### `ValidateColumns(S, C)` (recursive step)
 
 **Purpose:** This step ensures that column names are unique across `S` and disjoint from `C`
 
@@ -51,7 +49,7 @@ model produces.
 
 4. Return `Ret`
 
-### Process a Resource
+### Process a Resource (entry point)
 
 **Purpose:** This step emits all rows produced by a ViewDefinition on an input Resource, by setting up a recursive call.
 
@@ -70,7 +68,7 @@ model produces.
         * Otherwise, continue
 3. Emit all rows from `Process(S, V)`
 
-#### `Process(S, N)` (Recursive Step)
+### `Process(S, N)` (recursive step)
 
 **Purpose:** This step emits all rows for a given Selection Structure and Node. We first generates sets of "partial rows" (i.e., sets of incomplete column bindings from the various clauses of `V`) and combine them to emit complete rows. For example, if there are two sets of partial rows:
 
