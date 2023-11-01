@@ -71,15 +71,18 @@ parameters:
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 menu:
   Home: index.html
-  Specification: 
-    Purpose: purpose.html
+  Purpose: purpose.html
+  Spec: 
     System Layers: layers.html
-    View Definition:  StructureDefinition-ViewDefinition.html
+    View Definition: StructureDefinition-ViewDefinition.html
+    Processing Model: processing_model.html
+  Guidance: 
     JSON Schema Guidance: json_schema_guidance.html
     Columnar Schema Guidance: columnar_schema_guidance.html
+  See Also:
     Tech Matrix: tech-matrix.html
-    Miscellanea: miscellanea.html
-  Artifacts: artifacts.html
+    Misc: miscellanea.html
+    Artifacts: artifacts.html
 
 # ╭───────────────────────────Less Common Implementation Guide Properties──────────────────────────╮
 # │  Uncomment the properties below to configure additional properties on the ImplementationGuide  │
