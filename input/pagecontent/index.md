@@ -21,7 +21,7 @@ Let's start with a simple example, defining a "patient_demographics" view with t
     {
       "column": [
         { "path": "getResourceKey()", "name": "id" },
-        { "path": "gender", "name": "gender }
+        { "path": "gender", "name": "gender" }
       ]
     },
     {
