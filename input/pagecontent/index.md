@@ -16,17 +16,23 @@ Let's start with a simple example, defining a "patient_demographics" view with t
 ```js
 {
   "name": "patient_demographics",
-  "resource": "Patient"
+  "resource": "Patient",
   "select": [
     {
       "column": [
-        { "path": "getResourceKey()", "name": "id" },
-        { "path": "gender", "name": "gender" }
+        {
+          "path": "getResourceKey()",
+          "name": "id"
+        },
+        {
+          "path": "gender",
+          "name": "gender"
+        }
       ]
     },
     {
       // Create columns from the official name selected here.
-      "forEach": "name.where(use = 'official').first()"
+      "forEach": "name.where(use = 'official').first()",
       "column": [
         {
           "path": "given.join(' ')",
