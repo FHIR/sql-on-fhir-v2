@@ -422,3 +422,10 @@ Another use case may be for users to select database-specific numeric types.
 
 Behavior is undefined and left to the runner if the expression returns a value
 that is incompatible with the underlying database type.
+
+### Processing Algorithm (Model)
+
+See [Processing Algorithm](./processing_model) for a description of how to
+process a FHIR resource as input for a `ViewDefinition`. Implementations do not
+need to follow this algorithm directly, but their outputs should be consistent
+with what this model produces.
