@@ -155,12 +155,13 @@ FHIR ValueSets can be stored and queried like any other resource. However, Value
 
 Here is the schema for ```valueset_codes```:
 
-| Column          | ANSI SQL Type | Comment
-| --------------- | ------------- | -------
-| valueseturi     | VARCHAR       | The URI of the ValueSet containing this code
-| valuesetversion | VARCHAR       | The version of the ValueSet containing this code
-| system          | VARCHAR       | The code system
-| code            | VARCHAR       | The code value
+| Column          | ANSI SQL Type | Comment                                          |
+|-----------------|---------------|--------------------------------------------------|
+| valueseturi     | VARCHAR       | The URI of the ValueSet containing this code     |
+| valuesetversion | VARCHAR       | The version of the ValueSet containing this code |
+| system          | VARCHAR       | The code system                                  |
+| systemversion   | VARCHAR       | The version of the code system                   |
+| code            | VARCHAR       | The code value                                   |
 
 Here is an example query that retrieves cholesterol-related observations based on
 an example FHIR value set:
