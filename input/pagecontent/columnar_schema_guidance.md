@@ -69,24 +69,28 @@ Primitive types can be generally mapped directly to SQL, as seen in the table be
 * Date and time variants are stored as ISO 8601 values in ```VARCHAR```s, since the native date and time types on ANSI SQL do not account for the variable precision allowed in date/time-related types in FHIR.
 * Unless explicitly constrained, string types should be stored in Unicode. This is reflected by the use of ```NVARCHAR``` (or equivalent for the database used) seen below.
 
-| FHIR Type    | ANSI SQL Type | Comment
-| ------------ | ------------- | -------
-| boolean      | BOOLEAN       |
-| integer      | INTEGER       |
-| string       | NVARCHAR      |
-| decimal      | DECIMAL       | Use sufficient precision to avoid any precision loss in given data.
-| uri          | NVARCHAR      |
-| base64Binary | VARCHAR       |
-| instant      | TIMESTAMP     |
-| date         | VARCHAR       | Uses ISO 8601
-| dateTime     | VARCHAR       | Uses ISO 8601
-| time         | VARCHAR       | Uses ISO 8601
-| code         | NVARCHAR      |
-| oid          | VARCHAR       |
-| id           | NVARCHAR      |
-| markdown     | NVARCHAR      |
-| unsigned int | INTEGER       |
-| positive int | INTEGER       |
+| FHIR Type    | ANSI SQL Type | Comment                                                             |
+|--------------|---------------|---------------------------------------------------------------------|
+| base64Binary | VARCHAR       |                                                                     |
+| boolean      | BOOLEAN       |                                                                     |
+| canonical    | NVARCHAR      |                                                                     |
+| code         | NVARCHAR      |                                                                     |
+| date         | VARCHAR       | Uses ISO 8601                                                       |
+| dateTime     | VARCHAR       | Uses ISO 8601                                                       |
+| decimal      | DECIMAL       | Use sufficient precision to avoid any precision loss in given data. |
+| id           | NVARCHAR      |                                                                     |
+| instant      | TIMESTAMP     |                                                                     |
+| integer      | INTEGER       |                                                                     |
+| integer64    | BIGINT        |                                                                     |
+| markdown     | NVARCHAR      |                                                                     |
+| oid          | VARCHAR       |                                                                     |
+| string       | NVARCHAR      |                                                                     |
+| positiveInt  | INTEGER       |                                                                     |
+| time         | VARCHAR       | Uses ISO 8601                                                       |
+| unsignedInt  | INTEGER       |                                                                     |
+| uri          | NVARCHAR      |                                                                     |
+| url          | NVARCHAR      |                                                                     |
+| uuid         | VARCHAR       |                                                                     |
 
 #### References
 FHIR references are relative URLs by definition, which are difficult to use in join semantics in most SQL engines. For instance, an Observation may have a reference to "Person/ABC", but the identifier on the Person instance is simply "ABC", so equality-based join operations don't work. This is important enough to justify generating an additional field the Reference type that can be used in an equijoin. This field should be named ```<resourceType>Id```.
