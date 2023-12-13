@@ -204,6 +204,9 @@ data is denormalized and ambiguous. For instance, `Patient.generalPractitioner` 
 the same practitioner seen in other `Patient` resources. Therefore this spec currently requires system pre-process such
 data into normalized, independent resources if needed.
 
+For the same reason, the output from running ViewDefinitions will not include contained resources. For instance, a ViewDefinition for
+`Practitioner` will include top-level Practitioner resources, but not contaiend practictioners inside a `Patient` resource.
+
 This may change in a later version of this spec, allowing users to explicitly create separate views for contained resources
 that could be distinct from top-level resource views, reflecting the different semantics here. But this is not in the current
 specification scope.
