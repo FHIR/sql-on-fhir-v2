@@ -23,8 +23,8 @@ export function run_test(viewdef, result) {
 
 export function add_test(opts) {
   test(opts.title, ()=>{
-    let res = evaluate( opts.view, test_case.resources)
     test_case.tests.push(opts)
+    let res = evaluate( opts.view, test_case.resources)
     expect(res).toEqual(opts.expected);
   })
 }

@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test";
+import { expect, test , describe} from "bun:test";
 import { evaluate, row_product } from '../src/index.js'
 import { start_case, end_case, add_test, run_test, should_fail } from './test_helpers.js'
 
@@ -25,7 +25,6 @@ test("row_product", () => {
   expect(row_product([[{a: 1}, {a: 2}]]))
     .toEqual([{a: 1}, {a: 2}])
 
-
 });
 
 
@@ -43,7 +42,7 @@ let resources = [
 
 start_case('basic', 'basic view definition', resources)
 
-test("basics_test", () => {
+describe("basics", () => {
 
   add_test({
     title: 'basic attribute',
@@ -89,7 +88,50 @@ test("basics_test", () => {
     expected: expected})
 
 
-  // should_fail(
+  add_test({
+    title: 'where',
+    view:
+    {select: [{column: [{name: 'id', path: 'id'}]}],
+     where: 'active=true'},
+    expected: [{id: 'pt1'}]})
+
+  add_test({
+    title: 'where',
+    view:
+    {select: [{column: [{name: 'id', path: 'id'}]}],
+     where: 'active=false'},
+    expected: [{id: 'pt2'}]})
+
+
+  add_test({
+    title: 'where as element',
+    view:
+    {select: [{column: [{name: 'id', path: 'id'}]}],
+     where: 'active'},
+    expected: [{id: 'pt1'}]})
+
+  add_test({
+    title: 'where as expr - 1',
+    view:
+    {select: [{column: [{name: 'id', path: 'id'}]}],
+     where: "name.family = 'F2'"},
+    expected: [{id: 'pt2'}]})
+
+  add_test({
+    title: 'where as expr - 2',
+    view:
+    {select: [{column: [{name: 'id', path: 'id'}]}],
+     where: "name.family = 'F1'"},
+    expected: [{id: 'pt1'}]})
+
+  add_test({
+    title: 'where as name.family',
+    view:
+    {select: [{column: [{name: 'id', path: 'id'}]}],
+     where: "name.family"},
+    expected: [{id: 'pt1'}, {id: 'pt2'}]})
+
+
   //   {select: [
   //       {column: [{name: 'id', path: 'id'}]},
   //       {}]})

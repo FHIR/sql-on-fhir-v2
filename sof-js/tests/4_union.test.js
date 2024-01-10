@@ -110,6 +110,8 @@ test("forEach", () => {
 
   run_test(unionDups, dups_result);
 
+  // TODO: add union with select
+
   end_case()
 
 });

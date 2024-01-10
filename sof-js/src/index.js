@@ -70,9 +70,7 @@ function process_union(select, nodes) {
 }
 
 function process_select_clause(select, node) {
-  //there are two options
-  // 1. we unroll collections with forEach(OrNull)
-  // 2. or just process the node
+  //there are two options - unroll collections with forEach[OrNull] or just process the node
   let nodes = get_nodes(select, node);
 
   if( select.select ) {
@@ -87,8 +85,9 @@ function process_select_clause(select, node) {
 
 function filter_where(nodes, where) {
   if(!where) { return nodes };
-  return nodes.filter((x)=>{
-    return false
+  return nodes.filter((node)=>{
+    let res = fhirpath_evaluate(node, where);
+    return res[0];
   })
 }
 
