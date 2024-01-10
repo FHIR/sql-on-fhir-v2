@@ -17,6 +17,16 @@ export function run_test(viewdef, result) {
   let res = evaluate( viewdef, test_case.resources)
   test_case.tests.push({view: viewdef, expected: result})
   expect(res).toEqual(result);
+
+}
+
+
+export function add_test(opts) {
+  test(opts.title, ()=>{
+    let res = evaluate( opts.view, test_case.resources)
+    test_case.tests.push(opts)
+    expect(res).toEqual(opts.expected);
+  })
 }
 
 export function end_case(name, desc, resources) {
@@ -26,9 +36,12 @@ export function end_case(name, desc, resources) {
 
 
 export function debug(viewdef) {
-  // TODO: dump tests
   let res = evaluate( viewdef, test_case.resources)
   console.log(res);
   return res;
+}
+
+export function should_fail(viewdef) {
+  // TODO: dump tests
 }
 

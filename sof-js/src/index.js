@@ -20,12 +20,17 @@ export function row_product(parts) {
 }
 
 function get_columns(column, node) {
-  // TODO: throw exception on collection
-  // TODO: support for value
   let record = {};
   column.forEach((c) => {
-    let v = fhirpath_evaluate( node, c.path);
-    record[c.name] = v[0] || null;
+    let vs = fhirpath_evaluate( node, c.path);
+    if(c.collection) {
+      record[c.name] = vs;
+    } else if (vs.length <= 1) {
+      let v = vs[0];
+      record[c.name] = (v === undefined) ? null : v;
+    } else {
+      throw new Error('Collection value for ' + c.path + ' => ' + JSON.stringify(vs))
+    }
   });
   return record;
 
