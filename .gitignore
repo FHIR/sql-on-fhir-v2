@@ -7,3 +7,13 @@ node_modules
 /temp
 /template.tests
 /template
+
+##############################
+## IntelliJ
+##############################
+out/
+.idea/
+.idea_modules/
+*.iml
+*.ipr
+*.iws
