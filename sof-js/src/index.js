@@ -36,7 +36,7 @@ function forEach(def, node) {
 
 function forEachOrNull(def, node) {
   assert(def.forEachOrNull, 'forEachOrNull required')
-  let nodes = fhirpath_evaluate(node, def.forEach)
+  let nodes = fhirpath_evaluate(node, def.forEachOrNull)
   if(nodes.length == 0) {
     nodes = [{}];
   }
