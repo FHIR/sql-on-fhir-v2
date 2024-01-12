@@ -175,13 +175,10 @@ function do_eval(def, node) {
 }
 
 export function evaluate(def, node) {
+  if(!Array.isArray(node)) { return evaluate(def, [node]) }
   let normal_def = normalize(def);
   // console.log(JSON.stringify(normal_def, null, " "))
-  if(Array.isArray(node)) {
-    return node.flatMap((n)=>{
-      return do_eval(normal_def, n);
-    })
-  } else {
-    return do_eval(normal_def, node);
-  }
+  return node.flatMap((n)=>{
+    return do_eval(normal_def, n);
+  })
 }
