@@ -1,10 +1,17 @@
 import { fhirpath_evaluate } from './path.js'
 
+function assert(condition, message) {
+  if (!condition) {
+    throw message || "Assertion failed";
+  }
+}
+
 export function merge(a,b) {
   return Object.assign({}, a, b);
 }
 
 export function row_product(parts) {
+  if(parts.length == 1) {return parts[0]}
   let rows = [{}];
   let new_rows = null;
   parts.forEach((partial_rows) => {
@@ -19,9 +26,29 @@ export function row_product(parts) {
   return rows;
 }
 
-function get_columns(column, node) {
+function forEach(def, node) {
+  assert(def.forEach, 'forEach required')
+  let nodes = fhirpath_evaluate(node, def.forEach)
+  return nodes.flatMap((node)=>{
+    return select({select: def.select}, node)
+  })
+}
+
+function forEachOrNull(def, node) {
+  assert(def.forEachOrNull, 'forEachOrNull required')
+  let nodes = fhirpath_evaluate(node, def.forEach)
+  if(nodes.length == 0) {
+    nodes = [{}];
+  }
+  return nodes.flatMap((node)=>{
+    return select({select: def.select}, node)
+  })
+}
+
+function column(def, node) {
+  assert(def.column, 'column required')
   let record = {};
-  column.forEach((c) => {
+  def.column.forEach((c) => {
     let vs = fhirpath_evaluate( node, c.path);
     if(c.collection) {
       record[c.name] = vs;
@@ -32,83 +59,129 @@ function get_columns(column, node) {
       throw new Error('Collection value for ' + c.path + ' => ' + JSON.stringify(vs))
     }
   });
-  return record;
-
+  return [record];
 }
 
-function process_rows(column, nodes) {
-  return nodes.map((node)=> {
-    return get_columns(column, node);
+function unionAll(def, node) {
+  assert(def.unionAll, 'unionAll')
+  return def.unionAll.flatMap((d)=>{
+    return do_eval(d, node)
   })
 }
 
-function get_nodes(select, node) {
-  let nodes = null;
-  if(select.forEach) {
-    nodes = fhirpath_evaluate(node, select.forEach)
-  } else if (select.forEachOrNull) {
-    nodes = fhirpath_evaluate(node, select.forEach)
-    if(nodes.length == 0) { nodes = [{}] }
-  } else {
-    nodes = [node]
+function select(def, node) {
+  assert(def.select, 'select')
+  if(def.where) {
+    let res = fhirpath_evaluate(node, def.where)
+    if(!res[0]) { return []}
   }
-  return nodes;
+  return row_product(
+    def.select.map((s)=> {
+      return do_eval(s, node);
+    })
+  )
 }
 
+function compile(def) {
+  throw new Error('not impl');
+}
 
-function process_union(select, nodes) {
-  return nodes.flatMap((node)=> {
-    let union_rows = select.unionAll.flatMap((s)=> {
-      let res = process_select_clause(s, node);
-      return res;
-    })
-    if(select.column){
-      union_rows = row_product([[get_columns(select.column, node)], union_rows]);
+// * foreach    / column / [select(..)]   -> foreach select[column, ..]
+// * foreach    / union / [select(..)]     -> foreach select[union, ..]
+// * foreach    / select(..)               -> foreach select[..]
+// * select[..] / union                    -> select [union, ..]
+// * select[..] / column                  -> select [column, ..]
+// * union      / column                  -> select [column, union]
+function normalize(def) {
+  if(def.forEach) {
+    def.select ||= []
+    def.type = 'forEach'
+    if(def.unionAll) {
+      def.select.unshift({unionAll: def.union})
+      delete def.unionAll
     }
-    return union_rows;
-  })
-}
-
-function process_select_clause(select, node) {
-  //there are two options - unroll collections with forEach[OrNull] or just process the node
-  let nodes = get_nodes(select, node);
-
-  if( select.select ) {
-    return process_select(select, nodes);
-  } else if( select.unionAll ) {
-    return process_union(select, nodes);
-  } else if(select.column) {
-    return  process_rows(select.column, nodes);
+    if(def.column) {
+      def.select.unshift({column: def.column})
+      delete def.column
+    }
+    def.select = def.select.map((s)=> { return normalize(s)})
+    return def;
+  } else if(def.forEachOrNull) {
+    def.select ||= []
+    def.type = 'forEachOrNull'
+    if(def.unionAll) {
+      def.select.unshift({unionAll: def.union})
+      delete def.unionAll
+    }
+    if(def.column) {
+      def.select.unshift({column: def.column})
+      delete def.column
+    }
+    def.select = def.select.map((s)=> { return normalize(s)})
+    return def;
+  } else if(def.unionAll && def.select) {
+    def.type = 'select'
+    def.select.unshift({unionAll: def.unionAll})
+    delete def.unionAll
+    def.select = def.select.map((s)=> { return normalize(s)})
+    return def;
+  } else if (def.select && def.column) {
+    def.select.unshift({column: def.column})
+    delete def.column
+    def.type = 'select'
+    def.select = def.select.map((s)=> { return normalize(s)})
+    return def;
+  } else if (def.unionAll && def.column) {
+    def.select ||= []
+    def.select.unshift({unionAll: def.unionAll})
+    def.select.unshift({column: def.column})
+    delete def.unionAll
+    delete def.column
+    def.type = 'select'
+    def.select = def.select.map((s)=> { return normalize(s)})
+    return def;
+  } else if (def.select){
+    def.type = 'select'
+    def.select = def.select.map((s)=> { return normalize(s)})
+    return def
+  } else {
+    if(def.unionAll) {
+      def.type = 'unionAll'
+      def.unionAll = def.unionAll.map((s)=> { return normalize(s)})
+    } else if (def.column) {
+      def.type = 'column'
+    } else if (def.forEach) {
+      def.type = 'forEach'
+    } else if (def.forEachOrNull) {
+      def.type = 'forEachOrNull'
+    } else if (def.select) {
+      def.type = 'select'
+    }
+    return def
   }
-  throw new Error('unexpected');
+}
+let fns = {
+  'forEach': forEach,
+  'forEachOrNull': forEachOrNull,
+  'unionAll': unionAll,
+  'select': select,
+  'column': column
 }
 
-function filter_where(nodes, where) {
-  if(!where) { return nodes };
-  return nodes.filter((node)=>{
-    let res = fhirpath_evaluate(node, where);
-    return res[0];
-  })
+function do_eval(def, node) {
+  let f = fns[def.type];
+  if(!f){ throw Error('Not impl ' + def.type)}
+  return f(def, node);
 }
 
-function process_select(definition, nodes) {
-  if(definition.column) { definition.select.unshift({column: definition.column})}
-  return filter_where(nodes, definition.where)
-    .flatMap((node)=>{
-      let partial_rows = definition.select.map((s)=> {return process_select_clause(s, node)});
-      return row_product(partial_rows)
+export function evaluate(def, node) {
+  let normal_def = normalize(def);
+  // console.log(JSON.stringify(normal_def, null, " "))
+  if(Array.isArray(node)) {
+    return node.flatMap((n)=>{
+      return do_eval(normal_def, n);
     })
-}
-
-
-export function validate(viewdef, opts) {
-  //TBD
-}
-
-export function compile(viewdef) {
-  //TBD
-}
-
-export function evaluate(viewdef, nodes) {
-  return process_select(viewdef, nodes);
+  } else {
+    return do_eval(normal_def, node);
+  }
 }

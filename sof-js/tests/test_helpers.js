@@ -37,7 +37,7 @@ export function end_case(name, desc, resources) {
 
 export function debug(viewdef) {
   let res = evaluate( viewdef, test_case.resources)
-  console.log(res);
+  console.log('result:', res);
   return res;
 }
 
