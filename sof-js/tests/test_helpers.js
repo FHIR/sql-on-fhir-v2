@@ -1,5 +1,6 @@
 import { evaluate, row_product } from '../src/index.js'
 import { expect, test } from "bun:test";
+import fs from 'fs'
 
 
 let test_case = null;
@@ -31,7 +32,13 @@ export function add_test(opts) {
 
 export function end_case(name, desc, resources) {
   // TODO: publish test case
-  // console.log(JSON.stringify(test_case, null, " "));
+
+  test('finalize', ()=>{
+    console.log(JSON.stringify(test_case, null, " "));
+    let file_name = '../sof-tests/' + test_case.title + '.json'
+    fs.writeFileSync(file_name, JSON.stringify(test_case, null, " "))
+    console.log('write: ', file_name)
+  })
 }
 
 

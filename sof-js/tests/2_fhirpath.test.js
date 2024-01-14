@@ -5,15 +5,20 @@ import { start_case, end_case, add_test, run_test, should_fail } from './test_he
 let l = console.log
 
 let resources = [
-  {id: 'pt1',
-   name:[{family: 'f1.1', use: 'official'},
-         {family: 'f1.2'}],
+  {resourceType: 'Patient',
+   id: 'pt1',
+   managingOrganization: {reference: 'Organization/o1'},
+   name:[{family: 'f1.1', use: 'official', given: ['g1.1.1', 'g1.1.2']},
+         {family: 'f1.2', given: ['g1.2.1']}],
    active: true},
-  {id: 'pt2',
+  {resourceType: 'Patient',
+   id: 'pt2',
+   managingOrganization: {reference: 'http://myapp.com/prefix/Organization/o2'},
    name: [{family: 'f2.1'},
           {family: 'f2.2', use: 'official'}],
    active: false},
-  {id: 'pt3'},
+  {resourceType: 'Patient',
+   id: 'pt3'},
 ]
 
 start_case('fhirpath', 'fhirpath features', resources)
@@ -72,6 +77,116 @@ describe("fhirpath", () => {
     expected: [{v: 'f1.1'},
                {v: 'f2.2'},
                {v: null}]})
+
+  add_test({
+    title: 'exists',
+    view:
+    {select: [
+      {column: [{name: 'id', path: "id"},
+                {name: 'has_name', path: "name.exists()"},]}]},
+    expected: [{id: 'pt1',has_name: true},
+               {id: 'pt2',has_name: true},
+               {id: 'pt3',has_name: false}]})
+
+  add_test({
+    title: 'nested exists',
+    view:
+    {select: [
+      {column: [{name: 'id', path: "id"},
+                {name: 'has_given', path: "name.given.exists()"},]}]},
+    expected: [{id: 'pt1',has_given: true},
+               {id: 'pt2',has_given: false},
+               {id: 'pt3',has_given: false}]})
+
+
+  add_test({
+    title: 'exists',
+    view:
+    {select: [
+      {column: [{name: 'id', path: "id"},
+                {name: 'first_given', path: "name.given.first()"},]}]},
+    expected: [{id: 'pt1',first_given: "g1.1.1"},
+               {id: 'pt2',first_given: null},
+               {id: 'pt3',first_given: null}]})
+
+  add_test({
+    title: 'exists',
+    view:
+    {select: [
+      {column: [{name: 'id', path: "id"},
+                {name: 'first_family', path: "name.family.first()"},]}]},
+    expected: [{id: 'pt1',first_family: "f1.1"},
+               {id: 'pt2',first_family: 'f2.1'},
+               {id: 'pt3',first_family: null}]})
+
+
+  add_test({
+    title: 'string join',
+    view:
+    {select: [
+      {column: [{name: 'id', path: "id"},
+                {name: 'given', path: "name.given.join(', ' )"},]}]},
+    expected: [{id: 'pt1',given: 'g1.1.1, g1.1.2, g1.2.1'},
+               {id: 'pt2',given: ''},
+               {id: 'pt3',given: ''}]})
+
+  add_test({
+    title: 'string join: default separator',
+    view:
+    {select: [
+      {column: [{name: 'id', path: "id"},
+                {name: 'given', path: "name.given.join()"},]}]},
+    expected: [{id: 'pt1',given: 'g1.1.1g1.1.2g1.2.1'},
+               {id: 'pt2',given: ''},
+               {id: 'pt3',given: ''}]})
+
+
+  // are we sure about this?
+  add_test({
+    title: 'getResourceKey()',
+    view:
+    {select: [
+      {column: [{name: 'id', path: "getResourceKey()"}]}]},
+    expected:
+    [{id: 'Patient/pt1'},
+     {id: 'Patient/pt2'},
+     {id: 'Patient/pt3'}]})
+
+  add_test({
+    title: 'getReferenceKey()',
+    view:
+    {select: [
+      {column:
+       [{name: 'id',  path: "id"},
+                {name: 'ref', path: "managingOrganization.getReferenceKey()"}]}]},
+    expected:
+    [{id: 'pt1', ref: 'Organization/o1'},
+     {id: 'pt2', ref: 'Organization/o2'},
+     {id: 'pt3', ref: null}]})
+
+  add_test({
+    title: 'getReferenceKey(<type>)',
+    view:
+    {select: [
+      {column:
+       [{name: 'id',  path: "id"},
+                {name: 'ref', path: "managingOrganization.getReferenceKey('Organization')"}]}]},
+    expected:
+    [{id: 'pt1', ref: 'Organization/o1'},
+     {id: 'pt2', ref: 'Organization/o2'},
+     {id: 'pt3', ref: null}]})
+
+  add_test({
+    title: 'getReferenceKey(<type>)',
+    view:
+    {select: [
+      {column:
+       [{name: 'id',  path: "id"},
+                {name: 'ref', path: "managingOrganization.getReferenceKey('Encounter')"}]}]},
+    expected:
+    [{id: 'pt1', ref: null},
+     {id: 'pt2', ref: null},
+     {id: 'pt3', ref: null}]})
 
   end_case();
 });

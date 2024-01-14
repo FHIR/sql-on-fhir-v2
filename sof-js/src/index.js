@@ -51,10 +51,10 @@ function column(def, node) {
   def.column.forEach((c) => {
     let vs = fhirpath_evaluate( node, c.path);
     if(c.collection) {
-      record[c.name] = vs;
+      record[c.name || c.path] = vs;
     } else if (vs.length <= 1) {
       let v = vs[0];
-      record[c.name] = (v === undefined) ? null : v;
+      record[c.name || c.path] = (v === undefined) ? null : v;
     } else {
       throw new Error('Collection value for ' + c.path + ' => ' + JSON.stringify(vs))
     }

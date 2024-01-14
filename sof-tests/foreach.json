@@ -1,0 +1,365 @@
+{
+ "title": "foreach",
+ "description": "TBD",
+ "resources": [
+  {
+   "id": "pt1",
+   "name": [
+    {
+     "family": "F1.1"
+    },
+    {
+     "family": "F1.2"
+    }
+   ],
+   "contact": [
+    {
+     "type": "T1",
+     "person": [
+      {
+       "name": "N1"
+      },
+      {
+       "name": "N1`"
+      }
+     ]
+    },
+    {
+     "type": "T2",
+     "person": [
+      {
+       "name": "N2"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pt2",
+   "name": [
+    {
+     "family": "F2.1"
+    },
+    {
+     "family": "F2.2"
+    }
+   ]
+  },
+  {
+   "id": "pt3"
+  }
+ ],
+ "tests": [
+  {
+   "title": "forEach: normal",
+   "view": {
+    "select": [
+     {
+      "column": [
+       {
+        "name": "id",
+        "path": "id"
+       }
+      ],
+      "type": "column"
+     },
+     {
+      "forEach": "name",
+      "select": [
+       {
+        "column": [
+         {
+          "name": "family",
+          "path": "family"
+         }
+        ],
+        "type": "column"
+       }
+      ],
+      "type": "forEach"
+     }
+    ],
+    "type": "select"
+   },
+   "expected": [
+    {
+     "id": "pt1",
+     "family": "F1.1"
+    },
+    {
+     "id": "pt1",
+     "family": "F1.2"
+    },
+    {
+     "id": "pt2",
+     "family": "F2.1"
+    },
+    {
+     "id": "pt2",
+     "family": "F2.2"
+    }
+   ]
+  },
+  {
+   "title": "forEachOrNull: normal",
+   "view": {
+    "select": [
+     {
+      "column": [
+       {
+        "name": "id",
+        "path": "id"
+       }
+      ],
+      "type": "column"
+     },
+     {
+      "forEachOrNull": "name",
+      "select": [
+       {
+        "column": [
+         {
+          "name": "family",
+          "path": "family"
+         }
+        ],
+        "type": "column"
+       }
+      ],
+      "type": "forEachOrNull"
+     }
+    ],
+    "type": "select"
+   },
+   "expected": [
+    {
+     "id": "pt1",
+     "family": "F1.1"
+    },
+    {
+     "id": "pt1",
+     "family": "F1.2"
+    },
+    {
+     "id": "pt2",
+     "family": "F2.1"
+    },
+    {
+     "id": "pt2",
+     "family": "F2.2"
+    },
+    {
+     "id": "pt3",
+     "family": null
+    }
+   ]
+  },
+  {
+   "title": "forEach: empty",
+   "view": {
+    "select": [
+     {
+      "column": [
+       {
+        "name": "id",
+        "path": "id"
+       }
+      ],
+      "type": "column"
+     },
+     {
+      "forEach": "identifier",
+      "select": [
+       {
+        "column": [
+         {
+          "name": "value",
+          "path": "value"
+         }
+        ],
+        "type": "column"
+       }
+      ],
+      "type": "forEach"
+     }
+    ],
+    "type": "select"
+   },
+   "expected": []
+  },
+  {
+   "title": "forEachOrNull: null case",
+   "view": {
+    "select": [
+     {
+      "column": [
+       {
+        "name": "id",
+        "path": "id"
+       }
+      ],
+      "type": "column"
+     },
+     {
+      "forEachOrNull": "identifier",
+      "select": [
+       {
+        "column": [
+         {
+          "name": "value",
+          "path": "value"
+         }
+        ],
+        "type": "column"
+       }
+      ],
+      "type": "forEachOrNull"
+     }
+    ],
+    "type": "select"
+   },
+   "expected": [
+    {
+     "id": "pt1",
+     "value": null
+    },
+    {
+     "id": "pt2",
+     "value": null
+    },
+    {
+     "id": "pt3",
+     "value": null
+    }
+   ]
+  },
+  {
+   "title": "nested forEach",
+   "view": {
+    "select": [
+     {
+      "column": [
+       {
+        "name": "id",
+        "path": "id"
+       }
+      ],
+      "type": "column"
+     },
+     {
+      "forEach": "contact",
+      "select": [
+       {
+        "column": [
+         {
+          "name": "contact_type",
+          "path": "type"
+         }
+        ],
+        "type": "column"
+       },
+       {
+        "forEach": "person",
+        "select": [
+         {
+          "column": [
+           {
+            "name": "name",
+            "path": "name"
+           }
+          ],
+          "type": "column"
+         }
+        ],
+        "type": "forEach"
+       }
+      ],
+      "type": "forEach"
+     }
+    ],
+    "type": "select"
+   },
+   "expected": [
+    {
+     "contact_type": "T1",
+     "name": "N1",
+     "id": "pt1"
+    },
+    {
+     "contact_type": "T1",
+     "name": "N1`",
+     "id": "pt1"
+    },
+    {
+     "contact_type": "T2",
+     "name": "N2",
+     "id": "pt1"
+    }
+   ]
+  },
+  {
+   "title": "nested forEach: select & column",
+   "view": {
+    "select": [
+     {
+      "column": [
+       {
+        "name": "id",
+        "path": "id"
+       }
+      ],
+      "type": "column"
+     },
+     {
+      "forEach": "contact",
+      "select": [
+       {
+        "column": [
+         {
+          "name": "contact_type",
+          "path": "type"
+         }
+        ],
+        "type": "column"
+       },
+       {
+        "forEach": "person",
+        "select": [
+         {
+          "column": [
+           {
+            "name": "name",
+            "path": "name"
+           }
+          ],
+          "type": "column"
+         }
+        ],
+        "type": "forEach"
+       }
+      ],
+      "type": "forEach"
+     }
+    ],
+    "type": "select"
+   },
+   "expected": [
+    {
+     "contact_type": "T1",
+     "name": "N1",
+     "id": "pt1"
+    },
+    {
+     "contact_type": "T1",
+     "name": "N1`",
+     "id": "pt1"
+    },
+    {
+     "contact_type": "T2",
+     "name": "N2",
+     "id": "pt1"
+    }
+   ]
+  }
+ ]
+}

@@ -85,7 +85,6 @@ describe("union", () => {
     expected: result
   });
 
-
   let unionDups = {
     select: [
       {column: [{name: 'id', path: 'id'}],
