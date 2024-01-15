@@ -160,8 +160,8 @@ describe("fhirpath", () => {
        [{name: 'id',  path: "id"},
                 {name: 'ref', path: "managingOrganization.getReferenceKey()"}]}]},
     expected:
-    [{id: 'pt1', ref: 'Organization/o1'},
-     {id: 'pt2', ref: 'Organization/o2'},
+    [{id: 'pt1', ref: 'o1'},
+     {id: 'pt2', ref: 'o2'},
      {id: 'pt3', ref: null}]})
 
   add_test({
@@ -170,10 +170,10 @@ describe("fhirpath", () => {
     {select: [
       {column:
        [{name: 'id',  path: "id"},
-                {name: 'ref', path: "managingOrganization.getReferenceKey('Organization')"}]}]},
+                {name: 'ref', path: "managingOrganization.getReferenceKey(Organization)"}]}]},
     expected:
-    [{id: 'pt1', ref: 'Organization/o1'},
-     {id: 'pt2', ref: 'Organization/o2'},
+    [{id: 'pt1', ref: 'o1'},
+     {id: 'pt2', ref: 'o2'},
      {id: 'pt3', ref: null}]})
 
   add_test({
@@ -182,7 +182,7 @@ describe("fhirpath", () => {
     {select: [
       {column:
        [{name: 'id',  path: "id"},
-                {name: 'ref', path: "managingOrganization.getReferenceKey('Encounter')"}]}]},
+                {name: 'ref', path: "managingOrganization.getReferenceKey(Encounter)"}]}]},
     expected:
     [{id: 'pt1', ref: null},
      {id: 'pt2', ref: null},
