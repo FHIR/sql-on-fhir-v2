@@ -37,9 +37,7 @@ export default {
 		format: 'iife',
 		name: 'app',
 		file: 'public/build/bundle.js',
-    globals: {
-      'fhirpath': '_fp'
-    }
+    globals: {fhirpath: null}
 	},
 	plugins: [
 	    json(),
