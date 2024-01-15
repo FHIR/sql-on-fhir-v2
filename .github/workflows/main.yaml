@@ -22,7 +22,7 @@ jobs:
           bun build reference-implementation/index.js  > ../test_report/public/processor.js
       - uses: actions/setup-node@v3
         with:
-          node-version: latest
+          node-version: 21.4.0
       - run: cd test_report && npm install && npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v3
