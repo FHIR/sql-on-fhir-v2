@@ -15,11 +15,7 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
-      - run: |
-          cd sof-js
-          bun install
-          bun test
-          bun build src/index.js  > ../test_report/public/processor.js
+      - run: cd sof-js && bun install &&  bun test && bun build src/index.js  > ../test_report/public/processor.js
       - run: cd test_report && bun install && bun run build
       - name: Setup Pages
         uses: actions/configure-pages@v3
