@@ -52,7 +52,7 @@
  }
 </style>
 <script>
- import { evaluate } from "../lib/sof-js/src/index.js";
+ import { evaluate } from "sof";
  import { data } from "./data.js";
  let observed = [];
 

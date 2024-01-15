@@ -24,7 +24,7 @@
     "tailwindcss": "^2.0.2"
   },
   "dependencies": {
-    "fhirpath": "github:jmandel/fhirpath.js-1#custom-fns-in-context",
+    "sof": "file:./lib/sof-js",
     "@rollup/plugin-json": "^6.0.1",
     "sirv-cli": "^1.0.0"
   }
