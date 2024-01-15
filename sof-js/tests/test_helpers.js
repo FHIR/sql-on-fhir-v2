@@ -34,7 +34,7 @@ export function end_case(name, desc, resources) {
   // TODO: publish test case
 
   test('finalize', ()=>{
-    console.log(JSON.stringify(test_case, null, " "));
+    // console.log(JSON.stringify(test_case, null, " "));
     let file_name = '../sof-tests/' + test_case.title + '.json'
     fs.writeFileSync(file_name, JSON.stringify(test_case, null, " "))
     console.log('write: ', file_name)
