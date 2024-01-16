@@ -1,5 +1,5 @@
 import { expect, test , describe, beforeAll, afterAll} from "bun:test";
-import { evaluate, row_product } from '../src/index.js'
+import { evaluate, get_columns, row_product } from '../src/index.js'
 import { start_case, end_case, add_test, debug, run_test, should_fail } from './test_helpers.js'
 
 let l = console.log
@@ -26,6 +26,34 @@ test("row_product", () => {
     .toEqual([{a: 1}, {a: 2}])
 
 });
+
+test('columns', ()=>{
+
+  expect(get_columns(
+    {
+      select: [
+        {column: [{name: 'id', path: 'id'}]},
+        {forEach: 'contact',
+         column: [{name: 'contact_type', path: 'type'}],
+         select: [
+           {forEach: 'person', column: [{name: 'name', path: 'name'}]}
+         ]}
+      ]
+    }
+  )).toEqual(['id', 'contact_type', 'name'])
+
+  expect(get_columns(
+    {select: [
+      {column: [
+        {path: 'id'},
+        {path: 'birthDate'}]},
+      {forEach: 'name',
+       column:[
+         {path: "family", name: 'last_name'},
+         {path: "given.join(' ')", name: 'first_name'}]}
+    ]})).toEqual(['id', 'birthDate', 'last_name', 'first_name'])
+
+})
 
 
 let resources = [

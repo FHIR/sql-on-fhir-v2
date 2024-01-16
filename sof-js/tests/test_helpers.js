@@ -35,7 +35,7 @@ export function end_case(name, desc, resources) {
 
   afterAll(()=>{
     // console.log(JSON.stringify(test_case, null, " "));
-    let file_name = '../sof-tests/' + test_case.title + '.json'
+    let file_name = __dirname + '/../../sof-tests/' + test_case.title + '.json'
     fs.writeFileSync(file_name, JSON.stringify(test_case, null, " "))
     console.log('write: ', file_name)
   })

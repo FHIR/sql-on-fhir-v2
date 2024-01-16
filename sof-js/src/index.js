@@ -176,6 +176,38 @@ function do_eval(def, node) {
   return f(def, node);
 }
 
+
+function collect_columns(acc, def){
+  switch (def.type) {
+  case 'select':
+  case 'forEach':
+  case 'forEachNull':
+    return def.select.reduce((acc, s)=> {
+      return collect_columns(acc, s);
+    }, acc)
+    break;
+  case 'unionAll':
+    return def.unionAll.reduce((acc, s)=> {
+      return collect_columns(acc, s);
+    }, acc)
+    break;
+  case 'column':
+    return def.column.reduce((acc, c)=> {
+      acc.push(c.name || c.path)
+      return acc
+    }, acc)
+    break;
+  default:
+    return acc;
+  }
+}
+
+// collect columns in a right order
+export function get_columns(def) {
+  let normal_def = normalize(def);
+  return collect_columns([], def)
+}
+
 export function evaluate(def, node) {
   if(!Array.isArray(node)) { return evaluate(def, [node]) }
   let normal_def = normalize(def);

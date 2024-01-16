@@ -52,28 +52,29 @@
  }
 </style>
 <script>
- import { evaluate } from "sof";
+ import { evaluate, get_columns } from "sof";
  import { data } from "./data.js";
+
  let observed = [];
 
  let viewdef = `{
-  column: [
-    {path: 'id'},
-    {path: "name.first().family", name: 'last_name'},
-    {path: "name.first().given.join(' ')", name: 'first_name'},
-    {path: 'birthDate'},
-]}`
+  select: [
+   {column: [
+     {path: 'id'},
+     {path: 'birthDate'}]},
+   {forEach: 'name',
+    column:[
+     {path: "family", name: 'last_name'},
+     {path: "given.join(' ')", name: 'first_name'}]}
+ ]}`
 
  let v = {};
  let error = null;
  let result = {cols: [], rows: []};
 
- function tabelize(results) {
-     let columns = [];
-     let first_row = results[0] || {};
-     for (var k in first_row){
-         columns.push(k)
-     }
+ function tabelize(v, results) {
+     let columns = get_columns(v)
+     console.log('?',columns);
      let rows = []
      for( var row of results) {
          rows.push(columns.map((k)=>{
@@ -91,7 +92,7 @@
      try {
          error = null;
          eval('v=' + viewdef)
-         result = tabelize(evaluate(v, data));
+         result = tabelize(v, evaluate(v, data));
          /* tabelize(result) */
      } catch(e){
          error = e.toString();
