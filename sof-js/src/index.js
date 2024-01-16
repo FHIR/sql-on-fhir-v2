@@ -72,8 +72,10 @@ function unionAll(def, node) {
 function select(def, node) {
   assert(def.select, 'select')
   if(def.where) {
-    let res = fhirpath_evaluate(node, def.where)
-    if(!res[0]) { return []}
+    let include = def.where.every((w)=>{
+      return fhirpath_evaluate(node, w.path)[0]
+    })
+    if(!include) { return []}
   }
   return row_product(
     def.select.map((s)=> {
