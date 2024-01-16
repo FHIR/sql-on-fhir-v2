@@ -1,12 +1,13 @@
 {
-    "name": "svelte-app",
-    "version": "1.0.0",
-    "type": "module",
-    "scripts": {
-        "build": "rollup -c",
-        "dev": "rollup -c -w",
-        "start": "sirv public"
-    },
+  "name": "svelte-app",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build":   "rollup -c",
+    "dev":     "rollup -c -w",
+    "start":   "sirv public",
+    "prepare": "bun run prepare.js"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",

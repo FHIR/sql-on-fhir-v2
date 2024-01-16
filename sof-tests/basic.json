@@ -41,7 +41,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1"
     },
@@ -73,7 +73,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
      "active": true
@@ -108,7 +108,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
      "last_name": "F1"
@@ -148,7 +148,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
      "last_name": "F1"
@@ -177,10 +177,14 @@
       "type": "column"
      }
     ],
-    "where": "active=true",
+    "where": [
+     {
+      "path": "active=true"
+     }
+    ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1"
     }
@@ -200,10 +204,14 @@
       "type": "column"
      }
     ],
-    "where": "active=false",
+    "where": [
+     {
+      "path": "active=false"
+     }
+    ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt2"
     }
@@ -223,10 +231,14 @@
       "type": "column"
      }
     ],
-    "where": "active",
+    "where": [
+     {
+      "path": "active"
+     }
+    ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1"
     }
@@ -246,10 +258,14 @@
       "type": "column"
      }
     ],
-    "where": "name.family = 'F2'",
+    "where": [
+     {
+      "path": "name.family = 'F2'"
+     }
+    ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt2"
     }
@@ -269,10 +285,14 @@
       "type": "column"
      }
     ],
-    "where": "name.family = 'F1'",
+    "where": [
+     {
+      "path": "name.family = 'F1'"
+     }
+    ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1"
     }
@@ -292,10 +312,14 @@
       "type": "column"
      }
     ],
-    "where": "name.family",
+    "where": [
+     {
+      "path": "name.family"
+     }
+    ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1"
     },

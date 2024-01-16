@@ -28,17 +28,17 @@ describe("fhirpath", () => {
   add_test({
     title: 'one element',
     view: {select: [{column: [{name: 'id', path: 'id'}]}]},
-    expected: [{id: 'pt1'}, {id: 'pt2'}, {id: 'pt3'}]})
+    expect: [{id: 'pt1'}, {id: 'pt2'}, {id: 'pt3'}]})
 
   add_test({
     title: 'two elements + first',
     view: {select: [{column: [{name: 'v', path: 'name.family.first()'}]}]},
-    expected: [{v: 'f1.1'}, {v: 'f2.1'}, {v: null}]})
+    expect: [{v: 'f1.1'}, {v: 'f2.1'}, {v: null}]})
 
   add_test({
     title: 'collection',
     view: {select: [{column: [{name: 'v', path: 'name.family', collection: true}]}]},
-    expected: [{v: ['f1.1', 'f1.2']},
+    expect: [{v: ['f1.1', 'f1.2']},
                {v: ['f2.1','f2.2']},
                {v: []}]})
 
@@ -47,7 +47,7 @@ describe("fhirpath", () => {
     view: {select: [
       {column: [
         {name: 'v', path: 'name[0].family'}]}]},
-    expected: [{v: 'f1.1'},
+    expect: [{v: 'f1.1'},
                {v: 'f2.1'},
                {v: null}]})
 
@@ -56,7 +56,7 @@ describe("fhirpath", () => {
     view: {select: [
       {column: [
         {name: 'v', path: 'name[1].family'}]}]},
-    expected: [{v: 'f1.2'},
+    expect: [{v: 'f1.2'},
                {v: 'f2.2'},
                {v: null}]})
 
@@ -65,7 +65,7 @@ describe("fhirpath", () => {
     view: {select: [
       {column: [
         {name: 'v', path: 'name[2].family'}]}]},
-    expected: [{v: null},
+    expect: [{v: null},
                {v: null},
                {v: null}]})
 
@@ -74,7 +74,7 @@ describe("fhirpath", () => {
     view: {select: [
       {column: [
         {name: 'v', path: "name.where(use='official').family"}]}]},
-    expected: [{v: 'f1.1'},
+    expect: [{v: 'f1.1'},
                {v: 'f2.2'},
                {v: null}]})
 
@@ -84,7 +84,7 @@ describe("fhirpath", () => {
     {select: [
       {column: [{name: 'id', path: "id"},
                 {name: 'has_name', path: "name.exists()"},]}]},
-    expected: [{id: 'pt1',has_name: true},
+    expect: [{id: 'pt1',has_name: true},
                {id: 'pt2',has_name: true},
                {id: 'pt3',has_name: false}]})
 
@@ -94,7 +94,7 @@ describe("fhirpath", () => {
     {select: [
       {column: [{name: 'id', path: "id"},
                 {name: 'has_given', path: "name.given.exists()"},]}]},
-    expected: [{id: 'pt1',has_given: true},
+    expect: [{id: 'pt1',has_given: true},
                {id: 'pt2',has_given: false},
                {id: 'pt3',has_given: false}]})
 
@@ -105,7 +105,7 @@ describe("fhirpath", () => {
     {select: [
       {column: [{name: 'id', path: "id"},
                 {name: 'first_given', path: "name.given.first()"},]}]},
-    expected: [{id: 'pt1',first_given: "g1.1.1"},
+    expect: [{id: 'pt1',first_given: "g1.1.1"},
                {id: 'pt2',first_given: null},
                {id: 'pt3',first_given: null}]})
 
@@ -115,7 +115,7 @@ describe("fhirpath", () => {
     {select: [
       {column: [{name: 'id', path: "id"},
                 {name: 'first_family', path: "name.family.first()"},]}]},
-    expected: [{id: 'pt1',first_family: "f1.1"},
+    expect: [{id: 'pt1',first_family: "f1.1"},
                {id: 'pt2',first_family: 'f2.1'},
                {id: 'pt3',first_family: null}]})
 
@@ -126,7 +126,7 @@ describe("fhirpath", () => {
     {select: [
       {column: [{name: 'id', path: "id"},
                 {name: 'given', path: "name.given.join(', ' )"},]}]},
-    expected: [{id: 'pt1',given: 'g1.1.1, g1.1.2, g1.2.1'},
+    expect: [{id: 'pt1',given: 'g1.1.1, g1.1.2, g1.2.1'},
                {id: 'pt2',given: ''},
                {id: 'pt3',given: ''}]})
 
@@ -136,7 +136,7 @@ describe("fhirpath", () => {
     {select: [
       {column: [{name: 'id', path: "id"},
                 {name: 'given', path: "name.given.join()"},]}]},
-    expected: [{id: 'pt1',given: 'g1.1.1g1.1.2g1.2.1'},
+    expect: [{id: 'pt1',given: 'g1.1.1g1.1.2g1.2.1'},
                {id: 'pt2',given: ''},
                {id: 'pt3',given: ''}]})
 
@@ -147,7 +147,7 @@ describe("fhirpath", () => {
     view:
     {select: [
       {column: [{name: 'id', path: "getResourceKey()"}]}]},
-    expected:
+    expect:
     [{id: 'Patient/pt1'},
      {id: 'Patient/pt2'},
      {id: 'Patient/pt3'}]})
@@ -159,7 +159,7 @@ describe("fhirpath", () => {
       {column:
        [{name: 'id',  path: "id"},
                 {name: 'ref', path: "managingOrganization.getReferenceKey()"}]}]},
-    expected:
+    expect:
     [{id: 'pt1', ref: 'o1'},
      {id: 'pt2', ref: 'o2'},
      {id: 'pt3', ref: null}]})
@@ -171,7 +171,7 @@ describe("fhirpath", () => {
       {column:
        [{name: 'id',  path: "id"},
                 {name: 'ref', path: "managingOrganization.getReferenceKey(Organization)"}]}]},
-    expected:
+    expect:
     [{id: 'pt1', ref: 'o1'},
      {id: 'pt2', ref: 'o2'},
      {id: 'pt3', ref: null}]})
@@ -183,7 +183,7 @@ describe("fhirpath", () => {
       {column:
        [{name: 'id',  path: "id"},
                 {name: 'ref', path: "managingOrganization.getReferenceKey(Encounter)"}]}]},
-    expected:
+    expect:
     [{id: 'pt1', ref: null},
      {id: 'pt2', ref: null},
      {id: 'pt3', ref: null}]})

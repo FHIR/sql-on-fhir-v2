@@ -63,7 +63,7 @@ describe("union", () => {
         ]}
       ]
     },
-    expected: result});
+    expect: result});
 
   add_test({
     title: 'unionAll: + column',
@@ -82,7 +82,7 @@ describe("union", () => {
          ]}
       ]
     },
-    expected: result
+    expect: result
   });
 
   let unionDups = {
@@ -111,7 +111,7 @@ describe("union", () => {
     {tel: "t2.2", sys: "s2.2", id: "pt2"}
   ]
 
-  add_test({title: 'union: dups', view: unionDups, expected: dups_result});
+  add_test({title: 'union: dups', view: unionDups, expect: dups_result});
 
   // TODO: add union with select
 

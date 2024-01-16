@@ -65,7 +65,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1"
     },
@@ -93,7 +93,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "v": "f1.1"
     },
@@ -122,7 +122,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "v": [
       "f1.1",
@@ -156,7 +156,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "v": "f1.1"
     },
@@ -184,7 +184,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "v": "f1.2"
     },
@@ -212,7 +212,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "v": null
     },
@@ -240,7 +240,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "v": "f1.1"
     },
@@ -272,7 +272,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
      "has_name": true
@@ -307,7 +307,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
      "has_given": true
@@ -342,7 +342,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
      "first_given": "g1.1.1"
@@ -377,7 +377,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
      "first_family": "f1.1"
@@ -412,7 +412,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
      "given": "g1.1.1, g1.1.2, g1.2.1"
@@ -447,7 +447,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
      "given": "g1.1.1g1.1.2g1.2.1"
@@ -478,7 +478,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "Patient/pt1"
     },
@@ -510,14 +510,14 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
-     "ref": "Organization/o1"
+     "ref": "o1"
     },
     {
      "id": "pt2",
-     "ref": "Organization/o2"
+     "ref": "o2"
     },
     {
      "id": "pt3",
@@ -537,7 +537,7 @@
        },
        {
         "name": "ref",
-        "path": "managingOrganization.getReferenceKey('Organization')"
+        "path": "managingOrganization.getReferenceKey(Organization)"
        }
       ],
       "type": "column"
@@ -545,14 +545,14 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
-     "ref": "Organization/o1"
+     "ref": "o1"
     },
     {
      "id": "pt2",
-     "ref": "Organization/o2"
+     "ref": "o2"
     },
     {
      "id": "pt3",
@@ -572,7 +572,7 @@
        },
        {
         "name": "ref",
-        "path": "managingOrganization.getReferenceKey('Encounter')"
+        "path": "managingOrganization.getReferenceKey(Encounter)"
        }
       ],
       "type": "column"
@@ -580,7 +580,7 @@
     ],
     "type": "select"
    },
-   "expected": [
+   "expect": [
     {
      "id": "pt1",
      "ref": null

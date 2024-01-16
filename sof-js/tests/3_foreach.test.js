@@ -33,7 +33,7 @@ describe('foreach', ()=>{
          column: [{name: 'family', path: 'family'}]}
       ]
     },
-    expected: [
+    expect: [
       {id: 'pt1', family: 'F1.1'},
       {id: 'pt1', family: 'F1.2'},
       {id: 'pt2', family: 'F2.1'},
@@ -50,7 +50,7 @@ describe('foreach', ()=>{
          column: [{name: 'family', path: 'family'}]}
       ]
     },
-    expected: [
+    expect: [
       {id: 'pt1', family: 'F1.1'},
       {id: 'pt1', family: 'F1.2'},
       {id: 'pt2', family: 'F2.1'},
@@ -69,7 +69,7 @@ describe('foreach', ()=>{
          column: [{name: 'value', path: 'value'}]}
       ]
     },
-    expected: []
+    expect: []
   })
 
   add_test({
@@ -81,7 +81,7 @@ describe('foreach', ()=>{
          column: [{name: 'value', path: 'value'}]}
       ]
     },
-    expected: [
+    expect: [
       {id: 'pt1', value: null},
       {id: 'pt2', value: null},
       {id: 'pt3', value: null}
@@ -107,7 +107,7 @@ describe('foreach', ()=>{
            {forEach: 'person', column: [{name: 'name', path: 'name'}]}
          ]}
       ]
-    }, expected: nested_result
+    }, expect: nested_result
   });
 
   // is this valid viewdef?
@@ -124,7 +124,7 @@ describe('foreach', ()=>{
          ]}
       ]
     },
-    expected: nested_result
+    expect: nested_result
   });
 
   // add_test({
@@ -139,7 +139,7 @@ describe('foreach', ()=>{
   //        ]}
   //     ]
   //   },
-  //   expected: nested_result
+  //   expect: nested_result
   // });
 
 

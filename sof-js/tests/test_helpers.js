@@ -1,5 +1,5 @@
 import { evaluate, row_product } from '../src/index.js'
-import { expect, test } from "bun:test";
+import { expect, test, afterAll } from "bun:test";
 import fs from 'fs'
 
 
@@ -16,7 +16,7 @@ export function start_case(name, desc, resources) {
 export function run_test(viewdef, result) {
   // TODO: dump tests
   let res = evaluate( viewdef, test_case.resources)
-  test_case.tests.push({view: viewdef, expected: result})
+  test_case.tests.push({view: viewdef, expect: result})
   expect(res).toEqual(result);
 
 }
@@ -26,17 +26,17 @@ export function add_test(opts) {
   test(opts.title, ()=>{
     test_case.tests.push(opts)
     let res = evaluate( opts.view, test_case.resources)
-    expect(res).toEqual(opts.expected);
+    expect(res).toEqual(opts.expect);
   })
 }
 
 export function end_case(name, desc, resources) {
   // TODO: publish test case
 
-  test('finalize', ()=>{
+  afterAll(()=>{
     // console.log(JSON.stringify(test_case, null, " "));
     let file_name = '../sof-tests/' + test_case.title + '.json'
-    // fs.writeFileSync(file_name, JSON.stringify(test_case, null, " "))
+    fs.writeFileSync(file_name, JSON.stringify(test_case, null, " "))
     console.log('write: ', file_name)
   })
 }
