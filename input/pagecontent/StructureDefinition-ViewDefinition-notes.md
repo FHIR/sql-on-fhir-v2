@@ -256,8 +256,7 @@ The multiple rows produced by `forEach`-style selects are joined to others with 
 
 * Parent/child selects will repeat values from the parent select for each item in the child select. 
 * Sibling select expressions are effectively cross joined, where each row in each `select` is duplicated for every row
-in sibling `select`s. (In practice, however, a given `select` in a ViewDefinition will produce only a single row
-for the resource.)
+in sibling `select`s.
 
 The [example view definitions](StructureDefinition-ViewDefinition-examples.html) illustrate this behavior.
 
