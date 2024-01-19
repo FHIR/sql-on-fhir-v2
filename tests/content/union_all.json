@@ -225,6 +225,77 @@
         ]
       },
       "expect": [{ "family": "f1" }, { "family": "f1" }, { "family": "f2" }, { "family": "f3" }]
+    },
+    {
+      "title": "unionAll with one empty operand",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "unionAll": [
+              {
+                "forEach": "name.where(false)",
+                "column": [{ "path": "family", "name": "family" }]
+              },
+              {
+                "forEach": "contact.name",
+                "column": [{ "path": "family", "name": "family" }]
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [{ "family": "f2" }, { "family": "f3" }]
+    },
+    {
+      "title": "unionAll with empty result",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              }
+            ],
+            "unionAll": [
+              {
+                "forEach": "{}",
+                "column": [{ "path": "family", "name": "family" }]
+              }
+            ]
+          }
+        ]
+      },
+      "expect": []
+    },
+    {
+      "title": "unionAll with empty result and forEachOrNull",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              }
+            ],
+            "unionAll": [
+              {
+                "forEachOrNull": "{}",
+                "column": [{ "path": "family", "name": "family" }]
+              },
+              {
+                "forEachOrNull": "{}",
+                "column": [{ "path": "family", "name": "family" }]
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [{"id": "p1", "family": null},{"id": "p1", "family": null}]
     }
   ]
 }
