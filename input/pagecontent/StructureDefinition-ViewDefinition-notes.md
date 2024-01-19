@@ -393,7 +393,13 @@ defined return type, then the column will be of that type. For instance, if the 
 the column type would be boolean or an instant type, respectively.
 4. A path that ends in `.ofType()` will be of the type given to that function.
 
-**Note**: _Non-primitive output types will not be supported by all implementations, and therefore must always be explicitly
+**Note 1**: Type inference is an optional feature and some implementations may
+not support it. Therefor, a ViewDefinition that is intended to be shared between
+different implementations should have the [type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type)
+fields set explicitly, even for primitives. It is okay for an implementation to
+treat any non-specified types as strings.
+
+**Note 2**: _Non-primitive output types will not be supported by all implementations, and therefore must always be explicitly
 set in the [type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type)_ so users and
 implementations can easily determine when this is the case.
 
