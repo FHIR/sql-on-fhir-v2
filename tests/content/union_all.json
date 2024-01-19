@@ -196,6 +196,35 @@
           "p_family": "f3"
         }
       ]
+    },
+    {
+      "title": "nested unionAll",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "unionAll": [
+              {
+                "forEach": "name",
+                "column": [{ "path": "family", "name": "family" }]
+              },
+              {
+                "unionAll": [
+                  {
+                    "forEach": "name",
+                    "column": [{ "path": "family", "name": "family" }]
+                  },
+                  {
+                    "forEach": "contact.name",
+                    "column": [{ "path": "family", "name": "family" }]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [{ "family": "f1" }, { "family": "f1" }, { "family": "f2" }, { "family": "f3" }]
     }
   ]
 }
