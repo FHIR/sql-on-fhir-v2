@@ -86,10 +86,11 @@
             </div>
             <h2 class="mt-6 mb-2 text-sm font-bold text-gray-500">Tests</h2>
             {#each current?.tests || [] as test}
-                <div class="my-4">
-                    <a class="text-2xl my-3 border-b block" href={'#' + current.file + '/' }>{test.title}</a>
-                    <p class="my-2 text-gray-600">{test?.description || ''}</p>
-                    <div class="flex space-x-4 items-start">
+                <details class="my-4">
+                    <summary class="px-4 py-1 hover:bg-gray-100 cursor-pointer border-b">
+                        {test.title}
+                    </summary>
+                    <div class="flex space-x-4 items-start py-2">
                         <pre class="flex-1 text-xs p-2 border rounded bg-gray-100">{JSON.stringify(test.view,null,2) }</pre>
                         <table class="flex-1">
                             {#if test.expectError}
@@ -113,8 +114,7 @@
                             </tbody>
                         </table>
                     </div>
-
-                </div>
+                </details>
             {/each}
         </main>
     </div>

@@ -47,12 +47,12 @@ criteria are defined by FHIRPath expressions.
   The FHIR resource that the view is based upon, e.g. 'Patient' or 'Observation'.
 """
 * resource from http://hl7.org/fhir/ValueSet/resource-types
-* resourceVersion 0..* code "FHIR version(s) of the resource for the ViewDefinition" """
+* fhirVersion 0..* code "FHIR version(s) of the resource for the ViewDefinition" """
   The FHIR version(s) for the FHIR resource. The value of this element is the
   formal version of the specification, without the revision number, e.g.
   [publication].[major].[minor].
 """
-* resourceVersion from http://hl7.org/fhir/ValueSet/FHIR-version
+* fhirVersion from http://hl7.org/fhir/ValueSet/FHIR-version
 * constant 0..* BackboneElement "Constant that can be used in FHIRPath expressions" """
   A constant is a value that is injected into a FHIRPath expression through the use of a FHIRPath
   external constant with the same name.

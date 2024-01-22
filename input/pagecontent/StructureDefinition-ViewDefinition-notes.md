@@ -192,6 +192,25 @@ There are many variations and alternatives to the above. This spec simply assert
 be able to produce a row key for each resource and a matching key for references pointing at that resource,
 and intentionally leaves the specific mechanism to the implementation.
 
+### Contained resources
+The current version of this specification requires compliant implementations to extract contained resources
+needed for view definitions into independent resources, which can then be accessed via 
+[getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) like any other resource. Implementations SHOULD 
+normalize these resources appropriately whenever possible, such as by eliminating duplicate resources contained in many parents.
+
+Contained resources have different semantics than other FHIR resources since they don't have an independent identity,
+and the same logical record may be duplicated across many containing resources. This makes good SQL practices difficult since the 
+data is denormalized and ambiguous. For instance, `Patient.generalPractitioner` may be a contained resource that may or may not be
+the same practitioner seen in other `Patient` resources. Therefore this spec currently requires system pre-process such
+data into normalized, independent resources if needed.
+
+For the same reason, the output from running ViewDefinitions will not include contained resources. For instance, a ViewDefinition for
+`Practitioner` will include top-level Practitioner resources, but not contained practictioners from inside a `Patient` resource.
+
+This may change in a later version of this spec, allowing users to explicitly create separate views for contained resources
+that could be distinct from top-level resource views, reflecting the different semantics here. But this is not in the current
+specification scope.
+
 ### Unnesting semantics
 
 It is often desirable to unroll repeated fields into a row for each item. For instance, each Patient resource
@@ -237,8 +256,7 @@ The multiple rows produced by `forEach`-style selects are joined to others with 
 
 * Parent/child selects will repeat values from the parent select for each item in the child select. 
 * Sibling select expressions are effectively cross joined, where each row in each `select` is duplicated for every row
-in sibling `select`s. (In practice, however, a given `select` in a ViewDefinition will produce only a single row
-for the resource.)
+in sibling `select`s.
 
 The [example view definitions](StructureDefinition-ViewDefinition-examples.html) illustrate this behavior.
 
@@ -375,7 +393,13 @@ defined return type, then the column will be of that type. For instance, if the 
 the column type would be boolean or an instant type, respectively.
 4. A path that ends in `.ofType()` will be of the type given to that function.
 
-**Note**: _Non-primitive output types will not be supported by all implementations, and therefore must always be explicitly
+**Note 1**: Type inference is an optional feature and some implementations may
+not support it. Therefor, a ViewDefinition that is intended to be shared between
+different implementations should have the [type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type)
+fields set explicitly, even for primitives. It is okay for an implementation to
+treat any non-specified types as strings.
+
+**Note 2**: _Non-primitive output types will not be supported by all implementations, and therefore must always be explicitly
 set in the [type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type)_ so users and
 implementations can easily determine when this is the case.
 

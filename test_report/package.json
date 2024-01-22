@@ -1,30 +1,32 @@
 {
-    "name": "svelte-app",
-    "version": "1.0.0",
-    "type": "module",
-    "scripts": {
-        "build": "rollup -c",
-        "dev": "rollup -c -w",
-        "start": "sirv public"
-    },
-    "devDependencies": {
-        "@rollup/plugin-commonjs": "^16.0.0",
-        "@rollup/plugin-node-resolve": "^10.0.0",
-        "autoprefixer": "^10.1.0",
-        "postcss": "^8.2.2",
-        "postcss-load-config": "^3.0.0",
-        "rollup": "^2.3.4",
-        "rollup-plugin-css-only": "^3.1.0",
-        "rollup-plugin-livereload": "^2.0.0",
-        "rollup-plugin-svelte": "^7.0.0",
-        "rollup-plugin-terser": "^7.0.0",
-        "svelte": "^3.0.0",
-        "svelte-preprocess": "^4.6.1",
-        "svelte-routing": "^2.5.0",
-        "tailwindcss": "^2.0.2"
-    },
-    "dependencies": {
-        "@rollup/plugin-json": "^6.0.1",
-        "sirv-cli": "^1.0.0"
-    }
+  "name": "svelte-app",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build":   "rollup -c",
+    "dev":     "rollup -c -w",
+    "start":   "sirv public",
+    "prepare": "bun run prepare.js"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^16.0.0",
+    "@rollup/plugin-node-resolve": "^10.0.0",
+    "autoprefixer": "^10.1.0",
+    "postcss": "^8.2.2",
+    "postcss-load-config": "^3.0.0",
+    "rollup": "^2.3.4",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-terser": "^7.0.0",
+    "svelte": "^3.0.0",
+    "svelte-preprocess": "^4.6.1",
+    "svelte-routing": "^2.5.0",
+    "tailwindcss": "^2.0.2"
+  },
+  "dependencies": {
+    "sof": "file:./lib/sof-js",
+    "@rollup/plugin-json": "^6.0.1",
+    "sirv-cli": "^1.0.0"
+  }
 }

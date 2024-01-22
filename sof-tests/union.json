@@ -1,0 +1,444 @@
+{
+ "title": "union",
+ "description": "TBD",
+ "resources": [
+  {
+   "id": "pt1",
+   "telecom": [
+    {
+     "value": "t1.1",
+     "system": "s1.1"
+    },
+    {
+     "value": "t1.2",
+     "system": "s1.2"
+    },
+    {
+     "value": "t1.3",
+     "system": "s1.3"
+    }
+   ],
+   "contact": [
+    {
+     "telecom": [
+      {
+       "value": "t1.c1.1",
+       "system": "s1.c1.1"
+      }
+     ]
+    },
+    {
+     "telecom": [
+      {
+       "value": "t1.c2.1",
+       "system": "s1.c2.1"
+      },
+      {
+       "value": "t1.c2.2",
+       "system": "s1.c2.2"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pt2",
+   "telecom": [
+    {
+     "value": "t2.1",
+     "system": "s2.1"
+    },
+    {
+     "value": "t2.2",
+     "system": "s2.2"
+    }
+   ]
+  },
+  {
+   "id": "pt3",
+   "contact": [
+    {
+     "telecom": [
+      {
+       "value": "t3.c1.1",
+       "system": "s3.c1.1"
+      },
+      {
+       "value": "t3.c1.2",
+       "system": "s3.c1.2"
+      }
+     ]
+    },
+    {
+     "telecom": [
+      {
+       "value": "t3.c2.1",
+       "system": "s3.c2.1"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "pt4"
+  }
+ ],
+ "tests": [
+  {
+   "title": "union: basic",
+   "view": {
+    "select": [
+     {
+      "column": [
+       {
+        "name": "id",
+        "path": "id"
+       }
+      ],
+      "type": "column"
+     },
+     {
+      "unionAll": [
+       {
+        "forEach": "telecom",
+        "select": [
+         {
+          "column": [
+           {
+            "name": "tel",
+            "path": "value"
+           },
+           {
+            "name": "sys",
+            "path": "system"
+           }
+          ],
+          "type": "column"
+         }
+        ],
+        "type": "forEach"
+       },
+       {
+        "forEach": "contact.telecom",
+        "select": [
+         {
+          "column": [
+           {
+            "name": "tel",
+            "path": "value"
+           },
+           {
+            "name": "sys",
+            "path": "system"
+           }
+          ],
+          "type": "column"
+         }
+        ],
+        "type": "forEach"
+       }
+      ],
+      "type": "unionAll"
+     }
+    ],
+    "type": "select"
+   },
+   "expect": [
+    {
+     "tel": "t1.1",
+     "sys": "s1.1",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.2",
+     "sys": "s1.2",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.3",
+     "sys": "s1.3",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.c1.1",
+     "sys": "s1.c1.1",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.c2.1",
+     "sys": "s1.c2.1",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.c2.2",
+     "sys": "s1.c2.2",
+     "id": "pt1"
+    },
+    {
+     "tel": "t2.1",
+     "sys": "s2.1",
+     "id": "pt2"
+    },
+    {
+     "tel": "t2.2",
+     "sys": "s2.2",
+     "id": "pt2"
+    },
+    {
+     "tel": "t3.c1.1",
+     "sys": "s3.c1.1",
+     "id": "pt3"
+    },
+    {
+     "tel": "t3.c1.2",
+     "sys": "s3.c1.2",
+     "id": "pt3"
+    },
+    {
+     "tel": "t3.c2.1",
+     "sys": "s3.c2.1",
+     "id": "pt3"
+    }
+   ]
+  },
+  {
+   "title": "unionAll: + column",
+   "view": {
+    "select": [
+     {
+      "select": [
+       {
+        "column": [
+         {
+          "name": "id",
+          "path": "id"
+         }
+        ],
+        "type": "column"
+       },
+       {
+        "unionAll": [
+         {
+          "forEach": "telecom",
+          "select": [
+           {
+            "column": [
+             {
+              "name": "tel",
+              "path": "value"
+             },
+             {
+              "name": "sys",
+              "path": "system"
+             }
+            ],
+            "type": "column"
+           }
+          ],
+          "type": "forEach"
+         },
+         {
+          "forEach": "contact.telecom",
+          "select": [
+           {
+            "column": [
+             {
+              "name": "tel",
+              "path": "value"
+             },
+             {
+              "name": "sys",
+              "path": "system"
+             }
+            ],
+            "type": "column"
+           }
+          ],
+          "type": "forEach"
+         }
+        ],
+        "type": "unionAll"
+       }
+      ],
+      "type": "select"
+     }
+    ],
+    "type": "select"
+   },
+   "expect": [
+    {
+     "tel": "t1.1",
+     "sys": "s1.1",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.2",
+     "sys": "s1.2",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.3",
+     "sys": "s1.3",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.c1.1",
+     "sys": "s1.c1.1",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.c2.1",
+     "sys": "s1.c2.1",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.c2.2",
+     "sys": "s1.c2.2",
+     "id": "pt1"
+    },
+    {
+     "tel": "t2.1",
+     "sys": "s2.1",
+     "id": "pt2"
+    },
+    {
+     "tel": "t2.2",
+     "sys": "s2.2",
+     "id": "pt2"
+    },
+    {
+     "tel": "t3.c1.1",
+     "sys": "s3.c1.1",
+     "id": "pt3"
+    },
+    {
+     "tel": "t3.c1.2",
+     "sys": "s3.c1.2",
+     "id": "pt3"
+    },
+    {
+     "tel": "t3.c2.1",
+     "sys": "s3.c2.1",
+     "id": "pt3"
+    }
+   ]
+  },
+  {
+   "title": "union: dups",
+   "view": {
+    "select": [
+     {
+      "select": [
+       {
+        "column": [
+         {
+          "name": "id",
+          "path": "id"
+         }
+        ],
+        "type": "column"
+       },
+       {
+        "unionAll": [
+         {
+          "forEach": "telecom",
+          "select": [
+           {
+            "column": [
+             {
+              "name": "tel",
+              "path": "value"
+             },
+             {
+              "name": "sys",
+              "path": "system"
+             }
+            ],
+            "type": "column"
+           }
+          ],
+          "type": "forEach"
+         },
+         {
+          "forEach": "telecom",
+          "select": [
+           {
+            "column": [
+             {
+              "name": "tel",
+              "path": "value"
+             },
+             {
+              "name": "sys",
+              "path": "system"
+             }
+            ],
+            "type": "column"
+           }
+          ],
+          "type": "forEach"
+         }
+        ],
+        "type": "unionAll"
+       }
+      ],
+      "type": "select"
+     }
+    ],
+    "type": "select"
+   },
+   "expect": [
+    {
+     "tel": "t1.1",
+     "sys": "s1.1",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.2",
+     "sys": "s1.2",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.3",
+     "sys": "s1.3",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.1",
+     "sys": "s1.1",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.2",
+     "sys": "s1.2",
+     "id": "pt1"
+    },
+    {
+     "tel": "t1.3",
+     "sys": "s1.3",
+     "id": "pt1"
+    },
+    {
+     "tel": "t2.1",
+     "sys": "s2.1",
+     "id": "pt2"
+    },
+    {
+     "tel": "t2.2",
+     "sys": "s2.2",
+     "id": "pt2"
+    },
+    {
+     "tel": "t2.1",
+     "sys": "s2.1",
+     "id": "pt2"
+    },
+    {
+     "tel": "t2.2",
+     "sys": "s2.2",
+     "id": "pt2"
+    }
+   ]
+  }
+ ]
+}

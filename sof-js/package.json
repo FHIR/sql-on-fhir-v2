@@ -1,0 +1,23 @@
+{
+  "name": "sof",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "fmt": "prettier  --write src/*.js"
+  },
+  "author": "niquola,jmandel",
+  "license": "ISC",
+  "dependencies": {
+    "ajv": "^8.12.0",
+    "fhirpath": "3.9.0",
+    "prettier": "^3.0.3"
+  },
+  "prettier": {
+    "printWidth": 110,
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
+  }
+}

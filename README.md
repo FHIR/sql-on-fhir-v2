@@ -2,6 +2,8 @@
 
 This project provides the source for the SQL on FHIR v2.0 Implementation Guide
 
+[**Read the specification &rarr;**](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/)
+
 ## Content
 
 Content as markdown is now found in [input/pagecontent](input/pagecontent).
