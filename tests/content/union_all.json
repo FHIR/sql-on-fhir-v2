@@ -261,7 +261,7 @@
             ],
             "unionAll": [
               {
-                "forEach": "{}",
+                "forEach": "name.where(false)",
                 "column": [{ "path": "family", "name": "family" }]
               }
             ]
@@ -284,11 +284,11 @@
             ],
             "unionAll": [
               {
-                "forEachOrNull": "{}",
+                "forEachOrNull": "name.where(false)",
                 "column": [{ "path": "family", "name": "family" }]
               },
               {
-                "forEachOrNull": "{}",
+                "forEachOrNull": "name.where(false)",
                 "column": [{ "path": "family", "name": "family" }]
               }
             ]
