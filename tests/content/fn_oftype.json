@@ -1,0 +1,131 @@
+{
+  "title": "ofType function",
+  "resources": [
+    {
+      "resourceType": "Observation",
+      "id": "o1",
+      "valueString": "foo"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o2",
+      "valueInteger": 42
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o3"
+    }
+  ],
+  "tests": [
+    {
+      "title": "select string values",
+      "view": {
+        "resource": "Observation",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              },
+              {
+                "path": "value.ofType(String)",
+                "name": "string_value"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "o1",
+          "string_value": "foo"
+        },
+        {
+          "id": "o2",
+          "string_value": null
+        },
+        {
+          "id": "o3",
+          "string_value": null
+        }
+      ]
+    },
+    {
+      "title": "select integer values",
+      "view": {
+        "resource": "Observation",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              },
+              {
+                "path": "value.ofType(Integer)",
+                "name": "integer_value"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "o1",
+          "integer_value": null
+        },
+        {
+          "id": "o2",
+          "integer_value": 42
+        },
+        {
+          "id": "o3",
+          "integer_value": null
+        }
+      ]
+    },
+    {
+      "title": "select invalid type",
+      "view": {
+        "resource": "Observation",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              },
+              {
+                "path": "value.ofType(Invalid)",
+                "name": "invalid_value"
+              }
+            ]
+          }
+        ]
+      },
+      "expectError": true
+    },
+    {
+      "title": "invalid argument type",
+      "view": {
+        "resource": "Observation",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              },
+              {
+                "path": "value.ofType(42)",
+                "name": "invalid_argument"
+              }
+            ]
+          }
+        ]
+      },
+      "expectError": true
+    }
+  ]
+}
