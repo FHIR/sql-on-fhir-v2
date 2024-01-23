@@ -176,12 +176,13 @@ let fns = {
   'forEachOrNull': forEachOrNull,
   'unionAll': unionAll,
   'select': select,
-  'column': column
+  'column': column,
+  'unknown': () => { return [] }
 }
 
 function do_eval(def, node) {
-  let f = fns[def.type];
-  if(!f){ throw Error('Not impl ' + def.type)}
+  let f = fns[def.type] || fns['unknown'];
+  // if(!f){ throw Error('Not impl ' + def.type)}
   return f(def, node);
 }
 

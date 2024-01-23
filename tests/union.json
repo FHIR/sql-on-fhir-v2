@@ -439,6 +439,167 @@
      "id": "pt2"
     }
    ]
+  },
+  {
+   "title": "unionAll: empty",
+   "view": {
+    "select": [
+     {
+      "select": [
+       {
+        "column": [
+         {
+          "name": "id",
+          "path": "id"
+         }
+        ],
+        "type": "column"
+       },
+       {
+        "unionAll": [
+         {
+          "forEach": "name",
+          "select": [
+           {
+            "column": [
+             {
+              "name": "given",
+              "path": "given"
+             }
+            ],
+            "type": "column"
+           }
+          ],
+          "type": "forEach"
+         },
+         {
+          "forEach": "name",
+          "select": [
+           {
+            "column": [
+             {
+              "name": "given",
+              "path": "given"
+             }
+            ],
+            "type": "column"
+           }
+          ],
+          "type": "forEach"
+         }
+        ],
+        "type": "unionAll"
+       }
+      ],
+      "type": "select"
+     }
+    ],
+    "type": "select"
+   },
+   "expect": []
+  },
+  {
+   "title": "unionAll: nested",
+   "view": {
+    "select": [
+     {
+      "select": [
+       {
+        "column": [
+         {
+          "name": "id",
+          "path": "id"
+         }
+        ],
+        "type": "column"
+       },
+       {
+        "unionAll": [
+         {
+          "forEach": "telecom[0]",
+          "select": [
+           {
+            "column": [
+             {
+              "name": "tel",
+              "path": "value"
+             }
+            ],
+            "type": "column"
+           }
+          ],
+          "type": "forEach"
+         },
+         {
+          "unionAll": [
+           {
+            "forEach": "telecom[0]",
+            "select": [
+             {
+              "column": [
+               {
+                "name": "tel",
+                "path": "value"
+               }
+              ],
+              "type": "column"
+             }
+            ],
+            "type": "forEach"
+           },
+           {
+            "forEach": "contact.telecom[0]",
+            "select": [
+             {
+              "column": [
+               {
+                "name": "tel",
+                "path": "value"
+               }
+              ],
+              "type": "column"
+             }
+            ],
+            "type": "forEach"
+           }
+          ],
+          "type": "unionAll"
+         }
+        ],
+        "type": "unionAll"
+       }
+      ],
+      "type": "select"
+     }
+    ],
+    "type": "select"
+   },
+   "expect": [
+    {
+     "id": "pt1",
+     "tel": "t1.1"
+    },
+    {
+     "id": "pt1",
+     "tel": "t1.1"
+    },
+    {
+     "id": "pt1",
+     "tel": "t1.c1.1"
+    },
+    {
+     "id": "pt2",
+     "tel": "t2.1"
+    },
+    {
+     "id": "pt2",
+     "tel": "t2.1"
+    },
+    {
+     "id": "pt3",
+     "tel": "t3.c1.1"
+    }
+   ]
   }
  ]
 }

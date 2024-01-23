@@ -115,6 +115,50 @@ describe("union", () => {
 
   // TODO: add union with select
 
+
+  add_test({
+    title: 'unionAll: empty',
+    view: {
+      select: [
+        {column: [{name: 'id', path: 'id'}],
+         unionAll: [
+           {forEach: 'name',
+            column: [{name: 'given', path: 'given'},]},
+           {forEach: 'name',
+            column: [{name: 'given', path: 'given'},]}
+         ]}
+      ]
+    },
+    expect: []
+  });
+
+
+  add_test({
+    title: 'unionAll: nested',
+    view: {
+      select: [
+        {column: [{name: 'id', path: 'id'}],
+         unionAll: [
+           {forEach: 'telecom[0]',
+            column: [{name: 'tel', path: 'value'}]},
+           {unionAll: [
+             {forEach: 'telecom[0]',
+              column: [{name: 'tel', path: 'value'}]},
+             {forEach: 'contact.telecom[0]',
+              column: [{name: 'tel', path: 'value'}]}]}
+         ]}
+      ]
+    },
+    expect: [
+      {id: "pt1", tel: "t1.1"},
+      {id: "pt1", tel: "t1.1"},
+      {id: "pt1", tel: "t1.c1.1"},
+      {id: "pt2", tel: "t2.1"},
+      {id: "pt2", tel: "t2.1"},
+      {id: "pt3", tel: "t3.c1.1"}
+    ]
+  });
+
   end_case()
 
 });

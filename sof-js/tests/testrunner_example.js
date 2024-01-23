@@ -87,27 +87,48 @@ let result = files.map((f)=>{
   let testcase = JSON.parse(fs.readFileSync(tests_dir + f))
   console.log('run', testcase.title, `file ${f}`)
   testcase.tests.map((test)=>{
-    try {
-      let result = evaluate(test.view, testcase.resources)
-      let match = arraysMatch(result, test.expect)
-      test.observed = result;
-      test.passed = match.passed
-      test.error = match.error
-      if(match.passed){
-        console.log(' *', test.title, ' => ', 'pass' )
-        test_results.pass+=1
-      } else {
+    if(test.expectError) {
+      try {
+        let _result = evaluate(test.view, testcase.resources)
         console.log(' *', test.title, ' => ', 'fail' )
         test_results.fail+=1
+      } catch (e) {
+        console.log(' *', test.title, ' => ', 'pass' )
+        test_results.pass+=1
       }
-    } catch (e) {
-      console.log(' *', test.title, ' => ', 'error', e.toString())
-      test_results.error+=1
-      if(fast_fail) {
-        console.log('view', JSON.stringify(test, null, " "))
-        throw e
+    } else {
+      try {
+        let result = evaluate(test.view, testcase.resources)
+        if(test.expectCount) {
+          if(result.length == test.expectCount) {
+            console.log(' *', test.title, ' => ', 'pass' )
+            test_results.pass+=1
+          } else {
+            console.log(' *', test.title, ' => ', 'fail', 'expected: ', test.expectCount, 'got ', result.length, result)
+            test_results.fail+=1
+          }
+        } else {
+          let match = arraysMatch(result, test.expect)
+          test.observed = result;
+          test.passed = match.passed
+          test.error = match.error
+          if(match.passed){
+            console.log(' *', test.title, ' => ', 'pass' )
+            test_results.pass+=1
+          } else {
+            console.log(' *', test.title, ' => ', 'fail' , 'expeceted: ', test.expect, 'got: ', result)
+            test_results.fail+=1
+          }
+        }
+      } catch (e) {
+        console.log(' *', test.title, ' => ', 'error', e.toString())
+        test_results.error+=1
+        if(fast_fail) {
+          console.log('view', JSON.stringify(test, null, " "))
+          throw e
+        }
+        // console.log(e)
       }
-      // console.log(e)
     }
   })
   return testcase;

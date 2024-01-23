@@ -21,7 +21,7 @@ function getReferenceKey(nodes, opts) {
     } else if(resource && resource == type) {
       return [key];
     } else {
-      return [null]
+      return []
     }
   })
 }
