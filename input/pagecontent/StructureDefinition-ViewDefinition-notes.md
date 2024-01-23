@@ -256,8 +256,7 @@ The multiple rows produced by `forEach`-style selects are joined to others with 
 
 * Parent/child selects will repeat values from the parent select for each item in the child select. 
 * Sibling select expressions are effectively cross joined, where each row in each `select` is duplicated for every row
-in sibling `select`s. (In practice, however, a given `select` in a ViewDefinition will produce only a single row
-for the resource.)
+in sibling `select`s.
 
 The [example view definitions](StructureDefinition-ViewDefinition-examples.html) illustrate this behavior.
 
@@ -394,7 +393,13 @@ defined return type, then the column will be of that type. For instance, if the 
 the column type would be boolean or an instant type, respectively.
 4. A path that ends in `.ofType()` will be of the type given to that function.
 
-**Note**: _Non-primitive output types will not be supported by all implementations, and therefore must always be explicitly
+**Note 1**: Type inference is an optional feature and some implementations may
+not support it. Therefor, a ViewDefinition that is intended to be shared between
+different implementations should have the [type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type)
+fields set explicitly, even for primitives. It is okay for an implementation to
+treat any non-specified types as strings.
+
+**Note 2**: _Non-primitive output types will not be supported by all implementations, and therefore must always be explicitly
 set in the [type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type)_ so users and
 implementations can easily determine when this is the case.
 

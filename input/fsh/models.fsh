@@ -80,7 +80,8 @@ criteria are defined by FHIRPath expressions.
       element. Constants defined in Reference({constant}) can be referenced as %[name].
     """
     * name 1..1 string "Column name produced in the output" """
-      Name of the column produced in the output, must be in a database-friendly format.
+      Name of the column produced in the output, must be in a database-friendly format. The column 
+      names in the output must not have any duplicates.
     """
     * name obeys sql-name
     * description 0..1 markdown "Description of the column" """

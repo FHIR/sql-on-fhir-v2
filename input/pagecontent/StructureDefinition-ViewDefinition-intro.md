@@ -13,8 +13,8 @@ views of patients, unrolling patient addresses into an address table, specific v
 observations, and so on. 
 
 #### The selected fields
-The ViewDefinition has a [select](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select) structure that uses [FHIRPath]
-(https://hl7.org/fhirpath/)  expressions to select fields from the FHIR structure and place them in the column with the specified name.
+The ViewDefinition has a [select](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select) structure that uses
+[FHIRPath](https://hl7.org/fhirpath/) expressions to select fields from the FHIR structure and place them in the column with the specified name.
 
 
 #### The "where" criteria

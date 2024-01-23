@@ -70,10 +70,17 @@ function compile(eIn, where) {
 }
 
 function compileViewDefinition(viewDefinition) {
+  const columnSet = new Set();
+
   if (viewDefinition.column) {
     viewDefinition.column.forEach((c) => {
-      c.$path = compile(c.path)
-    })
+      // Check for duplicate column names.
+      if (columnSet.has(c.name)) {
+        throw new Error(`Duplicate column name found: ${c.name}`);
+      }
+      columnSet.add(c.name);
+      c.$path = compile(c.path);
+    });
   }
 
   ;['forEach', 'forEachOrNull', 'resource'].forEach((param) => {
