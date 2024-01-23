@@ -1,4 +1,4 @@
-import { evaluate, row_product } from '../src/index.js'
+import { evaluate, errors, row_product } from '../src/index.js'
 import { expect, test, afterAll } from "bun:test";
 import fs from 'fs'
 
@@ -30,12 +30,21 @@ export function add_test(opts) {
   })
 }
 
+export function invalid_view(opts) {
+  test(opts.title, ()=>{
+    test_case.tests.push(opts)
+    let errs = errors( opts.view, test_case.resources)
+    console.log(errs)
+    expect((errs || []).length > 0).toEqual(true)
+  })
+}
+
 export function end_case(name, desc, resources) {
   // TODO: publish test case
 
   afterAll(()=>{
     // console.log(JSON.stringify(test_case, null, " "));
-    let file_name = __dirname + '/../../sof-tests/' + test_case.title + '.json'
+    let file_name = __dirname + '/../../tests/' + test_case.title + '.json'
     fs.writeFileSync(file_name, JSON.stringify(test_case, null, " "))
     console.log('write: ', file_name)
   })

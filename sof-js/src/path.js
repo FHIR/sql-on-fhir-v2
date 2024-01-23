@@ -33,6 +33,9 @@ function ofType(ctx, nodes, a1, a2, a3) {
 
 
 function rewrite_path(path) {
+  if(path.startsWith('$this')){
+    path =  'identity()' + path.slice('$this'.length)
+  }
   const ofTypeRegex = /\.ofType\(([^)]+)\)/g
   let match
   // HACK: fhirpath.js only knows that `Observation.value.ofType(Quantity)`

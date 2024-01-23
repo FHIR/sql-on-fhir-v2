@@ -1,4 +1,8 @@
 import { fhirpath_evaluate } from './path.js'
+import {errors as verrors} from './validate.js'
+
+
+export let errors = verrors
 
 function assert(condition, message) {
   if (!condition) {
@@ -76,6 +80,11 @@ function select(def, node) {
       return fhirpath_evaluate(node, w.path)[0]
     })
     if(!include) { return []}
+  }
+  if(def.resource) {
+    if( def.resource !== node.resourceType) {
+      return []
+    }
   }
   return row_product(
     def.select.map((s)=> {

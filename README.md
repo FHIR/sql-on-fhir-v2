@@ -21,3 +21,66 @@ This is a Sushi project and can use HL7 IG Publisher to build locally:
 
 Building tests, see [test README](tests/README.md)
 
+## Testing your implementation
+
+Specification has set of tests cases.
+Tests are located in sof-tests folder.
+Each test is a json document of following structure:
+```js
+{
+  // unique name of test
+  title: 'title',
+  description: '...',
+  // collection of resources, view will be tested
+  resources: [
+    {resourceType: '...'},
+    {resourceType: '...'}
+  ]
+  // collection of tests
+  tests: [
+    ...
+    {
+      title: 'title of test case',
+      // ViewDefintion
+      view: {},
+      // collection of expected output rows
+      expect: [
+        {},
+      ]
+    }
+    ...
+  ]
+ }
+```
+
+For your implementation we recommend to add this repository
+to your project as git submodule and implement test runner:
+
+* for each file in test directory
+  * read content as testcase
+  * for each test from testcase.tests
+    *  let result = evaluate(test.view, testcase.resources)
+    *  assert result = test.expect
+
+```js
+
+
+```
+
+
+## Register your implementation
+
+1. Fork the repo
+2. Add your implementation info to ./implementations.json
+3. Make pull request
+
+```json
+...
+    {
+        "name": "YourImplName",
+        "description": "<description>",
+        "url": "<link-to-the-site>",
+        "testResultsUrl": "<link-to-test-results>"
+    },
+...
+```
