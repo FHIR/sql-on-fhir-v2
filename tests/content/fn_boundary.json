@@ -1,0 +1,157 @@
+{
+  "title": "boundary functions",
+  "resources": [
+    {
+      "resourceType": "Observation",
+      "id": "o1",
+      "valueDecimal": 1.0
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o2",
+      "valueDateTime": "2010-10-10"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o3"
+    }
+  ],
+  "tests": [
+    {
+      "title": "decimal lowBoundary",
+      "view": {
+        "resource": "Observation",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              },
+              {
+                "path": "value.ofType(Decimal).lowBoundary()",
+                "name": "decimal"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "o1",
+          "decimal": 0.95
+        },
+        {
+          "id": "o2",
+          "decimal": null
+        },
+        {
+          "id": "o3",
+          "decimal": null
+        }
+      ]
+    },
+    {
+      "title": "decimal highBoundary",
+      "view": {
+        "resource": "Observation",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              },
+              {
+                "path": "value.ofType(Decimal).highBoundary()",
+                "name": "decimal"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "o1",
+          "decimal": 1.05
+        },
+        {
+          "id": "o2",
+          "decimal": null
+        },
+        {
+          "id": "o3",
+          "decimal": null
+        }
+      ]
+    },
+    {
+      "title": "datetime lowBoundary",
+      "view": {
+        "resource": "Observation",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              },
+              {
+                "path": "value.ofType(DateTime).lowBoundary()",
+                "name": "datetime"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "o1",
+          "datetime": null
+        },
+        {
+          "id": "o2",
+          "datetime": "2010-10-10T00:00:00.000+14:00"
+        },
+        {
+          "id": "o3",
+          "datetime": null
+        }
+      ]
+    },
+    {
+      "title": "datetime highBoundary",
+      "view": {
+        "resource": "Observation",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "id",
+                "name": "id"
+              },
+              {
+                "path": "value.ofType(DateTime).highBoundary()",
+                "name": "datetime"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "o1",
+          "datetime": null
+        },
+        {
+          "id": "o2",
+          "datetime": "2010-10-10T23:59:59.999-12:00"
+        },
+        {
+          "id": "o3",
+          "datetime": null
+        }
+      ]
+    }
+  ]
+}
