@@ -297,9 +297,65 @@ for column ordering. See the [column ordering](#column-ordering) section below f
 Notice that a single selection structure can contain zero or one `unionAll` lists -- where the list contains the items to be combined in a single, logical
 union all. Users needing multiple `unionAll`s within a single view will need to move them to separate selection structures.
 
+`unionAll` behaves similarly to the `UNION ALL` expression seen in SQL dialects, meaning that it will not filter out duplicate rows.
+
 #### unionAll column requirements
 The select structures in a `unionAll` array must having matching columns. Specifically, each nested selection structure must produce the same number of columns
 with the same names and order, and the column values must be the same types as determined by the [column types](#column-types) part of this specification.
+
+#### Composing unionAlls and selects
+`unionAll` produces rows that can be used just like a `select` expression. These rows can be used by containing `select` or `unionAll`s without needing any
+special knowledge of how they were produced. This means that `unionAll` and `select` operations can be nested with intuitive behavior, similar to how functions
+can be nested in many programming languages.
+
+For instance, the two expressions below will return the same rows, despite first being a single `unionAll` and the second being a composition of a nested `select
+that contains additional `unionAll`s.
+
+```js
+"select": {
+  "unionAll": [
+    {
+      "forEach": "a",
+      "column": [] // snip
+    },
+    {
+      "forEach": "b",
+      "column": [] // snip
+    }
+    {
+      "forEach": "c",
+      "column": [] // snip
+    }
+  ]
+}
+```
+
+And the equivalent with nested structure (purely to illustrate behavior; authors should prefer the above structure for simplicity):
+
+```js
+"select": {
+  "unionAll": [
+    {
+      "forEach": "a",
+      "column": [] // snip
+    },
+    {
+      "select": {
+        "unionAll": [
+          {
+            "forEach": "b",
+            "column": [] // snip
+          },
+          {
+            "forEach": "c",
+            "column": [] // snip
+          }
+        ]
+      }
+    }
+  ]
+}
+```
 
 ### Column ordering
 ViewDefinition runners MUST produce output in the same order as the column structures seen in the ViewDefinition instances. 
