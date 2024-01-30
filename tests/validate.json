@@ -29,7 +29,7 @@
       "error": "fhirpath"
     },
     {
-      "title": "wrong-tye",
+      "title": "wrong-type",
       "view": {
         "select": [
           {
