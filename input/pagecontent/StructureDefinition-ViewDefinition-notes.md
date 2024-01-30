@@ -8,20 +8,20 @@ a set of additional features can be optionally supported.
 
 All view runners must implement these FHIRPath capabilities:
 
--   [Literals](https://hl7.org/fhirpath/#literals) for String, Integer and Decimal
--   [where](https://hl7.org/fhirpath/#wherecriteria-expression-collection) function
--   [exists](https://hl7.org/fhirpath/#existscriteria-expression-boolean) function
--   [empty](https://hl7.org/fhirpath/#empty-boolean) function
--   [extension](https://hl7.org/fhir/R4/fhirpath.html#functions) function
--   [join](https://build.fhir.org/ig/HL7/FHIRPath/#joinseparator-string-string) function<sup>\*</sup>
--   [ofType](https://hl7.org/fhirpath/#oftypetype-type-specifier-collection) function
--   [first](https://hl7.org/fhirpath/#first-collection) function
--   [lowBoundary](https://build.fhir.org/fhirpath.html#functions) and [highBoundary](https://build.fhir.org/fhirpath.html#functions) functions (including on Period)<sup>\*</sup>
--   Boolean operators: [and](https://hl7.org/fhirpath/#and), [or](https://hl7.org/fhirpath/#or), [not](https://hl7.org/fhirpath/#not-boolean)
--   Math operators: [addition (+)](https://hl7.org/fhirpath/#addition), [subtraction (-)](https://hl7.org/fhirpath/#subtraction), [multiplication (\*)](https://hl7.org/fhirpath/#multiplication), [division (/)](https://hl7.org/fhirpath/#division)
--   Comparison operators: [equals (=)](https://hl7.org/fhirpath/#equals), [not equals (!=)](https://hl7.org/fhirpath/#not-equals), [greater than (>)](https://hl7.org/fhirpath/#greater-than), [less or equal (<=)](https://hl7.org/fhirpath/#less-or-equal)
+* [Literals](https://hl7.org/fhirpath/#literals) for String, Integer and Decimal
+* [where](https://hl7.org/fhirpath/#wherecriteria-expression-collection) function
+* [exists](https://hl7.org/fhirpath/#existscriteria-expression-boolean) function
+* [empty](https://hl7.org/fhirpath/#empty-boolean) function
+* [extension](https://hl7.org/fhir/R4/fhirpath.html#functions) function
+* [join](https://build.fhir.org/ig/HL7/FHIRPath/#joinseparator-string-string) function<sup>*</sup>
+* [ofType](https://hl7.org/fhirpath/#oftypetype-type-specifier-collection) function
+* [first](https://hl7.org/fhirpath/#first-collection) function
+* [lowBoundary](https://build.fhir.org/fhirpath.html#functions) and [highBoundary](https://build.fhir.org/fhirpath.html#functions) functions (including on Period)<sup>*</sup>
+* Boolean operators: [and](https://hl7.org/fhirpath/#and), [or](https://hl7.org/fhirpath/#or), [not](https://hl7.org/fhirpath/#not-boolean)
+* Math operators: [addition (+)](https://hl7.org/fhirpath/#addition), [subtraction (-)](https://hl7.org/fhirpath/#subtraction), [multiplication (*)](https://hl7.org/fhirpath/#multiplication), [division (/)](https://hl7.org/fhirpath/#division)
+* Comparison operators: [equals (=)](https://hl7.org/fhirpath/#equals), [not equals (!=)](https://hl7.org/fhirpath/#not-equals), [greater than (>)](https://hl7.org/fhirpath/#greater-than), [less or equal (<=)](https://hl7.org/fhirpath/#less-or-equal)
 
-<sup>\*</sup> Not yet part of the normative FHIRPath release, currently in draft.
+<sup>*</sup> Not yet part of the normative FHIRPath release, currently in draft.
 
 #### Additional functions
 
@@ -31,10 +31,10 @@ FHIRPath specification but are necessary in the context of defining views:
 ##### getResourceKey() : KeyType
 
 This is invoked at the root of a FHIR [Resource](https://build.fhir.org/resource.html) and returns
-an opaque value to be used as the primary key for the row associated with the resource. In many cases
+an opaque value to be used as the primary key for the row associated with the resource. In many cases 
 the value may just be the resource `id`, but exceptions are described below. This function is used in
-tandem with [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype), which returns
-an equal value from references that point to this resource.
+tandem with [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype), which returns 
+an equal value from references that point to this resource. 
 
 The returned `<KeyType>` is implementation dependent, but must be a FHIR primitive type that can be used
 for efficient joins in the system's underlying data storage. Integers, strings, UUIDs, and other primitive
@@ -49,20 +49,20 @@ an opaque value that represents the database key of the row being referenced. Th
 be equal to the [getResourceKey()](#getresourcekey--keytype) value returned on the resource itself.
 
 Users may pass an optional resource type (e.g. `Patient` or `Observation`) to indicate
-the expected type that the reference should point to. `getReferenceKey` will return an empty collection
-(effectively `null` since FHIRPath always returns collections) if the reference is not of the
+the expected type that the reference should point to. `getReferenceKey` will return an empty collection 
+(effectively `null` since FHIRPath always returns collections) if the reference is not of the 
 expected type. For example, `Observation.subject.getReferenceKey(Patient)` would return a row key if the
-subject is a patient, or the empty collection (`{}`) if not.
+subject is a patient, or the empty collection (`{}`) if not. 
 
-Implementations MUST support the relative literal form of reference (e.g. `Patient/123`), and MAY support
-other types of references. If the implementation does not support the reference type, or is unable to
+Implementations MUST support the relative literal form of reference (e.g. `Patient/123`), and MAY support 
+other types of references. If the implementation does not support the reference type, or is unable to 
 resolve the reference, it MUST return the empty collection (`{}`).
 
-Implementations MAY generate a list of unprocessable references through query responses, logging or
+Implementations MAY generate a list of unprocessable references through query responses, logging or 
 reporting. The details of how this information would be provided to the user is implementation specific.
 
-Resolution of contained resources is not required by this specification. Therefore, it is recommended
-that contained resources be extracted into separate resources and given their own identity as part of a
+Resolution of contained resources is not required by this specification. Therefore, it is recommended 
+that contained resources be extracted into separate resources and given their own identity as part of a 
 pre-processing step, to maximise compatibility with view runners.
 
 The returned `<KeyType>` is implementation dependent, but must be a FHIR primitive type that can be used
@@ -76,16 +76,15 @@ See the [Resource Keys and Joins](#resource-keys-and-joins) section below for de
 View runners are encouraged to implement these functions as well to support a
 broader set of use cases:
 
--   [memberOf](https://hl7.org/fhir/R4/fhirpath.html#functions) function
--   [toQuantity](https://hl7.org/fhirpath/#toquantityunit-string-quantity) function
+* [memberOf](https://hl7.org/fhir/R4/fhirpath.html#functions) function
+* [toQuantity](https://hl7.org/fhirpath/#toquantityunit-string-quantity) function
 
-### Resource Keys and Joins
-
-While FHIR ViewDefinitions do not directly implement cross-resource joins, the
-views produced should be easily joined by the database or analytic tools of the
+### Resource Keys and Joins 
+While FHIR ViewDefinitions do not directly implement cross-resource joins, the 
+views produced should be easily joined by the database or analytic tools of the 
 user's choice. This can be done by including primary and foreign keys as part of the tabular
-view output, which can be done with the [getResourceKey()](#getresourcekey--keytype) and
-[getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) functions.
+view output, which can be done with the [getResourceKey()](#getresourcekey--keytype) and 
+[getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) functions. 
 
 Users may call [getResourceKey()](#getresourcekey--keytype) to obtain a resource's primary key,
 and call [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) to get
@@ -134,40 +133,37 @@ like this:
   }],
   "where": [
    // An expression that selects observations that have a patient subject.
-  ]
+  ] 
 }
 ```
 
 SQL-on-FHIR users could then join `simple_obs.patient_id` to `active_patients.id` using common
-join semantics.
+join semantics. 
 
 #### getResourceKey() and getReferenceKey() implementation options
-
-While [getResourceKey()](#getresourcekey--keytype) and
+While [getResourceKey()](#getresourcekey--keytype) and 
 [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) must return matching
-values for the same row, _how_ they do so is left to the implementation. This is by design,
+values for the same row, *how* they do so is left to the implementation. This is by design,
 allowing ViewDefinitions to be run across a wide set of systems that have different data invariants
 or pre-processing capabilities.
 
 Here are some implementation options to meet different needs:
 
 ##### Return Resource id-based fields
-
 If the system can guaranteed that each resource has a simple id and the corresponding references
-have simple, relative ids that point to it, [getResourceKey()](#getresourcekey--keytype) and
+have simple, relative ids that point to it, [getResourceKey()](#getresourcekey--keytype) and 
 [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) implementations may simply
 return those values. This is the simplest case, and will apply to many (but not all) systems.
 
 ##### Return a "primary" identifier for the resource
-
 Since the resource `id` is by definition an system-specific identifier, it may change as FHIR data
 is exported and loaded between systems, and therefore not be a reliable target for references. For
 instance, a bulk export from some set of source systems could into a target system that has applies
-its own `id`s to resources when they are loaded -- requiring that joins be done on resource
+its own `id`s to resources when they are loaded -- requiring that joins be done on resource 
 `identifier` fields rather than `id`.
 
 In this case, implementations will need to determine row keys based on the resource identifier and
-corresponding identifiers in references.
+corresponding identifiers in references. 
 
 The simplest variation of this is when there is only one identifier per resource. In other cases, the
 implementation may may be able to select a "primary" identifier, based on the `Identifier.system`
@@ -180,32 +176,30 @@ a row key value, perhaps by building a string or computing a cryptographic hash 
 The best approach is left to the implementation.
 
 ##### Pre-process data to create or resolve keys
-
 The most difficult case is systems where the resource id is a not a reliable row key, and resources have multiple
 identifiers with no clear way to select one for the key.
 
 In this case, implementations will likely have to fall back to some form of preprocessing to determine
 appropriate keys. Implementation options include:
 
--   Pre-processing all data to have clear resource `id`s or "primary" identifiers and using one of the options above.
--   Building some form of cross-link table dynamically within the implementation itself based on the
-    underlying data. For instance, if an implementation's [getResourceKey()](#getresourcekey--keytype) uses a specific
-    identifier system, [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) could use use a pre-built
-    cross-link table to find the appropriate identifier-based key to return.
+* Pre-processing all data to have clear resource `id`s or "primary" identifiers and using one of the options above.
+* Building some form of cross-link table dynamically within the implementation itself based on the
+underlying data. For instance, if an implementation's [getResourceKey()](#getresourcekey--keytype) uses a specific
+identifier system, [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) could use use a pre-built
+cross-link table to find the appropriate identifier-based key to return.
 
 There are many variations and alternatives to the above. This spec simply asserts that implementations must
 be able to produce a row key for each resource and a matching key for references pointing at that resource,
 and intentionally leaves the specific mechanism to the implementation.
 
 ### Contained resources
-
 The current version of this specification requires compliant implementations to extract contained resources
-needed for view definitions into independent resources, which can then be accessed via
-[getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) like any other resource. Implementations SHOULD
+needed for view definitions into independent resources, which can then be accessed via 
+[getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) like any other resource. Implementations SHOULD 
 normalize these resources appropriately whenever possible, such as by eliminating duplicate resources contained in many parents.
 
 Contained resources have different semantics than other FHIR resources since they don't have an independent identity,
-and the same logical record may be duplicated across many containing resources. This makes good SQL practices difficult since the
+and the same logical record may be duplicated across many containing resources. This makes good SQL practices difficult since the 
 data is denormalized and ambiguous. For instance, `Patient.generalPractitioner` may be a contained resource that may or may not be
 the same practitioner seen in other `Patient` resources. Therefore this spec currently requires system pre-process such
 data into normalized, independent resources if needed.
@@ -255,20 +249,18 @@ select structures will produce the same results:
 ```
 
 ### Multiple select expressions
-
 ViewDefinitions may have multiple `select` expressions, which can be organized as siblings or parent/child relationships. This is typically done
 as different selects may use different `forEach` or `forEachOrNull` expressions to unroll different parts of the resource.
 
 The multiple rows produced by `forEach`-style selects are joined to others with the following rules:
 
--   Parent/child selects will repeat values from the parent select for each item in the child select.
--   Sibling select expressions are effectively cross joined, where each row in each `select` is duplicated for every row
-    in sibling `select`s.
+* Parent/child selects will repeat values from the parent select for each item in the child select. 
+* Sibling select expressions are effectively cross joined, where each row in each `select` is duplicated for every row
+in sibling `select`s.
 
 The [example view definitions](StructureDefinition-ViewDefinition-examples.html) illustrate this behavior.
 
 ### unionAll expressions
-
 A selection structure has one optional array called `unionAll`, which contains a list of selection structures to be unioned. This `unionAll` array
 effectively concatenates the results of the nested selection structures that it contains, but without a guarantee that row ordering will be preserved.
 Each selection structure contained in the `unionAll` must produce the same column names and FHIR types.
@@ -300,21 +292,19 @@ The above example uses `forEach` to select parts of the resource for each select
 in the select. See the [PatientAndContactAdddressUnion example](Binary-PatientAndContactAddressUnion.html) for a complete version of the above.
 
 The columns produced from the `unionAll` list are effectively added to the parent selection structure, following any other columns in that parent structure
-for column ordering. See the [column ordering](#column-ordering) section below for details.
+for column ordering. See the [column ordering](#column-ordering) section below for details. 
 
 Notice that a single selection structure can contain zero or one `unionAll` lists -- where the list contains the items to be combined in a single, logical
 union all. Users needing multiple `unionAll`s within a single view will need to move them to separate selection structures.
 
 #### unionAll column requirements
-
 The select structures in a `unionAll` array must having matching columns. Specifically, each nested selection structure must produce the same number of columns
 with the same names and order, and the column values must be the same types as determined by the [column types](#column-types) part of this specification.
 
 ### Column ordering
+ViewDefinition runners MUST produce output in the same order as the column structures seen in the ViewDefinition instances. 
 
-ViewDefinition runners MUST produce output in the same order as the column structures seen in the ViewDefinition instances.
-
-`select` structures that have nested selects will place the column of the parent select before the columns of the nested select, and the columns from a
+`select` structures that have nested selects will place the column of the parent select before the columns of the nested select, and the columns from a 
 `unionAll` list are placed last. Users looking to change the column ordering may place the columns or the `unionAll` in a nested select, which can be ordered
 relative to other nested selects as desired.
 
@@ -359,8 +349,8 @@ For example, the columns in this ViewDefinition will appear in alphabetical orde
 }
 ```
 
-### Using constants
 
+### Using constants
 ViewDefinitions may include one or more of constants, which are simple values that can be reused
 in FHIRPath expressions. This can improve readability and reduce redundancy. Constants can be
 used in expression by simply using `%[name]`. This effectively converts the FHIR literal used
@@ -383,7 +373,6 @@ Here's an example of a constant used in the `where` constraint of a view:
 ```
 
 ### Column types
-
 All values in a given column must be of a single type that can be determined by the ViewDefinition alone. The
 type can be explicitly specified in the
 [collection](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.collection) and
@@ -396,12 +385,12 @@ build and evaluate ViewDefinitions without needing to look up and explicitly spe
 If the column is a primitive type (typical of tabular output), its type is inferred under the following conditions:
 
 1. If [collection](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.collection) is not
-   set to `true`, the returned type must be a single value.
+set to `true`, the returned type must be a single value.
 2. If the path is a series of `parent.child.subPath` navigation steps from a known type -- either from the root resource
-   or a child of an `.ofType()` function -- then the column type is determined by the structure definition it comes from.
+or a child  of an `.ofType()` function -- then the column type is determined by the structure definition it comes from.
 3. If the terminal expression is one of the [required FHIRPath functions](#core-fhirpath-expressions-required) with a
-   defined return type, then the column will be of that type. For instance, if the path ends in `.exists()` or `.lowBoundary()`,
-   the column type would be boolean or an instant type, respectively.
+defined return type, then the column will be of that type. For instance, if the path ends in `.exists()` or `.lowBoundary()`,
+the column type would be boolean or an instant type, respectively.
 4. A path that ends in `.ofType()` will be of the type given to that function.
 
 **Note 1**: Type inference is an optional feature and some implementations may
@@ -431,27 +420,25 @@ common and can simplify analysis in some systems.
 
 ```json
 {
-    "resourceType": "ViewDefinition",
-    "name": "patient_birth_date",
-    "resource": "Patient",
-    "description": "A view of simple patient birth dates",
-    "select": [
-        {
-            "column": [
-                { "path": "id" },
-                {
-                    "name": "birth_date",
-                    "path": "birthDate",
-                    "tags": [
-                        {
-                            "name": "ansi/type",
-                            "value": "DATE"
-                        }
-                    ]
-                }
-            ]
-        }
+  "resourceType": "ViewDefinition",
+  "name": "patient_birth_date",
+  "resource": "Patient",
+  "description": "A view of simple patient birth dates",
+  "select": [{
+    "column": [
+      { "path": "id" },
+      {
+        "name": "birth_date",
+        "path": "birthDate",
+        "tags": [
+          {
+            "name": "ansi/type",
+            "value": "DATE"
+          }
+        ]
+      }
     ]
+  }]
 }
 ```
 

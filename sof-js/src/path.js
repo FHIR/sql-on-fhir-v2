@@ -11,15 +11,15 @@ function getResourceKey(nodes, resource) {
 }
 
 function getReferenceKey(nodes, opts) {
-  let resource = opts?.name
+  let resource = opts?.name;
   return nodes.flatMap((node) => {
     const parts = node.reference.replaceAll('//', '').split('/_history')[0].split('/')
-    const type = parts[parts.length - 2]
-    const key = parts[parts.length - 1]
-    if (!resource) {
-      return [key]
-    } else if (resource && resource == type) {
-      return [key]
+    const type = parts[parts.length - 2];
+    const key  = parts[parts.length - 1];
+    if(!resource) {
+      return [key];
+    } else if(resource && resource == type) {
+      return [key];
     } else {
       return []
     }
@@ -31,9 +31,10 @@ function ofType(ctx, nodes, a1, a2, a3) {
   return 'ups'
 }
 
+
 function rewrite_path(path) {
-  if (path.startsWith('$this')) {
-    path = 'identity()' + path.slice('$this'.length)
+  if(path.startsWith('$this')){
+    path =  'identity()' + path.slice('$this'.length)
   }
   const ofTypeRegex = /\.ofType\(([^)]+)\)/g
   let match
@@ -44,17 +45,18 @@ function rewrite_path(path) {
     const replacement = match[1].charAt(0).toUpperCase() + match[1].slice(1)
     path = path.replace(match[0], `${replacement}`)
   }
-  return path
+  return path;
 }
+
 
 let fhirpath_options = {
   userInvocationTable: {
-    getResourceKey: { fn: getResourceKey, arity: { 0: [], 1: ['TypeSpecifier'] } },
+    getResourceKey:  { fn: getResourceKey, arity: { 0: [], 1: ['TypeSpecifier'] } },
     getReferenceKey: { fn: getReferenceKey, arity: { 0: [], 1: ['TypeSpecifier'] } },
-    identity: { fn: (nodes) => nodes, arity: { 0: [] } },
-  },
+    identity:        { fn: (nodes) => nodes, arity: { 0: [] } },
+  }
 }
 
 export function fhirpath_evaluate(data, path) {
-  return fhirpath.evaluate(data, rewrite_path(path), {}, null, fhirpath_options)
+  return fhirpath.evaluate(data, rewrite_path(path), {}, null, fhirpath_options);
 }

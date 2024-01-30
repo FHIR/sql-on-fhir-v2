@@ -14,10 +14,10 @@ including configuration for the menu.
 
 This is a Sushi project and can use HL7 IG Publisher to build locally:
 
-1. Clone this respository
-2. Run `./scripts/_updatePublisher.sh` to get the latest IG publisher
-3. Run `./scripts/_genonce.sh` to generate the IG
-4. Run `open output/index.html` to view the IG website
+  1. Clone this respository
+  2. Run `./scripts/_updatePublisher.sh` to get the latest IG publisher
+  3. Run `./scripts/_genonce.sh` to generate the IG
+  4. Run `open output/index.html` to view the IG website
 
 Building tests, see [test README](tests/README.md)
 
@@ -26,7 +26,6 @@ Building tests, see [test README](tests/README.md)
 Specification has set of tests cases.
 Tests are located in sof-tests folder.
 Each test is a json document of following structure:
-
 ```js
 {
   // unique name of test
@@ -57,15 +56,17 @@ Each test is a json document of following structure:
 For your implementation we recommend to add this repository
 to your project as git submodule and implement test runner:
 
--   for each file in test directory
-    -   read content as testcase
-    -   for each test from testcase.tests
-        -   let result = evaluate(test.view, testcase.resources)
-        -   assert result = test.expect
+* for each file in test directory
+  * read content as testcase
+  * for each test from testcase.tests
+    *  let result = evaluate(test.view, testcase.resources)
+    *  assert result = test.expect
 
 ```js
 
+
 ```
+
 
 ## Register your implementation
 

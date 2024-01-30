@@ -58,7 +58,7 @@ publisher:
 parameters:
   excludettl: true
   path-test: tests
-
+  
 #   validation: [allow-any-extensions, no-broken-links]
 #
 # ╭────────────────────────────────────────────menu.xml────────────────────────────────────────────╮
@@ -72,11 +72,11 @@ parameters:
 menu:
   Home: index.html
   Purpose: purpose.html
-  Spec:
+  Spec: 
     System Layers: layers.html
     View Definition: StructureDefinition-ViewDefinition.html
     Processing Model: processing_model.html
-  Guidance:
+  Guidance: 
     JSON Schema Guidance: json_schema_guidance.html
     Columnar Schema Guidance: columnar_schema_guidance.html
   See Also:

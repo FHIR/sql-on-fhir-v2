@@ -1,8 +1,8 @@
-The system consists of three logical layers as shown in the diagram below:
 
--   the _Data Layer_
--   the _View Layer_
--   and the _Analytics Layer_.
+The system consists of three logical layers as shown in the diagram below:
+- the *Data Layer*
+- the *View Layer*
+- and the *Analytics Layer*. 
 
 This specification focuses primarily upon the View layer. The Data and Analytics layers are optional,
 and are provided as general patterns to assist with implementation.
@@ -12,8 +12,7 @@ and are provided as general patterns to assist with implementation.
 **Figure 1: High-level diagram of layers**
 
 ### The Data Layer
-
-The _Data Layer_ is a set of lossless representations that collectively enable FHIR
+The *Data Layer* is a set of lossless representations that collectively enable FHIR
 to be used with a wide variety of different query technologies. It may
 optionally be persisted and annotated to make it or implementations of the view
 layer more efficient, but no specific Data Layer structure will be required by
@@ -25,21 +24,20 @@ primarily applies when the underlying FHIR resources are stored in databases
 that the View layer will query.
 
 ### The View Layer
-
-The _View Layer_ defines portable, tabular views of FHIR data that can more easily
+The *View Layer* defines portable, tabular views of FHIR data that can more easily
 be consumed by a wide variety of analytic tools. The use of these tools is
-described in _Analytics Layer_ section. Our goal here is simply to get
+described in *Analytics Layer* section. Our goal here is simply to get
 the needed FHIR data in a form that matches user needs and common analytic
 patterns.
 
 The View Layer itself has two key components:
 
--   _View Definitions_, allowing users to define flattened views of FHIR data that
-    are portable between systems.
--   _View Runners_ are system-specific tools or libraries that apply view definitions to
-    the underlying data layer, optionally making use of annotations to optimize performance.
+* *View Definitions*, allowing users to define flattened views of FHIR data that
+are portable between systems.
+* *View Runners* are system-specific tools or libraries that apply view definitions to
+the underlying data layer, optionally making use of annotations to optimize performance.
 
-See the [View Definition documentation](StructureDefinition-ViewDefinition.html) for details and examples;
+See the [View Definition documentation](StructureDefinition-ViewDefinition.html) for details and examples; 
 these are the central piece of this specification.
 
 View Runners will be specific to the data
@@ -49,9 +47,9 @@ data layers.
 
 Example view runners may include:
 
--   A runner that creates a virtual, tabular view in an analytic database
--   A runner that queries FHIR JSON directly and creates a table in a web application
--   A runner that loads data directly into a notebook or other data analysis tool
+* A runner that creates a virtual, tabular view in an analytic database
+* A runner that queries FHIR JSON directly and creates a table in a web application
+* A runner that loads data directly into a notebook or other data analysis tool
 
 ### The Analytics Layer
 

@@ -1,5 +1,5 @@
-import { processResources } from './extractor'
-import { fromArray } from './loaders'
+import { processResources } from "./extractor"
+import { fromArray } from "./loaders"
 
 function isEqual(a, b) {
   if (Array.isArray(a) && Array.isArray(b)) {

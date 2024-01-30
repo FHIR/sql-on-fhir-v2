@@ -1,7 +1,7 @@
 name: build
 on:
   push:
-    branches: ["*"]
+    branches: [ '*' ]
 permissions:
   contents: read
   pages: write
@@ -35,7 +35,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: "test_report/public"
+          path: 'test_report/public'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2

@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "start": "sirv public",
+    "build":   "rollup -c",
+    "dev":     "rollup -c -w",
+    "start":   "sirv public",
     "prepare": "bun run prepare.js"
   },
   "devDependencies": {

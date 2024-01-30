@@ -3,6 +3,7 @@ accessible to a larger audience and portable between systems. The central goal
 of this project is to make FHIR data work well with the best available analytic
 tools, regardless of the technology stack.
 
+
 ### Problem
 
 As the availability of FHIR data increases, there is a growing interest in
@@ -41,12 +42,13 @@ toolchains. Therefore we scope this to create tabular views of resources, and
 explicitly scope out higher-level analytic capabilities since many tools do
 this well today. Examples of capabilities we scope out include:
 
--   Join operation between resources. This effort creates tabular views, but users
-    leverage the database engine or other tool of their choice to join them and
-    analyze at scale.
--   Any form of data aggregation or statistical analysis.
+* Join operation between resources. This effort creates tabular views, but users
+leverage the database engine or other tool of their choice to join them and
+analyze at scale.
+* Any form of data aggregation or statistical analysis.
 
-## Principles
+
+## Principles 
 
 [Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/44)
 
@@ -66,7 +68,7 @@ to these problems.
 Flattened repeated structures in FHIR requires checking the content of those fields.
 For example, creating a table of patient home addresses requires checking that
 the address.use field is ‘home’. Similarly, a table with columns for systolic
-and diastolic blood pressures needs to check the Observation.component.code fields
+and diastolic blood pressures needs to check the Observation.component.code fields 
 to select them properly.
 
 **Ability to filter based on code values or other criteria**
@@ -80,7 +82,7 @@ the needed views.
 There are many excellent options for large-scale data analysis and new ones
 continue to be created. Our efforts here should be generalizable across tools
 as much as possible. We aim to cover many popular technologies and to avoid
-features that are not widely implemented.
+features that are not widely implemented. 
 
 See [tech matrix](https://github.com/FHIR/sql-on-fhir-v2/blob/master/tech-matrix.md)
 for details.
@@ -95,6 +97,7 @@ needed for the views.
 **Common data transformation and loading should be supported**
 It should be possible to run transformations on raw data or within a database using SQL,
 that is, to use the ETL or ELT patterns.
+
 
 ---
 
