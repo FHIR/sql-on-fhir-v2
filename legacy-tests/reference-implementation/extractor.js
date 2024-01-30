@@ -70,17 +70,17 @@ function compile(eIn, where) {
 }
 
 function compileViewDefinition(viewDefinition) {
-  const columnSet = new Set();
+  const columnSet = new Set()
 
   if (viewDefinition.column) {
     viewDefinition.column.forEach((c) => {
       // Check for duplicate column names.
       if (columnSet.has(c.name)) {
-        throw new Error(`Duplicate column name found: ${c.name}`);
+        throw new Error(`Duplicate column name found: ${c.name}`)
       }
-      columnSet.add(c.name);
-      c.$path = compile(c.path);
-    });
+      columnSet.add(c.name)
+      c.$path = compile(c.path)
+    })
   }
 
   ;['forEach', 'forEachOrNull', 'resource'].forEach((param) => {
@@ -94,10 +94,7 @@ function compileViewDefinition(viewDefinition) {
   }
 
   const cols = (viewDefinition.unionAll ?? [])
-    .map((u) =>
-      getColumns({ select: [u] })
-        .reduce((acc, c) => acc.concat(c.name), [])
-    )
+    .map((u) => getColumns({ select: [u] }).reduce((acc, c) => acc.concat(c.name), []))
     .map((u) => JSON.stringify(u))
 
   if (cols.some((c) => c !== cols[0])) {

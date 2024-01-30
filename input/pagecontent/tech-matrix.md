@@ -2,43 +2,39 @@
 
 JSON Database Features:
 
-| feature      |  json   | binary   |  unnest   | json path basic     | json path *    | json path ? |
-|--------------|---------|----------|-----------|---------------------|----------------|-------------|
-| PostgreSQL   | yes     | yes      | yes       | yes                 | yes            | yes         |
-| MySQL        | yes     | yes      | yes       | yes                 | yes            | no          |
-| SQLight      | yes     | no       | yes       | yes                 | no             | no          |
-| ClickHouse   | yes     | yes      | yes       | yes                 | yes            | no          |
-| MSSQL        | yes     | no       | yes       | yes                 | no             | no          |
-| Oracle       | yes     | no       | yes       | yes                 | yes            | no          |
-| BigQuery     | yes     | no       | yes       | yes                 | no             | no          |
-| Snowflake    | yes     | yes      | yes       | yes                 | no             | no          |
-| Athena SQL   | yes     | yes      | yes       | yes                 | no             | no          |
-| DuckDB       | no      | no       | yes       | no                  | no             | no          |
-{:.table-data}
+| feature    | json | binary | unnest | json path basic | json path \* | json path ? |
+| ---------- | ---- | ------ | ------ | --------------- | ------------ | ----------- |
+| PostgreSQL | yes  | yes    | yes    | yes             | yes          | yes         |
+| MySQL      | yes  | yes    | yes    | yes             | yes          | no          |
+| SQLight    | yes  | no     | yes    | yes             | no           | no          |
+| ClickHouse | yes  | yes    | yes    | yes             | yes          | no          |
+| MSSQL      | yes  | no     | yes    | yes             | no           | no          |
+| Oracle     | yes  | no     | yes    | yes             | yes          | no          |
+| BigQuery   | yes  | no     | yes    | yes             | no           | no          |
+| Snowflake  | yes  | yes    | yes    | yes             | no           | no          |
+| Athena SQL | yes  | yes    | yes    | yes             | no           | no          |
+| DuckDB     | no   | no     | yes    | no              | no           | no          |
 
+{:.table-data}
 
 Schemas & Formats datatypes:
 
-* Primitives
-* Nested records/tuples
-* Option type (Polymorphic types)
-* Enums
-
+-   Primitives
+-   Nested records/tuples
+-   Option type (Polymorphic types)
+-   Enums
 
 Binary formats:
 
-* Apache Avro
-* Apache Arrow
-* Parquet
-* ProtoBuf
+-   Apache Avro
+-   Apache Arrow
+-   Parquet
+-   ProtoBuf
 
 Schemas:
 
-* ClickHouse
-* Snowflake
-
-
-
+-   ClickHouse
+-   Snowflake
 
 # JSON Databases
 
@@ -52,12 +48,11 @@ Most advanced support for JSON. Support for binary JSON and JSON Path/Query
 
 [JSON in MySQL](https://dev.mysql.com/doc/refman/8.0/en/json.html#json-values)
 
-Support for json query up to '*'
+Support for json query up to '\*'
 
 ## ClickHouse
 
-Click supports [JSON](https://clickhouse.com/docs/en/sql-reference/functions/json-functions/) 
-
+Click supports [JSON](https://clickhouse.com/docs/en/sql-reference/functions/json-functions/)
 
 JSON Query support path + `*`
 
@@ -69,9 +64,7 @@ SELECT toTypeName(JSON_VALUE('{"hello":2}', '$.hello'));
 
 ```
 
-
 and [Nested Types Support](https://clickhouse.com/docs/en/sql-reference/data-types/nested-data-structures/nested/)
-
 
 JSON:
 
@@ -82,7 +75,6 @@ We can’t specify codecs for sub-columns for similar reasons. To overcome this
 restriction, we recommend users use the JSON type for the semi-structured parts
 of rows that are subject to change but explicitly specify columns for those for
 which a reliable structure and type can be declared.
-
 
 ```sql
 create table event (
@@ -104,8 +96,8 @@ SELECT o.a, o.b.c, o.b.d[3] FROM json
 ```
 
 Details - https://clickhouse.com/blog/getting-data-into-clickhouse-part-2-json
-* https://clickhouse.com/docs/en/guides/developer/working-with-json/json-other-approaches#nested-vs-tuple-vs-map
 
+-   https://clickhouse.com/docs/en/guides/developer/working-with-json/json-other-approaches#nested-vs-tuple-vs-map
 
 ## Oracle
 
@@ -123,9 +115,8 @@ Details - https://clickhouse.com/blog/getting-data-into-clickhouse-part-2-json
 
 [JSON in SQL](https://cloud.google.com/bigquery/docs/reference/standard-sql/json-data)
 
-* Very basic [JSON QUERY support](https://cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_query) - access by path
-* Unnest arrays
-
+-   Very basic [JSON QUERY support](https://cloud.google.com/bigquery/docs/reference/standard-sql/json_functions#json_query) - access by path
+-   Unnest arrays
 
 ```sql
 
@@ -143,11 +134,9 @@ FROM mydataset.table1
 
 ## Google BigQuery ProtoBuf
 
-
 ## Azure SQL
 
 [JSON Features](https://learn.microsoft.com/en-us/azure/azure-sql/database/json-features?view=azuresql)
-
 
 ## Deltalake
 
@@ -179,7 +168,6 @@ FROM
 
 ```
 
-
 ## Amazon Athena SQL
 
 Amazon Athena is an interactive query service that makes it easy to analyze data
@@ -204,7 +192,6 @@ software released under the Apache License.
 Trino, a query engine that runs at ludicrous speed
 Fast distributed SQL query engine for big data analytics that helps you explore your data universe.
 
-
 ## Apache Spark
 
 Apache Spark is an open-source unified analytics engine for large-scale data
@@ -213,9 +200,7 @@ data parallelism and fault tolerance. Originally developed at the University of
 California, Berkeley's AMPLab, the Spark codebase was later donated to the
 Apache Software Foundation, which has maintained it since.
 
-
 # Binary Formats
-
 
 ## ProtoBuf (row)
 
@@ -225,9 +210,6 @@ communicate with each other over a network or for storing data. The method
 involves an interface description language that describes the structure of some
 data and a program that generates source code from that description for
 generating or parsing a stream of bytes that represents the structured data.
-
-
-
 
 ```protobuf
 // polyline.proto
@@ -252,7 +234,6 @@ message Polyline {
 
 ```
 
-
 ## Avro (row)
 
 Avro is a row-oriented remote procedure call and data serialization framework
@@ -265,31 +246,29 @@ data that is being encoded. It has two different types of schema languages; one
 for human editing (Avro IDL) and another which is more machine-readable based on
 JSON.
 
-
 ```json
 {
-   "type" : "record",
-   "namespace" : "Tutorialspoint",
-   "name" : "Employee",
-   "fields" : [
-      { "name" : "Name" , "type" : "string" },
-      { "name" : "Age" , "type" : "int" }
-   ]
+    "type": "record",
+    "namespace": "Tutorialspoint",
+    "name": "Employee",
+    "fields": [
+        { "name": "Name", "type": "string" },
+        { "name": "Age", "type": "int" }
+    ]
 }
-
 ```
 
 Types:
 
-* null	Null is a type having no value.
-* int	32-bit signed integer.
-* long	64-bit signed integer.
-* float	single precision (32-bit) IEEE 754 floating-point number.
-* double	double precision (64-bit) IEEE 754 floating-point number.
-* bytes	sequence of 8-bit unsigned bytes.
-* string	Unicode character sequence.
+-   null Null is a type having no value.
+-   int 32-bit signed integer.
+-   long 64-bit signed integer.
+-   float single precision (32-bit) IEEE 754 floating-point number.
+-   double double precision (64-bit) IEEE 754 floating-point number.
+-   bytes sequence of 8-bit unsigned bytes.
+-   string Unicode character sequence.
 
-+ enums
+*   enums
 
 Avro may generate Parquet
 
@@ -303,14 +282,13 @@ encoding schemes with enhanced performance to handle complex data in bulk.
 
 [schema](https://github.com/apache/parquet-format/blob/master/LogicalTypes.md)
 
-* BOOLEAN: 1 bit boolean
-* INT32: 32 bit signed ints
-* INT64: 64 bit signed ints
-* INT96: 96 bit signed ints
-* FLOAT: IEEE 32-bit floating point values
-* DOUBLE: IEEE 64-bit floating point values
-* BYTE_ARRAY: arbitrarily long byte arrays.
-
+-   BOOLEAN: 1 bit boolean
+-   INT32: 32 bit signed ints
+-   INT64: 64 bit signed ints
+-   INT96: 96 bit signed ints
+-   FLOAT: IEEE 32-bit floating point values
+-   DOUBLE: IEEE 64-bit floating point values
+-   BYTE_ARRAY: arbitrarily long byte arrays.
 
 ```
 
@@ -326,7 +304,6 @@ message emp_schema {
 ```
 
 See https://github.com/julienledem/redelm/wiki/The-striping-and-assembly-algorithms-from-the-Dremel-paper
-
 
 ## Apache Arrow (columnar)
 
@@ -371,26 +348,23 @@ running pandas functions against chunks of Spark SQL data, these are called
 In some applications, Parquet and Arrow can be used interchangeably for on-disk
 data serialization. Some things to keep in mind:
 
-* Parquet is intended for "archival" purposes, meaning if you write a file
-  today, we expect that any system that says they can "read Parquet" will be
-  able to read the file in 5 years or 7 years. We are not yet making this
-  assertion about long-term stability of the Arrow format (though we might in
-  the future)
-* Parquet is generally a lot more expensive to read because it must be decoded
-  into some other data structure. Arrow protocol data can simply be
-  memory-mapped.
-* Parquet files are often much smaller than Arrow-protocol-on-disk because of
-  the data encoding schemes that Parquet uses. If your disk storage or network
-  is slow, Parquet is going to be a better choice
-
+-   Parquet is intended for "archival" purposes, meaning if you write a file
+    today, we expect that any system that says they can "read Parquet" will be
+    able to read the file in 5 years or 7 years. We are not yet making this
+    assertion about long-term stability of the Arrow format (though we might in
+    the future)
+-   Parquet is generally a lot more expensive to read because it must be decoded
+    into some other data structure. Arrow protocol data can simply be
+    memory-mapped.
+-   Parquet files are often much smaller than Arrow-protocol-on-disk because of
+    the data encoding schemes that Parquet uses. If your disk storage or network
+    is slow, Parquet is going to be a better choice
 
 So, in summary, Parquet files are designed for disk storage, Arrow is designed
 for in-memory (but you can put it on disk, then memory-map later). They are
 intended to be compatible with each other and used together in applications.
 
 For a memory-intensive frontend app I might suggest looking at the Arrow JavaScript (TypeScript) library.
-
-
 
 ## Apache ORC (columnar)
 

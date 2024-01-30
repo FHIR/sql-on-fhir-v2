@@ -1,7 +1,6 @@
 import fs from 'fs'
 import { evaluate } from '../src/index.js'
 
-
 function isEqual(a, b) {
   if (Array.isArray(a) && Array.isArray(b)) {
     return a.length === b.length && a.every((val, index) => isEqual(val, b[index]))
@@ -11,11 +10,11 @@ function isEqual(a, b) {
 }
 
 const canonicalize = (arr) => {
-  if(arr === undefined) {
+  if (arr === undefined) {
     arr = []
   }
-  if(! Array.isArray(arr)) {
-    throw new Error("Expected array, got " + JSON.stringify(arr))
+  if (!Array.isArray(arr)) {
+    throw new Error('Expected array, got ' + JSON.stringify(arr))
   }
   return [...arr].sort((a, b) => {
     const keysA = Object.keys(a).sort()
@@ -81,58 +80,68 @@ function arraysMatch(arr1, arr2) {
 let fast_fail = true
 let tests_dir = '../../legacy-tests/content/'
 let files = fs.readdirSync(tests_dir)
-console.log(files);
-let test_results = {pass: 0, fail: 0, error: 0}
-let result = files.map((f)=>{
+console.log(files)
+let test_results = { pass: 0, fail: 0, error: 0 }
+let result = files.map((f) => {
   let testcase = JSON.parse(fs.readFileSync(tests_dir + f))
   console.log('run', testcase.title, `file ${f}`)
-  testcase.tests.map((test)=>{
-    if(test.expectError) {
+  testcase.tests.map((test) => {
+    if (test.expectError) {
       try {
         let _result = evaluate(test.view, testcase.resources)
-        console.log(' *', test.title, ' => ', 'fail' )
-        test_results.fail+=1
+        console.log(' *', test.title, ' => ', 'fail')
+        test_results.fail += 1
       } catch (e) {
-        console.log(' *', test.title, ' => ', 'pass' )
-        test_results.pass+=1
+        console.log(' *', test.title, ' => ', 'pass')
+        test_results.pass += 1
       }
     } else {
       try {
         let result = evaluate(test.view, testcase.resources)
-        if(test.expectCount) {
-          if(result.length == test.expectCount) {
-            console.log(' *', test.title, ' => ', 'pass' )
-            test_results.pass+=1
+        if (test.expectCount) {
+          if (result.length == test.expectCount) {
+            console.log(' *', test.title, ' => ', 'pass')
+            test_results.pass += 1
           } else {
-            console.log(' *', test.title, ' => ', 'fail', 'expected: ', test.expectCount, 'got ', result.length, result)
-            test_results.fail+=1
+            console.log(
+              ' *',
+              test.title,
+              ' => ',
+              'fail',
+              'expected: ',
+              test.expectCount,
+              'got ',
+              result.length,
+              result,
+            )
+            test_results.fail += 1
           }
         } else {
           let match = arraysMatch(result, test.expect)
-          test.observed = result;
+          test.observed = result
           test.passed = match.passed
           test.error = match.error
-          if(match.passed){
-            console.log(' *', test.title, ' => ', 'pass' )
-            test_results.pass+=1
+          if (match.passed) {
+            console.log(' *', test.title, ' => ', 'pass')
+            test_results.pass += 1
           } else {
-            console.log(' *', test.title, ' => ', 'fail' , 'expeceted: ', test.expect, 'got: ', result)
-            test_results.fail+=1
+            console.log(' *', test.title, ' => ', 'fail', 'expeceted: ', test.expect, 'got: ', result)
+            test_results.fail += 1
           }
         }
       } catch (e) {
         console.log(' *', test.title, ' => ', 'error', e.toString())
-        test_results.error+=1
-        if(fast_fail) {
-          console.log('view', JSON.stringify(test, null, " "))
+        test_results.error += 1
+        if (fast_fail) {
+          console.log('view', JSON.stringify(test, null, 2))
           throw e
         }
         // console.log(e)
       }
     }
   })
-  return testcase;
+  return testcase
 })
 
-fs.writeFileSync('../../test_report/public/test-results.json', JSON.stringify(result));
+fs.writeFileSync('../../test_report/public/test-results.json', JSON.stringify(result) + '\n')
 console.log(test_results)
