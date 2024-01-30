@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "fmt": "prettier -w ..",
-    "check-fmt": "prettier -c .."
+    "fmt": "prettier -w ../tests",
+    "check-fmt": "prettier -c ../tests"
   },
   "author": "niquola,jmandel",
   "license": "ISC",
