@@ -223,29 +223,62 @@ or [forEachOrNull](StructureDefinition-ViewDefinition-definitions.html#diff_View
 unrolling repeated structures into separate rows to meet this need. You can see this in the
 [PatientAddresses example](Binary-PatientAddresses.html), which unrolls addresses as described above.
 
-The key difference between these is [forEach](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach)
+[forEach](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach)
 will produce one row per repeated item under the `forEach` expression, so the [PatientAddresses example](Binary-PatientAddresses.html)
-will have rows only for Patient resources that have one or more addresses. In contrast,
-[forEachOrNull](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull) will produce a row
-even if the collection under that `forEachOrNull` expression is empty. So if we updated the patient addresses example to
-use `forEachorNull`, each Patient resource with no addresses would still produce a row, just with the address-related
-columns set to `null`.
+will have rows only for Patient resources that have one or more addresses. 
 
-`forEach` and `forEachOrNull` apply both to the columns within a select and to any nested select. Therefore the following
+`forEach` and `forEachOrNull` apply both to the columns within a select and to any nested select it contains. Therefore the following
 select structures will produce the same results:
 
 ```js
 "select": [{
   "forEach": "address",
-  "column": [{"path": "line"}]
+  "column": [{"name": "zip", "path": "postalCode"}]
 }]
 ```
 
 ```js
 "select": [{
   "forEach": "address",
-  "select": [{"column": [{"path": "line"}]}]
+  "select": [{"column": [{"name": "zip", "path": "postalCode"}]}]
 }]
+```
+
+#### forEachOrNull behavior 
+[forEachOrNull](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull) is analogous to 
+a `LEFT OUTER JOIN` expression supported in many SQL engines: it will produce a row even if the collection under that `forEachOrNull` 
+expression is empty. All columns will be there, but will have `null` values if nothing matched the contents of the `forEachOrNull`
+expression.
+
+To illustrate this, the following expression under a Patient view uses `forEach`, and will therefore return a row for the patient
+only if the patient has at least one address, similar to an SQL inner join:
+
+```js
+"select": [
+  {
+    "column": [{"name": "id", "path": "getResourceKey()"}]
+  },
+  {
+    "forEach": "address",
+    "select": [{"column": [{"name": "zip", "path": "postalCode"}]}]
+  }
+]
+```
+
+In contrast, this `forEachOrNull` version will produce the "id" column for *every* patient in the system. If that patient has no
+address fields, there will be a single row for that patient and the "zip" column will be null. For patients who do have one or more
+addresses, the results will be identical to the expression above. 
+
+```js
+"select": [
+  {
+    "column": [{"name": "id", "path": "getResourceKey()"}]
+  },
+  {
+    "forEachOrNull": "address",
+    "select": [{"column": [{"name": "zip", "path": "postalCode"}]}]
+  }
+]
 ```
 
 ### Multiple select expressions
