@@ -29,7 +29,7 @@
                 "name": "id"
               },
               {
-                "path": "value.ofType(String)",
+                "path": "value.ofType(string)",
                 "name": "string_value"
               }
             ]
@@ -63,7 +63,7 @@
                 "name": "id"
               },
               {
-                "path": "value.ofType(Integer)",
+                "path": "value.ofType(integer)",
                 "name": "integer_value"
               }
             ]
