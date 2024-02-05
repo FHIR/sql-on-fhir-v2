@@ -57,6 +57,22 @@ let fhirpath_options = {
   }
 }
 
-export function fhirpath_evaluate(data, path) {
-  return fhirpath.evaluate(data, rewrite_path(path), {}, null, fhirpath_options);
+function process_constants(constants) {
+  return constants.reduce((acc, x) => {
+    let name, val;
+    for (const key in x) {
+      if (key === "name") {
+        name = x[key];
+      }
+      if (key.startsWith("value")) {
+        val = x[key];
+      }
+    }
+    acc[name] = val;
+    return acc;
+  }, {});
+}
+
+export function fhirpath_evaluate(data, path, constants = []) {
+  return fhirpath.evaluate(data, rewrite_path(path), process_constants(constants), null, fhirpath_options);
 }

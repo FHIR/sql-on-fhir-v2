@@ -25,8 +25,16 @@ export function run_test(viewdef, result) {
 export function add_test(opts) {
   test(opts.title, ()=>{
     test_case.tests.push(opts)
-    let res = evaluate( opts.view, test_case.resources)
+    const res = evaluate(opts.view, test_case.resources)
     expect(res).toEqual(opts.expect);
+  })
+}
+
+export function add_throwing_test(opts) {
+  test(opts.title, () => {
+    test_case.tests.push(opts)
+    expect(() => evaluate(opts.view, test_case.resources))
+      .toThrow(opts.expectError);
   })
 }
 
@@ -34,7 +42,7 @@ export function invalid_view(opts) {
   test(opts.title, ()=>{
     test_case.tests.push(opts)
     let errs = errors( opts.view, test_case.resources)
-    console.log(errs)
+    // console.log(errs)
     expect((errs || []).length > 0).toEqual(true)
   })
 }
