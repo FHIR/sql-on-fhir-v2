@@ -12,6 +12,14 @@ function $ref(name) {
   return {$ref: `#/$defs/${name}`}
 }
 
+function const_value(name, type = string) {
+  return {
+    type: object,
+    required: [name],
+    properties: { [name]: type }
+  };
+}
+
 let viewdef_schema = {
   $id: "http://hl7.org/fhir/uv/sql-on-fhir/ViewDefinition",
   title: "ViewDefinition",
@@ -22,6 +30,41 @@ let viewdef_schema = {
   properties: {
     title:    string,
     resource: identifier,
+    constant: {
+      type: array,
+      minItems: 0,
+      items: {
+        allOf: [
+          {
+            type: object,
+            required: ["name"],
+            properties: { name: string }
+          }, {
+            oneOf: [
+              const_value("valueBase64Binary"),
+              const_value("valueBoolean", bool),
+              const_value("valueCanonical"),
+              const_value("valueCode"),
+              const_value("valueDate"),
+              const_value("valueDateTime"),
+              const_value("valueDecimal", { type: "number" }),
+              const_value("valueId"),
+              const_value("valueInstant"),
+              const_value("valueInteger", { type: "integer" }),
+              const_value("valueInteger64"),
+              const_value("valueOid"),
+              const_value("valueString"),
+              const_value("valuePositiveInt", { type: "integer", minimum: 1 }),
+              const_value("valueTime"),
+              const_value("valueUnsignedInt", { type: "integer", minimum: 0 }),
+              const_value("valueUri"),
+              const_value("valueUrl"),
+              const_value("valueUuid")
+            ]
+          }
+        ]
+      }
+    },
     select:   $ref('select'),
     where:    fhirpath_string},
   $defs: {
@@ -54,7 +97,7 @@ let viewdef_schema = {
 
 const ajv = new Ajv({ allErrors: true })
 function validate_fhirpath(path) {
-  console.log('TODO chekc fp', path)
+  console.log('TODO check fp', path)
   return true;
 }
 ajv.addFormat('fhirpath-expression',{type: 'string', validate:  validate_fhirpath})
@@ -65,4 +108,4 @@ export function errors(viewdef) {
   return  validate_schema.errors
 }
 
-console.log(errors({select: [{forEach: 'name'}]}))
+// console.log(errors({select: [{forEach: 'name'}]}))
