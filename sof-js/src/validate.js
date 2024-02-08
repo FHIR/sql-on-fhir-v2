@@ -26,10 +26,10 @@ let viewdef_schema = {
   title: "ViewDefinition",
   description: "validate FHIR ViewDefinition schema",
   type: object,
-  required: ["select"],
+  required: ["resource", "select"],
   additionalProperties: false,
   properties: {
-    title:    string,
+    title: string,
     resource: identifier,
     constant: {
       type: array,
@@ -67,33 +67,54 @@ let viewdef_schema = {
       }
     },
     select:   $ref('select'),
-    where:    fhirpath_string},
+    where:    fhirpath_string
+  },
   $defs: {
-    tag: {type: array,
-          items: { type: object,
-                   additionalProperties: false,
-                   properties: {name:  string,
-                                value: string}}},
-    column: {type: array,
-             minItems: 1,
-             items: {type: object,
-                    required: ["path", "name"],
-                    additionalProperties: false,
-                    properties: {path:        fhirpath_string,
-                                 name:        identifier,
-                                 collection:  bool,
-                                 description: string,
-                                 type:        string,
-                                 tag:         $ref('tag')}}},
-    select: {type: array,
-             minItems: 1,
-             items: {type: object,
-                    additionalProperties: false,
-                    properties: {column:        $ref('column'),
-                                 unionAll:      $ref('select'),
-                                 forEach:       fhirpath_string,
-                                 forEachOrNull: fhirpath_string,
-                                 select:        $ref('select')}}}}}
+    tag: {
+      type: array,
+      items: {
+        type: object,
+        additionalProperties: false,
+        properties: {
+          name: string,
+          value: string
+        }
+      }
+    },
+    column: {
+      type: array,
+      minItems: 1,
+      items: {
+        type: object,
+        required: ["path", "name"],
+        additionalProperties: false,
+        properties: {
+          path: fhirpath_string,
+          name: identifier,
+          collection: bool,
+          description: string,
+          type: string,
+          tag: $ref('tag')
+        }
+      }
+    },
+    select: {
+      type: array,
+      minItems: 1,
+      items: {
+        type: object,
+        additionalProperties: false,
+        properties: {
+          column: $ref('column'),
+          unionAll: $ref('select'),
+          forEach: fhirpath_string,
+          forEachOrNull: fhirpath_string,
+          select: $ref('select')
+        }
+      }
+    }
+  }
+};
 
 
 const ajv = new Ajv({ allErrors: true })
