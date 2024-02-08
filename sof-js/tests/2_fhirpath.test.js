@@ -5,20 +5,40 @@ import { start_case, end_case, add_test, run_test, should_fail } from './test_he
 let l = console.log
 
 let resources = [
-  {resourceType: 'Patient',
-   id: 'pt1',
-   managingOrganization: {reference: 'Organization/o1'},
-   name:[{family: 'f1.1', use: 'official', given: ['g1.1.1', 'g1.1.2']},
-         {family: 'f1.2', given: ['g1.2.1']}],
-   active: true},
-  {resourceType: 'Patient',
-   id: 'pt2',
-   managingOrganization: {reference: 'http://myapp.com/prefix/Organization/o2'},
-   name: [{family: 'f2.1'},
-          {family: 'f2.2', use: 'official'}],
-   active: false},
-  {resourceType: 'Patient',
-   id: 'pt3'},
+  {
+    resourceType: 'Patient',
+    id: 'pt1',
+    managingOrganization: { reference: 'Organization/o1' },
+    name: [
+      {
+        family: 'f1.1',
+        use: 'official',
+        given: ['g1.1.1', 'g1.1.2']
+      },
+      {
+        family: 'f1.2',
+        given: ['g1.2.1']
+      }
+    ],
+    active: true
+  },
+  {
+    resourceType: 'Patient',
+    id: 'pt2',
+    managingOrganization: { reference: 'http://myapp.com/prefix/Organization/o2' },
+    name: [
+      { family: 'f2.1' },
+      {
+        family: 'f2.2',
+        use: 'official'
+      }
+    ],
+    active: false
+  },
+  {
+    resourceType: 'Patient',
+    id: 'pt3'
+  },
 ]
 
 start_case('fhirpath', 'fhirpath features', resources)

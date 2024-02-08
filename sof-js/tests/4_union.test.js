@@ -10,24 +10,55 @@ import {
 let l = console.log
 
 let resources = [
-  {id: 'pt1',
-   telecom: [{value: 't1.1', system: 's1.1'},
-             {value: 't1.2', system: 's1.2'},
-             {value: 't1.3', system: 's1.3'}],
-   contact: [
-     {telecom: [{value: 't1.c1.1', system: 's1.c1.1'}]},
-     {telecom: [{value: 't1.c2.1', system: 's1.c2.1'},
-                {value: 't1.c2.2', system: 's1.c2.2'}]}]},
-  {id: 'pt2',
-   telecom: [
-     {value: 't2.1', system: 's2.1'},
-     {value: 't2.2', system: 's2.2'}]},
-  {id: 'pt3',
-   contact: [
-     {telecom: [{value: 't3.c1.1', system: 's3.c1.1'},
-                {value: 't3.c1.2', system: 's3.c1.2'}]},
-     {telecom: [{value: 't3.c2.1', system: 's3.c2.1'}]}]},
-  {id: 'pt4'}
+  {
+    resourceType: 'Patient',
+    id: 'pt1',
+    telecom: [
+      { value: 't1.1', system: 's1.1' },
+      { value: 't1.2', system: 's1.2' },
+      { value: 't1.3', system: 's1.3' }
+    ],
+    contact: [
+      {
+        telecom: [{ value: 't1.c1.1', system: 's1.c1.1' }]
+      },
+      {
+        telecom: [
+          { value: 't1.c2.1', system: 's1.c2.1' },
+          { value: 't1.c2.2', system: 's1.c2.2' }
+        ]
+      }
+    ]
+  },
+  {
+    resourceType: 'Patient',
+    id: 'pt2',
+    telecom: [
+      { value: 't2.1', system: 's2.1' },
+      { value: 't2.2', system: 's2.2' }
+    ]
+  },
+  {
+    resourceType: 'Patient',
+    id: 'pt3',
+    contact: [
+      {
+        telecom: [
+          { value: 't3.c1.1', system: 's3.c1.1' },
+          { value: 't3.c1.2', system: 's3.c1.2' }
+        ]
+      },
+      {
+        telecom: [
+          { value: 't3.c2.1', system: 's3.c2.1' }
+        ]
+      }
+    ]
+  },
+  {
+    resourceType: 'Patient',
+    id: 'pt4'
+  }
 ]
 
 start_case('union', 'TBD', resources)

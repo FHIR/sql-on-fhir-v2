@@ -3,8 +3,14 @@ import { start_case, end_case, invalid_view, debug } from './test_helpers.js'
 
 
 let resources = [
-  {id: 'pt1', resourceType: 'Patient'},
-  {id: 'pt2', resourceType: 'Patient'},
+  {
+    resourceType: 'Patient',
+    id: 'pt1'
+  },
+  {
+    resourceType: 'Patient',
+    id: 'pt2'
+  },
 ]
 
 start_case('validate', 'TBD', resources)

@@ -57,15 +57,22 @@ test('columns', ()=>{
 
 
 let resources = [
-  {id: 'pt1',
-   name: [
-     {family: 'F1'}],
-   active: true},
-  {id: 'pt2',
-   name: [
-     {family: 'F2'}],
-   active: false},
-  {id: 'pt3'},
+  {
+    resourceType: 'Patient',
+    id: 'pt1',
+    name: [ { family: 'F1' }],
+    active: true
+  },
+  {
+    resourceType: 'Patient',
+    id: 'pt2',
+    name: [ { family: 'F2' }],
+    active: false
+  },
+  {
+    resourceType: 'Patient',
+    id: 'pt3'
+  },
 ]
 
 start_case('basic', 'basic view definition', resources)
@@ -160,4 +167,3 @@ describe("basics", () => {
 
   end_case();
 });
-
