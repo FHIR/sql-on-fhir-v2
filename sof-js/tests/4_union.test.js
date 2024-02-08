@@ -1,5 +1,11 @@
 import { describe } from "bun:test";
-import { start_case, end_case, add_test, debug } from './test_helpers.js'
+import {
+  start_case,
+  end_case,
+  add_test,
+  add_throwing_test,
+  debug
+} from './test_helpers.js'
 
 let l = console.log
 
@@ -29,7 +35,6 @@ start_case('union', 'TBD', resources)
 // TODO: duplicates in union
 
 describe("union", () => {
-
   let result = [
     {tel: "t1.1",    sys: "s1.1",    id: "pt1"},
     {tel: "t1.2",    sys: "s1.2",    id: "pt1"},
@@ -43,7 +48,6 @@ describe("union", () => {
     {tel: "t3.c1.2", sys: "s3.c1.2", id: "pt3"},
     {tel: "t3.c2.1", sys: "s3.c2.1", id: "pt3"}
   ]
-
 
   // debug(unionAll, resources);
   add_test({
@@ -158,6 +162,57 @@ describe("union", () => {
       {id: "pt3", tel: "t3.c1.1"}
     ]
   });
+
+  add_throwing_test({
+    title: 'bad unionAll',
+    view: {
+      select: [
+        {
+          unionAll: [
+            {
+              column: [
+                {name: 'a', path: 'a'},
+                {name: 'b', path: 'b'}
+              ]
+            },
+            {
+              column: [
+                {name: 'a', path: 'a'},
+                {name: 'c', path: 'c'}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    expectError: "columns mismatch"
+  })
+
+  // as per https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition.html#unionall-column-requirements
+  add_throwing_test({
+    title: 'bad order in unionAll',
+    view: {
+      select: [
+        {
+          unionAll: [
+            {
+              column: [
+                {name: 'a', path: 'a'},
+                {name: 'b', path: 'b'}
+              ]
+            },
+            {
+              column: [
+                {name: 'b', path: 'b'},
+                {name: 'a', path: 'a'}
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    expectError: "columns mismatch"
+  })
 
   end_case()
 

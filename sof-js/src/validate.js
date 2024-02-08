@@ -1,4 +1,5 @@
 import Ajv from 'ajv'
+import { fhirpath_validate } from './path';
 
 let array  = "array";
 let string = {type: "string"};
@@ -88,24 +89,23 @@ let viewdef_schema = {
              minItems: 1,
              items: {type: object,
                     additionalProperties: false,
-                    properties: {column:         $ref('column'),
-                                 unionAll:       $ref('select'),
-                                 forEach:        fhirpath_string,
-                                 forEachOrNull:  fhirpath_string,
-                                 select:         $ref('select')}}}}}
+                    properties: {column:        $ref('column'),
+                                 unionAll:      $ref('select'),
+                                 forEach:       fhirpath_string,
+                                 forEachOrNull: fhirpath_string,
+                                 select:        $ref('select')}}}}}
 
 
 const ajv = new Ajv({ allErrors: true })
 function validate_fhirpath(path) {
-  console.log('TODO check fp', path)
-  return true;
+  return fhirpath_validate(path)
 }
 ajv.addFormat('fhirpath-expression',{type: 'string', validate:  validate_fhirpath})
 
 export function errors(viewdef) {
   let validate_schema = ajv.compile(viewdef_schema)
   validate_schema(viewdef)
-  return  validate_schema.errors
+  return validate_schema.errors
 }
 
 // console.log(errors({select: [{forEach: 'name'}]}))

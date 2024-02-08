@@ -66,11 +66,47 @@ function column(select_expr, node, def) {
   return [record];
 }
 
+function arrays_eq(a, b) {
+  if (a.length !== b.length) {
+    return false;
+  }
+
+  for (let i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function arrays_unique(arrays) {
+  return arrays.reduce((acc, value) => {
+    if (acc.length === 0) {
+      return [value];
+    }
+
+    for (const x of acc) {
+      if (arrays_eq(x, value)) {
+        return acc;
+      }
+    }
+
+    return acc.concat([value]);
+  }, []);
+}
+
 function unionAll(select_expr, node, def) {
-  assert(select_expr.unionAll, 'unionAll')
-  return select_expr.unionAll.flatMap((d)=>{
-    return do_eval(d, node, def)
-  })
+  assert(select_expr.unionAll, 'unionAll');
+  const result = select_expr.unionAll.flatMap(d => do_eval(d, node, def));
+
+  // TODO ideally, this should be done during the validation
+  const unique = arrays_unique(result.map(x => Object.keys(x)));
+  // TODO how can unique be === []?
+  assert(unique.length <= 1,
+    new Error(`Union columns mismatch: ${JSON.stringify(unique)}`));
+
+  return result;
 }
 
 function select(select_expr, node, def) {
@@ -199,7 +235,6 @@ function do_eval(select_expr, node, def) {
   let f = fns[select_expr.type] || fns['unknown'];
   return f(select_expr, node, def);
 }
-
 
 function collect_columns(acc, def){
   switch (def.type) {

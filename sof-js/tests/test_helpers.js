@@ -41,7 +41,7 @@ export function add_throwing_test(opts) {
 export function invalid_view(opts) {
   test(opts.title, ()=>{
     test_case.tests.push(opts)
-    let errs = errors( opts.view, test_case.resources)
+    let errs = errors(opts.view, test_case.resources)
     // console.log(errs)
     expect((errs || []).length > 0).toEqual(true)
   })

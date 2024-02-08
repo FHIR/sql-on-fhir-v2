@@ -17,21 +17,14 @@ describe("validate", () => {
      error: 'structure'});
 
   invalid_view(
-    {title: 'wrong-fhirpath',
+    {title: 'wrong fhirpath',
      view: {select: [{forEach: '@@'}]},
      error: 'fhirpath'})
 
   invalid_view(
-    {title: 'wrong-type',
+    {title: 'wrong type',
      view: {select: [{forEach: 1}]},
      error: 'structure'})
-
-  invalid_view(
-    {title: 'bad-unionAll',
-     view: {select: [{unionAll:
-                      [{column: [{name: 'a', path: 'a'}]},
-                       {column: [{name: 'b', path: 'b'}]}]}]},
-     error: 'columns mismatch'})
 
   end_case()
 

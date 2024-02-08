@@ -76,3 +76,12 @@ function process_constants(constants) {
 export function fhirpath_evaluate(data, path, constants = []) {
   return fhirpath.evaluate(data, rewrite_path(path), process_constants(constants), null, fhirpath_options);
 }
+
+export function fhirpath_validate(path) {
+  try {
+    fhirpath.compile(path, null, fhirpath_options);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
