@@ -33,5 +33,4 @@ describe("validate", () => {
      error: 'structure'})
 
   end_case()
-
 });
