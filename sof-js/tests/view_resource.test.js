@@ -12,7 +12,12 @@ let l = console.log
 let resources = [
   { id: 'pt1', resourceType: 'Patient' },
   { id: 'pt2', resourceType: 'Patient' },
-  { id: 'ob1', resourceType: 'Observation' }
+  {
+    id: 'ob1',
+    resourceType: 'Observation',
+    code: { text: 'code' },
+    status: 'final'
+  }
 ]
 
 start_case('view_resource', 'TBD', resources)

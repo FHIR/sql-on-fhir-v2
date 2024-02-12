@@ -1,71 +1,43 @@
 {
-  "title": "validate",
-  "description": "TBD",
-  "resources": [
-    {
-      "id": "pt1",
-      "resourceType": "Patient"
-    },
-    {
-      "id": "pt2",
-      "resourceType": "Patient"
-    }
-  ],
-  "tests": [
-    {
-      "title": "empty",
-      "view": {},
-      "error": "structure"
-    },
-    {
-      "title": "wrong-fhirpath",
-      "view": {
-        "select": [
-          {
-            "forEach": "@@"
-          }
-        ]
-      },
-      "error": "fhirpath"
-    },
-    {
-      "title": "wrong-type",
-      "view": {
-        "select": [
-          {
-            "forEach": 1
-          }
-        ]
-      },
-      "error": "structure"
-    },
-    {
-      "title": "bad-unionAll",
-      "view": {
-        "select": [
-          {
-            "unionAll": [
-              {
-                "column": [
-                  {
-                    "name": "a",
-                    "path": "a"
-                  }
-                ]
-              },
-              {
-                "column": [
-                  {
-                    "name": "b",
-                    "path": "b"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "error": "columns mismatch"
-    }
-  ]
+ "title": "validate",
+ "description": "TBD",
+ "resources": [
+  {
+   "resourceType": "Patient",
+   "id": "pt1"
+  },
+  {
+   "resourceType": "Patient",
+   "id": "pt2"
+  }
+ ],
+ "tests": [
+  {
+   "title": "empty",
+   "view": {},
+   "error": "structure"
+  },
+  {
+   "title": "wrong fhirpath",
+   "view": {
+    "select": [
+     {
+      "forEach": "@@"
+     }
+    ]
+   },
+   "error": "fhirpath"
+  },
+  {
+   "title": "wrong type",
+   "view": {
+    "select": [
+     {
+      "forEach": 1
+     }
+    ]
+   },
+   "error": "structure"
+  }
+ ]
 }
