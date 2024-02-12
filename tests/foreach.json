@@ -1,374 +1,369 @@
 {
- "title": "foreach",
- "description": "TBD",
- "resources": [
-  {
-   "resourceType": "Patient",
-   "id": "pt1",
-   "name": [
+  "title": "foreach",
+  "description": "TBD",
+  "resources": [
     {
-     "family": "F1.1"
-    },
-    {
-     "family": "F1.2"
-    }
-   ],
-   "contact": [
-    {
-     "telecom": [
-      {
-       "system": "phone"
-      }
-     ],
-     "name": {
-      "given": [
-       "N1",
-       "N1`"
-      ]
-     }
-    },
-    {
-     "telecom": [
-      {
-       "system": "email"
-      }
-     ],
-     "name": {
-      "given": [
-       "N2"
-      ]
-     }
-    }
-   ]
-  },
-  {
-   "resourceType": "Patient",
-   "id": "pt2",
-   "name": [
-    {
-     "family": "F2.1"
-    },
-    {
-     "family": "F2.2"
-    }
-   ]
-  },
-  {
-   "resourceType": "Patient",
-   "id": "pt3"
-  }
- ],
- "tests": [
-  {
-   "title": "forEach: normal",
-   "view": {
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
+      "resourceType": "Patient",
+      "id": "pt1",
+      "name": [
+        {
+          "family": "F1.1"
+        },
+        {
+          "family": "F1.2"
+        }
       ],
-      "type": "column"
-     },
-     {
-      "forEach": "name",
-      "select": [
-       {
-        "column": [
-         {
-          "name": "family",
-          "path": "family"
-         }
-        ],
-        "type": "column"
-       }
-      ],
-      "type": "forEach"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "id": "pt1",
-     "family": "F1.1"
-    },
-    {
-     "id": "pt1",
-     "family": "F1.2"
-    },
-    {
-     "id": "pt2",
-     "family": "F2.1"
-    },
-    {
-     "id": "pt2",
-     "family": "F2.2"
-    }
-   ]
-  },
-  {
-   "title": "forEachOrNull: normal",
-   "view": {
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
-      ],
-      "type": "column"
-     },
-     {
-      "forEachOrNull": "name",
-      "select": [
-       {
-        "column": [
-         {
-          "name": "family",
-          "path": "family"
-         }
-        ],
-        "type": "column"
-       }
-      ],
-      "type": "forEachOrNull"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "id": "pt1",
-     "family": "F1.1"
-    },
-    {
-     "id": "pt1",
-     "family": "F1.2"
-    },
-    {
-     "id": "pt2",
-     "family": "F2.1"
-    },
-    {
-     "id": "pt2",
-     "family": "F2.2"
-    },
-    {
-     "id": "pt3",
-     "family": null
-    }
-   ]
-  },
-  {
-   "title": "forEach: empty",
-   "view": {
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
-      ],
-      "type": "column"
-     },
-     {
-      "forEach": "identifier",
-      "select": [
-       {
-        "column": [
-         {
-          "name": "value",
-          "path": "value"
-         }
-        ],
-        "type": "column"
-       }
-      ],
-      "type": "forEach"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": []
-  },
-  {
-   "title": "forEachOrNull: null case",
-   "view": {
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
-      ],
-      "type": "column"
-     },
-     {
-      "forEachOrNull": "identifier",
-      "select": [
-       {
-        "column": [
-         {
-          "name": "value",
-          "path": "value"
-         }
-        ],
-        "type": "column"
-       }
-      ],
-      "type": "forEachOrNull"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "id": "pt1",
-     "value": null
-    },
-    {
-     "id": "pt2",
-     "value": null
-    },
-    {
-     "id": "pt3",
-     "value": null
-    }
-   ]
-  },
-  {
-   "title": "nested forEach",
-   "view": {
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
-      ],
-      "type": "column"
-     },
-     {
-      "forEach": "contact",
-      "select": [
-       {
-        "column": [
-         {
-          "name": "contact_type",
-          "path": "telecom.system"
-         }
-        ],
-        "type": "column"
-       },
-       {
-        "forEach": "name.given",
-        "select": [
-         {
-          "column": [
-           {
-            "name": "name",
-            "path": "$this"
-           }
+      "contact": [
+        {
+          "telecom": [
+            {
+              "system": "phone"
+            }
           ],
-          "type": "column"
-         }
-        ],
-        "type": "forEach"
-       }
-      ],
-      "type": "forEach"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "contact_type": "phone",
-     "name": "N1",
-     "id": "pt1"
-    },
-    {
-     "contact_type": "phone",
-     "name": "N1`",
-     "id": "pt1"
-    },
-    {
-     "contact_type": "email",
-     "name": "N2",
-     "id": "pt1"
-    }
-   ]
-  },
-  {
-   "title": "nested forEach: select & column",
-   "view": {
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
-      ],
-      "type": "column"
-     },
-     {
-      "forEach": "contact",
-      "select": [
-       {
-        "column": [
-         {
-          "name": "contact_type",
-          "path": "telecom.system"
-         }
-        ],
-        "type": "column"
-       },
-       {
-        "forEach": "name.given",
-        "select": [
-         {
-          "column": [
-           {
-            "name": "name",
-            "path": "$this"
-           }
+          "name": {
+            "given": ["N1", "N1`"]
+          }
+        },
+        {
+          "telecom": [
+            {
+              "system": "email"
+            }
           ],
-          "type": "column"
-         }
-        ],
-        "type": "forEach"
-       }
-      ],
-      "type": "forEach"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "contact_type": "phone",
-     "name": "N1",
-     "id": "pt1"
+          "name": {
+            "given": ["N2"]
+          }
+        }
+      ]
     },
     {
-     "contact_type": "phone",
-     "name": "N1`",
-     "id": "pt1"
+      "resourceType": "Patient",
+      "id": "pt2",
+      "name": [
+        {
+          "family": "F2.1"
+        },
+        {
+          "family": "F2.2"
+        }
+      ]
     },
     {
-     "contact_type": "email",
-     "name": "N2",
-     "id": "pt1"
+      "resourceType": "Patient",
+      "id": "pt3"
     }
-   ]
-  }
- ]
+  ],
+  "tests": [
+    {
+      "title": "forEach: normal",
+      "view": {
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "forEach": "name",
+            "select": [
+              {
+                "column": [
+                  {
+                    "name": "family",
+                    "path": "family"
+                  }
+                ],
+                "type": "column"
+              }
+            ],
+            "type": "forEach"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "family": "F1.1"
+        },
+        {
+          "id": "pt1",
+          "family": "F1.2"
+        },
+        {
+          "id": "pt2",
+          "family": "F2.1"
+        },
+        {
+          "id": "pt2",
+          "family": "F2.2"
+        }
+      ]
+    },
+    {
+      "title": "forEachOrNull: normal",
+      "view": {
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "forEachOrNull": "name",
+            "select": [
+              {
+                "column": [
+                  {
+                    "name": "family",
+                    "path": "family"
+                  }
+                ],
+                "type": "column"
+              }
+            ],
+            "type": "forEachOrNull"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "family": "F1.1"
+        },
+        {
+          "id": "pt1",
+          "family": "F1.2"
+        },
+        {
+          "id": "pt2",
+          "family": "F2.1"
+        },
+        {
+          "id": "pt2",
+          "family": "F2.2"
+        },
+        {
+          "id": "pt3",
+          "family": null
+        }
+      ]
+    },
+    {
+      "title": "forEach: empty",
+      "view": {
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "forEach": "identifier",
+            "select": [
+              {
+                "column": [
+                  {
+                    "name": "value",
+                    "path": "value"
+                  }
+                ],
+                "type": "column"
+              }
+            ],
+            "type": "forEach"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": []
+    },
+    {
+      "title": "forEachOrNull: null case",
+      "view": {
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "forEachOrNull": "identifier",
+            "select": [
+              {
+                "column": [
+                  {
+                    "name": "value",
+                    "path": "value"
+                  }
+                ],
+                "type": "column"
+              }
+            ],
+            "type": "forEachOrNull"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "value": null
+        },
+        {
+          "id": "pt2",
+          "value": null
+        },
+        {
+          "id": "pt3",
+          "value": null
+        }
+      ]
+    },
+    {
+      "title": "nested forEach",
+      "view": {
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "forEach": "contact",
+            "select": [
+              {
+                "column": [
+                  {
+                    "name": "contact_type",
+                    "path": "telecom.system"
+                  }
+                ],
+                "type": "column"
+              },
+              {
+                "forEach": "name.given",
+                "select": [
+                  {
+                    "column": [
+                      {
+                        "name": "name",
+                        "path": "$this"
+                      }
+                    ],
+                    "type": "column"
+                  }
+                ],
+                "type": "forEach"
+              }
+            ],
+            "type": "forEach"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "contact_type": "phone",
+          "name": "N1",
+          "id": "pt1"
+        },
+        {
+          "contact_type": "phone",
+          "name": "N1`",
+          "id": "pt1"
+        },
+        {
+          "contact_type": "email",
+          "name": "N2",
+          "id": "pt1"
+        }
+      ]
+    },
+    {
+      "title": "nested forEach: select & column",
+      "view": {
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ],
+            "type": "column"
+          },
+          {
+            "forEach": "contact",
+            "select": [
+              {
+                "column": [
+                  {
+                    "name": "contact_type",
+                    "path": "telecom.system"
+                  }
+                ],
+                "type": "column"
+              },
+              {
+                "forEach": "name.given",
+                "select": [
+                  {
+                    "column": [
+                      {
+                        "name": "name",
+                        "path": "$this"
+                      }
+                    ],
+                    "type": "column"
+                  }
+                ],
+                "type": "forEach"
+              }
+            ],
+            "type": "forEach"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "contact_type": "phone",
+          "name": "N1",
+          "id": "pt1"
+        },
+        {
+          "contact_type": "phone",
+          "name": "N1`",
+          "id": "pt1"
+        },
+        {
+          "contact_type": "email",
+          "name": "N2",
+          "id": "pt1"
+        }
+      ]
+    }
+  ]
 }

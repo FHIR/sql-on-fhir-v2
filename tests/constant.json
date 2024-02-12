@@ -1,329 +1,329 @@
 {
- "title": "constant",
- "description": "constant substitution",
- "resources": [
-  {
-   "resourceType": "Patient",
-   "id": "pt1",
-   "name": [
+  "title": "constant",
+  "description": "constant substitution",
+  "resources": [
     {
-     "family": "Block",
-     "use": "usual"
-    },
-    {
-     "family": "Smith",
-     "use": "official"
-    }
-   ]
-  },
-  {
-   "resourceType": "Patient",
-   "id": "pt2",
-   "deceasedBoolean": true,
-   "name": [
-    {
-     "family": "Johnson",
-     "use": "usual"
-    },
-    {
-     "family": "Menendez",
-     "use": "old"
-    }
-   ]
-  }
- ],
- "tests": [
-  {
-   "title": "constant in path",
-   "view": {
-    "constant": [
-     {
-      "name": "name_use",
-      "valueString": "official"
-     }
-    ],
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       },
-       {
-        "name": "official_name",
-        "path": "name.where(use = %name_use).family"
-       }
-      ],
-      "type": "column"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "id": "pt1",
-     "official_name": "Smith"
-    },
-    {
-     "id": "pt2",
-     "official_name": null
-    }
-   ]
-  },
-  {
-   "title": "constant in forEach",
-   "view": {
-    "constant": [
-     {
-      "name": "name_use",
-      "valueString": "official"
-     }
-    ],
-    "select": [
-     {
-      "forEach": "name.where(use = %name_use)",
-      "select": [
-       {
-        "column": [
-         {
-          "name": "official_name",
-          "path": "family"
-         }
-        ],
-        "type": "column"
-       }
-      ],
-      "type": "forEach"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "official_name": "Smith"
-    }
-   ]
-  },
-  {
-   "title": "constant in where element",
-   "view": {
-    "constant": [
-     {
-      "name": "name_use",
-      "valueString": "official"
-     }
-    ],
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
-      ],
-      "type": "column"
-     }
-    ],
-    "where": [
-     {
-      "path": "name.where(use = %name_use)"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "id": "pt1"
-    }
-   ]
-  },
-  {
-   "title": "constant in unionAll",
-   "view": {
-    "constant": [
-     {
-      "name": "use1",
-      "valueString": "official"
-     },
-     {
-      "name": "use2",
-      "valueString": "usual"
-     }
-    ],
-    "select": [
-     {
-      "unionAll": [
-       {
-        "forEach": "name.where(use = %use1)",
-        "select": [
-         {
-          "column": [
-           {
-            "name": "name",
-            "path": "family"
-           }
-          ],
-          "type": "column"
-         }
-        ],
-        "type": "forEach"
-       },
-       {
-        "forEach": "name.where(use = %use2)",
-        "select": [
-         {
-          "column": [
-           {
-            "name": "name",
-            "path": "family"
-           }
-          ],
-          "type": "column"
-         }
-        ],
-        "type": "forEach"
-       }
-      ],
-      "type": "unionAll"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "name": "Smith"
-    },
-    {
-     "name": "Block"
-    },
-    {
-     "name": "Johnson"
-    }
-   ]
-  },
-  {
-   "title": "integer constant",
-   "view": {
-    "constant": [
-     {
-      "name": "name_index",
-      "valueInteger": 1
-     }
-    ],
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       },
-       {
-        "name": "official_name",
-        "path": "name[%name_index].family"
-       }
-      ],
-      "type": "column"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "id": "pt1",
-     "official_name": "Smith"
-    },
-    {
-     "id": "pt2",
-     "official_name": "Menendez"
-    }
-   ]
-  },
-  {
-   "title": "boolean constant",
-   "view": {
-    "constant": [
-     {
-      "name": "is_deceased",
-      "valueInteger": true
-     }
-    ],
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
-      ],
-      "type": "column"
-     }
-    ],
-    "where": [
-     {
-      "path": "deceased.ofType(boolean) = %is_deceased"
-     }
-    ],
-    "type": "select"
-   },
-   "expect": [
-    {
-     "id": "pt2"
-    }
-   ]
-  },
-  {
-   "title": "accessing an undefined constant",
-   "view": {
-    "constant": [
-     {
-      "name": "name_use",
-      "valueString": "official"
-     }
-    ],
-    "select": [
-     {
-      "forEach": "name.where(use = %wrong_name)",
-      "select": [
-       {
-        "column": [
-         {
-          "name": "official_name",
-          "path": "family"
-         }
-        ],
-        "type": "column"
-       }
-      ],
-      "type": "forEach"
-     }
-    ],
-    "type": "select"
-   },
-   "expectError": "undefined environment variable: wrong_name"
-  },
-  {
-   "title": "incorrect constant definition",
-   "view": {
-    "constant": [
-     {
-      "name": "name_use"
-     }
-    ],
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       },
-       {
-        "name": "official_name",
-        "path": "name.where(use = %name_use).family"
-       }
+      "resourceType": "Patient",
+      "id": "pt1",
+      "name": [
+        {
+          "family": "Block",
+          "use": "usual"
+        },
+        {
+          "family": "Smith",
+          "use": "official"
+        }
       ]
-     }
-    ]
-   }
-  }
- ]
+    },
+    {
+      "resourceType": "Patient",
+      "id": "pt2",
+      "deceasedBoolean": true,
+      "name": [
+        {
+          "family": "Johnson",
+          "use": "usual"
+        },
+        {
+          "family": "Menendez",
+          "use": "old"
+        }
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "title": "constant in path",
+      "view": {
+        "constant": [
+          {
+            "name": "name_use",
+            "valueString": "official"
+          }
+        ],
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              },
+              {
+                "name": "official_name",
+                "path": "name.where(use = %name_use).family"
+              }
+            ],
+            "type": "column"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "official_name": "Smith"
+        },
+        {
+          "id": "pt2",
+          "official_name": null
+        }
+      ]
+    },
+    {
+      "title": "constant in forEach",
+      "view": {
+        "constant": [
+          {
+            "name": "name_use",
+            "valueString": "official"
+          }
+        ],
+        "select": [
+          {
+            "forEach": "name.where(use = %name_use)",
+            "select": [
+              {
+                "column": [
+                  {
+                    "name": "official_name",
+                    "path": "family"
+                  }
+                ],
+                "type": "column"
+              }
+            ],
+            "type": "forEach"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "official_name": "Smith"
+        }
+      ]
+    },
+    {
+      "title": "constant in where element",
+      "view": {
+        "constant": [
+          {
+            "name": "name_use",
+            "valueString": "official"
+          }
+        ],
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ],
+            "type": "column"
+          }
+        ],
+        "where": [
+          {
+            "path": "name.where(use = %name_use)"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "id": "pt1"
+        }
+      ]
+    },
+    {
+      "title": "constant in unionAll",
+      "view": {
+        "constant": [
+          {
+            "name": "use1",
+            "valueString": "official"
+          },
+          {
+            "name": "use2",
+            "valueString": "usual"
+          }
+        ],
+        "select": [
+          {
+            "unionAll": [
+              {
+                "forEach": "name.where(use = %use1)",
+                "select": [
+                  {
+                    "column": [
+                      {
+                        "name": "name",
+                        "path": "family"
+                      }
+                    ],
+                    "type": "column"
+                  }
+                ],
+                "type": "forEach"
+              },
+              {
+                "forEach": "name.where(use = %use2)",
+                "select": [
+                  {
+                    "column": [
+                      {
+                        "name": "name",
+                        "path": "family"
+                      }
+                    ],
+                    "type": "column"
+                  }
+                ],
+                "type": "forEach"
+              }
+            ],
+            "type": "unionAll"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "name": "Smith"
+        },
+        {
+          "name": "Block"
+        },
+        {
+          "name": "Johnson"
+        }
+      ]
+    },
+    {
+      "title": "integer constant",
+      "view": {
+        "constant": [
+          {
+            "name": "name_index",
+            "valueInteger": 1
+          }
+        ],
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              },
+              {
+                "name": "official_name",
+                "path": "name[%name_index].family"
+              }
+            ],
+            "type": "column"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "official_name": "Smith"
+        },
+        {
+          "id": "pt2",
+          "official_name": "Menendez"
+        }
+      ]
+    },
+    {
+      "title": "boolean constant",
+      "view": {
+        "constant": [
+          {
+            "name": "is_deceased",
+            "valueInteger": true
+          }
+        ],
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ],
+            "type": "column"
+          }
+        ],
+        "where": [
+          {
+            "path": "deceased.ofType(boolean) = %is_deceased"
+          }
+        ],
+        "type": "select"
+      },
+      "expect": [
+        {
+          "id": "pt2"
+        }
+      ]
+    },
+    {
+      "title": "accessing an undefined constant",
+      "view": {
+        "constant": [
+          {
+            "name": "name_use",
+            "valueString": "official"
+          }
+        ],
+        "select": [
+          {
+            "forEach": "name.where(use = %wrong_name)",
+            "select": [
+              {
+                "column": [
+                  {
+                    "name": "official_name",
+                    "path": "family"
+                  }
+                ],
+                "type": "column"
+              }
+            ],
+            "type": "forEach"
+          }
+        ],
+        "type": "select"
+      },
+      "expectError": "undefined environment variable: wrong_name"
+    },
+    {
+      "title": "incorrect constant definition",
+      "view": {
+        "constant": [
+          {
+            "name": "name_use"
+          }
+        ],
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              },
+              {
+                "name": "official_name",
+                "path": "name.where(use = %name_use).family"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }
