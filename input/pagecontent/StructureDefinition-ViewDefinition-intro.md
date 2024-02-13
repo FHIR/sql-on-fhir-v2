@@ -1,4 +1,4 @@
-A *view definition* is the central piece of the [View Layer](layers.html#the-view-layer) and represents a tabular projection of FHIR resources with the columns and filtering criteria defined by [FHIRPath](https://hl7.org/fhirpath/) expressions. The ViewDefinition logical model is seen below.
+A *view definition* is the central piece of the [View Layer](layers.html#the-view-layer) and represents a tabular projection of FHIR resources with the columns and filtering criteria defined by [FHIRPath](https://hl7.org/fhirpath/) expressions. The ViewDefinition logical model is described below.
 
 ## Key ViewDefinition Elements
 The key elements of the ViewDefinition are:
