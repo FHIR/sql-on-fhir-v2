@@ -23,9 +23,9 @@ export function run_test(viewdef, result) {
 
 
 export function add_test(opts) {
-  test(opts.title, ()=>{
-    test_case.tests.push(opts)
-    const res = evaluate(opts.view, test_case.resources)
+  test(opts.title, () => {
+    const res = evaluate(opts.view, test_case.resources);
+    test_case.tests.push(opts);
     expect(res).toEqual(opts.expect);
   })
 }

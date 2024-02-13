@@ -53,11 +53,9 @@
                 "name": "official_name",
                 "path": "name.where(use = %name_use).family"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -82,21 +80,14 @@
         "select": [
           {
             "forEach": "name.where(use = %name_use)",
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "official_name",
-                    "path": "family"
-                  }
-                ],
-                "type": "column"
+                "name": "official_name",
+                "path": "family"
               }
-            ],
-            "type": "forEach"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -120,16 +111,14 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
         ],
         "where": [
           {
             "path": "name.where(use = %name_use)"
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -155,39 +144,25 @@
             "unionAll": [
               {
                 "forEach": "name.where(use = %use1)",
-                "select": [
+                "column": [
                   {
-                    "column": [
-                      {
-                        "name": "name",
-                        "path": "family"
-                      }
-                    ],
-                    "type": "column"
+                    "name": "name",
+                    "path": "family"
                   }
-                ],
-                "type": "forEach"
+                ]
               },
               {
                 "forEach": "name.where(use = %use2)",
-                "select": [
+                "column": [
                   {
-                    "column": [
-                      {
-                        "name": "name",
-                        "path": "family"
-                      }
-                    ],
-                    "type": "column"
+                    "name": "name",
+                    "path": "family"
                   }
-                ],
-                "type": "forEach"
+                ]
               }
-            ],
-            "type": "unionAll"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -221,11 +196,9 @@
                 "name": "official_name",
                 "path": "name[%name_index].family"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -254,16 +227,14 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
         ],
         "where": [
           {
             "path": "deceased.ofType(boolean) = %is_deceased"
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -283,21 +254,14 @@
         "select": [
           {
             "forEach": "name.where(use = %wrong_name)",
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "official_name",
-                    "path": "family"
-                  }
-                ],
-                "type": "column"
+                "name": "official_name",
+                "path": "family"
               }
-            ],
-            "type": "forEach"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expectError": "undefined environment variable: wrong_name"
     },

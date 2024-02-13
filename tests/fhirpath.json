@@ -54,11 +54,9 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -82,11 +80,9 @@
                 "name": "v",
                 "path": "name.family.first()"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -111,11 +107,9 @@
                 "path": "name.family",
                 "collection": true
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -139,11 +133,9 @@
                 "name": "v",
                 "path": "name[0].family"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -167,11 +159,9 @@
                 "name": "v",
                 "path": "name[1].family"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -195,11 +185,9 @@
                 "name": "v",
                 "path": "name[2].family"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -223,11 +211,9 @@
                 "name": "v",
                 "path": "name.where(use='official').family"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -255,11 +241,9 @@
                 "name": "has_name",
                 "path": "name.exists()"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -290,11 +274,9 @@
                 "name": "has_given",
                 "path": "name.given.exists()"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -325,11 +307,9 @@
                 "name": "first_given",
                 "path": "name.given.first()"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -360,11 +340,9 @@
                 "name": "first_family",
                 "path": "name.family.first()"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -395,11 +373,9 @@
                 "name": "given",
                 "path": "name.given.join(', ' )"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -430,11 +406,9 @@
                 "name": "given",
                 "path": "name.given.join()"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -461,11 +435,9 @@
                 "name": "id",
                 "path": "getResourceKey()"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -493,11 +465,9 @@
                 "name": "ref",
                 "path": "managingOrganization.getReferenceKey()"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -528,11 +498,9 @@
                 "name": "ref",
                 "path": "managingOrganization.getReferenceKey(Organization)"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -563,11 +531,9 @@
                 "name": "ref",
                 "path": "managingOrganization.getReferenceKey(Encounter)"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {

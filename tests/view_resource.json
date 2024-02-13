@@ -31,11 +31,9 @@
                 "path": "id",
                 "name": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -57,11 +55,9 @@
                 "path": "id",
                 "name": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {

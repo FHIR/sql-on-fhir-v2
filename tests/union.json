@@ -98,54 +98,39 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           },
           {
             "unionAll": [
               {
                 "forEach": "telecom",
-                "select": [
+                "column": [
                   {
-                    "column": [
-                      {
-                        "name": "tel",
-                        "path": "value"
-                      },
-                      {
-                        "name": "sys",
-                        "path": "system"
-                      }
-                    ],
-                    "type": "column"
+                    "name": "tel",
+                    "path": "value"
+                  },
+                  {
+                    "name": "sys",
+                    "path": "system"
                   }
-                ],
-                "type": "forEach"
+                ]
               },
               {
                 "forEach": "contact.telecom",
-                "select": [
+                "column": [
                   {
-                    "column": [
-                      {
-                        "name": "tel",
-                        "path": "value"
-                      },
-                      {
-                        "name": "sys",
-                        "path": "system"
-                      }
-                    ],
-                    "type": "column"
+                    "name": "tel",
+                    "path": "value"
+                  },
+                  {
+                    "name": "sys",
+                    "path": "system"
                   }
-                ],
-                "type": "forEach"
+                ]
               }
-            ],
-            "type": "unionAll"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -210,64 +195,42 @@
       "view": {
         "select": [
           {
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "id",
-                    "path": "id"
-                  }
-                ],
-                "type": "column"
-              },
-              {
-                "unionAll": [
-                  {
-                    "forEach": "telecom",
-                    "select": [
-                      {
-                        "column": [
-                          {
-                            "name": "tel",
-                            "path": "value"
-                          },
-                          {
-                            "name": "sys",
-                            "path": "system"
-                          }
-                        ],
-                        "type": "column"
-                      }
-                    ],
-                    "type": "forEach"
-                  },
-                  {
-                    "forEach": "contact.telecom",
-                    "select": [
-                      {
-                        "column": [
-                          {
-                            "name": "tel",
-                            "path": "value"
-                          },
-                          {
-                            "name": "sys",
-                            "path": "system"
-                          }
-                        ],
-                        "type": "column"
-                      }
-                    ],
-                    "type": "forEach"
-                  }
-                ],
-                "type": "unionAll"
+                "name": "id",
+                "path": "id"
               }
             ],
-            "type": "select"
+            "unionAll": [
+              {
+                "forEach": "telecom",
+                "column": [
+                  {
+                    "name": "tel",
+                    "path": "value"
+                  },
+                  {
+                    "name": "sys",
+                    "path": "system"
+                  }
+                ]
+              },
+              {
+                "forEach": "contact.telecom",
+                "column": [
+                  {
+                    "name": "tel",
+                    "path": "value"
+                  },
+                  {
+                    "name": "sys",
+                    "path": "system"
+                  }
+                ]
+              }
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -332,64 +295,42 @@
       "view": {
         "select": [
           {
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "id",
-                    "path": "id"
-                  }
-                ],
-                "type": "column"
-              },
-              {
-                "unionAll": [
-                  {
-                    "forEach": "telecom",
-                    "select": [
-                      {
-                        "column": [
-                          {
-                            "name": "tel",
-                            "path": "value"
-                          },
-                          {
-                            "name": "sys",
-                            "path": "system"
-                          }
-                        ],
-                        "type": "column"
-                      }
-                    ],
-                    "type": "forEach"
-                  },
-                  {
-                    "forEach": "telecom",
-                    "select": [
-                      {
-                        "column": [
-                          {
-                            "name": "tel",
-                            "path": "value"
-                          },
-                          {
-                            "name": "sys",
-                            "path": "system"
-                          }
-                        ],
-                        "type": "column"
-                      }
-                    ],
-                    "type": "forEach"
-                  }
-                ],
-                "type": "unionAll"
+                "name": "id",
+                "path": "id"
               }
             ],
-            "type": "select"
+            "unionAll": [
+              {
+                "forEach": "telecom",
+                "column": [
+                  {
+                    "name": "tel",
+                    "path": "value"
+                  },
+                  {
+                    "name": "sys",
+                    "path": "system"
+                  }
+                ]
+              },
+              {
+                "forEach": "telecom",
+                "column": [
+                  {
+                    "name": "tel",
+                    "path": "value"
+                  },
+                  {
+                    "name": "sys",
+                    "path": "system"
+                  }
+                ]
+              }
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -449,56 +390,34 @@
       "view": {
         "select": [
           {
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "id",
-                    "path": "id"
-                  }
-                ],
-                "type": "column"
-              },
-              {
-                "unionAll": [
-                  {
-                    "forEach": "name",
-                    "select": [
-                      {
-                        "column": [
-                          {
-                            "name": "given",
-                            "path": "given"
-                          }
-                        ],
-                        "type": "column"
-                      }
-                    ],
-                    "type": "forEach"
-                  },
-                  {
-                    "forEach": "name",
-                    "select": [
-                      {
-                        "column": [
-                          {
-                            "name": "given",
-                            "path": "given"
-                          }
-                        ],
-                        "type": "column"
-                      }
-                    ],
-                    "type": "forEach"
-                  }
-                ],
-                "type": "unionAll"
+                "name": "id",
+                "path": "id"
               }
             ],
-            "type": "select"
+            "unionAll": [
+              {
+                "forEach": "name",
+                "column": [
+                  {
+                    "name": "given",
+                    "path": "given"
+                  }
+                ]
+              },
+              {
+                "forEach": "name",
+                "column": [
+                  {
+                    "name": "given",
+                    "path": "given"
+                  }
+                ]
+              }
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": []
     },
@@ -507,56 +426,34 @@
       "view": {
         "select": [
           {
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "id",
-                    "path": "id"
-                  }
-                ],
-                "type": "column"
-              },
-              {
-                "unionAll": [
-                  {
-                    "forEachOrNull": "name",
-                    "select": [
-                      {
-                        "column": [
-                          {
-                            "name": "given",
-                            "path": "given"
-                          }
-                        ],
-                        "type": "column"
-                      }
-                    ],
-                    "type": "forEachOrNull"
-                  },
-                  {
-                    "forEachOrNull": "name",
-                    "select": [
-                      {
-                        "column": [
-                          {
-                            "name": "given",
-                            "path": "given"
-                          }
-                        ],
-                        "type": "column"
-                      }
-                    ],
-                    "type": "forEachOrNull"
-                  }
-                ],
-                "type": "unionAll"
+                "name": "id",
+                "path": "id"
               }
             ],
-            "type": "select"
+            "unionAll": [
+              {
+                "forEachOrNull": "name",
+                "column": [
+                  {
+                    "name": "given",
+                    "path": "given"
+                  }
+                ]
+              },
+              {
+                "forEachOrNull": "name",
+                "column": [
+                  {
+                    "name": "given",
+                    "path": "given"
+                  }
+                ]
+              }
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -598,76 +495,47 @@
       "view": {
         "select": [
           {
-            "select": [
+            "column": [
               {
+                "name": "id",
+                "path": "id"
+              }
+            ],
+            "unionAll": [
+              {
+                "forEach": "telecom[0]",
                 "column": [
                   {
-                    "name": "id",
-                    "path": "id"
+                    "name": "tel",
+                    "path": "value"
                   }
-                ],
-                "type": "column"
+                ]
               },
               {
                 "unionAll": [
                   {
                     "forEach": "telecom[0]",
-                    "select": [
+                    "column": [
                       {
-                        "column": [
-                          {
-                            "name": "tel",
-                            "path": "value"
-                          }
-                        ],
-                        "type": "column"
+                        "name": "tel",
+                        "path": "value"
                       }
-                    ],
-                    "type": "forEach"
+                    ]
                   },
                   {
-                    "unionAll": [
+                    "forEach": "contact.telecom[0]",
+                    "column": [
                       {
-                        "forEach": "telecom[0]",
-                        "select": [
-                          {
-                            "column": [
-                              {
-                                "name": "tel",
-                                "path": "value"
-                              }
-                            ],
-                            "type": "column"
-                          }
-                        ],
-                        "type": "forEach"
-                      },
-                      {
-                        "forEach": "contact.telecom[0]",
-                        "select": [
-                          {
-                            "column": [
-                              {
-                                "name": "tel",
-                                "path": "value"
-                              }
-                            ],
-                            "type": "column"
-                          }
-                        ],
-                        "type": "forEach"
+                        "name": "tel",
+                        "path": "value"
                       }
-                    ],
-                    "type": "unionAll"
+                    ]
                   }
-                ],
-                "type": "unionAll"
+                ]
               }
-            ],
-            "type": "select"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -706,54 +574,39 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           },
           {
             "unionAll": [
               {
                 "forEach": "telecom.where(false)",
-                "select": [
+                "column": [
                   {
-                    "column": [
-                      {
-                        "name": "tel",
-                        "path": "value"
-                      },
-                      {
-                        "name": "sys",
-                        "path": "system"
-                      }
-                    ],
-                    "type": "column"
+                    "name": "tel",
+                    "path": "value"
+                  },
+                  {
+                    "name": "sys",
+                    "path": "system"
                   }
-                ],
-                "type": "forEach"
+                ]
               },
               {
                 "forEach": "contact.telecom",
-                "select": [
+                "column": [
                   {
-                    "column": [
-                      {
-                        "name": "tel",
-                        "path": "value"
-                      },
-                      {
-                        "name": "sys",
-                        "path": "system"
-                      }
-                    ],
-                    "type": "column"
+                    "name": "tel",
+                    "path": "value"
+                  },
+                  {
+                    "name": "sys",
+                    "path": "system"
                   }
-                ],
-                "type": "forEach"
+                ]
               }
-            ],
-            "type": "unionAll"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -804,8 +657,7 @@
                     "name": "b",
                     "path": "b"
                   }
-                ],
-                "type": "column"
+                ]
               },
               {
                 "column": [
@@ -817,14 +669,11 @@
                     "name": "c",
                     "path": "c"
                   }
-                ],
-                "type": "column"
+                ]
               }
-            ],
-            "type": "unionAll"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expectError": "columns mismatch"
     },
@@ -844,8 +693,7 @@
                     "name": "b",
                     "path": "b"
                   }
-                ],
-                "type": "column"
+                ]
               },
               {
                 "column": [
@@ -857,14 +705,11 @@
                     "name": "a",
                     "path": "a"
                   }
-                ],
-                "type": "column"
+                ]
               }
-            ],
-            "type": "unionAll"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expectError": "columns mismatch"
     }

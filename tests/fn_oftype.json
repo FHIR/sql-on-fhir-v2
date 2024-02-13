@@ -45,11 +45,9 @@
                 "path": "value.ofType(string)",
                 "name": "string_value"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -81,11 +79,9 @@
                 "path": "value.ofType(integer)",
                 "name": "integer_value"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -117,11 +113,9 @@
                 "path": "value.ofType(Invalid)",
                 "name": "invalid_value"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expectError": "invalid type"
     },
@@ -140,11 +134,9 @@
                 "path": "value.ofType(42)",
                 "name": "invalid_argument"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expectError": "invalid type"
     }

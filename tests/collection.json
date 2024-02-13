@@ -64,11 +64,9 @@
                 "path": "name.given",
                 "collection": true
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expectError": "Collection value"
     },
@@ -93,11 +91,9 @@
                 "path": "name.given",
                 "collection": true
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -118,42 +114,31 @@
         "resource": "Patient",
         "select": [
           {
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "id",
-                    "path": "id"
-                  }
-                ],
-                "type": "column"
-              },
-              {
-                "forEach": "name",
-                "select": [
-                  {
-                    "column": [
-                      {
-                        "name": "last_name",
-                        "path": "family",
-                        "collection": false
-                      },
-                      {
-                        "name": "first_name",
-                        "path": "given",
-                        "collection": true
-                      }
-                    ],
-                    "type": "column"
-                  }
-                ],
-                "type": "forEach"
+                "name": "id",
+                "path": "id"
               }
             ],
-            "type": "select"
+            "select": [
+              {
+                "forEach": "name",
+                "column": [
+                  {
+                    "name": "last_name",
+                    "path": "family",
+                    "collection": false
+                  },
+                  {
+                    "name": "first_name",
+                    "path": "given",
+                    "collection": true
+                  }
+                ]
+              }
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -184,42 +169,31 @@
         "resource": "Patient",
         "select": [
           {
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "id",
-                    "path": "id"
-                  }
-                ],
-                "type": "column"
-              },
-              {
-                "forEach": "name",
-                "select": [
-                  {
-                    "column": [
-                      {
-                        "name": "last_name",
-                        "path": "family",
-                        "collection": false
-                      },
-                      {
-                        "name": "first_name",
-                        "path": "given",
-                        "collection": true
-                      }
-                    ],
-                    "type": "column"
-                  }
-                ],
-                "type": "forEach"
+                "name": "id",
+                "path": "id"
               }
             ],
-            "type": "select"
+            "select": [
+              {
+                "forEach": "name",
+                "column": [
+                  {
+                    "name": "last_name",
+                    "path": "family",
+                    "collection": false
+                  },
+                  {
+                    "name": "first_name",
+                    "path": "given",
+                    "collection": true
+                  }
+                ]
+              }
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {

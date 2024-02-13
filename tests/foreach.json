@@ -64,26 +64,18 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           },
           {
             "forEach": "name",
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "family",
-                    "path": "family"
-                  }
-                ],
-                "type": "column"
+                "name": "family",
+                "path": "family"
               }
-            ],
-            "type": "forEach"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -114,26 +106,18 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           },
           {
             "forEachOrNull": "name",
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "family",
-                    "path": "family"
-                  }
-                ],
-                "type": "column"
+                "name": "family",
+                "path": "family"
               }
-            ],
-            "type": "forEachOrNull"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -168,26 +152,18 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           },
           {
             "forEach": "identifier",
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "value",
-                    "path": "value"
-                  }
-                ],
-                "type": "column"
+                "name": "value",
+                "path": "value"
               }
-            ],
-            "type": "forEach"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": []
     },
@@ -201,26 +177,18 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           },
           {
             "forEachOrNull": "identifier",
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "value",
-                    "path": "value"
-                  }
-                ],
-                "type": "column"
+                "name": "value",
+                "path": "value"
               }
-            ],
-            "type": "forEachOrNull"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -247,8 +215,7 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           },
           {
             "forEach": "contact",
@@ -259,29 +226,20 @@
                     "name": "contact_type",
                     "path": "telecom.system"
                   }
-                ],
-                "type": "column"
+                ]
               },
               {
                 "forEach": "name.given",
-                "select": [
+                "column": [
                   {
-                    "column": [
-                      {
-                        "name": "name",
-                        "path": "$this"
-                      }
-                    ],
-                    "type": "column"
+                    "name": "name",
+                    "path": "$this"
                   }
-                ],
-                "type": "forEach"
+                ]
               }
-            ],
-            "type": "forEach"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -311,41 +269,29 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           },
           {
             "forEach": "contact",
-            "select": [
+            "column": [
               {
-                "column": [
-                  {
-                    "name": "contact_type",
-                    "path": "telecom.system"
-                  }
-                ],
-                "type": "column"
-              },
-              {
-                "forEach": "name.given",
-                "select": [
-                  {
-                    "column": [
-                      {
-                        "name": "name",
-                        "path": "$this"
-                      }
-                    ],
-                    "type": "column"
-                  }
-                ],
-                "type": "forEach"
+                "name": "contact_type",
+                "path": "telecom.system"
               }
             ],
-            "type": "forEach"
+            "select": [
+              {
+                "forEach": "name.given",
+                "column": [
+                  {
+                    "name": "name",
+                    "path": "$this"
+                  }
+                ]
+              }
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {

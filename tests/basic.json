@@ -38,11 +38,9 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -70,11 +68,9 @@
                 "name": "active",
                 "path": "active"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -105,11 +101,9 @@
                 "name": "last_name",
                 "path": "name.family.first()"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -136,8 +130,7 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           },
           {
             "column": [
@@ -145,11 +138,9 @@
                 "name": "last_name",
                 "path": "name.family.first()"
               }
-            ],
-            "type": "column"
+            ]
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -176,16 +167,14 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
         ],
         "where": [
           {
             "path": "active=true"
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -203,16 +192,14 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
         ],
         "where": [
           {
             "path": "active=false"
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -230,16 +217,14 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
         ],
         "where": [
           {
             "path": "active"
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -257,16 +242,14 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
         ],
         "where": [
           {
             "path": "name.family = 'F2'"
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -284,16 +267,14 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
         ],
         "where": [
           {
             "path": "name.family = 'F1'"
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {
@@ -311,16 +292,14 @@
                 "name": "id",
                 "path": "id"
               }
-            ],
-            "type": "column"
+            ]
           }
         ],
         "where": [
           {
             "path": "name.family"
           }
-        ],
-        "type": "select"
+        ]
       },
       "expect": [
         {

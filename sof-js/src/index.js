@@ -263,8 +263,7 @@ function collect_columns(acc, def){
 
 // collect columns in a right order
 export function get_columns(def) {
-  normalize(def);
-  return collect_columns([], def)
+  return collect_columns([], normalize(structuredClone(def)));
 }
 
 export function evaluate(def, node) {
@@ -272,6 +271,6 @@ export function evaluate(def, node) {
     return evaluate(def, [node])
   }
 
-  let normal_def = normalize(def);
+  const normal_def = normalize(structuredClone(def));
   return node.flatMap(n => do_eval(normal_def, n, def))
 }
