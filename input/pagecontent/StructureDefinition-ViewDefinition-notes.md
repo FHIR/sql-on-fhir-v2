@@ -1,6 +1,6 @@
 ## Specifying a Select
 
-A [`select`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select) specifies the content and names for the columns in the view. The content for each column is defined with [FHIRPath](https://hl7.org/fhirpath/) expressions that return specific data elements from the FHIR resources. More complex views can be specified to create resource or reference keys, unnest a collection of items returned by a FHIRPath expression, nest or concatenate the results from multiple selects, and so on.
+A [`select`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select) specifies the content and names for the columns in the view. The content for each column is defined with a [FHIRPath](https://hl7.org/fhirpath/) expression that returns a specific data element from the FHIR resources. More complex views can be specified to create resource or reference keys, unnest a collection of items returned by a FHIRPath expression, nest or concatenate the results from multiple selects, and so on.
 
 ### Supported FHIRPath Functionality
 
