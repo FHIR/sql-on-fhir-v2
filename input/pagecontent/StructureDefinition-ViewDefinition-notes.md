@@ -162,7 +162,7 @@ be able to produce a row key for each resource and a matching key for references
 and intentionally leaves the specific mechanism to the implementation.
 
 ### Contained Resources
-This specification requires implementaters to extract contained resources,
+This specification requires implementers to extract contained resources,
 needed for *view definitions*, into independent resources that can then be accessed via
 [getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) like any other resource. Implementations SHOULD
 normalize these resources appropriately whenever possible, such as eliminating duplicate resources contained in many parent resources. Note that this may change in a later version of this specification, allowing users to explicitly create separate views for contained resources that could be distinct from top-level resource views.
@@ -171,7 +171,7 @@ Contained resources have different semantics than other resources since they don
 and the same logical record may be duplicated across many containing resources. This makes SQL best practices difficult since the data is denormalized and ambiguous. For instance, `Patient.generalPractitioner` may be a contained resource that may or may not be the same practitioner seen in other *Patient* resources. Therefore, the approach in this specification requires systems to pre-process the data into normalized, independent resources if needed.
 
 For the same reason, the output from running a ViewDefinition will not include contained resources. For instance, a view of
-*Practitioner* resources will include top-level *Practitioner* resources but not contained *Practictioner* resources from inside the *Patient* resources.
+*Practitioner* resources will include top-level *Practitioner* resources but not contained *Practitioner* resources from inside the *Patient* resources.
 
 ### Unnesting semantics
 
@@ -184,7 +184,7 @@ one row per address. Each row would still have a *patient_id* field to know whic
 associated with. You can see this in the
 [PatientAddresses example](Binary-PatientAddresses.html), which unrolls addresses as described above.
 
-[`forEach`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach) and [`forEachOrNull`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull) apply both to the columns within a `select` and any nested `select`s it contains. Therefore the following `select` will produce the same results:
+[`forEach`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach) and [`forEachOrNull`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull) apply both to the columns within a `select` and any nested `select`s it contains. Therefore, the following `select` will produce the same results:
 
 ```js
 "select": [{
@@ -246,7 +246,7 @@ The multiple rows produced using `forEach` or `forEachOrNull` from a `select` ar
 The [example view definitions](StructureDefinition-ViewDefinition-examples.html) illustrate this behavior.
 
 ### Unions
-A `select` can have an optional `unionAll`, which contains a list of `select`s to be unioned, or combined. `unionAll` effectively concatenates the results of the nested `select`s that it contains, but without a guarantee that row ordering will be preserved. Each `select` contained in the `unionAll` must produce the same columns including their specified names and FHIR types.
+A `select` can have an optional `unionAll`, which contains a list of `select`s that are used to create a union. `unionAll` effectively concatenates the results of the nested `select`s that it contains, but without a guarantee that row ordering will be preserved. Each `select` contained in the `unionAll` must produce the same columns including their specified names and FHIR types.
 
 For instance, to create a table of all `Patient.address` and `Patient.contact.address`, we could use `unionAll`:
 
@@ -271,7 +271,7 @@ For instance, to create a table of all `Patient.address` and `Patient.contact.ad
 }
 ```
 
-The above example uses `forEach` to select different data elements from the resources to be unioned. For other use cases, it is possible to define the columns directly
+The above example uses `forEach` to select different data elements from the resources to be included in the union. For other use cases, it is possible to define the columns directly
 in the `select`. See the [PatientAndContactAddressUnion example](Binary-PatientAndContactAddressUnion.html) for a complete version of the above.
 
 The columns produced from the `unionAll` list are effectively added to the parent `select`, following any other columns from its parent for column ordering. See the [column ordering](#column-ordering) section below for details.
@@ -282,7 +282,7 @@ The `select`s in a `unionAll` MUST have matching columns. Specifically, each nes
 *UNION ALL*. Nested `select`s can be used when multiple `unionAll`s are needed within a single view.
 
 
-### Composing Mulitple Selects and Unions
+### Composing Multiple Selects and Unions
 `unionAll` produces rows that can be used just like a `select` expression. These rows can be used by containing `select`s or `unionAll`s without needing any special knowledge of how they were produced. This means that `unionAll` and `select` operations can be nested with intuitive behavior, similar to how functions can be nested in many programming languages.
 
 For instance, the two expressions below will return the same rows despite the first being a single `unionAll` and the second being composed of a nested `select` that contains additional `unionAll`s.
