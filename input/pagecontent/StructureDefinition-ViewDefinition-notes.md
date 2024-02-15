@@ -457,7 +457,7 @@ This is an example of a constant used in the `where` constraint of a view:
   // <snip>
   "constant": [{
     "name": "bp_code",
-      "valueCode": "8480-6"
+    "valueCode": "8480-6"
   }],
   // <snip>
   "where": [{
