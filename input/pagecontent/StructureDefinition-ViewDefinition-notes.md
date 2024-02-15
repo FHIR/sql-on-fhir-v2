@@ -41,14 +41,14 @@ All *view runners* must implement these functions that extend the
 FHIRPath specification. Despite not being in the [FHIRPath](https://hl7.org/fhirpath/) specification, they are necessary in the context of defining views:
 
 * [getResourceKey](#getresourcekey--keytype) function
-* [getReferenceKey](#getreferencekeyresource-resourcetypecode--keytype) function
+* [getReferenceKey](#getreferencekeyresource-type-specifier--keytype) function
 
 ##### getResourceKey() : *KeyType*
 
 This is invoked at the root of a FHIR [Resource](https://build.fhir.org/resource.html) and returns
 an opaque value to be used as the primary key for the row associated with the resource. In many cases
 the value may just be the resource `id`, but exceptions are described below. This function is used in
-tandem with [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype), which returns
+tandem with [getReferenceKey()](#getreferencekeyresource-type-specifier--keytype), which returns
 an equal value from references that point to this resource.
 
 The returned *KeyType* is implementation dependent, but must be a FHIR primitive type that can be used
@@ -88,10 +88,10 @@ While ViewDefinitions do not directly implement joins across resources, the
 views produced should be easily joined by the database or analytic tools of the
 user's choice. This can be done by including primary and foreign keys as part of the tabular
 view output, which can be done with the [getResourceKey()](#getresourcekey--keytype) and
-[getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) functions.
+[getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) functions.
 
 Users may call [getResourceKey()](#getresourcekey--keytype) to obtain a resource's primary key,
-and call [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) to get
+and call [getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) to get
 the corresponding foreign key from a reference pointing at that resource/row.
 
 For example, a minimal view of *Patient* resources could look like this:
@@ -145,7 +145,7 @@ join semantics.
 
 ### Suggested Implementations for getResourceKey() and getReferenceKey()
 While [getResourceKey()](#getresourcekey--keytype) and
-[getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) must return matching
+[getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) must return matching
 values for the same row, *how* they do so is left to the implementation. This is by design,
 allowing ViewDefinitions to be run across a wide set of systems that have different data invariants
 or pre-processing capabilities.
@@ -155,7 +155,7 @@ Here are some implementation options to meet different needs:
 |---|---|
 |Return the Resource ID|If the system can guaranteed that each resource has a simple `id` and the corresponding references have simple, relative `id`s that point to it (e.g., *Patient/123*), [getResourceKey()](#getresourcekey--keytype) and [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) implementations may simply return those values. This is the simplest case and will apply to many (but not all) systems.|
 |Return a "Primary" Identifier|Since the resource `id` is by definition an system-specific identifier, it may change as FHIR data is exported and loaded between systems, and therefore not be a reliable target for references. For instance, a bulk export from one source system could be loaded into a target system that applies its own `id`s to the resources, requiring that joins be done on the resource's `identifier` rather than its `id`.<br><br>In this case, implementations will need to determine row keys based on the resource `identifier` and corresponding `identifier`s in the references.<br><br>The simplest variation of this is when there is only one `identifier` for each resource. In other cases, the implementation may may be able to select a "primary" `identifier`, based on the `identifier.system` namespace, `identifier.use` code, or other property. For instance, if the primary `Identifier.system` is *example_primary_system*, implementations can select the desired `identifier` to use as a row key by checking for that.<br><br>In either case, the resource `identifier` and corresponding reference `identifier` can then be converted to a row key, perhaps by building a string or computing a cryptographic hash of the `identifier`s themselves. The best approach is left to the implementation.|
-|Pre-Process to Create or Resolve Keys|The most difficult case is systems where the resource `id` is a not a reliable row key, and resources have multiple `identifier`s with no clear way to select one for the key.<br><br>In this case, implementations will likely have to fall back to some form of preprocessing to determine appropriate keys. This may be accomplished by:<br><br><ul><li>Pre-processing all data to have clear resource `id`s or "primary" `identifier`s and using one of the options above.</li><li>Building some form of cross-link table dynamically within the implementation itself based on the underlying data. For instance, if an implementation's [getResourceKey()](#getresourcekey--keytype) uses a specific identifier system, [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) could use use a pre-built cross-link table to find the appropriate identifier-based key to return.</li></ul>|
+|Pre-Process to Create or Resolve Keys|The most difficult case is systems where the resource `id` is a not a reliable row key, and resources have multiple `identifier`s with no clear way to select one for the key.<br><br>In this case, implementations will likely have to fall back to some form of preprocessing to determine appropriate keys. This may be accomplished by:<br><br><ul><li>Pre-processing all data to have clear resource `id`s or "primary" `identifier`s and using one of the options above.</li><li>Building some form of cross-link table dynamically within the implementation itself based on the underlying data. For instance, if an implementation's [getResourceKey()](#getresourcekey--keytype) uses a specific identifier system, [getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) could use use a pre-built cross-link table to find the appropriate identifier-based key to return.</li></ul>|
 
 There are many variations and alternatives to the above. This spec simply asserts that implementations must
 be able to produce a row key for each resource and a matching key for references pointing at that resource,
@@ -164,7 +164,7 @@ and intentionally leaves the specific mechanism to the implementation.
 ### Contained Resources
 This specification requires implementaters to extract contained resources,
 needed for *view definitions*, into independent resources that can then be accessed via
-[getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) like any other resource. Implementations SHOULD
+[getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) like any other resource. Implementations SHOULD
 normalize these resources appropriately whenever possible, such as eliminating duplicate resources contained in many parent resources. Note that this may change in a later version of this specification, allowing users to explicitly create separate views for contained resources that could be distinct from top-level resource views.
 
 Contained resources have different semantics than other resources since they don't have an independent identity,
