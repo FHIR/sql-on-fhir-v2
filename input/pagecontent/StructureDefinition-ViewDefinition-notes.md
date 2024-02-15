@@ -153,7 +153,7 @@ or pre-processing capabilities.
 Here are some implementation options to meet different needs:
 |Approach|Details|
 |---|---|
-|Return the Resource ID|If the system can guarantee that each resource has a simple `id` and the corresponding references have simple, relative `id`s that point to it (e.g., *Patient/123*), [getResourceKey()](#getresourcekey--keytype) and [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) implementations may simply return those values. This is the simplest case and will apply to many (but not all) systems.|
+|Return the Resource ID|If the system can guarantee that each resource has a simple `id` and the corresponding references have simple, relative `id`s that point to it (e.g., *Patient/123*), [getResourceKey()](#getresourcekey--keytype) and [getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) implementations may simply return those values. This is the simplest case and will apply to many (but not all) systems.|
 |Return a "Primary" Identifier|Since the resource `id` is by definition a system-specific identifier, it may change as FHIR data is exported and loaded between systems, and therefore not be a reliable target for references. For instance, a bulk export from one source system could be loaded into a target system that applies its own `id`s to the resources, requiring that joins be done on the resource's `identifier` rather than its `id`.<br><br>In this case, implementations will need to determine row keys based on the resource `identifier` and corresponding `identifier`s in the references.<br><br>The simplest variation of this is when there is only one `identifier` for each resource. In other cases, the implementation may be able to select a "primary" `identifier`, based on the `identifier.system` namespace, `identifier.use` code, or other property. For instance, if the primary `Identifier.system` is *example_primary_system*, implementations can select the desired `identifier` to use as a row key by checking for that.<br><br>In either case, the resource `identifier` and corresponding reference `identifier` can then be converted to a row key, perhaps by building a string or computing a cryptographic hash of the `identifier`s themselves. The best approach is left to the implementation.|
 |Pre-Process to Create or Resolve Keys|The most difficult case is systems where the resource `id` is a not a reliable row key, and resources have multiple `identifier`s with no clear way to select one for the key.<br><br>In this case, implementations will likely have to fall back to some form of preprocessing to determine appropriate keys. This may be accomplished by:<br><br><ul><li>Pre-processing all data to have clear resource `id`s or "primary" `identifier`s and using one of the options above.</li><li>Building some form of cross-link table dynamically within the implementation itself based on the underlying data. For instance, if an implementation's [getResourceKey()](#getresourcekey--keytype) uses a specific identifier system, [getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) could use a pre-built cross-link table to find the appropriate identifier-based key to return.</li></ul>|
 
@@ -391,8 +391,8 @@ If the column is a primitive type (typical of tabular output), its type is infer
 1. If the [`collection`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.collection) is not
 set to *true*, the returned data type must be a single value.
 2. If the `path` is a series of *parent.child.subPath* navigation steps from a known data type, either from the root resource
-or a child  of an ofType() function, then the data type for each column is determined by the structure definition it comes from.
-3. If the terminal expression is one of the [required FHIRPath functions](#core-fhirpath-expressions-required) with a defined return type, then the column will be of that data type. For instance, if the `path` ends in exists() or lowBoundary(), the data type for the column would be boolean or an instant type, respectively.
+or a child of an ofType() function, then the data type for each column is determined by the structure definition it comes from.
+3. If the terminal expression is one of the [supported FHIRPath functions](#supported-fhirpath-functionality) with a defined return type, then the column will be of that data type. For instance, if the `path` ends in exists() or lowBoundary(), the data type for the column would be boolean or an instant type, respectively.
 4. A path that ends in ofType() will be of the type given to that function.
 
 Note that type inference is an optional feature and some implementations may
@@ -403,7 +403,7 @@ treat any non-specified types as strings. Moreover, non-primitive data types wil
 
 Importantly, the above determines the FHIR type produced for the column. How that type is physically manifested depends
 on the implementation. Implementations may map these to native database types or have each column simply produce a string,
-as would be done in a CSV-based implementation. See the [database type hints](#database-type-hints) section below if finer
+as would be done in a CSV-based implementation. See the [database type hints](#type-hinting-with-tags) section below if finer
 database-specific type control is needed.
 
 ### Type Hinting with Tags
@@ -467,7 +467,7 @@ This is an example of a constant used in the `where` constraint of a view:
 
 ## Processing Algorithm (Model)
 
-See [Processing Algorithm](./processing_model) for a description of how to
+See [Processing Algorithm](processing_model.html) for a description of how to
 process a FHIR resource as input for a `ViewDefinition`. Implementations do not
 need to follow this algorithm directly, but their outputs should be consistent
 with what this model produces.
