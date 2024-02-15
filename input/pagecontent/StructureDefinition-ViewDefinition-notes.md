@@ -151,11 +151,29 @@ allowing ViewDefinitions to be run across a wide set of systems that have differ
 or pre-processing capabilities.
 
 Here are some implementation options to meet different needs:
-|Approach|Details|
-|---|---|
-|Return the Resource ID|If the system can guarantee that each resource has a simple `id` and the corresponding references have simple, relative `id`s that point to it (e.g., *Patient/123*), [getResourceKey()](#getresourcekey--keytype) and [getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) implementations may simply return those values. This is the simplest case and will apply to many (but not all) systems.|
-|Return a "Primary" Identifier|Since the resource `id` is by definition a system-specific identifier, it may change as FHIR data is exported and loaded between systems, and therefore not be a reliable target for references. For instance, a bulk export from one source system could be loaded into a target system that applies its own `id`s to the resources, requiring that joins be done on the resource's `identifier` rather than its `id`.<br><br>In this case, implementations will need to determine row keys based on the resource `identifier` and corresponding `identifier`s in the references.<br><br>The simplest variation of this is when there is only one `identifier` for each resource. In other cases, the implementation may be able to select a "primary" `identifier`, based on the `identifier.system` namespace, `identifier.use` code, or other property. For instance, if the primary `Identifier.system` is *example_primary_system*, implementations can select the desired `identifier` to use as a row key by checking for that.<br><br>In either case, the resource `identifier` and corresponding reference `identifier` can then be converted to a row key, perhaps by building a string or computing a cryptographic hash of the `identifier`s themselves. The best approach is left to the implementation.|
-|Pre-Process to Create or Resolve Keys|The most difficult case is systems where the resource `id` is a not a reliable row key, and resources have multiple `identifier`s with no clear way to select one for the key.<br><br>In this case, implementations will likely have to fall back to some form of preprocessing to determine appropriate keys. This may be accomplished by:<br><br><ul><li>Pre-processing all data to have clear resource `id`s or "primary" `identifier`s and using one of the options above.</li><li>Building some form of cross-link table dynamically within the implementation itself based on the underlying data. For instance, if an implementation's [getResourceKey()](#getresourcekey--keytype) uses a specific identifier system, [getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) could use a pre-built cross-link table to find the appropriate identifier-based key to return.</li></ul>|
+
+<table>
+    <thead>
+        <tr>
+            <th>Approach</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Return the Resource ID</td>
+            <td>If the system can guarantee that each resource has a simple <code>id</code> and the corresponding references have simple, relative <code>id</code>s that point to it (e.g., <em>Patient/123</em>), <a href="#getresourcekey--keytype">getResourceKey()</a> and <a href="#getreferencekeyresource-type-specifier--keytype">getReferenceKey()</a> implementations may simply return those values. This is the simplest case and will apply to many (but not all) systems.</td>
+        </tr>
+        <tr>
+            <td>Return a "Primary" Identifier</td>
+            <td>Since the resource <code>id</code> is by definition a system-specific identifier, it may change as FHIR data is exported and loaded between systems, and therefore not be a reliable target for references. For instance, a bulk export from one source system could be loaded into a target system that applies its own <code>id</code>s to the resources, requiring that joins be done on the resource's <code>identifier</code> rather than its <code>id</code>.<br><br>In this case, implementations will need to determine row keys based on the resource <code>identifier</code> and corresponding <code>identifier</code>s in the references.<br><br>The simplest variation of this is when there is only one <code>identifier</code> for each resource. In other cases, the implementation may be able to select a "primary" <code>identifier</code>, based on the <code>identifier.system</code> namespace, <code>identifier.use</code> code, or other property. For instance, if the primary <code>Identifier.system</code> is <em>example_primary_system</em>, implementations can select the desired <code>identifier</code> to use as a row key by checking for that.<br><br>In either case, the resource <code>identifier</code> and corresponding reference <code>identifier</code> can then be converted to a row key, perhaps by building a string or computing a cryptographic hash of the <code>identifier</code>s themselves. The best approach is left to the implementation.</td>
+        </tr>
+        <tr>
+            <td>Pre-Process to Create or Resolve Keys</td>
+            <td>The most difficult case is systems where the resource <code>id</code> is a not a reliable row key, and resources have multiple <code>identifier</code>s with no clear way to select one for the key.<br><br>In this case, implementations will likely have to fall back to some form of preprocessing to determine appropriate keys. This may be accomplished by:<br><br><ul><li>Pre-processing all data to have clear resource <code>id</code>s or "primary" <code>identifier</code>s and using one of the options above.</li><li>Building some form of cross-link table dynamically within the implementation itself based on the underlying data. For instance, if an implementation's <a href="#getresourcekey--keytype">getResourceKey()</a> uses a specific identifier system, <a href="#getreferencekeyresource-type-specifier--keytype">getReferenceKey()</a> could use a pre-built cross-link table to find the appropriate identifier-based key to return.</li></ul></td>
+        </tr>
+    </tbody>
+</table>
 
 There are many variations and alternatives to the above. This spec simply asserts that implementations must
 be able to produce a row key for each resource and a matching key for references pointing at that resource,
