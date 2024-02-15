@@ -40,8 +40,8 @@ broader set of use cases:
 All *view runners* must implement these functions that extend the
 FHIRPath specification. Despite not being in the [FHIRPath](https://hl7.org/fhirpath/) specification, they are necessary in the context of defining views:
 
-* [getResourceKey](https://hl7.org/fhir/R4/fhirpath.html#functions) function
-* [getReferenceKey](https://hl7.org/fhirpath/#toquantityunit-string-quantity) function
+* [getResourceKey](#getresourcekey--keytype) function
+* [getReferenceKey](#getreferencekeyresource-resourcetypecode--keytype) function
 
 ##### getResourceKey() : *KeyType*
 
@@ -55,7 +55,7 @@ The returned *KeyType* is implementation dependent, but must be a FHIR primitive
 for efficient joins in the system's underlying data storage. Integers, strings, UUIDs, and other primitive
 types are appropriate.
 
-See the [Resource Keys and Joins](#resource-keys-and-joins) section below for details.
+See the [Joins with Resource and Reference Keys](#joins-with-resource-and-reference-keys) section below for details.
 
 ##### getReferenceKey([resource: type specifier]) : *KeyType*
 
@@ -155,14 +155,14 @@ Here are some implementation options to meet different needs:
 |---|---|
 |Return the Resource ID|If the system can guaranteed that each resource has a simple `id` and the corresponding references have simple, relative `id`s that point to it (e.g., *Patient/123*), [getResourceKey()](#getresourcekey--keytype) and [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) implementations may simply return those values. This is the simplest case and will apply to many (but not all) systems.|
 |Return a "Primary" Identifier|Since the resource `id` is by definition an system-specific identifier, it may change as FHIR data is exported and loaded between systems, and therefore not be a reliable target for references. For instance, a bulk export from one source system could be loaded into a target system that applies its own `id`s to the resources, requiring that joins be done on the resource's `identifier` rather than its `id`.<br><br>In this case, implementations will need to determine row keys based on the resource `identifier` and corresponding `identifier`s in the references.<br><br>The simplest variation of this is when there is only one `identifier` for each resource. In other cases, the implementation may may be able to select a "primary" `identifier`, based on the `identifier.system` namespace, `identifier.use` code, or other property. For instance, if the primary `Identifier.system` is *example_primary_system*, implementations can select the desired `identifier` to use as a row key by checking for that.<br><br>In either case, the resource `identifier` and corresponding reference `identifier` can then be converted to a row key, perhaps by building a string or computing a cryptographic hash of the `identifier`s themselves. The best approach is left to the implementation.|
-|Pre-Process to Create or Resolve Keys|The most difficult case is systems where the resource `id` is a not a reliable row key, and resources have multiple `identifier`s with no clear way to select one for the key.<br><br>In this case, implementations will likely have to fall back to some form of preprocessing to determine appropriate keys. This may be accomplished by:<br><br><ul><li>Pre-processing all data to have clear resource `id`s or "primary" `identifier`s and using one of the options above.</li><li>Building some form of cross-link table dynamically within the implementation itself based on the underlying data. For instance, if an implementation's [getResourceKey()](#getresourcekey--keytype) uses a specific identifier system, [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) could use use a pre-built cross-link table to find the appropriate identifier-based key to return.</li></ul>
+|Pre-Process to Create or Resolve Keys|The most difficult case is systems where the resource `id` is a not a reliable row key, and resources have multiple `identifier`s with no clear way to select one for the key.<br><br>In this case, implementations will likely have to fall back to some form of preprocessing to determine appropriate keys. This may be accomplished by:<br><br><ul><li>Pre-processing all data to have clear resource `id`s or "primary" `identifier`s and using one of the options above.</li><li>Building some form of cross-link table dynamically within the implementation itself based on the underlying data. For instance, if an implementation's [getResourceKey()](#getresourcekey--keytype) uses a specific identifier system, [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) could use use a pre-built cross-link table to find the appropriate identifier-based key to return.</li></ul>|
 
 There are many variations and alternatives to the above. This spec simply asserts that implementations must
 be able to produce a row key for each resource and a matching key for references pointing at that resource,
 and intentionally leaves the specific mechanism to the implementation.
 
 ### Contained Resources
-This specification requires implementators to extract contained resources,
+This specification requires implementaters to extract contained resources,
 needed for *view definitions*, into independent resources that can then be accessed via
 [getReferenceKey()](#getreferencekeyresource-resourcetypecode--keytype) like any other resource. Implementations SHOULD
 normalize these resources appropriately whenever possible, such as eliminating duplicate resources contained in many parent resources. Note that this may change in a later version of this specification, allowing users to explicitly create separate views for contained resources that could be distinct from top-level resource views.
@@ -272,7 +272,7 @@ For instance, to create a table of all `Patient.address` and `Patient.contact.ad
 ```
 
 The above example uses `forEach` to select different data elements from the resources to be unioned. For other use cases, it is possible to define the columns directly
-in the `select`. See the [PatientAndContactAdddressUnion example](Binary-PatientAndContactAddressUnion.html) for a complete version of the above.
+in the `select`. See the [PatientAndContactAddressUnion example](Binary-PatientAndContactAddressUnion.html) for a complete version of the above.
 
 The columns produced from the `unionAll` list are effectively added to the parent `select`, following any other columns from its parent for column ordering. See the [column ordering](#column-ordering) section below for details.
 
@@ -446,8 +446,7 @@ Behavior is undefined and left to the runner if the expression returns a value
 that is incompatible with the underlying database type.
 
 ## Using Constants
-A ViewDefinition may include one or more of constants, which are simply values that can be reused
-in [FHIRPath](https://hl7.org/fhirpath/) expressions. This can improve readability and reduce redundancy. Constants can be
+A ViewDefinition may include one or more constants, which are simply values that can be reused in [FHIRPath](https://hl7.org/fhirpath/) expressions. This can improve readability and reduce redundancy. Constants can be
 used in `path` expressions by simply using *%[name]*. Effectively, these placeholders are replaced by the value of the constant before the [FHIRPath](https://hl7.org/fhirpath/) expression is evaluated.
 
 This is an example of a constant used in the `where` constraint of a view:
