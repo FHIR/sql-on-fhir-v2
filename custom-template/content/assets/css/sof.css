@@ -69,7 +69,15 @@ div:has(.table-data) {
   padding: 5px 10px;
 }
 
+.table-data tbody td {
+    border-bottom: 1px dotted #ddd;
+    padding: 5px 10px;
+}
+
 .table-data tbody tr:hover td {
   background-color: #ffffe0;
 }
 
+table td li {
+    font-size: 12px;
+}
