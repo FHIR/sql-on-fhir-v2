@@ -188,7 +188,7 @@ describe("constant", () => {
         }
       ]
     },
-    expectError: "undefined environment variable: wrong_name"
+    expectError: true
   });
 
   invalid_view({

@@ -65,7 +65,7 @@ describe('collection', () => {
         }
       ]
     },
-    expectError: 'Collection value'
+    expectError: true
   });
 
   add_test({

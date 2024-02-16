@@ -166,7 +166,7 @@
    ]
   },
   {
-   "title": "where",
+   "title": "where - 1",
    "view": {
     "resource": "Patient",
     "status": "active",
@@ -193,7 +193,7 @@
    ]
   },
   {
-   "title": "where",
+   "title": "where - 2",
    "view": {
     "resource": "Patient",
     "status": "active",
@@ -301,7 +301,7 @@
    ]
   },
   {
-   "title": "where as name.family",
+   "title": "where with path resolving to not boolean",
    "view": {
     "resource": "Patient",
     "status": "active",
@@ -321,14 +321,7 @@
      }
     ]
    },
-   "expect": [
-    {
-     "id": "pt1"
-    },
-    {
-     "id": "pt2"
-    }
-   ]
+   "expectError": true
   }
  ]
 }

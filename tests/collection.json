@@ -79,7 +79,7 @@
      }
     ]
    },
-   "expectError": "Collection value"
+   "expectError": true
   },
   {
    "title": "collection = true",

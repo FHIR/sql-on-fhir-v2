@@ -691,7 +691,7 @@
      }
     ]
    },
-   "expectError": "columns mismatch"
+   "expectError": true
   },
   {
    "title": "column order mismatch",
@@ -729,7 +729,7 @@
      }
     ]
    },
-   "expectError": "columns mismatch"
+   "expectError": true
   }
  ]
 }

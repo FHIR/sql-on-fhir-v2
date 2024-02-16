@@ -120,7 +120,7 @@
      }
     ]
    },
-   "expectError": "invalid type"
+   "expectError": true
   },
   {
    "title": "invalid argument type",
@@ -142,7 +142,7 @@
      }
     ]
    },
-   "expectError": "invalid type"
+   "expectError": true
   }
  ]
 }

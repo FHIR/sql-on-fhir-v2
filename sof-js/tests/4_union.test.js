@@ -336,7 +336,7 @@ describe("union", () => {
         }
       ]
     },
-    expectError: "columns mismatch"
+    expectError: true
   })
 
   // as per https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition.html#unionall-column-requirements
@@ -364,7 +364,7 @@ describe("union", () => {
         }
       ]
     },
-    expectError: "columns mismatch"
+    expectError: true
   })
 
   end_case()

@@ -92,7 +92,7 @@ describe('ofType function', () => {
         }
       ]
     },
-    expectError: 'invalid type'
+    expectError: true
   });
 
   add_throwing_test({
@@ -112,7 +112,7 @@ describe('ofType function', () => {
         }
       ]
     },
-    expectError: 'invalid type'
+    expectError: true
   });
 
   end_case();

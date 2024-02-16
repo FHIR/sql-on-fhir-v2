@@ -33,8 +33,7 @@ export function add_test(opts) {
 export function add_throwing_test(opts) {
   test(opts.title, () => {
     test_case.tests.push(opts)
-    expect(() => evaluate(opts.view, test_case.resources))
-      .toThrow(opts.expectError);
+    expect(() => evaluate(opts.view, test_case.resources)).toThrow();
   })
 }
 

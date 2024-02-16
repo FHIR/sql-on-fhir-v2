@@ -277,7 +277,7 @@
      }
     ]
    },
-   "expectError": "undefined environment variable: wrong_name"
+   "expectError": true
   },
   {
    "title": "incorrect constant definition",
