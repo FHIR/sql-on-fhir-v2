@@ -1,6 +1,6 @@
 import { expect, test , describe, beforeAll, afterAll} from "bun:test";
 import { evaluate, get_columns, row_product } from '../src/index.js'
-import { start_case, end_case, add_test, debug, run_test, should_fail } from './test_helpers.js'
+import { start_case, end_case, add_test, debug, run_test, should_fail, add_throwing_test } from './test_helpers.js'
 
 test("row_product", () => {
   expect(row_product([[{a: 1}, {a: 2}], [{b: 1}, {b: 2}]]))
@@ -151,7 +151,7 @@ describe("basics", () => {
   })
 
   add_test({
-    title: 'where',
+    title: 'where - 1',
     view: {
       resource: 'Patient',
       status: 'active',
@@ -162,7 +162,7 @@ describe("basics", () => {
   })
 
   add_test({
-    title: 'where',
+    title: 'where - 2',
     view: {
       resource: 'Patient',
       status: 'active',
@@ -206,15 +206,15 @@ describe("basics", () => {
     expect: [{id: 'pt1'}]
   })
 
-  add_test({
-    title: 'where as name.family',
+  add_throwing_test({
+    title: 'where with path resolving to not boolean',
     view: {
       resource: 'Patient',
       status: 'active',
       select: [{column: [{name: 'id', path: 'id'}]}],
       where: [{path: "name.family"}]
     },
-    expect: [{id: 'pt1'}, {id: 'pt2'}]
+    expectError: true
   })
 
   end_case();
