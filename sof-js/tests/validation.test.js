@@ -18,19 +18,33 @@ start_case('validate', 'TBD', resources)
 describe("validate", () => {
 
   invalid_view(
-    {title: 'empty',
-     view: {},
-     error: 'structure'});
+    {
+      title: 'empty',
+      view: {},
+      error: 'structure'
+    });
 
   invalid_view(
-    {title: 'wrong fhirpath',
-     view: {select: [{forEach: '@@'}]},
-     error: 'fhirpath'})
+    {
+      title: 'wrong fhirpath',
+      view: {
+        resource: 'Patient',
+        status: 'active',
+        select: [{forEach: '@@'}]
+      },
+      error: 'fhirpath'
+    })
 
   invalid_view(
-    {title: 'wrong type',
-     view: {select: [{forEach: 1}]},
-     error: 'structure'})
+    {
+      title: 'wrong type',
+      view: {
+        resource: 'Patient',
+        status: 'active',
+        select: [{forEach: 1}]
+      },
+      error: 'structure'
+    })
 
   end_case()
 });

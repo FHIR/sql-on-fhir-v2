@@ -1,85 +1,88 @@
 {
-  "title": "view_resource",
-  "description": "TBD",
-  "resources": [
-    {
-      "id": "pt1",
-      "resourceType": "Patient"
-    },
-    {
-      "id": "pt2",
-      "resourceType": "Patient"
-    },
-    {
-      "id": "ob1",
-      "resourceType": "Observation",
-      "code": {
-        "text": "code"
-      },
-      "status": "final"
-    }
-  ],
-  "tests": [
-    {
-      "title": "only pts",
-      "view": {
-        "resource": "Patient",
-        "select": [
-          {
-            "column": [
-              {
-                "path": "id",
-                "name": "id"
-              }
-            ]
-          }
-        ]
-      },
-      "expect": [
-        {
-          "id": "pt1"
-        },
-        {
-          "id": "pt2"
-        }
+ "title": "view_resource",
+ "description": "TBD",
+ "resources": [
+  {
+   "id": "pt1",
+   "resourceType": "Patient"
+  },
+  {
+   "id": "pt2",
+   "resourceType": "Patient"
+  },
+  {
+   "id": "ob1",
+   "resourceType": "Observation",
+   "code": {
+    "text": "code"
+   },
+   "status": "final"
+  }
+ ],
+ "tests": [
+  {
+   "title": "only pts",
+   "view": {
+    "resource": "Patient",
+    "status": "active",
+    "select": [
+     {
+      "column": [
+       {
+        "path": "id",
+        "name": "id"
+       }
       ]
+     }
+    ]
+   },
+   "expect": [
+    {
+     "id": "pt1"
     },
     {
-      "title": "only obs",
-      "view": {
-        "resource": "Observation",
-        "select": [
-          {
-            "column": [
-              {
-                "path": "id",
-                "name": "id"
-              }
-            ]
-          }
-        ]
-      },
-      "expect": [
-        {
-          "id": "ob1"
-        }
-      ]
-    },
-    {
-      "title": "resource not specified",
-      "view": {
-        "select": [
-          {
-            "column": [
-              {
-                "path": "id",
-                "name": "id"
-              }
-            ]
-          }
-        ]
-      },
-      "error": "structure"
+     "id": "pt2"
     }
-  ]
+   ]
+  },
+  {
+   "title": "only obs",
+   "view": {
+    "resource": "Observation",
+    "status": "active",
+    "select": [
+     {
+      "column": [
+       {
+        "path": "id",
+        "name": "id"
+       }
+      ]
+     }
+    ]
+   },
+   "expect": [
+    {
+     "id": "ob1"
+    }
+   ]
+  },
+  {
+   "title": "resource not specified",
+   "view": {
+    "status": "active",
+    "select": [
+     {
+      "column": [
+       {
+        "path": "id",
+        "name": "id"
+       }
+      ]
+     }
+    ]
+   },
+   "error": "structure"
+  }
+ ]
 }

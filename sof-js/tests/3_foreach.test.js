@@ -56,6 +56,8 @@ describe('foreach', () => {
   add_test({
     title: 'forEach: normal',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         {
           column: [{ name: 'id', path: 'id' }]
@@ -77,6 +79,8 @@ describe('foreach', () => {
   add_test({
     title: 'forEachOrNull: normal',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         { column: [{ name: 'id', path: 'id' }] },
         {
@@ -97,6 +101,8 @@ describe('foreach', () => {
   add_test({
     title: 'forEach: empty',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         { column: [{ name: 'id', path: 'id' }] },
         {
@@ -111,6 +117,8 @@ describe('foreach', () => {
   add_test({
     title: 'forEachOrNull: null case',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         { column: [{ name: 'id', path: 'id' }] },
         {
@@ -136,6 +144,8 @@ describe('foreach', () => {
   add_test({
     title: 'nested forEach',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         { column: [{ name: 'id', path: 'id' }] },
         {
@@ -156,6 +166,8 @@ describe('foreach', () => {
   add_test({
     title: 'nested forEach: select & column',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         { column: [{ name: 'id', path: 'id' }] },
         {
@@ -176,6 +188,8 @@ describe('foreach', () => {
   // add_test({
   //   title: 'nested forEach: order',
   //   view: {
+  //     resource: 'Patient',
+  //     status: 'active',
   //     select: [
   //       {column: [{name: 'id', path: 'id'}]},
   //       {forEach: 'contact',

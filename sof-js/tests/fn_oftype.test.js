@@ -31,6 +31,7 @@ describe('ofType function', () => {
     title: 'select string values',
     view: {
       resource: 'Observation',
+      status: 'active',
       select: [
         {
           column: [
@@ -54,6 +55,7 @@ describe('ofType function', () => {
     title: 'select integer values',
     view: {
       resource: 'Observation',
+      status: 'active',
       select: [
         {
           column: [
@@ -77,6 +79,7 @@ describe('ofType function', () => {
     title: 'select invalid type',
     view: {
       resource: 'Observation',
+      status: 'active',
       select: [
         {
           column: [
@@ -96,6 +99,7 @@ describe('ofType function', () => {
     title: 'invalid argument type',
     view: {
       resource: 'Observation',
+      status: 'active',
       select: [
         {
           column: [

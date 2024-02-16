@@ -25,6 +25,7 @@ describe('empty function', () => {
     title: "empty names",
     view: {
       resource: 'Patient',
+      status: 'active',
       select: [
         {
           column: [

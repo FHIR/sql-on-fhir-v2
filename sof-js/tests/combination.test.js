@@ -12,24 +12,35 @@ start_case('Combinations', 'TBD', resources)
 
 describe("combinations", () => {
 
-  add_test(
-    {title: 'select & column',
-     view: {resource: 'Patient',
-            select: [{column: [{path: 'id', name: 'id'}]}]},
-     expect: [{id: 'pt1'}, {id: 'pt2'}, {id: 'pt3'}]});
+  add_test({
+    title: 'select & column',
+    view: {
+      resource: 'Patient',
+      status: 'active',
+      select: [{column: [{path: 'id', name: 'id'}]}]
+    },
+    expect: [{id: 'pt1'}, {id: 'pt2'}, {id: 'pt3'}]
+  });
 
-  add_test(
-    {title: 'top level column',
-     view: {resource: 'Patient',
-            column: [{path: 'id', name: 'id'}]},
-     expect: [{id: 'pt1'}, {id: 'pt2'}, {id: 'pt3'}]});
+  add_test({
+    title: 'top level column',
+    view: {
+      resource: 'Patient',
+      status: 'active',
+      select: [{column: [{path: 'id', name: 'id'}]}]
+    },
+    expect: [{id: 'pt1'}, {id: 'pt2'}, {id: 'pt3'}]
+  });
 
 
-  add_test(
-    {title: 'select & select & column',
-     view: {resource: 'Patient',
-            select: [{select: [{column: [{path: 'id', name: 'id'}]}]}]},
-     expect: [{id: 'pt1'}, {id: 'pt2'}, {id: 'pt3'}]});
+  add_test({
+    title: 'select & select & column',
+    view: {
+      resource: 'Patient',
+      select: [{select: [{column: [{path: 'id', name: 'id'}]}]}]
+    },
+    expect: [{id: 'pt1'}, {id: 'pt2'}, {id: 'pt3'}]
+  });
 
   end_case()
 

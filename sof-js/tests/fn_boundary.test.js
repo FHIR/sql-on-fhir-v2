@@ -31,6 +31,7 @@ describe('boundary functions', () => {
     title: 'decimal lowBoundary',
     view: {
       resource: 'Observation',
+      status: 'active',
       select: [
         {
           column: [
@@ -54,6 +55,7 @@ describe('boundary functions', () => {
     title: 'decimal highBoundary',
     view: {
       resource: 'Observation',
+      status: 'active',
       select: [
         {
           column: [
@@ -77,6 +79,7 @@ describe('boundary functions', () => {
     title: 'datetime lowBoundary',
     view: {
       resource: 'Observation',
+      status: 'active',
       select: [
         {
           column: [
@@ -100,6 +103,7 @@ describe('boundary functions', () => {
     title: 'datetime highBoundary',
     view: {
       resource: 'Observation',
+      status: 'active',
       select: [
         {
           column: [

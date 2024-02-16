@@ -42,6 +42,8 @@ describe("constant", () => {
   add_test({
     title: "constant in path",
     view: {
+      resource: 'Patient',
+      status: 'active',
       constant: [{ name: "name_use", valueString: "official" }],
       select: [
         {
@@ -64,6 +66,8 @@ describe("constant", () => {
   add_test({
     title: "constant in forEach",
     view: {
+      resource: 'Patient',
+      status: 'active',
       constant: [{ name: "name_use", valueString: "official" }],
       select: [
         {
@@ -82,6 +86,8 @@ describe("constant", () => {
   add_test({
     title: "constant in where element",
     view: {
+      resource: 'Patient',
+      status: 'active',
       constant: [{ name: "name_use", valueString: "official" }],
       select: [
         {
@@ -96,6 +102,8 @@ describe("constant", () => {
   add_test({
     title: "constant in unionAll",
     view: {
+      resource: 'Patient',
+      status: 'active',
       constant: [
         { name: "use1", valueString: "official" },
         { name: "use2", valueString: "usual" },
@@ -128,6 +136,8 @@ describe("constant", () => {
   add_test({
     title: "integer constant",
     view: {
+      resource: 'Patient',
+      status: 'active',
       constant: [{ name: "name_index", valueInteger: 1 }],
       select: [
         {
@@ -150,6 +160,8 @@ describe("constant", () => {
   add_test({
     title: "boolean constant",
     view: {
+      resource: 'Patient',
+      status: 'active',
       constant: [{ name: "is_deceased", valueInteger: true }],
       select: [
         {
@@ -164,6 +176,8 @@ describe("constant", () => {
   add_throwing_test({
     title: "accessing an undefined constant",
     view: {
+      resource: 'Patient',
+      status: 'active',
       constant: [{ name: "name_use", valueString: "official" }],
       select: [
         {
@@ -180,6 +194,8 @@ describe("constant", () => {
   invalid_view({
     title: "incorrect constant definition",
     view: {
+      resource: 'Patient',
+      status: 'active',
       constant: [{ name: "name_use" }],
       select: [
         {

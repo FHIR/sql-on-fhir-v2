@@ -1,43 +1,47 @@
 {
-  "title": "validate",
-  "description": "TBD",
-  "resources": [
-    {
-      "resourceType": "Patient",
-      "id": "pt1"
-    },
-    {
-      "resourceType": "Patient",
-      "id": "pt2"
-    }
-  ],
-  "tests": [
-    {
-      "title": "empty",
-      "view": {},
-      "error": "structure"
-    },
-    {
-      "title": "wrong fhirpath",
-      "view": {
-        "select": [
-          {
-            "forEach": "@@"
-          }
-        ]
-      },
-      "error": "fhirpath"
-    },
-    {
-      "title": "wrong type",
-      "view": {
-        "select": [
-          {
-            "forEach": 1
-          }
-        ]
-      },
-      "error": "structure"
-    }
-  ]
+ "title": "validate",
+ "description": "TBD",
+ "resources": [
+  {
+   "resourceType": "Patient",
+   "id": "pt1"
+  },
+  {
+   "resourceType": "Patient",
+   "id": "pt2"
+  }
+ ],
+ "tests": [
+  {
+   "title": "empty",
+   "view": {},
+   "error": "structure"
+  },
+  {
+   "title": "wrong fhirpath",
+   "view": {
+    "resource": "Patient",
+    "status": "active",
+    "select": [
+     {
+      "forEach": "@@"
+     }
+    ]
+   },
+   "error": "fhirpath"
+  },
+  {
+   "title": "wrong type",
+   "view": {
+    "resource": "Patient",
+    "status": "active",
+    "select": [
+     {
+      "forEach": 1
+     }
+    ]
+   },
+   "error": "structure"
+  }
+ ]
 }

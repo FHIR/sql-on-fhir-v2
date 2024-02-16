@@ -1,52 +1,53 @@
 {
-  "title": "fn_empty",
-  "description": "TBD",
-  "resources": [
+ "title": "fn_empty",
+ "description": "TBD",
+ "resources": [
+  {
+   "resourceType": "Patient",
+   "id": "p1",
+   "name": [
     {
-      "resourceType": "Patient",
-      "id": "p1",
-      "name": [
-        {
-          "use": "official",
-          "family": "f1"
-        }
+     "use": "official",
+     "family": "f1"
+    }
+   ]
+  },
+  {
+   "resourceType": "Patient",
+   "id": "p2"
+  }
+ ],
+ "tests": [
+  {
+   "title": "empty names",
+   "view": {
+    "resource": "Patient",
+    "status": "active",
+    "select": [
+     {
+      "column": [
+       {
+        "name": "id",
+        "path": "id"
+       },
+       {
+        "name": "name_empty",
+        "path": "name.empty()"
+       }
       ]
+     }
+    ]
+   },
+   "expect": [
+    {
+     "id": "p1",
+     "name_empty": false
     },
     {
-      "resourceType": "Patient",
-      "id": "p2"
+     "id": "p2",
+     "name_empty": true
     }
-  ],
-  "tests": [
-    {
-      "title": "empty names",
-      "view": {
-        "resource": "Patient",
-        "select": [
-          {
-            "column": [
-              {
-                "name": "id",
-                "path": "id"
-              },
-              {
-                "name": "name_empty",
-                "path": "name.empty()"
-              }
-            ]
-          }
-        ]
-      },
-      "expect": [
-        {
-          "id": "p1",
-          "name_empty": false
-        },
-        {
-          "id": "p2",
-          "name_empty": true
-        }
-      ]
-    }
-  ]
+   ]
+  }
+ ]
 }

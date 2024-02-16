@@ -24,43 +24,40 @@ start_case('view_resource', 'TBD', resources)
 
 describe("view_resource", () => {
 
-  add_test(
-    {
-      title: 'only pts',
-      view: {
-        resource: 'Patient',
-        select: [
-          { column: [{path: 'id', name: 'id'}] }
-        ]
-      },
-      expect: [ {id: 'pt1'}, {id: 'pt2'} ]
-    }
-  );
+  add_test({
+    title: 'only pts',
+    view: {
+      resource: 'Patient',
+      status: 'active',
+      select: [
+        { column: [{path: 'id', name: 'id'}] }
+      ]
+    },
+    expect: [ {id: 'pt1'}, {id: 'pt2'} ]
+  });
 
-  add_test(
-    {
-      title: 'only obs',
-      view: {
-        resource: 'Observation',
-        select: [
-          {column: [{path: 'id', name: 'id'}]}
-        ]
-      },
-      expect: [{id: 'ob1'}]
-    }
-  );
+  add_test({
+    title: 'only obs',
+    view: {
+      resource: 'Observation',
+      status: 'active',
+      select: [
+        {column: [{path: 'id', name: 'id'}]}
+      ]
+    },
+    expect: [{id: 'ob1'}]
+  });
 
-  invalid_view(
-    {
-      title: 'resource not specified',
-      view: {
-        select: [
-          { column: [{path: 'id', name: 'id'}] }
-        ]
-      },
-      error: 'structure'
-    }
-  );
+  invalid_view({
+    title: 'resource not specified',
+    view: {
+      status: 'active',
+      select: [
+        { column: [{path: 'id', name: 'id'}] }
+      ]
+    },
+    error: 'structure'
+  });
 
 
   end_case()

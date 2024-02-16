@@ -46,6 +46,7 @@ describe('collection', () => {
     title: "fail when 'collection' is not true",
     view: {
       resource: 'Patient',
+      status: 'active',
       select: [
         {
           column: [
@@ -71,6 +72,7 @@ describe('collection', () => {
     title: "collection = true",
     view: {
       resource: 'Patient',
+      status: 'active',
       select: [
         {
           column: [
@@ -107,6 +109,7 @@ describe('collection', () => {
     title: "collection = false relative to forEach parent",
     view: {
       resource: 'Patient',
+      status: 'active',
       select: [
         {
           column: [
@@ -160,6 +163,7 @@ describe('collection', () => {
     title: "collection = false relative to forEachOrNull parent",
     view: {
       resource: 'Patient',
+      status: 'active',
       select: [
         {
           column: [

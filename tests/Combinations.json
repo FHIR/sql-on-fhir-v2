@@ -1,101 +1,107 @@
 {
-  "title": "Combinations",
-  "description": "TBD",
-  "resources": [
-    {
-      "id": "pt1",
-      "resourceType": "Patient"
-    },
-    {
-      "id": "pt2",
-      "resourceType": "Patient"
-    },
-    {
-      "id": "pt3",
-      "resourceType": "Patient"
-    }
-  ],
-  "tests": [
-    {
-      "title": "select & column",
-      "view": {
-        "resource": "Patient",
-        "select": [
-          {
-            "column": [
-              {
-                "path": "id",
-                "name": "id"
-              }
-            ]
-          }
-        ]
-      },
-      "expect": [
-        {
-          "id": "pt1"
-        },
-        {
-          "id": "pt2"
-        },
-        {
-          "id": "pt3"
-        }
+ "title": "Combinations",
+ "description": "TBD",
+ "resources": [
+  {
+   "id": "pt1",
+   "resourceType": "Patient"
+  },
+  {
+   "id": "pt2",
+   "resourceType": "Patient"
+  },
+  {
+   "id": "pt3",
+   "resourceType": "Patient"
+  }
+ ],
+ "tests": [
+  {
+   "title": "select & column",
+   "view": {
+    "resource": "Patient",
+    "status": "active",
+    "select": [
+     {
+      "column": [
+       {
+        "path": "id",
+        "name": "id"
+       }
       ]
+     }
+    ]
+   },
+   "expect": [
+    {
+     "id": "pt1"
     },
     {
-      "title": "top level column",
-      "view": {
-        "resource": "Patient",
+     "id": "pt2"
+    },
+    {
+     "id": "pt3"
+    }
+   ]
+  },
+  {
+   "title": "top level column",
+   "view": {
+    "resource": "Patient",
+    "status": "active",
+    "select": [
+     {
+      "column": [
+       {
+        "path": "id",
+        "name": "id"
+       }
+      ]
+     }
+    ]
+   },
+   "expect": [
+    {
+     "id": "pt1"
+    },
+    {
+     "id": "pt2"
+    },
+    {
+     "id": "pt3"
+    }
+   ]
+  },
+  {
+   "title": "select & select & column",
+   "view": {
+    "resource": "Patient",
+    "select": [
+     {
+      "select": [
+       {
         "column": [
-          {
-            "path": "id",
-            "name": "id"
-          }
+         {
+          "path": "id",
+          "name": "id"
+         }
         ]
-      },
-      "expect": [
-        {
-          "id": "pt1"
-        },
-        {
-          "id": "pt2"
-        },
-        {
-          "id": "pt3"
-        }
+       }
       ]
+     }
+    ]
+   },
+   "expect": [
+    {
+     "id": "pt1"
     },
     {
-      "title": "select & select & column",
-      "view": {
-        "resource": "Patient",
-        "select": [
-          {
-            "select": [
-              {
-                "column": [
-                  {
-                    "path": "id",
-                    "name": "id"
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "expect": [
-        {
-          "id": "pt1"
-        },
-        {
-          "id": "pt2"
-        },
-        {
-          "id": "pt3"
-        }
-      ]
+     "id": "pt2"
+    },
+    {
+     "id": "pt3"
     }
-  ]
+   ]
+  }
+ ]
 }

@@ -81,6 +81,8 @@ describe("union", () => {
   add_test({
     title: 'basic',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         { column: [{ name: 'id', path: 'id' }] },
         {
@@ -109,6 +111,8 @@ describe("union", () => {
   add_test({
     title: 'unionAll + column',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         {
           column: [{ name: 'id', path: 'id' }],
@@ -133,6 +137,8 @@ describe("union", () => {
   });
 
   let unionDups = {
+    resource: 'Patient',
+    status: 'active',
     select: [
       {
         column: [{ name: 'id', path: 'id' }],
@@ -176,6 +182,8 @@ describe("union", () => {
   add_test({
     title: 'empty results',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         {
           column: [{ name: 'id', path: 'id' }],
@@ -198,6 +206,8 @@ describe("union", () => {
   add_test({
     title: 'empty with forEachOrNull',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         {
           column: [{ name: 'id', path: 'id' }],
@@ -229,6 +239,8 @@ describe("union", () => {
   add_test({
     title: 'nested',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         {
           column: [{ name: 'id', path: 'id' }],
@@ -266,6 +278,8 @@ describe("union", () => {
   add_test({
     title: 'one empty operand',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         { column: [{ name: 'id', path: 'id' }] },
         {
@@ -301,6 +315,8 @@ describe("union", () => {
   add_throwing_test({
     title: 'column mismatch',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         {
           unionAll: [
@@ -327,6 +343,8 @@ describe("union", () => {
   add_throwing_test({
     title: 'column order mismatch',
     view: {
+      resource: 'Patient',
+      status: 'active',
       select: [
         {
           unionAll: [
