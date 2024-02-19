@@ -185,23 +185,6 @@ describe('foreach', () => {
     expect: nested_result
   });
 
-  // add_test({
-  //   title: 'nested forEach: order',
-  //   view: {
-  //     resource: 'Patient',
-  //     status: 'active',
-  //     select: [
-  //       {column: [{name: 'id', path: 'id'}]},
-  //       {forEach: 'contact',
-  //        select: [
-  //          {forEach: 'person', column: [{name: 'name', path: 'name'}]},
-  //          {column: [{name: 'contact_type', path: 'type'}]},
-  //        ]}
-  //     ]
-  //   },
-  //   expect: nested_result
-  // });
-
   end_case();
 
 })

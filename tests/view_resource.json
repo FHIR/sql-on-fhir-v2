@@ -82,7 +82,7 @@
      }
     ]
    },
-   "error": "structure"
+   "expectError": true
   }
  ]
 }

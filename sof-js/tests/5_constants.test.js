@@ -208,7 +208,8 @@ describe("constant", () => {
           ]
         }
       ]
-    }
+    },
+    expectError: true
   });
 
   end_case();

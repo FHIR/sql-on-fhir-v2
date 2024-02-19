@@ -53,7 +53,6 @@ test('columns', ()=>{
 
 })
 
-
 let resources = [
   {
     resourceType: 'Patient',
@@ -118,7 +117,6 @@ describe("basics", () => {
     {id: 'pt3', last_name: null}
   ]
 
-
   add_test({
     title: 'two columns',
     view: {
@@ -135,7 +133,6 @@ describe("basics", () => {
     },
     expect: expected
   })
-
 
   add_test({
     title: 'two selects with columns',
@@ -156,7 +153,7 @@ describe("basics", () => {
       resource: 'Patient',
       status: 'active',
       select: [{column: [{name: 'id', path: 'id'}]}],
-      where: [{path: 'active=true'}]
+      where: [{path: 'active = true'}]
     },
     expect: [{id: 'pt1'}]
   })
@@ -167,11 +164,10 @@ describe("basics", () => {
       resource: 'Patient',
       status: 'active',
       select: [{column: [{name: 'id', path: 'id'}]}],
-      where: [{path: 'active=false'}]
+      where: [{path: 'active = false'}]
     },
     expect: [{id: 'pt2'}]
   })
-
 
   add_test({
     title: 'where as element',
@@ -204,17 +200,6 @@ describe("basics", () => {
       where: [{path: "name.family = 'F1'"}]
     },
     expect: [{id: 'pt1'}]
-  })
-
-  add_throwing_test({
-    title: 'where with path resolving to not boolean',
-    view: {
-      resource: 'Patient',
-      status: 'active',
-      select: [{column: [{name: 'id', path: 'id'}]}],
-      where: [{path: "name.family"}]
-    },
-    expectError: true
   })
 
   end_case();

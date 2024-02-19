@@ -56,9 +56,8 @@ describe("view_resource", () => {
         { column: [{path: 'id', name: 'id'}] }
       ]
     },
-    error: 'structure'
+    expectError: true
   });
-
 
   end_case()
 

@@ -303,7 +303,8 @@
       ]
      }
     ]
-   }
+   },
+   "expectError": true
   }
  ]
 }

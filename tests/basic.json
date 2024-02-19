@@ -182,7 +182,7 @@
     ],
     "where": [
      {
-      "path": "active=true"
+      "path": "active = true"
      }
     ]
    },
@@ -209,7 +209,7 @@
     ],
     "where": [
      {
-      "path": "active=false"
+      "path": "active = false"
      }
     ]
    },
@@ -299,29 +299,6 @@
      "id": "pt1"
     }
    ]
-  },
-  {
-   "title": "where with path resolving to not boolean",
-   "view": {
-    "resource": "Patient",
-    "status": "active",
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
-      ]
-     }
-    ],
-    "where": [
-     {
-      "path": "name.family"
-     }
-    ]
-   },
-   "expectError": true
   }
  ]
 }

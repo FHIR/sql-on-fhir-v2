@@ -337,7 +337,7 @@ describe("union", () => {
       ]
     },
     expectError: true
-  })
+  });
 
   // as per https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition.html#unionall-column-requirements
   add_throwing_test({
@@ -365,7 +365,7 @@ describe("union", () => {
       ]
     },
     expectError: true
-  })
+  });
 
   end_case()
 });

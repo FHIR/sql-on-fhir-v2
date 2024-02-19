@@ -185,7 +185,6 @@ describe("fhirpath", () => {
     ]
   })
 
-
   add_test({
     title: 'exists',
     view: {
@@ -228,7 +227,6 @@ describe("fhirpath", () => {
     ]
   })
 
-
   add_test({
     title: 'string join',
     view: {
@@ -270,7 +268,6 @@ describe("fhirpath", () => {
       {id: 'pt3',given: ''}
     ]
   })
-
 
   // are we sure about this?
   add_test({
