@@ -153,7 +153,7 @@ describe("basics", () => {
       resource: 'Patient',
       status: 'active',
       select: [{column: [{name: 'id', path: 'id'}]}],
-      where: [{path: 'active = true'}]
+      where: [{path: 'active.exists() and active = true'}]
     },
     expect: [{id: 'pt1'}]
   })
@@ -164,13 +164,13 @@ describe("basics", () => {
       resource: 'Patient',
       status: 'active',
       select: [{column: [{name: 'id', path: 'id'}]}],
-      where: [{path: 'active = false'}]
+      where: [{path: 'active.exists() and active = false'}]
     },
     expect: [{id: 'pt2'}]
   })
 
-  add_test({
-    title: 'where as element',
+  add_throwing_test({
+    title: 'where returns non-boolean for some cases',
     view: {
       resource: 'Patient',
       status: 'active',
@@ -186,7 +186,7 @@ describe("basics", () => {
       resource: 'Patient',
       status: 'active',
       select: [{column: [{name: 'id', path: 'id'}]}],
-      where: [{path: "name.family = 'F2'"}]
+      where: [{path: "name.family.exists() and name.family = 'F2'"}]
     },
     expect: [{id: 'pt2'}]
   })
@@ -197,7 +197,7 @@ describe("basics", () => {
       resource: 'Patient',
       status: 'active',
       select: [{column: [{name: 'id', path: 'id'}]}],
-      where: [{path: "name.family = 'F1'"}]
+      where: [{path: "name.family.exists() and name.family = 'F1'"}]
     },
     expect: [{id: 'pt1'}]
   })

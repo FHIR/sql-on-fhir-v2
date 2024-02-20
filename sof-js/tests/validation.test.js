@@ -1,10 +1,13 @@
 import { describe } from "bun:test";
-import { start_case, end_case, invalid_view, debug } from './test_helpers.js'
+import { start_case, end_case, invalid_view, debug, add_throwing_test } from './test_helpers.js'
 
 
 let resources = [
   {
     resourceType: 'Patient',
+    name: [
+      { family: 'F1.1' },
+    ],
     id: 'pt1'
   },
   {

@@ -4,6 +4,11 @@
   "resources": [
     {
       "resourceType": "Patient",
+      "name": [
+        {
+          "family": "F1.1"
+        }
+      ],
       "id": "pt1"
     },
     {
@@ -15,7 +20,7 @@
     {
       "title": "empty",
       "view": {},
-      "error": "structure"
+      "expectError": true
     },
     {
       "title": "wrong fhirpath",
@@ -28,10 +33,10 @@
           }
         ]
       },
-      "error": "fhirpath"
+      "expectError": true
     },
     {
-      "title": "wrong type",
+      "title": "wrong type in forEach",
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -41,7 +46,30 @@
           }
         ]
       },
-      "error": "structure"
+      "expectError": true
+    },
+    {
+      "title": "where with path resolving to not boolean",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ]
+          }
+        ],
+        "where": [
+          {
+            "path": "name.family"
+          }
+        ]
+      },
+      "expectError": true
     }
   ]
 }

@@ -94,7 +94,7 @@ describe("constant", () => {
           column: [{ name: "id", path: "id" }]
         }
       ],
-      where: [{ path: "name.where(use = %name_use)" }]
+      where: [{ path: "name.where(use = %name_use).exists()" }]
     },
     expect: [{ id: "pt1" }]
   });
@@ -168,7 +168,7 @@ describe("constant", () => {
           column: [{ name: "id", path: "id" }]
         }
       ],
-      where: [{ path: "deceased.ofType(boolean) = %is_deceased" }]
+      where: [{ path: "deceased.ofType(boolean).exists() and deceased.ofType(boolean) = %is_deceased" }]
     },
     expect: [{ id: "pt2" }]
   });
