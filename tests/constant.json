@@ -1,310 +1,310 @@
 {
- "title": "constant",
- "description": "constant substitution",
- "resources": [
-  {
-   "resourceType": "Patient",
-   "id": "pt1",
-   "name": [
+  "title": "constant",
+  "description": "constant substitution",
+  "resources": [
     {
-     "family": "Block",
-     "use": "usual"
+      "resourceType": "Patient",
+      "id": "pt1",
+      "name": [
+        {
+          "family": "Block",
+          "use": "usual"
+        },
+        {
+          "family": "Smith",
+          "use": "official"
+        }
+      ]
     },
     {
-     "family": "Smith",
-     "use": "official"
-    }
-   ]
-  },
-  {
-   "resourceType": "Patient",
-   "id": "pt2",
-   "deceasedBoolean": true,
-   "name": [
-    {
-     "family": "Johnson",
-     "use": "usual"
-    },
-    {
-     "family": "Menendez",
-     "use": "old"
-    }
-   ]
-  }
- ],
- "tests": [
-  {
-   "title": "constant in path",
-   "view": {
-    "resource": "Patient",
-    "status": "active",
-    "constant": [
-     {
-      "name": "name_use",
-      "valueString": "official"
-     }
-    ],
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       },
-       {
-        "name": "official_name",
-        "path": "name.where(use = %name_use).family"
-       }
+      "resourceType": "Patient",
+      "id": "pt2",
+      "deceasedBoolean": true,
+      "name": [
+        {
+          "family": "Johnson",
+          "use": "usual"
+        },
+        {
+          "family": "Menendez",
+          "use": "old"
+        }
       ]
-     }
-    ]
-   },
-   "expect": [
-    {
-     "id": "pt1",
-     "official_name": "Smith"
-    },
-    {
-     "id": "pt2",
-     "official_name": null
     }
-   ]
-  },
-  {
-   "title": "constant in forEach",
-   "view": {
-    "resource": "Patient",
-    "status": "active",
-    "constant": [
-     {
-      "name": "name_use",
-      "valueString": "official"
-     }
-    ],
-    "select": [
-     {
-      "forEach": "name.where(use = %name_use)",
-      "column": [
-       {
-        "name": "official_name",
-        "path": "family"
-       }
-      ]
-     }
-    ]
-   },
-   "expect": [
+  ],
+  "tests": [
     {
-     "official_name": "Smith"
-    }
-   ]
-  },
-  {
-   "title": "constant in where element",
-   "view": {
-    "resource": "Patient",
-    "status": "active",
-    "constant": [
-     {
-      "name": "name_use",
-      "valueString": "official"
-     }
-    ],
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
-      ]
-     }
-    ],
-    "where": [
-     {
-      "path": "name.where(use = %name_use)"
-     }
-    ]
-   },
-   "expect": [
-    {
-     "id": "pt1"
-    }
-   ]
-  },
-  {
-   "title": "constant in unionAll",
-   "view": {
-    "resource": "Patient",
-    "status": "active",
-    "constant": [
-     {
-      "name": "use1",
-      "valueString": "official"
-     },
-     {
-      "name": "use2",
-      "valueString": "usual"
-     }
-    ],
-    "select": [
-     {
-      "unionAll": [
-       {
-        "forEach": "name.where(use = %use1)",
-        "column": [
-         {
-          "name": "name",
-          "path": "family"
-         }
+      "title": "constant in path",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "constant": [
+          {
+            "name": "name_use",
+            "valueString": "official"
+          }
+        ],
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              },
+              {
+                "name": "official_name",
+                "path": "name.where(use = %name_use).family"
+              }
+            ]
+          }
         ]
-       },
-       {
-        "forEach": "name.where(use = %use2)",
-        "column": [
-         {
-          "name": "name",
-          "path": "family"
-         }
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "official_name": "Smith"
+        },
+        {
+          "id": "pt2",
+          "official_name": null
+        }
+      ]
+    },
+    {
+      "title": "constant in forEach",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "constant": [
+          {
+            "name": "name_use",
+            "valueString": "official"
+          }
+        ],
+        "select": [
+          {
+            "forEach": "name.where(use = %name_use)",
+            "column": [
+              {
+                "name": "official_name",
+                "path": "family"
+              }
+            ]
+          }
         ]
-       }
+      },
+      "expect": [
+        {
+          "official_name": "Smith"
+        }
       ]
-     }
-    ]
-   },
-   "expect": [
-    {
-     "name": "Smith"
     },
     {
-     "name": "Block"
+      "title": "constant in where element",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "constant": [
+          {
+            "name": "name_use",
+            "valueString": "official"
+          }
+        ],
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ]
+          }
+        ],
+        "where": [
+          {
+            "path": "name.where(use = %name_use)"
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "pt1"
+        }
+      ]
     },
     {
-     "name": "Johnson"
-    }
-   ]
-  },
-  {
-   "title": "integer constant",
-   "view": {
-    "resource": "Patient",
-    "status": "active",
-    "constant": [
-     {
-      "name": "name_index",
-      "valueInteger": 1
-     }
-    ],
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       },
-       {
-        "name": "official_name",
-        "path": "name[%name_index].family"
-       }
+      "title": "constant in unionAll",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "constant": [
+          {
+            "name": "use1",
+            "valueString": "official"
+          },
+          {
+            "name": "use2",
+            "valueString": "usual"
+          }
+        ],
+        "select": [
+          {
+            "unionAll": [
+              {
+                "forEach": "name.where(use = %use1)",
+                "column": [
+                  {
+                    "name": "name",
+                    "path": "family"
+                  }
+                ]
+              },
+              {
+                "forEach": "name.where(use = %use2)",
+                "column": [
+                  {
+                    "name": "name",
+                    "path": "family"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "name": "Smith"
+        },
+        {
+          "name": "Block"
+        },
+        {
+          "name": "Johnson"
+        }
       ]
-     }
-    ]
-   },
-   "expect": [
-    {
-     "id": "pt1",
-     "official_name": "Smith"
     },
     {
-     "id": "pt2",
-     "official_name": "Menendez"
-    }
-   ]
-  },
-  {
-   "title": "boolean constant",
-   "view": {
-    "resource": "Patient",
-    "status": "active",
-    "constant": [
-     {
-      "name": "is_deceased",
-      "valueInteger": true
-     }
-    ],
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       }
+      "title": "integer constant",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "constant": [
+          {
+            "name": "name_index",
+            "valueInteger": 1
+          }
+        ],
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              },
+              {
+                "name": "official_name",
+                "path": "name[%name_index].family"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "pt1",
+          "official_name": "Smith"
+        },
+        {
+          "id": "pt2",
+          "official_name": "Menendez"
+        }
       ]
-     }
-    ],
-    "where": [
-     {
-      "path": "deceased.ofType(boolean) = %is_deceased"
-     }
-    ]
-   },
-   "expect": [
+    },
     {
-     "id": "pt2"
+      "title": "boolean constant",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "constant": [
+          {
+            "name": "is_deceased",
+            "valueInteger": true
+          }
+        ],
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ]
+          }
+        ],
+        "where": [
+          {
+            "path": "deceased.ofType(boolean) = %is_deceased"
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "pt2"
+        }
+      ]
+    },
+    {
+      "title": "accessing an undefined constant",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "constant": [
+          {
+            "name": "name_use",
+            "valueString": "official"
+          }
+        ],
+        "select": [
+          {
+            "forEach": "name.where(use = %wrong_name)",
+            "column": [
+              {
+                "name": "official_name",
+                "path": "family"
+              }
+            ]
+          }
+        ]
+      },
+      "expectError": true
+    },
+    {
+      "title": "incorrect constant definition",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "constant": [
+          {
+            "name": "name_use"
+          }
+        ],
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              },
+              {
+                "name": "official_name",
+                "path": "name.where(use = %name_use).family"
+              }
+            ]
+          }
+        ]
+      },
+      "expectError": true
     }
-   ]
-  },
-  {
-   "title": "accessing an undefined constant",
-   "view": {
-    "resource": "Patient",
-    "status": "active",
-    "constant": [
-     {
-      "name": "name_use",
-      "valueString": "official"
-     }
-    ],
-    "select": [
-     {
-      "forEach": "name.where(use = %wrong_name)",
-      "column": [
-       {
-        "name": "official_name",
-        "path": "family"
-       }
-      ]
-     }
-    ]
-   },
-   "expectError": true
-  },
-  {
-   "title": "incorrect constant definition",
-   "view": {
-    "resource": "Patient",
-    "status": "active",
-    "constant": [
-     {
-      "name": "name_use"
-     }
-    ],
-    "select": [
-     {
-      "column": [
-       {
-        "name": "id",
-        "path": "id"
-       },
-       {
-        "name": "official_name",
-        "path": "name.where(use = %name_use).family"
-       }
-      ]
-     }
-    ]
-   },
-   "expectError": true
-  }
- ]
+  ]
 }

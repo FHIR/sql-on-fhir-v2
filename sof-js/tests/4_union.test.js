@@ -237,6 +237,35 @@ describe("union", () => {
   });
 
   add_test({
+    title: 'forEachOrNull and forEach',
+    view: {
+      resource: 'Patient',
+      status: 'active',
+      select: [
+        {
+          column: [{ name: 'id', path: 'id' }],
+          unionAll: [
+            {
+              forEach: 'name',
+              column: [{ name: 'given', path: 'given' }]
+            },
+            {
+              forEachOrNull: 'name',
+              column: [{ name: 'given', path: 'given' }]
+            }
+          ]
+        }
+      ]
+    },
+    expect: [
+      { given: null, id: "pt1" },
+      { given: null, id: "pt2" },
+      { given: null, id: "pt3" },
+      { given: null, id: "pt4" },
+    ]
+  })
+
+  add_test({
     title: 'nested',
     view: {
       resource: 'Patient',

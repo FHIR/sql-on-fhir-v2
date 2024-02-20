@@ -145,7 +145,7 @@ function normalize(def) {
     def.type = 'forEach'
 
     if (def.unionAll) {
-      def.select.unshift({unionAll: def.union})
+      def.select.unshift({unionAll: def.unionAll})
       delete def.unionAll
     }
 
@@ -162,7 +162,7 @@ function normalize(def) {
     def.type = 'forEachOrNull'
 
     if (def.unionAll) {
-      def.select.unshift({unionAll: def.union})
+      def.select.unshift({unionAll: def.unionAll})
       delete def.unionAll
     }
 
@@ -272,5 +272,9 @@ export function evaluate(def, node) {
   }
 
   const normal_def = normalize(structuredClone(def));
+
+  // console.log("=======  NORM =========")
+  // console.dir(normal_def, {depth: null})
+
   return node.flatMap(n => do_eval(normal_def, n, def))
 }

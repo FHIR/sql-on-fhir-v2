@@ -202,5 +202,24 @@ describe("basics", () => {
     expect: [{id: 'pt1'}]
   })
 
+  add_test({
+    title: 'select & column',
+    view: {
+      resource: 'Patient',
+      select: [
+        {
+          column: [{path: 'id', name: 'c_id'}],
+          select: [{column: [{path: 'id', name: 's_id'}]}]
+        }
+
+      ]
+    },
+    expect: [
+      {c_id: 'pt1', s_id: 'pt1'},
+      {c_id: 'pt2', s_id: 'pt2'},
+      {c_id: 'pt3', s_id: 'pt3'}
+    ]
+  });
+
   end_case();
 });

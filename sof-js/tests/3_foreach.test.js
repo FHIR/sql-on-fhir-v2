@@ -17,6 +17,7 @@ let resources = [
           { system: 'phone' }
         ],
         name: {
+          family: 'FC1.1',
           given: ['N1', 'N1`']
         }
       },
@@ -24,7 +25,11 @@ let resources = [
         telecom: [
           { system: 'email' }
         ],
-        name: { given: ['N2'] }
+        gender: "unknown",
+        name: {
+          family: 'FC1.2',
+          given: ['N2']
+        }
       }
     ]
   },
@@ -77,7 +82,7 @@ describe('foreach', () => {
   })
 
   add_test({
-    title: 'forEachOrNull: normal',
+    title: 'forEachOrNull: basic',
     view: {
       resource: 'Patient',
       status: 'active',
@@ -114,6 +119,52 @@ describe('foreach', () => {
     expect: []
   })
 
+
+  add_test({
+    title: 'forEach: two on the same level',
+    view: {
+      resource: 'Patient',
+      status: 'active',
+      select: [
+        {
+          forEach: 'contact',
+          column: [{ name: 'cont_family', path: 'name.family' }]
+        },
+        {
+          forEach: 'name',
+          column: [{ name: 'pat_family' , path: 'family' }]
+        }
+      ]
+    },
+    expect: [
+      {pat_family: 'F1.1', cont_family: 'FC1.1'},
+      {pat_family: 'F1.1', cont_family: 'FC1.2'},
+
+      {pat_family: 'F1.2', cont_family: 'FC1.1'},
+      {pat_family: 'F1.2', cont_family: 'FC1.2'}
+    ]
+  })
+
+  add_test({
+    title: 'forEach: two on the same level (empty result)',
+    view: {
+      resource: 'Patient',
+      status: 'active',
+      select: [
+        { column: [{ name: 'id', path: 'id' }] },
+        {
+          forEach: 'identifier',
+          column: [{ name: 'value', path: 'value' }]
+        },
+        {
+          forEach: 'name',
+          column: [{ name: 'family', path: 'family' }]
+        }
+      ]
+    },
+    expect: []
+  })
+
   add_test({
     title: 'forEachOrNull: null case',
     view: {
@@ -131,6 +182,31 @@ describe('foreach', () => {
       { id: 'pt1', value: null },
       { id: 'pt2', value: null },
       { id: 'pt3', value: null }
+    ]
+  })
+
+  add_test({
+    title: 'forEach and forEachOrNull on the same level',
+    view: {
+      resource: 'Patient',
+      status: 'active',
+      select: [
+        { column: [{ name: 'id', path: 'id' }] },
+        {
+          forEachOrNull: 'identifier',
+          column: [{ name: 'value', path: 'value' }]
+        },
+        {
+          forEach: 'name',
+          column: [{ name: 'family', path: 'family' }]
+        }
+      ]
+    },
+    expect: [
+      { id: 'pt1', family: 'F1.1', value: null },
+      { id: 'pt1', family: 'F1.2', value: null },
+      { id: 'pt2', family: 'F2.1', value: null },
+      { id: 'pt2', family: 'F2.2', value: null },
     ]
   })
 
@@ -184,6 +260,131 @@ describe('foreach', () => {
     },
     expect: nested_result
   });
+
+  add_test({
+    title: 'forEachOrNull & unionAll on the same level',
+    view: {
+      resource: 'Patient',
+      select: [
+        {
+          column: [{path: 'id', name: 'id'}],
+        },
+        {
+          forEachOrNull: "contact",
+          unionAll: [
+            {column: [{path: 'name.family', name: 'name'}]},
+            {forEach: "name.given",
+             column: [{path: '$this', name: 'name'}]}
+
+          ]
+        }
+
+      ]
+    },
+    expect: [
+      {id: 'pt1', name: 'FC1.1'},
+      {id: 'pt1', name: 'N1'},
+      {id: 'pt1', name: 'N1`'},
+      {id: 'pt1', name: 'FC1.2'},
+      {id: 'pt1', name: 'N2'},
+      {id: 'pt2', name: null},
+      {id: 'pt3', name: null},
+    ]
+  })
+
+  add_test({
+    title: 'forEach & unionAll on the same level',
+    view: {
+      resource: 'Patient',
+      select: [
+        {
+          column: [{path: 'id', name: 'id'}],
+        },
+        {
+          forEach: "contact",
+          unionAll: [
+            {column: [{path: 'name.family', name: 'name'}]},
+            {forEach: "name.given",
+             column: [{path: '$this', name: 'name'}]}
+
+          ]
+        }
+
+      ]
+    },
+    expect: [
+      {id: 'pt1', name: 'FC1.1'},
+      {id: 'pt1', name: 'N1'},
+      {id: 'pt1', name: 'N1`'},
+      {id: 'pt1', name: 'FC1.2'},
+      {id: 'pt1', name: 'N2'},
+    ]
+  })
+
+  add_test({
+    title: 'forEach & unionAll & column & select on the same level',
+    view: {
+      resource: 'Patient',
+      select: [
+        {
+          column: [{path: 'id', name: 'id'}],
+        },
+        {
+          forEach: "contact",
+          column: [{path: 'telecom.system', name: 'tel_system'}],
+          select: [{column: [{path: 'gender', name: 'gender'}]}],
+          unionAll: [
+            {column: [{path: 'name.family', name: 'name'}]},
+            {forEach: "name.given",
+             column: [{path: '$this', name: 'name'}]}
+
+          ]
+        }
+
+      ]
+    },
+    expect: [
+      {id: 'pt1', name: 'FC1.1', tel_system: "phone", gender: null},
+      {id: 'pt1', name: 'N1', tel_system: "phone", gender: null},
+      {id: 'pt1', name: 'N1`', tel_system: "phone", gender: null},
+      {id: 'pt1', name: 'FC1.2', tel_system: "email", gender: "unknown"},
+      {id: 'pt1', name: 'N2', tel_system: "email", gender: "unknown"},
+    ]
+  })
+
+  add_test({
+    title: 'forEachOrNull & unionAll & column & select on the same level',
+    view: {
+      resource: 'Patient',
+      select: [
+        {
+          column: [{path: 'id', name: 'id'}],
+        },
+        {
+          forEachOrNull: "contact",
+          column: [{path: 'telecom.system', name: 'tel_system'}],
+          select: [{column: [{path: 'gender', name: 'gender'}]}],
+          unionAll: [
+            {column: [{path: 'name.family', name: 'name'}]},
+            {forEach: "name.given",
+             column: [{path: '$this', name: 'name'}]}
+
+          ]
+        }
+
+      ]
+    },
+    expect: [
+      {id: 'pt1', name: 'FC1.1', tel_system: "phone", gender: null},
+      {id: 'pt1', name: 'N1', tel_system: "phone", gender: null},
+      {id: 'pt1', name: 'N1`', tel_system: "phone", gender: null},
+      {id: 'pt1', name: 'FC1.2', tel_system: "email", gender: "unknown"},
+      {id: 'pt1', name: 'N2', tel_system: "email", gender: "unknown"},
+      {id: 'pt2', name: null, tel_system: null, gender: null},
+      {id: 'pt3', name: null, tel_system: null, gender: null},
+    ]
+  })
+
 
   end_case();
 
