@@ -15,13 +15,17 @@ export function merge(a,b) {
 }
 
 export function row_product(parts) {
-  if(parts.length == 1) {return parts[0]}
+  if (parts.length == 1) {
+    return parts[0];
+  }
+
   let rows = [{}];
   let new_rows = null;
-  parts.forEach((partial_rows) => {
+
+  parts.forEach(partial_rows => {
     new_rows = [];
     partial_rows.forEach((partial_row)=> {
-      rows.forEach((row)=> {
+      rows.forEach(row => {
         new_rows.push(merge(partial_row,row))
       })
     })
@@ -129,10 +133,6 @@ function select(select_expr, node, def) {
       return do_eval(s, node, def);
     })
   )
-}
-
-function compile(def) {
-  throw new Error('not impl');
 }
 
 // * foreach    / column / [select(..)]   -> foreach select[column, ..]
@@ -246,18 +246,15 @@ function collect_columns(acc, def){
     return def.select.reduce((acc, s)=> {
       return collect_columns(acc, s);
     }, acc)
-    break;
   case 'unionAll':
     return def.unionAll.reduce((acc, s)=> {
       return collect_columns(acc, s);
     }, acc)
-    break;
   case 'column':
     return def.column.reduce((acc, c)=> {
       acc.push(c.name || c.path)
       return acc
     }, acc)
-    break;
   default:
     return acc;
   }
