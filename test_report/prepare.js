@@ -10,6 +10,7 @@ await Promise.all(
   files.map(async (file) => {
     if (path.extname(file) !== '.json') return;
     const testData = JSON.parse(fs.readFileSync(CONTENT + file));
+    testData.file = path.basename(file);
     allResults.push(testData);
   })
 )

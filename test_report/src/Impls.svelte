@@ -15,7 +15,7 @@
 
  onMount(async function () {
      tests = await load('tests.json');
-     var tmp = await load('implementations.json');
+     const tmp = await load('implementations.json');
      for (const impl of tmp) {
          if (impl.testResultsUrl){
              let res = await load(impl.testResultsUrl);
@@ -23,7 +23,8 @@
          }
      }
      impls = tmp;
-
+     console.dir(tests, {depth: null})
+     console.dir(impls, {depth: null})
  });
 
 </script>

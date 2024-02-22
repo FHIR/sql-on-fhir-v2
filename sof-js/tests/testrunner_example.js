@@ -1,7 +1,6 @@
 import fs from 'fs'
 import { evaluate } from '../src/index.js'
 
-
 function isEqual(a, b) {
   if (Array.isArray(a) && Array.isArray(b)) {
     return a.length === b.length && a.every((val, index) => isEqual(val, b[index]))
@@ -33,7 +32,7 @@ const canonicalize = (arr) => {
 function arraysMatch(arr1, arr2) {
   // Canonicalize arrays
 
-  arr1 = canonicalize(arr1) // Spread to avoid mutating the original array
+  arr1 = canonicalize(arr1)
   arr2 = canonicalize(arr2)
 
   // Check if arrays are of the same length
@@ -77,62 +76,111 @@ function arraysMatch(arr1, arr2) {
   }
 }
 
-// let tests_dir = '../../tests/'
-let fast_fail = true
-let tests_dir = '../../legacy-tests/content/'
-let files = fs.readdirSync(tests_dir)
-console.log(files);
-let test_results = {pass: 0, fail: 0, error: 0}
-let result = files.map((f)=>{
-  let testcase = JSON.parse(fs.readFileSync(tests_dir + f))
-  console.log('run', testcase.title, `file ${f}`)
-  testcase.tests.map((test)=>{
-    if(test.expectError) {
-      try {
-        let _result = evaluate(test.view, testcase.resources)
-        console.log(' *', test.title, ' => ', 'fail' )
-        test_results.fail+=1
-      } catch (e) {
-        console.log(' *', test.title, ' => ', 'pass' )
-        test_results.pass+=1
-      }
-    } else {
-      try {
-        let result = evaluate(test.view, testcase.resources)
-        if(test.expectCount) {
-          if(result.length == test.expectCount) {
-            console.log(' *', test.title, ' => ', 'pass' )
-            test_results.pass+=1
-          } else {
-            console.log(' *', test.title, ' => ', 'fail', 'expected: ', test.expectCount, 'got ', result.length, result)
-            test_results.fail+=1
-          }
-        } else {
-          let match = arraysMatch(result, test.expect)
-          test.observed = result;
-          test.passed = match.passed
-          test.error = match.error
-          if(match.passed){
-            console.log(' *', test.title, ' => ', 'pass' )
-            test_results.pass+=1
-          } else {
-            console.log(' *', test.title, ' => ', 'fail' , 'expeceted: ', test.expect, 'got: ', result)
-            test_results.fail+=1
-          }
-        }
-      } catch (e) {
-        console.log(' *', test.title, ' => ', 'error', e.toString())
-        test_results.error+=1
-        if(fast_fail) {
-          console.log('view', JSON.stringify(test, null, " "))
-          throw e
-        }
-        // console.log(e)
-      }
+function runThrowingTest(test, resources) {
+  try {
+    const result = evaluate(test.view, resources)
+    return {
+      passed: false,
+      expectedFail: true,
+      actual: result
     }
-  })
-  return testcase;
-})
+  } catch (e) {
+    return { passed: true }
+  }
+}
 
-fs.writeFileSync('../../test_report/public/test-results.json', JSON.stringify(result));
-console.log(test_results)
+function runTest(test, resources) {
+  if (test.expectError) {
+    return runThrowingTest(test);
+  }
+
+  try {
+    const result = evaluate(test.view, resources)
+
+    if (test.expectCount) {
+      const passed = result.length === test.expectCount;
+      return passed
+        ? { passed }
+        : {
+          passed,
+          expectedCount: test.expectCount,
+          actual: result.length
+        };
+    } else {
+      const match = arraysMatch(result, test.expect)
+      return {
+        passed: match.passed,
+        expected: test.expect,
+        actual: result,
+        message: match.message
+      };
+    }
+  } catch (e) {
+    return {
+      passed: null,
+      message: e.toString()
+    }
+  }
+}
+
+function printResult(title, result) {
+  let testResult;
+  if (result.passed === true) {
+    testResult = "passed";
+  } else if (result.passed === false) {
+    testResult = "failed";
+  } else {
+    testResult = "error";
+  }
+
+  console.log( " *", title, " => ", testResult);
+
+  if (result.passed !== true) {
+    if (result.expected && result.actual) {
+      console.log("expected:");
+      console.dir(result.expected, { depth: null });
+      console.log("got:");
+      console.dir(result.actual, { depth: null });
+    }
+    if (result.message) {
+      console.log(result.message);
+    }
+  }
+}
+
+const tests_dir = '../tests/'
+const files = fs.readdirSync(tests_dir)
+let test_summary = { pass: 0, fail: 0, error: 0 }
+
+const result = {};
+files.forEach(f => {
+  const testcase = JSON.parse(fs.readFileSync(tests_dir + f))
+  console.log('running', testcase.title, `file ${f}`)
+
+  const testResult = testcase.tests.map(test => {
+    let result = null;
+
+    if (test.expectError) {
+      result = runThrowingTest(test, testcase.resources);
+      printResult(test.title, result);
+    } else {
+      result = runTest(test, testcase.resources);
+      printResult(test.title, result);
+    }
+
+    if (result.passed === true) {
+      test_summary.pass++;
+    } else if (result.passed === false) {
+      test_summary.fail++;
+    } else {
+      test_summary.error++;
+    }
+
+    return { result };
+  });
+
+  result[f] = { tests: testResult };
+});
+
+fs.writeFileSync('../test_report/public/test-results.json', JSON.stringify(result));
+console.log(test_summary)
