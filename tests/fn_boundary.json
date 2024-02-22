@@ -31,6 +31,14 @@
       "status": "final"
     },
     {
+      "resourceType": "Observation",
+      "id": "o4",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34"
+    },
+    {
       "resourceType": "Patient",
       "id": "p1",
       "birthDate": "1970-06"
@@ -228,6 +236,84 @@
         {
           "id": "p1",
           "date": "1970-06-30"
+        }
+      ]
+    },
+    {
+      "title": "time lowBoundary",
+      "view": {
+        "resource": "Observation",
+        "status": "active",
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              },
+              {
+                "name": "time",
+                "path": "value.ofType(time).lowBoundary()"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "o1",
+          "time": null
+        },
+        {
+          "id": "o2",
+          "time": null
+        },
+        {
+          "id": "o3",
+          "time": null
+        },
+        {
+          "id": "o4",
+          "time": "12:34:00.000"
+        }
+      ]
+    },
+    {
+      "title": "time highBoundary",
+      "view": {
+        "resource": "Observation",
+        "status": "active",
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              },
+              {
+                "name": "time",
+                "path": "value.ofType(time).highBoundary()"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "o1",
+          "time": null
+        },
+        {
+          "id": "o2",
+          "time": null
+        },
+        {
+          "id": "o3",
+          "time": null
+        },
+        {
+          "id": "o4",
+          "time": "12:34:59.999"
         }
       ]
     }
