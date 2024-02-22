@@ -29,6 +29,11 @@
         "text": "code"
       },
       "status": "final"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p1",
+      "birthDate": "1970-06"
     }
   ],
   "tests": [
@@ -169,6 +174,60 @@
         {
           "id": "o3",
           "datetime": null
+        }
+      ]
+    },
+    {
+      "title": "date lowBoundary",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              },
+              {
+                "name": "date",
+                "path": "birthDate.lowBoundary()"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "p1",
+          "date": "1970-06-01"
+        }
+      ]
+    },
+    {
+      "title": "date highBoundary",
+      "view": {
+        "resource": "Patient",
+        "status": "active",
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              },
+              {
+                "name": "date",
+                "path": "birthDate.highBoundary()"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "p1",
+          "date": "1970-06-30"
         }
       ]
     }
