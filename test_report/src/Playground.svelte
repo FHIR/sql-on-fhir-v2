@@ -74,7 +74,6 @@
 
  function tabelize(v, results) {
      let columns = get_columns(v)
-     console.log('?',columns);
      let rows = []
      for( var row of results) {
          rows.push(columns.map((k)=>{

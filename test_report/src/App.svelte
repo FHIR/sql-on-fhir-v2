@@ -10,15 +10,12 @@
  export let url = "";
 
  onMount(async function () {
-     console.log('add location change')
      window.addEventListener('hashchange', function(){
          hash = window.location.hash.substring(1);
-         console.log(hash);
      })
  })
 
  let hash = window.location.hash.substring(1);
- console.log(hash);
 
 </script>
 
@@ -26,7 +23,7 @@
 
 <div class="flex flex-col" style="height: 100%">
     <div class="flex space-x-4 px-4 py-1 border-b items-center" style="background-color: rgb(239 253 254);">
-        <a href="" class="flex items-center px-4"> 
+        <a href="" class="flex items-center px-4">
             <img src="logo.jpeg" class="w-10 h-10" style="" /> SQL on FHIR 2.0
         </a>
         <a href="#pg" class="px-2 hover:text-blue-500 hover:bg-gray-150">Playground</a>

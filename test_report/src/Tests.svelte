@@ -15,11 +15,9 @@
  onMount(async function () {
      menu = await load('tests.json');
      impls = await load('implementations.json');
-     console.log('?', impls);
      let hash = window.location.hash.substring(1);
      current = menu[0];
      menu.forEach((x)=> {
-         console.log('*',hash, x.file);
          if(x.file == hash) {
              current = x
          };
