@@ -77,6 +77,10 @@
         {
           "id": "o3",
           "decimal": null
+        },
+        {
+          "id": "o4",
+          "decimal": null
         }
       ]
     },
@@ -111,6 +115,10 @@
         },
         {
           "id": "o3",
+          "decimal": null
+        },
+        {
+          "id": "o4",
           "decimal": null
         }
       ]
@@ -147,6 +155,10 @@
         {
           "id": "o3",
           "datetime": null
+        },
+        {
+          "id": "o4",
+          "datetime": null
         }
       ]
     },
@@ -181,6 +193,10 @@
         },
         {
           "id": "o3",
+          "datetime": null
+        },
+        {
+          "id": "o4",
           "datetime": null
         }
       ]
