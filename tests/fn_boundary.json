@@ -116,7 +116,7 @@
               },
               {
                 "name": "datetime",
-                "path": "value.ofType(DateTime).lowBoundary()"
+                "path": "value.ofType(dateTime).lowBoundary()"
               }
             ]
           }
@@ -125,15 +125,15 @@
       "expect": [
         {
           "id": "o1",
-          "decimal": null
+          "datetime": null
         },
         {
           "id": "o2",
-          "decimal": "2010-10-10T00:00:00.000+14:00"
+          "datetime": "2010-10-10T00:00:00.000+14:00"
         },
         {
           "id": "o3",
-          "decimal": null
+          "datetime": null
         }
       ]
     },
@@ -151,7 +151,7 @@
               },
               {
                 "name": "datetime",
-                "path": "value.ofType(DateTime).highBoundary()"
+                "path": "value.ofType(dateTime).highBoundary()"
               }
             ]
           }
@@ -160,15 +160,15 @@
       "expect": [
         {
           "id": "o1",
-          "decimal": null
+          "datetime": null
         },
         {
           "id": "o2",
-          "decimal": "2010-10-10T23:59:59.999-12:00"
+          "datetime": "2010-10-10T23:59:59.999-12:00"
         },
         {
           "id": "o3",
-          "decimal": null
+          "datetime": null
         }
       ]
     }
