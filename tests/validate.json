@@ -23,6 +23,22 @@
       "expectError": true
     },
     {
+      "title": "missing resource",
+      "view": {
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id"
+              }
+            ]
+          }
+        ]
+      },
+      "expectError": true
+    },
+    {
       "title": "wrong fhirpath",
       "view": {
         "resource": "Patient",
