@@ -240,11 +240,7 @@
           }
         ]
       },
-      "expect": [
-        {
-          "id": "pt1"
-        }
-      ]
+      "expectError": true
     },
     {
       "title": "where as expr - 1",

@@ -177,7 +177,7 @@ describe("basics", () => {
       select: [{column: [{name: 'id', path: 'id'}]}],
       where: [{path: 'active'}]
     },
-    expect: [{id: 'pt1'}]
+    expectError: true
   })
 
   add_test({
