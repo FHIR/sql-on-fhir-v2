@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "fmt": "prettier -w ../tests",
-    "check-fmt": "prettier -c ../tests"
+    "check-fmt": "prettier -c ../tests",
+    "validate": "ajv -s ../tests.schema.json -d \"../tests/*.json\""
   },
   "author": "niquola,jmandel",
   "license": "ISC",
