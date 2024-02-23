@@ -4,6 +4,7 @@ import fs from 'fs'
 
 
 let test_case = null;
+
 export function start_case(name, desc, resources) {
   test_case = {
     title: name,
@@ -13,19 +14,10 @@ export function start_case(name, desc, resources) {
   }
 }
 
-export function run_test(viewdef, result) {
-  // TODO: dump tests
-  let res = evaluate( viewdef, test_case.resources)
-  test_case.tests.push({view: viewdef, expect: result})
-  expect(res).toEqual(result);
-
-}
-
-
 export function add_test(opts) {
   test(opts.title, () => {
-    const res = evaluate(opts.view, test_case.resources);
     test_case.tests.push(opts);
+    const res = evaluate(opts.view, test_case.resources);
     expect(res).toEqual(opts.expect);
   })
 }
@@ -38,10 +30,9 @@ export function add_throwing_test(opts) {
 }
 
 export function invalid_view(opts) {
-  test(opts.title, ()=>{
+  test(opts.title, () => {
     test_case.tests.push(opts)
     let errs = errors(opts.view, test_case.resources)
-    // console.log(errs)
     expect((errs || []).length > 0).toEqual(true)
   })
 }

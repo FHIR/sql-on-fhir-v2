@@ -1,6 +1,6 @@
 import { expect, test, describe } from "bun:test";
 import { evaluate, row_product } from '../src/index.js'
-import { start_case, end_case, add_test, run_test, should_fail } from './test_helpers.js'
+import { start_case, end_case, add_test, should_fail } from './test_helpers.js'
 
 let l = console.log
 
