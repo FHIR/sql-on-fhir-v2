@@ -11,18 +11,18 @@ let resources = [
     resourceType: 'Patient',
     id: 'pt1',
     telecom: [
-      { value: 't1.1', system: 's1.1' },
-      { value: 't1.2', system: 's1.2' },
-      { value: 't1.3', system: 's1.3' }
+      { value: 't1.1', system: 'phone' },
+      { value: 't1.2', system: 'fax' },
+      { value: 't1.3', system: 'email' }
     ],
     contact: [
       {
-        telecom: [{ value: 't1.c1.1', system: 's1.c1.1' }]
+        telecom: [{ value: 't1.c1.1', system: 'pager' }]
       },
       {
         telecom: [
-          { value: 't1.c2.1', system: 's1.c2.1' },
-          { value: 't1.c2.2', system: 's1.c2.2' }
+          { value: 't1.c2.1', system: 'url' },
+          { value: 't1.c2.2', system: 'sms' }
         ]
       }
     ]
@@ -31,8 +31,8 @@ let resources = [
     resourceType: 'Patient',
     id: 'pt2',
     telecom: [
-      { value: 't2.1', system: 's2.1' },
-      { value: 't2.2', system: 's2.2' }
+      { value: 't2.1', system: 'phone' },
+      { value: 't2.2', system: 'fax' }
     ]
   },
   {
@@ -41,13 +41,13 @@ let resources = [
     contact: [
       {
         telecom: [
-          { value: 't3.c1.1', system: 's3.c1.1' },
-          { value: 't3.c1.2', system: 's3.c1.2' }
+          { value: 't3.c1.1', system: 'email' },
+          { value: 't3.c1.2', system: 'pager' }
         ]
       },
       {
         telecom: [
-          { value: 't3.c2.1', system: 's3.c2.1' }
+          { value: 't3.c2.1', system: 'sms' }
         ]
       }
     ]
@@ -64,17 +64,17 @@ start_case('union', 'TBD', resources)
 
 describe("union", () => {
   let result = [
-    {tel: "t1.1",    sys: "s1.1",    id: "pt1"},
-    {tel: "t1.2",    sys: "s1.2",    id: "pt1"},
-    {tel: "t1.3",    sys: "s1.3",    id: "pt1"},
-    {tel: "t1.c1.1", sys: "s1.c1.1", id: "pt1"},
-    {tel: "t1.c2.1", sys: "s1.c2.1", id: "pt1"},
-    {tel: "t1.c2.2", sys: "s1.c2.2", id: "pt1"},
-    {tel: "t2.1",    sys: "s2.1",    id: "pt2"},
-    {tel: "t2.2",    sys: "s2.2",    id: "pt2"},
-    {tel: "t3.c1.1", sys: "s3.c1.1", id: "pt3"},
-    {tel: "t3.c1.2", sys: "s3.c1.2", id: "pt3"},
-    {tel: "t3.c2.1", sys: "s3.c2.1", id: "pt3"}
+    {tel: "t1.1",    sys: "phone",    id: "pt1"},
+    {tel: "t1.2",    sys: "fax",    id: "pt1"},
+    {tel: "t1.3",    sys: "email",    id: "pt1"},
+    {tel: "t1.c1.1", sys: "pager", id: "pt1"},
+    {tel: "t1.c2.1", sys: "url", id: "pt1"},
+    {tel: "t1.c2.2", sys: "sms", id: "pt1"},
+    {tel: "t2.1",    sys: "phone",    id: "pt2"},
+    {tel: "t2.2",    sys: "fax",    id: "pt2"},
+    {tel: "t3.c1.1", sys: "email", id: "pt3"},
+    {tel: "t3.c1.2", sys: "pager", id: "pt3"},
+    {tel: "t3.c2.1", sys: "sms", id: "pt3"}
   ]
 
   // debug(unionAll, resources);
@@ -163,16 +163,16 @@ describe("union", () => {
   };
 
   let dups_result = [
-    { tel: "t1.1", sys: "s1.1", id: "pt1" },
-    { tel: "t1.2", sys: "s1.2", id: "pt1" },
-    { tel: "t1.3", sys: "s1.3", id: "pt1" },
-    { tel: "t1.1", sys: "s1.1", id: "pt1" },
-    { tel: "t1.2", sys: "s1.2", id: "pt1" },
-    { tel: "t1.3", sys: "s1.3", id: "pt1" },
-    { tel: "t2.1", sys: "s2.1", id: "pt2" },
-    { tel: "t2.2", sys: "s2.2", id: "pt2" },
-    { tel: "t2.1", sys: "s2.1", id: "pt2" },
-    { tel: "t2.2", sys: "s2.2", id: "pt2" }
+    { tel: "t1.1", sys: "phone", id: "pt1" },
+    { tel: "t1.2", sys: "fax", id: "pt1" },
+    { tel: "t1.3", sys: "email", id: "pt1" },
+    { tel: "t1.1", sys: "phone", id: "pt1" },
+    { tel: "t1.2", sys: "fax", id: "pt1" },
+    { tel: "t1.3", sys: "email", id: "pt1" },
+    { tel: "t2.1", sys: "phone", id: "pt2" },
+    { tel: "t2.2", sys: "fax", id: "pt2" },
+    { tel: "t2.1", sys: "phone", id: "pt2" },
+    { tel: "t2.2", sys: "fax", id: "pt2" }
   ];
 
   add_test({ title: 'duplicates', view: unionDups, expect: dups_result });
@@ -332,12 +332,12 @@ describe("union", () => {
       ]
     },
     expect: [
-      { id: "pt1", sys: "s1.c1.1", tel: "t1.c1.1" },
-      { id: "pt1", sys: "s1.c2.1", tel: "t1.c2.1" },
-      { id: "pt1", sys: "s1.c2.2", tel: "t1.c2.2" },
-      { id: "pt3", sys: "s3.c1.1", tel: "t3.c1.1" },
-      { id: "pt3", sys: "s3.c1.2", tel: "t3.c1.2" },
-      { id: "pt3", sys: "s3.c2.1", tel: "t3.c2.1" }
+      { id: "pt1", sys: "pager", tel: "t1.c1.1" },
+      { id: "pt1", sys: "url", tel: "t1.c2.1" },
+      { id: "pt1", sys: "sms", tel: "t1.c2.2" },
+      { id: "pt3", sys: "email", tel: "t3.c1.1" },
+      { id: "pt3", sys: "pager", tel: "t3.c1.2" },
+      { id: "pt3", sys: "sms", tel: "t3.c2.1" }
     ]
   });
 
