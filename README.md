@@ -4,6 +4,9 @@ This project provides the source for the SQL on FHIR v2.0 Implementation Guide
 
 [**Read the specification &rarr;**](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/)
 
+[//]: # (Links used in this document)
+[ViewDefinition]: https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition.html "ViewDefinition"
+
 ## Content
 
 Content as markdown is now found in [input/pagecontent](input/pagecontent).
@@ -35,8 +38,7 @@ which are set of test case files, each covering one aspect of implementation.
 A test case is represented as JSON document with `title` and `description` attributes, 
 a set of fixtures (FHIR resources) as the `resources` attribute, and an array of test objects.
 
-[TODO]: # (link to the ViewDefinition resource here.)
-A test object has a unique `title`, a ViewDefinition as the `view` attribute, and and expected set of resulting
+A test object has a unique `title`, a [ViewDefinition][] as the `view` attribute, and and expected set of resulting
 rows in the `expect` attribute.
 
 ## Tests Overview
@@ -58,7 +60,7 @@ components of a test case file are:
   scenario within the case. Every test object includes:
   - **Title** (`title` attribute): A unique, descriptive title for the test object, differentiating
     it from others in the same test case.
-  - **ViewDefinition** (`view` attribute): Specifies the ViewDefinition being
+  - **ViewDefinition** (`view` attribute): Specifies the [ViewDefinition][] being
     tested. This attribute outlines the expected data view or transformation
     applied to the input fixtures.
   - **Expected Result** (`expect` attribute): An array of rows that represent
