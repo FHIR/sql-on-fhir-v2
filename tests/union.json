@@ -570,7 +570,7 @@
             ],
             "unionAll": [
               {
-                "forEach": "telecom[0]",
+                "forEachOrNull": "telecom[0]",
                 "column": [
                   {
                     "name": "tel",
@@ -581,7 +581,7 @@
               {
                 "unionAll": [
                   {
-                    "forEach": "telecom[0]",
+                    "forEachOrNull": "telecom[0]",
                     "column": [
                       {
                         "name": "tel",
@@ -590,7 +590,7 @@
                     ]
                   },
                   {
-                    "forEach": "contact.telecom[0]",
+                    "forEachOrNull": "contact.telecom[0]",
                     "column": [
                       {
                         "name": "tel",
@@ -626,8 +626,32 @@
           "tel": "t2.1"
         },
         {
+          "id": "pt2",
+          "tel": null
+        },
+        {
+          "id": "pt3",
+          "tel": null
+        },
+        {
+          "id": "pt3",
+          "tel": null
+        },
+        {
           "id": "pt3",
           "tel": "t3.c1.1"
+        },
+        {
+          "id": "pt4",
+          "tel": null
+        },
+        {
+          "id": "pt4",
+          "tel": null
+        },
+        {
+          "id": "pt4",
+          "tel": null
         }
       ]
     },
