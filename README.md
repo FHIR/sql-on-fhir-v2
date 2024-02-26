@@ -81,7 +81,7 @@ Below is an abstract representation of what a test case file might look like:
   description: '...',
   // fixtures
   resources: [
-    {resourceType: 'Patient', id: 'pt1'},
+    {resourceType: 'Patient', id: 'pt-1'},
     {resourceType: 'Patient', id: 'pt-2'}
   ]
   tests: [
