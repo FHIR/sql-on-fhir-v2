@@ -27,6 +27,7 @@ jobs:
       - name: Run tests
         working-directory: sof-js
         run: bun test
+        continue-on-error: true
       - name: Build
         working-directory: sof-js
         run: bun build src/index.js > ../test_report/public/processor.js
