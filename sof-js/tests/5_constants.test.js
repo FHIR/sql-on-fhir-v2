@@ -162,7 +162,7 @@ describe("constant", () => {
     view: {
       resource: 'Patient',
       status: 'active',
-      constant: [{ name: "is_deceased", valueInteger: true }],
+      constant: [{ name: "is_deceased", valueBoolean: true }],
       select: [
         {
           column: [{ name: "id", path: "id" }]
