@@ -151,7 +151,7 @@ the result accurately reflects the output of your implementation for each
 test, facilitating a straightforward comparison between expected and actual
 outcomes.
 
-```json
+```js
 //example test_report.json
 {
   "title": "Example Test Case",
