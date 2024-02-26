@@ -9,6 +9,13 @@ node_modules
 /template
 
 ##############################
+## sushi
+##############################
+_gencontinuous.*
+_genonce.*
+_updatePublisher.*
+
+##############################
 ## IntelliJ
 ##############################
 out/
