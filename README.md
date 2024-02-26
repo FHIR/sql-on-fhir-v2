@@ -176,7 +176,6 @@ outcomes.
     }
   ]
 }
-]
 ```
 
 ### Reporting Your Test Results
