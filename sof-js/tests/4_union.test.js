@@ -270,17 +270,17 @@ describe('union', () => {
           column: [{ name: 'id', path: 'id' }],
           unionAll: [
             {
-              forEachOrNull: 'telecom[0]',
+              forEach: 'telecom[0]',
               column: [{ name: 'tel', path: 'value' }],
             },
             {
               unionAll: [
                 {
-                  forEachOrNull: 'telecom[0]',
+                  forEach: 'telecom[0]',
                   column: [{ name: 'tel', path: 'value' }],
                 },
                 {
-                  forEachOrNull: 'contact.telecom[0]',
+                  forEach: 'contact.telecom[0]',
                   column: [{ name: 'tel', path: 'value' }],
                 },
               ],
@@ -301,42 +301,6 @@ describe('union', () => {
       {
         id: 'pt1',
         tel: 't1.c1.1',
-      },
-      {
-        id: 'pt2',
-        tel: 't2.1',
-      },
-      {
-        id: 'pt2',
-        tel: 't2.1',
-      },
-      {
-        id: 'pt2',
-        tel: null,
-      },
-      {
-        id: 'pt3',
-        tel: null,
-      },
-      {
-        id: 'pt3',
-        tel: null,
-      },
-      {
-        id: 'pt3',
-        tel: 't3.c1.1',
-      },
-      {
-        id: 'pt4',
-        tel: null,
-      },
-      {
-        id: 'pt4',
-        tel: null,
-      },
-      {
-        id: 'pt4',
-        tel: null,
       },
     ],
   })
