@@ -237,12 +237,12 @@ discovery and comparison.
    - Clone or fork the repository containing the `implementations.json` if necessary.
    - Add an entry for your implementation in the format:
      ```json
-    {
-        "name": "YourImplName",
-        "description": "<description>",
-        "url": "<link-to-the-site>",
-        "testResultsUrl": "<link-to-test-results>"
-    },
+     {
+         "name": "YourImplName",
+         "description": "<description>",
+         "url": "<link-to-the-site>",
+         "testResultsUrl": "<link-to-test-results>"
+     },
      ```
    - Ensure that the URL is directly accessible and points to the latest version of your test report.
 
