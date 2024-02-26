@@ -22,12 +22,17 @@ This is a Sushi project and can use HL7 IG Publisher to build locally:
   1. Install `sushi` if you don't have it already with: `npm i fsh-sushi`
   1. Run `./scripts/_genonce.sh` to generate the IG
   1. Run `open output/index.html` to view the IG website
-  1. Alternatively, you may run a local `http-server` to view the built content:
-```
-npm i http-server
-cd output
-http-server
-```
+      <details>
+        <summary>Instructions for viewing the IG in a local <code>http-server</code>...</summary>
+
+        ```sh
+        npm i http-server
+        cd output
+        http-server  # Will launch the content in a new browser tab.
+        ```
+
+</details>
+
 
 Building tests, see [test README](tests/README.md)
 
