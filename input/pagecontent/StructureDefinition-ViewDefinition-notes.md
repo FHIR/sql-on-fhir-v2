@@ -417,7 +417,7 @@ Note that type inference is an optional feature and some implementations may
 not support it. Therefore, a ViewDefinition that is intended to be shared between
 different implementations should have the [`type`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type)
  for each column set explicitly, even for primitives. It is reasonable for an implementation to
-treat any non-specified types as strings. Moreover, non-primitive data types will not be supported by all implementations. Therefore, it is important to always be explicitly set the [`type`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type) so each column can have its data type easily determined.
+treat any non-specified types as strings. Moreover, non-primitive data types will not be supported by all implementations. Therefore, it is important to always explicitly set the [`type`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type) so each column can have its data type easily determined.
 
 Importantly, the above determines the FHIR type produced for the column. How that type is physically manifested depends
 on the implementation. Implementations may map these to native database types or have each column simply produce a string,
