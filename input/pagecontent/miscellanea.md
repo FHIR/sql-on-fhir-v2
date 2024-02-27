@@ -6,7 +6,7 @@ To clarify the intention and purpose of the specification, consider the [Archima
 layered viewpoint detailing the key Application elements (shown in blue) and Technology elements (green).
 Examples of possible implementations are given here as guidance. 
 
-<img src="layers-detailed.jpg" alt="Detailed diagram of layers with examples" style="float: none"/>
+<img src="layers-detailed.svg" alt="Detailed diagram of layers with examples" style="float: none"/>
 
 **Figure 2: Detailed diagram of layers with examples**
 
