@@ -28,9 +28,6 @@ jobs:
         working-directory: sof-js
         run: bun test
         continue-on-error: true
-      - name: Build
-        working-directory: sof-js
-        run: bun build src/index.js > ../test_report/public/processor.js
       - name: Build test report
         working-directory: test_report
         run: bun install && bun run prepare && bun run build
