@@ -21,6 +21,9 @@ jobs:
       - name: Check formatting
         working-directory: sof-js
         run: bun run check-fmt
+      - name: Validate JSON tests
+        working-directory: sof-js
+        run: bun run validate
       - name: Run tests
         working-directory: sof-js
         run: bun test

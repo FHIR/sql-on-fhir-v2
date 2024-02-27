@@ -1,6 +1,6 @@
 import { expect, test , describe, beforeAll, afterAll} from "bun:test";
 import { evaluate, get_columns, row_product } from '../src/index.js'
-import { start_case, end_case, add_test, debug, run_test, should_fail, add_throwing_test } from './test_helpers.js'
+import { start_case, end_case, add_test, debug, should_fail, add_throwing_test } from './test_helpers.js'
 
 test("row_product", () => {
   expect(row_product([[{a: 1}, {a: 2}], [{b: 1}, {b: 2}]]))
