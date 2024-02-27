@@ -1,4 +1,3 @@
-import { prettify } from 'awesome-ajv-errors'
 import { fhirpath_evaluate } from './path.js'
 import {errors as verrors, validate} from './validate.js'
 
@@ -277,7 +276,7 @@ export function evaluate(def, node) {
   const validation = validate(def);
   if ((validation.errors || []).length > 0) {
     throw new Error("Incorrect view definition:\n"
-      .concat(prettify(validation, { data: def })));
+      .concat(JSON.stringify(validation.errors, null, 2)));
   }
 
   const normal_def = normalize(structuredClone(def));
