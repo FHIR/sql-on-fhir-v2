@@ -354,9 +354,11 @@ Note the former example is preferred due to its simplicity and the latter is inc
 
 ### Column Ordering
 
-*View runners* that support column ordering in their output format MUST order the columns of the result to match the order that they appear in the ViewDefinition.
+*View runners* that support column ordering in their output format MUST order the columns of the result according to the rules defined in this section.
 
-`select`s that have nested `select`s will place the columns of the parent `select` before the columns of the nested `select`, and the columns from a `unionAll` list are placed last. To change the column ordering, it is possible to place the columns or the `unionAll` in a nested `select`, which can be ordered relative to other nested `select`s as desired.
+`select`s that have nested `select`s will place the columns of the parent `select` before the columns of the nested `select`, and the columns from a `unionAll` list are placed last. 
+
+To change the column ordering, it is possible to place the columns or the `unionAll` in a nested `select`, which can be ordered relative to other nested `select`s as desired.
 
 For example, the `column`s in this ViewDefinition will appear in alphabetical order:
 
