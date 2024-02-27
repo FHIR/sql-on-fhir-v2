@@ -33,10 +33,13 @@ jobs:
         run: bun install && bun run prepare && bun run build
       - name: Setup Pages
         uses: actions/configure-pages@v3
+        if: ${{ github.ref == 'refs/heads/master' }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
+        if: ${{ github.ref == 'refs/heads/master' }}
         with:
           path: 'test_report/public'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
+        if: ${{ github.ref == 'refs/heads/master' }}
