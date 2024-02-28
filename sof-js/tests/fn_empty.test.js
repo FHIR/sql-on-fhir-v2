@@ -1,5 +1,5 @@
-import { describe } from "bun:test";
-import { add_test, end_case, start_case } from "./test_helpers";
+import { describe } from 'bun:test'
+import { add_test, end_case, start_case } from './test_helpers'
 
 const resources = [
   {
@@ -8,21 +8,21 @@ const resources = [
     name: [
       {
         use: 'official',
-        family: 'f1'
-      }
-    ]
+        family: 'f1',
+      },
+    ],
   },
   {
     resourceType: 'Patient',
-    id: 'p2'
-  }
-];
+    id: 'p2',
+  },
+]
 
-start_case('fn_empty', 'TBD', resources);
+start_case('fn_empty', 'TBD', resources)
 
 describe('empty function', () => {
   add_test({
-    title: "empty names",
+    title: 'empty names',
     view: {
       resource: 'Patient',
       status: 'active',
@@ -30,16 +30,16 @@ describe('empty function', () => {
         {
           column: [
             { name: 'id', path: 'id' },
-            { name: 'name_empty', path: 'name.empty()' }
-          ]
-        }
-      ]
+            { name: 'name_empty', path: 'name.empty()' },
+          ],
+        },
+      ],
     },
     expect: [
       { id: 'p1', name_empty: false },
-      { id: 'p2', name_empty: true }
-    ]
-  });
+      { id: 'p2', name_empty: true },
+    ],
+  })
 
-  end_case();
-});
+  end_case()
+})
