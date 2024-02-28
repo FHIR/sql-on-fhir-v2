@@ -1,9 +1,19 @@
+This spec defines the ViewDefinition model and logical system layers, but intentionally
+leaves the details of those layers to implementations. However, implementations themselves
+are encouraged to share common approaches when helpful.  
+
+### Implementation Patterns
+
+TODO: add links to implementation patterns (like Spark, JSON, etc) as these efforts materialize.
+
+### Processing Model
+
 The following description provides an algorithm for how to process a FHIR
 resource as input for a `ViewDefinition`. Implementations do not need to follow
 this algorithm directly, but their outputs should be consistent with what this
 model produces.
 
-### Validate Columns (entry point)
+#### Validate Columns (entry point)
 
 **Purpose**: This step ensures that a ViewDefinition's columns are valid, by setting up a recursive call.
 

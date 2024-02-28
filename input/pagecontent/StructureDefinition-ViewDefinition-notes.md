@@ -488,7 +488,7 @@ This is an example of a constant used in the `where` constraint of a view:
 
 ## Processing Algorithm (Model)
 
-See [Processing Algorithm](processing_model.html) for a description of how to
+See [Processing Algorithm](implementer_guidance.html#processing-model) for a description of how to
 process a FHIR resource as input for a `ViewDefinition`. Implementations do not
 need to follow this algorithm directly, but their outputs should be consistent
 with what this model produces.

@@ -1,4 +1,4 @@
-This document proposes an approach to make large-scale analysis of FHIR data
+This specification proposes an approach to make large-scale analysis of FHIR data
 accessible to a larger audience and portable between systems. The central goal
 of this project is to make FHIR data work well with the best available analytic
 tools, regardless of the technology stack.
@@ -101,4 +101,4 @@ that is, to use the ETL or ELT patterns.
 
 ---
 
-**[Next: System Layers](layers.html)**
+**[Next: View Definitions](StructureDefinition-ViewDefinition.html)**
