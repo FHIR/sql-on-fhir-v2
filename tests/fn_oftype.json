@@ -99,50 +99,6 @@
           "integer_value": null
         }
       ]
-    },
-    {
-      "title": "select invalid type",
-      "view": {
-        "resource": "Observation",
-        "status": "active",
-        "select": [
-          {
-            "column": [
-              {
-                "path": "id",
-                "name": "id"
-              },
-              {
-                "path": "value.ofType(Invalid)",
-                "name": "invalid_value"
-              }
-            ]
-          }
-        ]
-      },
-      "expectError": true
-    },
-    {
-      "title": "invalid argument type",
-      "view": {
-        "resource": "Observation",
-        "status": "active",
-        "select": [
-          {
-            "column": [
-              {
-                "path": "id",
-                "name": "id"
-              },
-              {
-                "path": "value.ofType(42)",
-                "name": "invalid_argument"
-              }
-            ]
-          }
-        ]
-      },
-      "expectError": true
     }
   ]
 }

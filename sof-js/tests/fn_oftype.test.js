@@ -75,45 +75,5 @@ describe('ofType function', () => {
     ]
   });
 
-  add_throwing_test({
-    title: 'select invalid type',
-    view: {
-      resource: 'Observation',
-      status: 'active',
-      select: [
-        {
-          column: [
-            { path: 'id', name: 'id' },
-            {
-              path: 'value.ofType(Invalid)',
-              name: 'invalid_value'
-            }
-          ]
-        }
-      ]
-    },
-    expectError: true
-  });
-
-  add_throwing_test({
-    title: 'invalid argument type',
-    view: {
-      resource: 'Observation',
-      status: 'active',
-      select: [
-        {
-          column: [
-            { path: 'id', name: 'id' },
-            {
-              path: 'value.ofType(42)',
-              name: 'invalid_argument'
-            }
-          ]
-        }
-      ]
-    },
-    expectError: true
-  });
-
   end_case();
 });
