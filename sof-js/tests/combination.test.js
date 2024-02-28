@@ -38,14 +38,8 @@ describe("combinations", () => {
     },
     expect: [
       { column_id: "pt1", select_id: "pt1" },
-      { column_id: "pt1", select_id: "pt2" },
-      { column_id: "pt1", select_id: "pt3" },
-      { column_id: "pt2", select_id: "pt1" },
       { column_id: "pt2", select_id: "pt2" },
-      { column_id: "pt2", select_id: "pt3" },
-      { column_id: "pt3", select_id: "pt1" },
-      { column_id: "pt3", select_id: "pt2" },
-      { column_id: "pt3", select_id: "pt3" },
+      { column_id: "pt3", select_id: "pt3" }
     ]
   });
 
@@ -60,14 +54,8 @@ describe("combinations", () => {
     },
     expect: [
       { id_1: "pt1", id_2: "pt1" },
-      { id_1: "pt1", id_2: "pt2" },
-      { id_1: "pt1", id_2: "pt3" },
-      { id_1: "pt2", id_2: "pt1" },
       { id_1: "pt2", id_2: "pt2" },
-      { id_1: "pt2", id_2: "pt3" },
-      { id_1: "pt3", id_2: "pt1" },
-      { id_1: "pt3", id_2: "pt2" },
-      { id_1: "pt3", id_2: "pt3" },
+      { id_1: "pt3", id_2: "pt3" }
     ]
   });
 
@@ -84,14 +72,8 @@ describe("combinations", () => {
     },
     expect: [
       { id_1: "pt1", id_2: "pt1" },
-      { id_1: "pt1", id_2: "pt2" },
-      { id_1: "pt1", id_2: "pt3" },
-      { id_1: "pt2", id_2: "pt1" },
       { id_1: "pt2", id_2: "pt2" },
-      { id_1: "pt2", id_2: "pt3" },
-      { id_1: "pt3", id_2: "pt1" },
-      { id_1: "pt3", id_2: "pt2" },
-      { id_1: "pt3", id_2: "pt3" },
+      { id_1: "pt3", id_2: "pt3" }
     ]
   });
 
