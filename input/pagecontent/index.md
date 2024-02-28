@@ -77,11 +77,6 @@ Contributors and early users are welcome! Here are some places to start:
   * **[Purpose](purpose.html)**: Backround and purpose of this project
   * **[System Layers](layers.html)**: Conceptual layers in this specification
   * **[View Definition](StructureDefinition-ViewDefinition.html)**: A tabular projection of a FHIR resource
-  * **[JSON Schema Guidance](json_schema_guidance.html)**: Schema guidance for JSON-centered
-    databases
-  * **[Columnar Schema Guidance](columnar_schema_guidance.html)**: Schema guidance for columnar databases
-  * **[Tech Matrix](tech-matrix.html)**: Database analysis
-* **[Artifacts](artifacts.html)**: Logical model
 
 ### License
 FHIR® is the registered trademark of HL7 and is used with the permission of HL7. Use of the FHIR trademark does not constitute endorsement of the contents of this repository by HL7, nor affirmation that this data is conformant to the various applicable standards
