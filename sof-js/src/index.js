@@ -118,7 +118,8 @@ function select(select_expr, node, def) {
   if(select_expr.where) {
     let include = select_expr.where.every((w)=>{
       const val = fhirpath_evaluate(node, w.path, def.constant)[0]
-      assert(typeof val === "boolean", "'where' expression path should return 'boolean'")
+      assert(val === undefined || typeof val === "boolean",
+        "'where' expression path should return 'boolean'")
       return val
     })
     if(!include) { return []}

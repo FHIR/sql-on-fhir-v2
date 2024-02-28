@@ -169,7 +169,7 @@ describe("basics", () => {
     expect: [{id: 'pt2'}]
   })
 
-  add_throwing_test({
+  add_test({
     title: 'where returns non-boolean for some cases',
     view: {
       resource: 'Patient',
@@ -177,7 +177,7 @@ describe("basics", () => {
       select: [{column: [{name: 'id', path: 'id'}]}],
       where: [{path: 'active'}]
     },
-    expectError: true
+    expect: [{id: 'pt1'}]
   })
 
   add_test({

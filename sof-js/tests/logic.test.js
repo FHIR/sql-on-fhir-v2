@@ -47,7 +47,7 @@ describe('boolean logic', () => {
       where: [{ path: "gender = 'male' or deceased.ofType(boolean) = false" }],
       select: [{ column: [{ path: "id", name: "id"}]}]
     },
-    expect: [{ id: "m0" }, { id: "m1" }, { id: "f0" }]
+    expect: [{ id: "m0" }, { id: "f0" }, { id: "m1" }]
   });
 
   add_test({
