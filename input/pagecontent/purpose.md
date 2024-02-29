@@ -84,9 +84,6 @@ continue to be created. Our efforts here should be generalizable across tools
 as much as possible. We aim to cover many popular technologies and to avoid
 features that are not widely implemented. 
 
-See [tech matrix](https://github.com/FHIR/sql-on-fhir-v2/blob/master/tech-matrix.md)
-for details.
-
 **Support direct exports from data sources**
 Some users have limited analytic needs and only need views over a small subset of
 FHIR data that could be produced by a given system. Ideally a flattened FHIR definition
