@@ -47,11 +47,6 @@ leverage the database engine or other tool of their choice to join them and
 analyze at scale.
 * Any form of data aggregation or statistical analysis.
 
-
-## Principles 
-
-[Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/44)
-
 ### Requirements
 
 The proposed system attempts to meet the following requirements:
