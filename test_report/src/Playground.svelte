@@ -57,16 +57,24 @@
 
  let observed = [];
 
- let viewdef = `{
-  select: [
-   {column: [
-     {path: 'id'},
-     {path: 'birthDate'}]},
-   {forEach: 'name',
-    column:[
-     {path: "family", name: 'last_name'},
-     {path: "given.join(' ')", name: 'first_name'}]}
- ]}`
+    let viewdef = `{
+    resource: 'Patient',
+    select: [
+        {
+            column: [
+                {path: 'id', name: 'id'},
+                {path: 'birthDate', name: 'birthDate'}
+            ]
+        },
+        {
+            forEach: 'name',
+            column: [
+                {path: "family", name: 'last_name'},
+                {path: "given.join(' ')", name: 'first_name'}
+            ]
+        }
+    ]
+}`
 
  let v = {};
  let error = null;
