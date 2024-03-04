@@ -12,16 +12,28 @@
      return await response.json();
  }
 
+ function changeFile() {
+     let hash = window.location.hash.substring(1);
+     current = menu[0];
+
+     menu.forEach(x => {
+         const filename = hash.split('/').pop();
+
+         if (x.file === filename) {
+             current = x;
+         };
+     });
+ }
+
  onMount(async function () {
      menu = await load('tests.json');
      impls = await load('implementations.json');
-     let hash = window.location.hash.substring(1);
-     current = menu[0];
-     menu.forEach((x)=> {
-         if(x.file == hash) {
-             current = x
-         };
+
+     window.addEventListener('hashchange', function(){
+         changeFile();
      })
+
+     changeFile();
  });
 
  export function columns(data){
