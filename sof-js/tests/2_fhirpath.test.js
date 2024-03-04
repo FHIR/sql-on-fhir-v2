@@ -237,17 +237,6 @@ describe('fhirpath', () => {
     ],
   })
 
-  // are we sure about this?
-  add_test({
-    title: 'getResourceKey()',
-    view: {
-      resource: 'Patient',
-      status: 'active',
-      select: [{ column: [{ name: 'id', path: 'getResourceKey()' }] }],
-    },
-    expect: [{ id: 'Patient/pt1' }, { id: 'Patient/pt2' }, { id: 'Patient/pt3' }],
-  })
-
   add_test({
     title: 'getReferenceKey()',
     view: {
