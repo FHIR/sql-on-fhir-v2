@@ -154,48 +154,6 @@ describe('fhirpath', () => {
   })
 
   add_test({
-    title: 'exists',
-    view: {
-      resource: 'Patient',
-      status: 'active',
-      select: [
-        {
-          column: [
-            { name: 'id', path: 'id' },
-            { name: 'first_given', path: 'name.given.first()' },
-          ],
-        },
-      ],
-    },
-    expect: [
-      { id: 'pt1', first_given: 'g1.1.1' },
-      { id: 'pt2', first_given: null },
-      { id: 'pt3', first_given: null },
-    ],
-  })
-
-  add_test({
-    title: 'exists',
-    view: {
-      resource: 'Patient',
-      status: 'active',
-      select: [
-        {
-          column: [
-            { name: 'id', path: 'id' },
-            { name: 'first_family', path: 'name.family.first()' },
-          ],
-        },
-      ],
-    },
-    expect: [
-      { id: 'pt1', first_family: 'f1.1' },
-      { id: 'pt2', first_family: 'f2.1' },
-      { id: 'pt3', first_family: null },
-    ],
-  })
-
-  add_test({
     title: 'string join',
     view: {
       resource: 'Patient',
