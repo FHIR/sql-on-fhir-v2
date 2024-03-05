@@ -5,13 +5,12 @@ const resources = [
   {
     resourceType: "Patient",
     id: "p1",
-    link: [
-      {
-        other: {
-          reference: "Patient/p1"
-        }
-      }
-    ]
+    link: [{ other: { reference: "Patient/p1" }}]
+  },
+  {
+    resourceType: "Patient",
+    id: "p2",
+    link: [{ other: { reference: "Patient/p3" }}]
   }
 ]
 
@@ -34,9 +33,8 @@ describe('getReferenceKey result matches getResourceKey', () => {
       ]
     },
     expect: [
-      {
-        key_equal_ref: true
-      }
+      { key_equal_ref: true },
+      { key_equal_ref: false }
     ]
   })
 
@@ -56,9 +54,8 @@ describe('getReferenceKey result matches getResourceKey', () => {
       ]
     },
     expect: [
-      {
-        key_equal_ref: true
-      }
+      { key_equal_ref: true },
+      { key_equal_ref: false },
     ]
   })
 
@@ -82,6 +79,10 @@ describe('getReferenceKey result matches getResourceKey', () => {
       ]
     },
     expect: [
+      {
+        referenceKey: null,
+        key_equal_ref: null
+      },
       {
         referenceKey: null,
         key_equal_ref: null

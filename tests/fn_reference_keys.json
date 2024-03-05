@@ -12,6 +12,17 @@
           }
         }
       ]
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p2",
+      "link": [
+        {
+          "other": {
+            "reference": "Patient/p3"
+          }
+        }
+      ]
     }
   ],
   "tests": [
@@ -33,6 +44,9 @@
       "expect": [
         {
           "key_equal_ref": true
+        },
+        {
+          "key_equal_ref": false
         }
       ]
     },
@@ -54,6 +68,9 @@
       "expect": [
         {
           "key_equal_ref": true
+        },
+        {
+          "key_equal_ref": false
         }
       ]
     },
@@ -77,6 +94,10 @@
         ]
       },
       "expect": [
+        {
+          "referenceKey": null,
+          "key_equal_ref": null
+        },
         {
           "referenceKey": null,
           "key_equal_ref": null
