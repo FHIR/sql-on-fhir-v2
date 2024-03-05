@@ -73,7 +73,7 @@ spec, but in practice it is really one layer of an overall system. The layers ar
 - the *View Layer*
 - and the *Analytics Layer*. 
 
-<img src="layers-high-level.jpg" alt="High-level diagram of layers" style="float: none"/>
+<img src="layers.svg" alt="High-level diagram of layers" style="float: none; width: 700px"/>
 
 **Figure 1: High-level diagram of layers**
 
