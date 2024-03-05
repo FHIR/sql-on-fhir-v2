@@ -134,7 +134,7 @@ Usage: #example
     * name = "sbp_quantity_code"
     * path = "value.ofType(Quantity).code"
   * column[+]
-    * name = "sbp_quantity_display"
+    * name = "sbp_quantity_unit"
     * path = "value.ofType(Quantity).unit"
   * column[+]
     * name = "sbp_quantity_value"
@@ -148,7 +148,7 @@ Usage: #example
     * name = "dbp_quantity_code"
     * path = "value.ofType(Quantity).code"
   * column[+]
-    * name = "dbp_quantity_display"
+    * name = "dbp_quantity_unit"
     * path = "value.ofType(Quantity).unit"
   * column[+]
     * name = "dbp_quantity_value"

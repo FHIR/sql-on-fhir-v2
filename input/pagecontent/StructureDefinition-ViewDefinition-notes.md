@@ -70,7 +70,7 @@ expected type. For example, `Observation.subject.getReferenceKey(Patient)` would
 subject is a *Patient*, or the empty collection (i.e., *{}*) if it is not.
 
 The returned *KeyType* is implementation dependent, but must be a FHIR primitive type that can be used
-for efficient joins in the system's underlying data storage. Integers, strings, UUIDs, and other primitive
+for efficient joins in the systems underlying data storage. Integers, strings, UUIDs, and other primitive
 types are appropriate.
 
 The getReferenceKey() function has both required and optional functionality:
@@ -90,7 +90,7 @@ user's choice. This can be done by including primary and foreign keys as part of
 view output, which can be done with the [getResourceKey()](#getresourcekey--keytype) and
 [getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) functions.
 
-Users may call [getResourceKey()](#getresourcekey--keytype) to obtain a resource's primary key,
+Users may call [getResourceKey()](#getresourcekey--keytype) to obtain a resources primary key,
 and call [getReferenceKey()](#getreferencekeyresource-type-specifier--keytype) to get
 the corresponding foreign key from a reference pointing at that resource/row.
 
@@ -99,7 +99,7 @@ For example, a minimal view of *Patient* resources could look like this:
 ```js
 {
   "name": "active_patients",
-  "resource": "Patient"
+  "resource": "Patient",
   "select": [{
     "column": [
       {
@@ -108,7 +108,7 @@ For example, a minimal view of *Patient* resources could look like this:
       },
       {
         "path": "active"
-      },
+      }
     ]
   }]
 }
@@ -119,7 +119,7 @@ A view of  *Observation* resources would then have its own row key and a foreign
 ```js
 {
   "name": "simple_obs",
-  "resource": "Observation"
+  "resource": "Observation",
   "select": [{
     "column": [
       {
@@ -130,8 +130,8 @@ A view of  *Observation* resources would then have its own row key and a foreign
         // The 'Patient' parameter is optional, but ensures the returned value
         // will either be a patient row key or null.
         "path": "subject.getReferenceKey('Patient')",
-        "name": "patient_id",
-      },
+        "name": "patient_id"
+      }
     ]
   }],
   "where": [
@@ -202,7 +202,7 @@ one row per address. Each row would still have a *patient_id* field to know whic
 associated with. You can see this in the
 [PatientAddresses example](Binary-PatientAddresses.html), which unrolls addresses as described above.
 
-[`forEach`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach) and [`forEachOrNull`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull) apply both to the columns within a `select` and any nested `select`s it contains. Therefore, the following `select` will produce the same results:
+[`forEach`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEach) and [`forEachOrNull`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull) apply both to the columns within a `select` and any nested `select`s it contains. Therefore, the following `select`s will produce the same results:
 
 ```js
 "select": [{
@@ -281,7 +281,7 @@ For instance, to create a table of all `Patient.address` and `Patient.contact.ad
     {
       "forEach": "contact.address",
       "column": [
-        {"path": "postalCode", "name": "zip"}
+        {"path": "postalCode", "name": "zip"},
         {"path": "false", "name": "is_patient"}
       ]
     }
@@ -324,7 +324,7 @@ For instance, the two expressions below will return the same rows despite the fi
 }
 ```
 
-And, the equivalent with nested structure:
+And, the equivalent with a nested structure:
 
 ```js
 "select": {
@@ -365,29 +365,29 @@ For example, the `column`s in this ViewDefinition will appear in alphabetical or
 ```js
 {
   "name": "column_order_example",
-  "resource": "..."
+  "resource": "...",
   "select": [{
     "column": [
       { "path": "'A'", "name": "a" },
-      { "path": "'B'", "name": "b" },
+      { "path": "'B'", "name": "b" }
     ]
     "select": [{
       "forEach": "aNestedStructure",
       "column": [
         { "path": "'C'", "name": "c" },
-        { "path": "'D'", "name": "d" },
+        { "path": "'D'", "name": "d" }
       ]
     }],
     "unionAll" : [{
       "column": [
         { "path": "'E1'", "name": "e" },
-        { "path": "'F1'", "name": "f" },
+        { "path": "'F1'", "name": "f" }
       ]
     },
     {
       "column": [
         { "path": "'E2'", "name": "e" },
-        { "path": "'F2'", "name": "f" },
+        { "path": "'F2'", "name": "f" }
       ]
     }
     ]
@@ -395,7 +395,7 @@ For example, the `column`s in this ViewDefinition will appear in alphabetical or
   {
     "column": [
       { "path": "'G'", "name": "g" },
-      { "path": "'H'", "name": "h" },
+      { "path": "'H'", "name": "h" }
     ]
   }]
 }
@@ -420,7 +420,7 @@ Note that type inference is an optional feature and some implementations may
 not support it. Therefore, a ViewDefinition that is intended to be shared between
 different implementations should have the [`type`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type)
  for each column set explicitly, even for primitives. It is reasonable for an implementation to
-treat any non-specified types as strings. Moreover, non-primitive data types will not be supported by all implementations. Therefore, it is important to always be explicitly set the [`type`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type) so for each column so the data type can easily be determined.
+treat any non-specified types as strings. Moreover, non-primitive data types will not be supported by all implementations. Therefore, it is important to always explicitly set the [`type`](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.column.type) so each column can have its data type easily determined.
 
 Importantly, the above determines the FHIR type produced for the column. How that type is physically manifested depends
 on the implementation. Implementations may map these to native database types or have each column simply produce a string,
