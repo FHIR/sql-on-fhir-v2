@@ -353,9 +353,12 @@ And, the equivalent with a nested structure:
 Note the former example is preferred due to its simplicity and the latter is included purely for illustrative purposes.
 
 ### Column Ordering
-*View runners* MUST produce output in the order that the columns appear in the ViewDefinition.
 
-`select`s that have nested `select`s will place the columns of the parent `select` before the columns of the nested `select`, and the columns from a `unionAll` list are placed last. To change the column ordering, it is possible to place the columns or the `unionAll` in a nested `select`, which can be ordered relative to other nested `select`s as desired.
+*View runners* that support column ordering in their output format MUST order the columns of the result according to the rules defined in this section.
+
+`select`s that have nested `select`s will place the columns of the parent `select` before the columns of the nested `select`, and the columns from a `unionAll` list are placed last. 
+
+To change the column ordering, it is possible to place the columns or the `unionAll` in a nested `select`, which can be ordered relative to other nested `select`s as desired.
 
 For example, the `column`s in this ViewDefinition will appear in alphabetical order:
 
@@ -485,7 +488,7 @@ This is an example of a constant used in the `where` constraint of a view:
 
 ## Processing Algorithm (Model)
 
-See [Processing Algorithm](processing_model.html) for a description of how to
+See [Processing Algorithm](implementer_guidance.html#processing-model) for a description of how to
 process a FHIR resource as input for a `ViewDefinition`. Implementations do not
 need to follow this algorithm directly, but their outputs should be consistent
 with what this model produces.

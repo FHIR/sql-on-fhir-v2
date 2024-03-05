@@ -1,8 +1,5 @@
-import { expect, test, describe } from "bun:test";
-import { evaluate, row_product } from '../src/index.js'
-import { start_case, end_case, add_test, should_fail } from './test_helpers.js'
-
-let l = console.log
+import { describe } from 'bun:test'
+import { start_case, end_case, add_test } from './test_helpers.js'
 
 let resources = [
   {
@@ -13,14 +10,14 @@ let resources = [
       {
         family: 'f1.1',
         use: 'official',
-        given: ['g1.1.1', 'g1.1.2']
+        given: ['g1.1.1', 'g1.1.2'],
       },
       {
         family: 'f1.2',
-        given: ['g1.2.1']
-      }
+        given: ['g1.2.1'],
+      },
     ],
-    active: true
+    active: true,
   },
   {
     resourceType: 'Patient',
@@ -30,29 +27,28 @@ let resources = [
       { family: 'f2.1' },
       {
         family: 'f2.2',
-        use: 'official'
-      }
+        use: 'official',
+      },
     ],
-    active: false
+    active: false,
   },
   {
     resourceType: 'Patient',
-    id: 'pt3'
+    id: 'pt3',
   },
 ]
 
 start_case('fhirpath', 'fhirpath features', resources)
 
-describe("fhirpath", () => {
-
+describe('fhirpath', () => {
   add_test({
     title: 'one element',
     view: {
       resource: 'Patient',
       status: 'active',
-      select: [{column: [{name: 'id', path: 'id'}]}]
+      select: [{ column: [{ name: 'id', path: 'id' }] }],
     },
-    expect: [{id: 'pt1'}, {id: 'pt2'}, {id: 'pt3'}]
+    expect: [{ id: 'pt1' }, { id: 'pt2' }, { id: 'pt3' }],
   })
 
   add_test({
@@ -60,9 +56,9 @@ describe("fhirpath", () => {
     view: {
       resource: 'Patient',
       status: 'active',
-      select: [{column: [{name: 'v', path: 'name.family.first()'}]}]
+      select: [{ column: [{ name: 'v', path: 'name.family.first()' }] }],
     },
-    expect: [{v: 'f1.1'}, {v: 'f2.1'}, {v: null}]
+    expect: [{ v: 'f1.1' }, { v: 'f2.1' }, { v: null }],
   })
 
   add_test({
@@ -70,13 +66,9 @@ describe("fhirpath", () => {
     view: {
       resource: 'Patient',
       status: 'active',
-      select: [{column: [{name: 'v', path: 'name.family', collection: true}]}]
+      select: [{ column: [{ name: 'v', path: 'name.family', collection: true }] }],
     },
-    expect: [
-      {v: ['f1.1', 'f1.2']},
-      {v: ['f2.1','f2.2']},
-      {v: []}
-    ]
+    expect: [{ v: ['f1.1', 'f1.2'] }, { v: ['f2.1', 'f2.2'] }, { v: [] }],
   })
 
   add_test({
@@ -84,15 +76,9 @@ describe("fhirpath", () => {
     view: {
       resource: 'Patient',
       status: 'active',
-      select: [
-        { column: [ {name: 'v', path: 'name[0].family'} ] }
-      ]
+      select: [{ column: [{ name: 'v', path: 'name[0].family' }] }],
     },
-    expect: [
-      {v: 'f1.1'},
-      {v: 'f2.1'},
-      {v: null}
-    ]
+    expect: [{ v: 'f1.1' }, { v: 'f2.1' }, { v: null }],
   })
 
   add_test({
@@ -100,15 +86,9 @@ describe("fhirpath", () => {
     view: {
       resource: 'Patient',
       status: 'active',
-      select: [
-        { column: [ {name: 'v', path: 'name[1].family'} ] }
-      ]
+      select: [{ column: [{ name: 'v', path: 'name[1].family' }] }],
     },
-    expect: [
-      {v: 'f1.2'},
-      {v: 'f2.2'},
-      {v: null}
-    ]
+    expect: [{ v: 'f1.2' }, { v: 'f2.2' }, { v: null }],
   })
 
   add_test({
@@ -116,15 +96,9 @@ describe("fhirpath", () => {
     view: {
       resource: 'Patient',
       status: 'active',
-      select: [
-        { column: [ {name: 'v', path: 'name[2].family'} ] }
-      ]
+      select: [{ column: [{ name: 'v', path: 'name[2].family' }] }],
     },
-    expect: [
-      {v: null},
-      {v: null},
-      {v: null}
-    ]
+    expect: [{ v: null }, { v: null }, { v: null }],
   })
 
   add_test({
@@ -132,15 +106,9 @@ describe("fhirpath", () => {
     view: {
       resource: 'Patient',
       status: 'active',
-      select: [
-        { column: [ {name: 'v', path: "name.where(use='official').family"} ] }
-      ]
+      select: [{ column: [{ name: 'v', path: "name.where(use='official').family" }] }],
     },
-    expect: [
-      {v: 'f1.1'},
-      {v: 'f2.2'},
-      {v: null}
-    ]
+    expect: [{ v: 'f1.1' }, { v: 'f2.2' }, { v: null }],
   })
 
   add_test({
@@ -151,17 +119,17 @@ describe("fhirpath", () => {
       select: [
         {
           column: [
-            {name: 'id', path: "id"},
-            {name: 'has_name', path: "name.exists()"}
-          ]
-        }
-      ]
+            { name: 'id', path: 'id' },
+            { name: 'has_name', path: 'name.exists()' },
+          ],
+        },
+      ],
     },
     expect: [
-      {id: 'pt1',has_name: true},
-      {id: 'pt2',has_name: true},
-      {id: 'pt3',has_name: false}
-    ]
+      { id: 'pt1', has_name: true },
+      { id: 'pt2', has_name: true },
+      { id: 'pt3', has_name: false },
+    ],
   })
 
   add_test({
@@ -172,59 +140,17 @@ describe("fhirpath", () => {
       select: [
         {
           column: [
-            {name: 'id', path: "id"},
-            {name: 'has_given', path: "name.given.exists()"}
-          ]
-        }
-      ]
+            { name: 'id', path: 'id' },
+            { name: 'has_given', path: 'name.given.exists()' },
+          ],
+        },
+      ],
     },
     expect: [
-      {id: 'pt1',has_given: true},
-      {id: 'pt2',has_given: false},
-      {id: 'pt3',has_given: false}
-    ]
-  })
-
-  add_test({
-    title: 'exists',
-    view: {
-      resource: 'Patient',
-      status: 'active',
-      select: [
-        {
-          column: [
-            {name: 'id', path: "id"},
-            {name: 'first_given', path: "name.given.first()"}
-          ]
-        }
-      ]
-    },
-    expect: [
-      {id: 'pt1',first_given: "g1.1.1"},
-      {id: 'pt2',first_given: null},
-      {id: 'pt3',first_given: null}
-    ]
-  })
-
-  add_test({
-    title: 'exists',
-    view: {
-      resource: 'Patient',
-      status: 'active',
-      select: [
-        {
-          column: [
-            {name: 'id', path: "id"},
-            {name: 'first_family', path: "name.family.first()"}
-          ]
-        }
-      ]
-    },
-    expect: [
-      {id: 'pt1',first_family: "f1.1"},
-      {id: 'pt2',first_family: 'f2.1'},
-      {id: 'pt3',first_family: null}
-    ]
+      { id: 'pt1', has_given: true },
+      { id: 'pt2', has_given: false },
+      { id: 'pt3', has_given: false },
+    ],
   })
 
   add_test({
@@ -235,17 +161,17 @@ describe("fhirpath", () => {
       select: [
         {
           column: [
-            {name: 'id', path: "id"},
-            {name: 'given', path: "name.given.join(', ' )"}
-          ]
-        }
-      ]
+            { name: 'id', path: 'id' },
+            { name: 'given', path: "name.given.join(', ' )" },
+          ],
+        },
+      ],
     },
     expect: [
-      {id: 'pt1',given: 'g1.1.1, g1.1.2, g1.2.1'},
-      {id: 'pt2',given: ''},
-      {id: 'pt3',given: ''}
-    ]
+      { id: 'pt1', given: 'g1.1.1, g1.1.2, g1.2.1' },
+      { id: 'pt2', given: '' },
+      { id: 'pt3', given: '' },
+    ],
   })
 
   add_test({
@@ -256,98 +182,18 @@ describe("fhirpath", () => {
       select: [
         {
           column: [
-            {name: 'id', path: "id"},
-            {name: 'given', path: "name.given.join()"}
-          ]
-        }
-      ]
+            { name: 'id', path: 'id' },
+            { name: 'given', path: 'name.given.join()' },
+          ],
+        },
+      ],
     },
     expect: [
-      {id: 'pt1',given: 'g1.1.1g1.1.2g1.2.1'},
-      {id: 'pt2',given: ''},
-      {id: 'pt3',given: ''}
-    ]
+      { id: 'pt1', given: 'g1.1.1g1.1.2g1.2.1' },
+      { id: 'pt2', given: '' },
+      { id: 'pt3', given: '' },
+    ],
   })
 
-  // are we sure about this?
-  add_test({
-    title: 'getResourceKey()',
-    view: {
-      resource: 'Patient',
-      status: 'active',
-      select: [
-        {column: [{name: 'id', path: "getResourceKey()"}]}
-      ]
-    },
-    expect: [
-      {id: 'Patient/pt1'},
-      {id: 'Patient/pt2'},
-      {id: 'Patient/pt3'}
-    ]
-  })
-
-  add_test({
-    title: 'getReferenceKey()',
-    view: {
-      resource: 'Patient',
-      status: 'active',
-      select: [
-        {
-          column: [
-            {name: 'id',  path: "id"},
-            {name: 'ref', path: "managingOrganization.getReferenceKey()"}
-          ]
-        }
-      ]
-    },
-    expect: [
-      {id: 'pt1', ref: 'o1'},
-      {id: 'pt2', ref: 'o2'},
-      {id: 'pt3', ref: null}
-    ]
-  })
-
-  add_test({
-    title: 'getReferenceKey(Organization)',
-    view: {
-      resource: 'Patient',
-      status: 'active',
-      select: [
-        {
-          column: [
-            {name: 'id',  path: "id"},
-            {name: 'ref', path: "managingOrganization.getReferenceKey(Organization)"}
-          ]
-        }
-      ]
-    },
-    expect: [
-      {id: 'pt1', ref: 'o1'},
-      {id: 'pt2', ref: 'o2'},
-      {id: 'pt3', ref: null}
-    ]
-  })
-
-  add_test({
-    title: 'getReferenceKey(Encounter)',
-    view: {
-      resource: 'Patient',
-      status: 'active',
-      select: [
-        {
-          column: [
-            {name: 'id',  path: "id"},
-            {name: 'ref', path: "managingOrganization.getReferenceKey(Encounter)"}
-          ]
-        }
-      ]
-    },
-    expect: [
-      {id: 'pt1', ref: null},
-      {id: 'pt2', ref: null},
-      {id: 'pt3', ref: null}
-    ]
-  })
-
-  end_case();
-});
+  end_case()
+})

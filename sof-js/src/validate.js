@@ -30,6 +30,7 @@ let viewdef_schema = {
   additionalProperties: false,
   properties: {
     title: string,
+    status: string,
     resource: identifier,
     constant: {
       type: array,
@@ -66,8 +67,20 @@ let viewdef_schema = {
         ]
       }
     },
-    select:   $ref('select'),
-    where:    fhirpath_string
+    select: $ref('select'),
+    where:
+    {
+      type: array,
+      items: {
+        type: object,
+        required: ["path"],
+        additionalProperties: false,
+        properties: {
+          path: fhirpath_string,
+          description: string
+        }
+      }
+    }
   },
   $defs: {
     tag: {
@@ -116,17 +129,21 @@ let viewdef_schema = {
   }
 };
 
-
 const ajv = new Ajv({ allErrors: true })
 function validate_fhirpath(path) {
   return fhirpath_validate(path)
 }
 ajv.addFormat('fhirpath-expression',{type: 'string', validate:  validate_fhirpath})
 
+export function validate(viewdef) {
+  const validate_schema = ajv.compile(viewdef_schema);
+  validate_schema(viewdef);
+  return validate_schema;
+}
+
 export function errors(viewdef) {
-  let validate_schema = ajv.compile(viewdef_schema)
-  validate_schema(viewdef)
-  return validate_schema.errors
+  const validate_schema = validate(viewdef);
+  return validate_schema.errors;
 }
 
 // console.log(errors({select: [{forEach: 'name'}]}))

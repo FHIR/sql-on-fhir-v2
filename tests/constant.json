@@ -229,7 +229,7 @@
         "constant": [
           {
             "name": "is_deceased",
-            "valueInteger": true
+            "valueBoolean": true
           }
         ],
         "select": [
