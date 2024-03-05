@@ -24,6 +24,7 @@ All *view runners* must implement these [FHIRPath](https://hl7.org/fhirpath/) ca
 * Boolean operators: [and](https://hl7.org/fhirpath/#and), [or](https://hl7.org/fhirpath/#or), [not](https://hl7.org/fhirpath/#not-boolean)
 * Math operators: [addition (+)](https://hl7.org/fhirpath/#addition), [subtraction (-)](https://hl7.org/fhirpath/#subtraction), [multiplication (*)](https://hl7.org/fhirpath/#multiplication), [division (/)](https://hl7.org/fhirpath/#division)
 * Comparison operators: [equals (=)](https://hl7.org/fhirpath/#equals), [not equals (!=)](https://hl7.org/fhirpath/#not-equals), [greater than (>)](https://hl7.org/fhirpath/#greater-than), [less or equal (<=)](https://hl7.org/fhirpath/#less-or-equal)
+* [Indexer expressions](https://hl7.org/fhirpath/#index-integer-collection)
 
 <sup>*</sup> Not yet part of the normative [FHIRPath](https://hl7.org/fhirpath/) release, currently in draft.
 
