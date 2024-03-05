@@ -2,11 +2,9 @@ import { default as fhirpath } from 'fhirpath'
 
 const identity = (ctx, v) => [v]
 
-function getResourceKey(nodes, resource) {
+function getResourceKey(nodes) {
   return nodes.flatMap((node) => {
-    const type = node.resourceType
-    const key = `${node.resourceType}/${node.id}`
-    return !resource || resource === tmpe ? [key] : []
+    return [node.id]
   })
 }
 
@@ -51,7 +49,7 @@ function rewrite_path(path) {
 
 let fhirpath_options = {
   userInvocationTable: {
-    getResourceKey:  { fn: getResourceKey, arity: { 0: [], 1: ['TypeSpecifier'] } },
+    getResourceKey:  { fn: getResourceKey, arity: { 0: [] } },
     getReferenceKey: { fn: getReferenceKey, arity: { 0: [], 1: ['TypeSpecifier'] } },
     identity:        { fn: (nodes) => nodes, arity: { 0: [] } },
   }

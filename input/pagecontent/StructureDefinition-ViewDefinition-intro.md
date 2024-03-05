@@ -1,4 +1,4 @@
-A *view definition* is the central piece of the [View Layer](layers.html#the-view-layer) and represents a tabular projection of FHIR resources with the columns and filtering criteria defined by [FHIRPath](https://hl7.org/fhirpath/) expressions. The ViewDefinition logical model is described below.
+A *view definition* is the central piece of the [View Layer](index.html#system-layers) and represents a tabular projection of FHIR resources with the columns and filtering criteria defined by [FHIRPath](https://hl7.org/fhirpath/) expressions. The ViewDefinition logical model is described below.
 
 ## Key ViewDefinition Elements
 The key elements of the ViewDefinition are:
@@ -27,4 +27,6 @@ The ViewDefinition may include several other fields with `name`, `status`, and o
 ## Implementation
 
 A system-specific *view runner* implementation can execute a *view definition* and
-return the results as a table that can easily be used in the user's tech stack. See the [layers](layers.html) page for details.
+return the results as a table that can easily be used in the user's tech stack. See the
+[system layers](index.html#system-layers) for details.
+
