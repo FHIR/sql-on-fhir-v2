@@ -137,7 +137,6 @@ criteria are defined by FHIRPath expressions.
   * path 1..1 string "A FHIRPath expression defining a filter condition" """
     A FHIRPath expression that defines a filter that must evaluate to true for a resource to be
     included in the output. The input context is the collection of resources of the type specified in
-    the resource element. Constants defined in Reference({constant}) can be referenced as %[name]. The
-    result of the expression must of type Boolean.
+    the resource element. Constants defined in Reference({constant}) can be referenced as %[name].
     """
   * description 0..1 string "A human-readable description of the above where constraint."
