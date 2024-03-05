@@ -10,11 +10,11 @@ function isEqual(a, b) {
 }
 
 const canonicalize = (arr) => {
-  if(arr === undefined) {
+  if (arr === undefined) {
     arr = []
   }
-  if(! Array.isArray(arr)) {
-    throw new Error("Expected array, got " + JSON.stringify(arr))
+  if (!Array.isArray(arr)) {
+    throw new Error('Expected array, got ' + JSON.stringify(arr))
   }
   return [...arr].sort((a, b) => {
     const keysA = Object.keys(a).sort()
@@ -82,7 +82,7 @@ function runThrowingTest(test, resources) {
     return {
       passed: false,
       expectedFail: true,
-      actual: result
+      actual: result,
     }
   } catch (e) {
     return { passed: true }
@@ -91,59 +91,59 @@ function runThrowingTest(test, resources) {
 
 function runTest(test, resources) {
   if (test.expectError) {
-    return runThrowingTest(test);
+    return runThrowingTest(test)
   }
 
   try {
     const result = evaluate(test.view, resources)
 
     if (test.expectCount) {
-      const passed = result.length === test.expectCount;
+      const passed = result.length === test.expectCount
       return passed
         ? { passed }
         : {
-          passed,
-          expectedCount: test.expectCount,
-          actual: result.length
-        };
+            passed,
+            expectedCount: test.expectCount,
+            actual: result.length,
+          }
     } else {
       const match = arraysMatch(result, test.expect)
       return {
         passed: match.passed,
         expected: test.expect,
         actual: result,
-        message: match.message
-      };
+        message: match.message,
+      }
     }
   } catch (e) {
     return {
       passed: null,
-      message: e.toString()
+      message: e.toString(),
     }
   }
 }
 
 function printResult(title, result) {
-  let testResult;
+  let testResult
   if (result.passed === true) {
-    testResult = "passed";
+    testResult = 'passed'
   } else if (result.passed === false) {
-    testResult = "failed";
+    testResult = 'failed'
   } else {
-    testResult = "error";
+    testResult = 'error'
   }
 
-  console.log( " *", title, " => ", testResult);
+  console.log(' *', title, ' => ', testResult)
 
   if (result.passed !== true) {
     if (result.expected && result.actual) {
-      console.log("expected:");
-      console.dir(result.expected, { depth: null });
-      console.log("got:");
-      console.dir(result.actual, { depth: null });
+      console.log('expected:')
+      console.dir(result.expected, { depth: null })
+      console.log('got:')
+      console.dir(result.actual, { depth: null })
     }
     if (result.message) {
-      console.log(result.message);
+      console.log(result.message)
     }
   }
 }
@@ -152,35 +152,35 @@ const tests_dir = '../tests/'
 const files = fs.readdirSync(tests_dir)
 let test_summary = { pass: 0, fail: 0, error: 0 }
 
-const result = {};
-files.forEach(f => {
+const result = {}
+files.forEach((f) => {
   const testcase = JSON.parse(fs.readFileSync(tests_dir + f))
   console.log('running', testcase.title, `file ${f}`)
 
-  const testResult = testcase.tests.map(test => {
-    let result = null;
+  const testResult = testcase.tests.map((test) => {
+    let result = null
 
     if (test.expectError) {
-      result = runThrowingTest(test, testcase.resources);
-      printResult(test.title, result);
+      result = runThrowingTest(test, testcase.resources)
+      printResult(test.title, result)
     } else {
-      result = runTest(test, testcase.resources);
-      printResult(test.title, result);
+      result = runTest(test, testcase.resources)
+      printResult(test.title, result)
     }
 
     if (result.passed === true) {
-      test_summary.pass++;
+      test_summary.pass++
     } else if (result.passed === false) {
-      test_summary.fail++;
+      test_summary.fail++
     } else {
-      test_summary.error++;
+      test_summary.error++
     }
 
-    return { result };
-  });
+    return { result }
+  })
 
-  result[f] = { tests: testResult };
-});
+  result[f] = { tests: testResult }
+})
 
-fs.writeFileSync('../test_report/public/test-results.json', JSON.stringify(result));
+fs.writeFileSync('../test_report/public/test-results.json', JSON.stringify(result))
 console.log(test_summary)

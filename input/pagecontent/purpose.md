@@ -1,4 +1,4 @@
-This document proposes an approach to make large-scale analysis of FHIR data
+This specification proposes an approach to make large-scale analysis of FHIR data
 accessible to a larger audience and portable between systems. The central goal
 of this project is to make FHIR data work well with the best available analytic
 tools, regardless of the technology stack.
@@ -47,11 +47,6 @@ leverage the database engine or other tool of their choice to join them and
 analyze at scale.
 * Any form of data aggregation or statistical analysis.
 
-
-## Principles 
-
-[Discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions/44)
-
 ### Requirements
 
 The proposed system attempts to meet the following requirements:
@@ -84,9 +79,6 @@ continue to be created. Our efforts here should be generalizable across tools
 as much as possible. We aim to cover many popular technologies and to avoid
 features that are not widely implemented. 
 
-See [tech matrix](https://github.com/FHIR/sql-on-fhir-v2/blob/master/tech-matrix.md)
-for details.
-
 **Support direct exports from data sources**
 Some users have limited analytic needs and only need views over a small subset of
 FHIR data that could be produced by a given system. Ideally a flattened FHIR definition
@@ -101,4 +93,4 @@ that is, to use the ETL or ELT patterns.
 
 ---
 
-**[Next: System Layers](layers.html)**
+**[Next: View Definitions](StructureDefinition-ViewDefinition.html)**
