@@ -28,11 +28,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "name_empty",
-                "path": "name.empty()"
+                "path": "name.empty()",
+                "type": "boolean"
               }
             ]
           }

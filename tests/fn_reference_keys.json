@@ -35,7 +35,8 @@
             "column": [
               {
                 "path": "getResourceKey() = link.other.getReferenceKey()",
-                "name": "key_equal_ref"
+                "name": "key_equal_ref",
+                "type": "boolean"
               }
             ]
           }
@@ -59,7 +60,8 @@
             "column": [
               {
                 "path": "getResourceKey() = link.other.getReferenceKey(Patient)",
-                "name": "key_equal_ref"
+                "name": "key_equal_ref",
+                "type": "boolean"
               }
             ]
           }
@@ -83,11 +85,13 @@
             "column": [
               {
                 "path": "link.other.getReferenceKey(Observation)",
-                "name": "referenceKey"
+                "name": "referenceKey",
+                "type": "string"
               },
               {
                 "path": "getResourceKey() = link.other.getReferenceKey(Observation)",
-                "name": "key_equal_ref"
+                "name": "key_equal_ref",
+                "type": "string"
               }
             ]
           }

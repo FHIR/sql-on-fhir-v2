@@ -102,11 +102,13 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               },
               {
                 "name": "birthsex",
-                "path": "extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex').value.ofType(code).first()"
+                "path": "extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex').value.ofType(code).first()",
+                "type": "code"
               }
             ]
           }
@@ -137,11 +139,13 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               },
               {
                 "name": "race_code",
-                "path": "extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-race').extension('ombCategory').value.ofType(Coding).code.first()"
+                "path": "extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-race').extension('ombCategory').value.ofType(Coding).code.first()",
+                "type": "code"
               }
             ]
           }

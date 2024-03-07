@@ -99,7 +99,7 @@ let viewdef_schema = {
       minItems: 1,
       items: {
         type: object,
-        required: ["path", "name"],
+        required: ["path", "name", "type"],
         additionalProperties: false,
         properties: {
           path: fhirpath_string,

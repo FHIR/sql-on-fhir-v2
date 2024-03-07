@@ -30,7 +30,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           }
@@ -74,7 +75,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           }

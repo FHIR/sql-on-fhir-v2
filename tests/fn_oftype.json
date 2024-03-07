@@ -40,11 +40,13 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               },
               {
                 "path": "value.ofType(string)",
-                "name": "string_value"
+                "name": "string_value",
+                "type": "string"
               }
             ]
           }
@@ -75,11 +77,13 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               },
               {
                 "path": "value.ofType(integer)",
-                "name": "integer_value"
+                "name": "integer_value",
+                "type": "integer"
               }
             ]
           }

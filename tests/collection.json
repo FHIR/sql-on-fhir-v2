@@ -53,16 +53,19 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "last_name",
                 "path": "name.family",
+                "type": "string",
                 "collection": false
               },
               {
                 "name": "first_name",
                 "path": "name.given",
+                "type": "string",
                 "collection": true
               }
             ]
@@ -81,16 +84,19 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "last_name",
                 "path": "name.family",
+                "type": "string",
                 "collection": true
               },
               {
                 "name": "first_name",
                 "path": "name.given",
+                "type": "string",
                 "collection": true
               }
             ]
@@ -120,7 +126,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ],
             "select": [
@@ -130,11 +137,13 @@
                   {
                     "name": "last_name",
                     "path": "family",
+                    "type": "string",
                     "collection": false
                   },
                   {
                     "name": "first_name",
                     "path": "given",
+                    "type": "string",
                     "collection": true
                   }
                 ]
@@ -176,7 +185,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ],
             "select": [
@@ -186,11 +196,13 @@
                   {
                     "name": "last_name",
                     "path": "family",
+                    "type": "string",
                     "collection": false
                   },
                   {
                     "name": "first_name",
                     "path": "given",
+                    "type": "string",
                     "collection": true
                   }
                 ]

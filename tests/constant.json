@@ -49,11 +49,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "official_name",
-                "path": "name.where(use = %name_use).family"
+                "path": "name.where(use = %name_use).family",
+                "type": "string"
               }
             ]
           }
@@ -87,7 +89,8 @@
             "column": [
               {
                 "name": "official_name",
-                "path": "family"
+                "path": "family",
+                "type": "string"
               }
             ]
           }
@@ -115,7 +118,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           }
@@ -155,7 +159,8 @@
                 "column": [
                   {
                     "name": "name",
-                    "path": "family"
+                    "path": "family",
+                    "type": "string"
                   }
                 ]
               },
@@ -164,7 +169,8 @@
                 "column": [
                   {
                     "name": "name",
-                    "path": "family"
+                    "path": "family",
+                    "type": "string"
                   }
                 ]
               }
@@ -200,11 +206,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "official_name",
-                "path": "name[%name_index].family"
+                "path": "name[%name_index].family",
+                "type": "string"
               }
             ]
           }
@@ -237,7 +245,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           }
@@ -271,7 +280,8 @@
             "column": [
               {
                 "name": "official_name",
-                "path": "family"
+                "path": "family",
+                "type": "string"
               }
             ]
           }
@@ -294,11 +304,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "official_name",
-                "path": "name.where(use = %name_use).family"
+                "path": "name.where(use = %name_use).family",
+                "type": "string"
               }
             ]
           }

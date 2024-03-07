@@ -54,7 +54,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           }
@@ -82,7 +83,8 @@
             "column": [
               {
                 "name": "v",
-                "path": "name.family.first()"
+                "path": "name.family.first()",
+                "type": "string"
               }
             ]
           }
@@ -111,6 +113,7 @@
               {
                 "name": "v",
                 "path": "name.family",
+                "type": "string",
                 "collection": true
               }
             ]
@@ -139,7 +142,8 @@
             "column": [
               {
                 "name": "v",
-                "path": "name[0].family"
+                "path": "name[0].family",
+                "type": "string"
               }
             ]
           }
@@ -167,7 +171,8 @@
             "column": [
               {
                 "name": "v",
-                "path": "name[1].family"
+                "path": "name[1].family",
+                "type": "string"
               }
             ]
           }
@@ -195,7 +200,8 @@
             "column": [
               {
                 "name": "v",
-                "path": "name[2].family"
+                "path": "name[2].family",
+                "type": "string"
               }
             ]
           }
@@ -223,7 +229,8 @@
             "column": [
               {
                 "name": "v",
-                "path": "name.where(use='official').family"
+                "path": "name.where(use='official').family",
+                "type": "string"
               }
             ]
           }
@@ -251,11 +258,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "has_name",
-                "path": "name.exists()"
+                "path": "name.exists()",
+                "type": "boolean"
               }
             ]
           }
@@ -286,11 +295,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "has_given",
-                "path": "name.given.exists()"
+                "path": "name.given.exists()",
+                "type": "boolean"
               }
             ]
           }
@@ -321,11 +332,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "given",
-                "path": "name.given.join(', ' )"
+                "path": "name.given.join(', ' )",
+                "type": "string"
               }
             ]
           }
@@ -356,11 +369,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "given",
-                "path": "name.given.join()"
+                "path": "name.given.join()",
+                "type": "string"
               }
             ]
           }
