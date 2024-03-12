@@ -62,15 +62,31 @@
     select: [
         {
             column: [
-                {path: 'id', name: 'id'},
-                {path: 'birthDate', name: 'birthDate'}
+                {
+                    name: 'id',
+                    path: 'id',
+                    type: 'id'
+                },
+                {
+                    name: 'birthDate',
+                    path: 'birthDate',
+                    type: 'date'
+                }
             ]
         },
         {
             forEach: 'name',
             column: [
-                {path: "family", name: 'last_name'},
-                {path: "given.join(' ')", name: 'first_name'}
+                {
+                    name: 'last_name',
+                    path: 'family',
+                    type: 'string'
+                },
+                {
+                    name: 'first_name',
+                    path: "given.join(' ')",
+                    type: 'string'
+                }
             ]
         }
     ]
@@ -78,30 +94,30 @@
 
  let v = {};
  let error = null;
- let result = {cols: [], rows: []};
+ let result = { cols: [], rows: [] };
 
  function tabelize(v, results) {
-     let columns = get_columns(v)
-     let rows = []
-     for( var row of results) {
-         rows.push(columns.map((k)=>{
+     const columns = get_columns(v)
+     const rows = []
+     for (var row of results) {
+         rows.push(columns.map(k => {
              let v = row[k];
-             if(v.toString().indexOf('[object') > -1){
+             if (v.toString().indexOf('[object') > -1) {
                  v = JSON.stringify(v);
              }
              return v
          }))
      }
-     return {rows: rows, cols: columns};
+     return { rows: rows, cols: columns };
  }
 
  $: {
      try {
          error = null;
-         eval('v=' + viewdef)
+         eval('v = ' + viewdef)
          result = tabelize(v, evaluate(v, data));
          /* tabelize(result) */
-     } catch(e){
+     } catch(e) {
          error = e.toString();
      }
  }
