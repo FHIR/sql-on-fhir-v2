@@ -52,45 +52,47 @@
  }
 </style>
 <script>
+ import CodeMirror from "svelte-codemirror-editor";
+ import { json } from "@codemirror/lang-json";
  import { evaluate, get_columns } from "sof";
  import { data } from "./data.js";
 
  let observed = [];
 
-    let viewdef = `{
-    resource: 'Patient',
-    select: [
-        {
-            column: [
-                {
-                    name: 'id',
-                    path: 'id',
-                    type: 'id'
-                },
-                {
-                    name: 'birthDate',
-                    path: 'birthDate',
-                    type: 'date'
-                }
-            ]
-        },
-        {
-            forEach: 'name',
-            column: [
-                {
-                    name: 'last_name',
-                    path: 'family',
-                    type: 'string'
-                },
-                {
-                    name: 'first_name',
-                    path: "given.join(' ')",
-                    type: 'string'
-                }
-            ]
-        }
-    ]
-}`
+    let viewdef = JSON.stringify({
+        resource: 'Patient',
+        select: [
+            {
+                column: [
+                    {
+                        name: 'id',
+                        path: 'id',
+                        type: 'id'
+                    },
+                    {
+                        name: 'birthDate',
+                        path: 'birthDate',
+                        type: 'date'
+                    }
+                ]
+            },
+            {
+                forEach: 'name',
+                column: [
+                    {
+                        name: 'last_name',
+                        path: 'family',
+                        type: 'string'
+                    },
+                    {
+                        name: 'first_name',
+                        path: "given.join(' ')",
+                        type: 'string'
+                    }
+                ]
+            }
+        ]
+    }, null, 2);
 
  let v = {};
  let error = null;
@@ -126,7 +128,15 @@
 <div id="api-playground" class="flex-grow">
     <!-- ViewDefinition Panel -->
     <div class="panel left-panel">
-        <textarea id="view-definition" class="text-sm" bind:value={viewdef} />
+        <CodeMirror
+            bind:value={viewdef}
+            lang={json()}
+            styles={{
+                "&": {
+                    border: "1px solid #e6e6e6"
+                },
+            }}
+        />
     </div>
 
     <div class="panel right-panel">
