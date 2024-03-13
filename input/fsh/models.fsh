@@ -30,14 +30,13 @@ criteria are defined by FHIRPath expressions.
   Name of the view definition, must be in a database-friendly format.
 """
 * name obeys sql-name
-* version 0..1 string "Business version of the view definition"
 * title 0..1 string "Name for this view definition (human friendly)" """
   A optional human-readable description of the view.
 """
+* meta 0..1 Meta "Metadata about the view definition"
 * status 1..1 code "draft | active | retired | unknown"
 * status from http://hl7.org/fhir/ValueSet/publication-status
 * experimental 0..1 boolean "For testing purposes, not real usage"
-* date 0..1 dateTime "Date last changed"
 * publisher 0..1 string "Name of the publisher/steward (organization or individual)"
 * contact 0..* ContactDetail "Contact details for the publisher"
 * description 0..1 markdown "Natural language description of the view definition"
