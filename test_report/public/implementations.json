@@ -12,12 +12,13 @@
     "testResultsUrl": "https://storage.googleapis.com/aidbox-public/sof-test-results.json"
   },
   {
-    "name": "Google",
-    "url": "TBD",
-    "description": "TBD"
+    "name": "Pathling",
+    "url": "https://pathling.csiro.au/docs",
+    "description": "Pathling WIP SQL on FHIR view runner implementation, see https://github.com/aehrc/pathling/pull/1775",
+    "testResultsUrl": "https://pathling.csiro.au/test-results/refs/heads/issue/1759/sof-test-results.json"
   },
   {
-    "name": "Pathling",
+    "name": "Google",
     "url": "TBD",
     "description": "TBD"
   },
