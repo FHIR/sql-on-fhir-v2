@@ -1,7 +1,7 @@
 Contributors and early users are welcome! Here are some places to start:
 
 * Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions)
-* Join us on [Weekly Meetings](https://us02web.zoom.us/meeting/register/tZApd-CgqzIiGdI163Q23yc6wihcfswAWBmO)
+* Join us on weekly meetings, Tuesday 3pm US Eastern time, Zoom links posted in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
 * Ask any questions in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
 
 ### Credits
