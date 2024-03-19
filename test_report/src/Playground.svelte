@@ -117,7 +117,7 @@
      try {
          error = null;
          eval('v = ' + viewdef)
-         result = tabelize(v, evaluate(v, data));
+         result = tabelize(v, evaluate(v, data, false));
          /* tabelize(result) */
      } catch(e) {
          error = e.toString();
