@@ -67,7 +67,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           },
@@ -76,7 +77,8 @@
             "column": [
               {
                 "name": "family",
-                "path": "family"
+                "path": "family",
+                "type": "string"
               }
             ]
           }
@@ -111,7 +113,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           },
@@ -120,7 +123,8 @@
             "column": [
               {
                 "name": "family",
-                "path": "family"
+                "path": "family",
+                "type": "string"
               }
             ]
           }
@@ -159,7 +163,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           },
@@ -168,7 +173,8 @@
             "column": [
               {
                 "name": "value",
-                "path": "value"
+                "path": "value",
+                "type": "string"
               }
             ]
           }
@@ -187,7 +193,8 @@
             "column": [
               {
                 "name": "cont_family",
-                "path": "name.family"
+                "path": "name.family",
+                "type": "string"
               }
             ]
           },
@@ -196,7 +203,8 @@
             "column": [
               {
                 "name": "pat_family",
-                "path": "family"
+                "path": "family",
+                "type": "string"
               }
             ]
           }
@@ -231,7 +239,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           },
@@ -240,7 +249,8 @@
             "column": [
               {
                 "name": "value",
-                "path": "value"
+                "path": "value",
+                "type": "string"
               }
             ]
           },
@@ -249,7 +259,8 @@
             "column": [
               {
                 "name": "family",
-                "path": "family"
+                "path": "family",
+                "type": "string"
               }
             ]
           }
@@ -267,7 +278,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           },
@@ -276,7 +288,8 @@
             "column": [
               {
                 "name": "value",
-                "path": "value"
+                "path": "value",
+                "type": "string"
               }
             ]
           }
@@ -307,7 +320,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           },
@@ -316,7 +330,8 @@
             "column": [
               {
                 "name": "value",
-                "path": "value"
+                "path": "value",
+                "type": "string"
               }
             ]
           },
@@ -325,7 +340,8 @@
             "column": [
               {
                 "name": "family",
-                "path": "family"
+                "path": "family",
+                "type": "string"
               }
             ]
           }
@@ -364,7 +380,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           },
@@ -375,7 +392,8 @@
                 "column": [
                   {
                     "name": "contact_type",
-                    "path": "telecom.system"
+                    "path": "telecom.system",
+                    "type": "code"
                   }
                 ]
               },
@@ -384,7 +402,8 @@
                 "column": [
                   {
                     "name": "name",
-                    "path": "$this"
+                    "path": "$this",
+                    "type": "string"
                   }
                 ]
               }
@@ -420,7 +439,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           },
@@ -429,7 +449,8 @@
             "column": [
               {
                 "name": "contact_type",
-                "path": "telecom.system"
+                "path": "telecom.system",
+                "type": "code"
               }
             ],
             "select": [
@@ -438,7 +459,8 @@
                 "column": [
                   {
                     "name": "name",
-                    "path": "$this"
+                    "path": "$this",
+                    "type": "string"
                   }
                 ]
               }
@@ -473,7 +495,8 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               }
             ]
           },
@@ -484,7 +507,8 @@
                 "column": [
                   {
                     "path": "name.family",
-                    "name": "name"
+                    "name": "name",
+                    "type": "string"
                   }
                 ]
               },
@@ -493,7 +517,8 @@
                 "column": [
                   {
                     "path": "$this",
-                    "name": "name"
+                    "name": "name",
+                    "type": "string"
                   }
                 ]
               }
@@ -541,7 +566,8 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               }
             ]
           },
@@ -552,7 +578,8 @@
                 "column": [
                   {
                     "path": "name.family",
-                    "name": "name"
+                    "name": "name",
+                    "type": "string"
                   }
                 ]
               },
@@ -561,7 +588,8 @@
                 "column": [
                   {
                     "path": "$this",
-                    "name": "name"
+                    "name": "name",
+                    "type": "string"
                   }
                 ]
               }
@@ -601,7 +629,8 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               }
             ]
           },
@@ -610,7 +639,8 @@
             "column": [
               {
                 "path": "telecom.system",
-                "name": "tel_system"
+                "name": "tel_system",
+                "type": "code"
               }
             ],
             "select": [
@@ -618,7 +648,8 @@
                 "column": [
                   {
                     "path": "gender",
-                    "name": "gender"
+                    "name": "gender",
+                    "type": "code"
                   }
                 ]
               }
@@ -628,7 +659,8 @@
                 "column": [
                   {
                     "path": "name.family",
-                    "name": "name"
+                    "name": "name",
+                    "type": "string"
                   }
                 ]
               },
@@ -637,7 +669,8 @@
                 "column": [
                   {
                     "path": "$this",
-                    "name": "name"
+                    "name": "name",
+                    "type": "string"
                   }
                 ]
               }
@@ -687,7 +720,8 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               }
             ]
           },
@@ -696,7 +730,8 @@
             "column": [
               {
                 "path": "telecom.system",
-                "name": "tel_system"
+                "name": "tel_system",
+                "type": "code"
               }
             ],
             "select": [
@@ -704,7 +739,8 @@
                 "column": [
                   {
                     "path": "gender",
-                    "name": "gender"
+                    "name": "gender",
+                    "type": "code"
                   }
                 ]
               }
@@ -714,7 +750,8 @@
                 "column": [
                   {
                     "path": "name.family",
-                    "name": "name"
+                    "name": "name",
+                    "type": "string"
                   }
                 ]
               },
@@ -723,7 +760,8 @@
                 "column": [
                   {
                     "path": "$this",
-                    "name": "name"
+                    "name": "name",
+                    "type": "string"
                   }
                 ]
               }

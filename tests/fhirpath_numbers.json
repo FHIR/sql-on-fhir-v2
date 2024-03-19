@@ -30,43 +30,53 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "add",
-                "path": "value.ofType(Range).low.value + value.ofType(Range).high.value"
+                "path": "value.ofType(Range).low.value + value.ofType(Range).high.value",
+                "type": "integer"
               },
               {
                 "name": "sub",
-                "path": "value.ofType(Range).high.value - value.ofType(Range).low.value"
+                "path": "value.ofType(Range).high.value - value.ofType(Range).low.value",
+                "type": "integer"
               },
               {
                 "name": "mul",
-                "path": "value.ofType(Range).low.value * value.ofType(Range).high.value"
+                "path": "value.ofType(Range).low.value * value.ofType(Range).high.value",
+                "type": "integer"
               },
               {
                 "name": "div",
-                "path": "value.ofType(Range).high.value / value.ofType(Range).low.value"
+                "path": "value.ofType(Range).high.value / value.ofType(Range).low.value",
+                "type": "decimal"
               },
               {
                 "name": "eq",
-                "path": "value.ofType(Range).high.value = value.ofType(Range).low.value"
+                "path": "value.ofType(Range).high.value = value.ofType(Range).low.value",
+                "type": "boolean"
               },
               {
                 "name": "gt",
-                "path": "value.ofType(Range).high.value > value.ofType(Range).low.value"
+                "path": "value.ofType(Range).high.value > value.ofType(Range).low.value",
+                "type": "boolean"
               },
               {
                 "name": "ge",
-                "path": "value.ofType(Range).high.value >= value.ofType(Range).low.value"
+                "path": "value.ofType(Range).high.value >= value.ofType(Range).low.value",
+                "type": "boolean"
               },
               {
                 "name": "lt",
-                "path": "value.ofType(Range).high.value < value.ofType(Range).low.value"
+                "path": "value.ofType(Range).high.value < value.ofType(Range).low.value",
+                "type": "boolean"
               },
               {
                 "name": "le",
-                "path": "value.ofType(Range).high.value <= value.ofType(Range).low.value"
+                "path": "value.ofType(Range).high.value <= value.ofType(Range).low.value",
+                "type": "boolean"
               }
             ]
           }

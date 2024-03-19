@@ -23,11 +23,13 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               },
               {
                 "path": "name.given.join(',')",
-                "name": "given"
+                "name": "given",
+                "type": "string"
               }
             ]
           }
@@ -49,11 +51,13 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               },
               {
                 "path": "name.given.join('')",
-                "name": "given"
+                "name": "given",
+                "type": "string"
               }
             ]
           }
@@ -75,11 +79,13 @@
             "column": [
               {
                 "path": "id",
-                "name": "id"
+                "name": "id",
+                "type": "id"
               },
               {
                 "path": "name.given.join()",
-                "name": "given"
+                "name": "given",
+                "type": "name"
               }
             ]
           }

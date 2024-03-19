@@ -27,7 +27,8 @@
                 "column": [
                   {
                     "path": "id",
-                    "name": "id"
+                    "name": "id",
+                    "type": "id"
                   }
                 ]
               }
@@ -56,7 +57,8 @@
             "column": [
               {
                 "path": "id",
-                "name": "column_id"
+                "name": "column_id",
+                "type": "id"
               }
             ],
             "select": [
@@ -64,7 +66,8 @@
                 "column": [
                   {
                     "path": "id",
-                    "name": "select_id"
+                    "name": "select_id",
+                    "type": "id"
                   }
                 ]
               }
@@ -96,7 +99,8 @@
             "column": [
               {
                 "path": "id",
-                "name": "id_1"
+                "name": "id_1",
+                "type": "id"
               }
             ]
           },
@@ -104,7 +108,8 @@
             "column": [
               {
                 "path": "id",
-                "name": "id_2"
+                "name": "id_2",
+                "type": "id"
               }
             ]
           }
@@ -136,7 +141,8 @@
                 "column": [
                   {
                     "path": "id",
-                    "name": "id_1"
+                    "name": "id_1",
+                    "type": "id"
                   }
                 ]
               },
@@ -144,7 +150,8 @@
                 "column": [
                   {
                     "path": "id",
-                    "name": "id_2"
+                    "name": "id_2",
+                    "type": "id"
                   }
                 ]
               }
@@ -176,7 +183,8 @@
             "column": [
               {
                 "path": "id",
-                "name": "column_id"
+                "name": "column_id",
+                "type": "id"
               }
             ],
             "select": [
@@ -184,7 +192,8 @@
                 "column": [
                   {
                     "path": "id",
-                    "name": "select_id"
+                    "name": "select_id",
+                    "type": "id"
                   }
                 ]
               }
@@ -215,7 +224,8 @@
                 "column": [
                   {
                     "path": "id",
-                    "name": "id"
+                    "name": "id",
+                    "type": "id"
                   }
                 ]
               }

@@ -98,7 +98,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           },
@@ -109,11 +110,13 @@
                 "column": [
                   {
                     "name": "tel",
-                    "path": "value"
+                    "path": "value",
+                    "type": "string"
                   },
                   {
                     "name": "sys",
-                    "path": "system"
+                    "path": "system",
+                    "type": "code"
                   }
                 ]
               },
@@ -122,11 +125,13 @@
                 "column": [
                   {
                     "name": "tel",
-                    "path": "value"
+                    "path": "value",
+                    "type": "string"
                   },
                   {
                     "name": "sys",
-                    "path": "system"
+                    "path": "system",
+                    "type": "code"
                   }
                 ]
               }
@@ -202,7 +207,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ],
             "unionAll": [
@@ -211,11 +217,13 @@
                 "column": [
                   {
                     "name": "tel",
-                    "path": "value"
+                    "path": "value",
+                    "type": "string"
                   },
                   {
                     "name": "sys",
-                    "path": "system"
+                    "path": "system",
+                    "type": "code"
                   }
                 ]
               },
@@ -224,11 +232,13 @@
                 "column": [
                   {
                     "name": "tel",
-                    "path": "value"
+                    "path": "value",
+                    "type": "string"
                   },
                   {
                     "name": "sys",
-                    "path": "system"
+                    "path": "system",
+                    "type": "code"
                   }
                 ]
               }
@@ -304,7 +314,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ],
             "unionAll": [
@@ -313,11 +324,13 @@
                 "column": [
                   {
                     "name": "tel",
-                    "path": "value"
+                    "path": "value",
+                    "type": "string"
                   },
                   {
                     "name": "sys",
-                    "path": "system"
+                    "path": "system",
+                    "type": "code"
                   }
                 ]
               },
@@ -326,11 +339,13 @@
                 "column": [
                   {
                     "name": "tel",
-                    "path": "value"
+                    "path": "value",
+                    "type": "string"
                   },
                   {
                     "name": "sys",
-                    "path": "system"
+                    "path": "system",
+                    "type": "code"
                   }
                 ]
               }
@@ -401,7 +416,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ],
             "unionAll": [
@@ -410,7 +426,8 @@
                 "column": [
                   {
                     "name": "given",
-                    "path": "given"
+                    "path": "given",
+                    "type": "string"
                   }
                 ]
               },
@@ -419,7 +436,8 @@
                 "column": [
                   {
                     "name": "given",
-                    "path": "given"
+                    "path": "given",
+                    "type": "string"
                   }
                 ]
               }
@@ -439,7 +457,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ],
             "unionAll": [
@@ -448,7 +467,8 @@
                 "column": [
                   {
                     "name": "given",
-                    "path": "given"
+                    "path": "given",
+                    "type": "string"
                   }
                 ]
               },
@@ -457,7 +477,8 @@
                 "column": [
                   {
                     "name": "given",
-                    "path": "given"
+                    "path": "given",
+                    "type": "string"
                   }
                 ]
               }
@@ -510,7 +531,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ],
             "unionAll": [
@@ -519,7 +541,8 @@
                 "column": [
                   {
                     "name": "given",
-                    "path": "given"
+                    "path": "given",
+                    "type": "string"
                   }
                 ]
               },
@@ -528,7 +551,8 @@
                 "column": [
                   {
                     "name": "given",
-                    "path": "given"
+                    "path": "given",
+                    "type": "string"
                   }
                 ]
               }
@@ -565,7 +589,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ],
             "unionAll": [
@@ -574,7 +599,8 @@
                 "column": [
                   {
                     "name": "tel",
-                    "path": "value"
+                    "path": "value",
+                    "type": "string"
                   }
                 ]
               },
@@ -585,7 +611,8 @@
                     "column": [
                       {
                         "name": "tel",
-                        "path": "value"
+                        "path": "value",
+                        "type": "string"
                       }
                     ]
                   },
@@ -594,7 +621,8 @@
                     "column": [
                       {
                         "name": "tel",
-                        "path": "value"
+                        "path": "value",
+                        "type": "string"
                       }
                     ]
                   }
@@ -641,7 +669,8 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               }
             ]
           },
@@ -652,11 +681,13 @@
                 "column": [
                   {
                     "name": "tel",
-                    "path": "value"
+                    "path": "value",
+                    "type": "string"
                   },
                   {
                     "name": "sys",
-                    "path": "system"
+                    "path": "system",
+                    "type": "code"
                   }
                 ]
               },
@@ -665,11 +696,13 @@
                 "column": [
                   {
                     "name": "tel",
-                    "path": "value"
+                    "path": "value",
+                    "type": "string"
                   },
                   {
                     "name": "sys",
-                    "path": "system"
+                    "path": "system",
+                    "type": "code"
                   }
                 ]
               }
@@ -722,11 +755,13 @@
                 "column": [
                   {
                     "name": "a",
-                    "path": "a"
+                    "path": "id",
+                    "type": "id"
                   },
                   {
                     "name": "b",
-                    "path": "b"
+                    "path": "id",
+                    "type": "id"
                   }
                 ]
               },
@@ -734,11 +769,13 @@
                 "column": [
                   {
                     "name": "a",
-                    "path": "a"
+                    "path": "id",
+                    "type": "id"
                   },
                   {
                     "name": "c",
-                    "path": "c"
+                    "path": "id",
+                    "type": "id"
                   }
                 ]
               }
@@ -760,11 +797,13 @@
                 "column": [
                   {
                     "name": "a",
-                    "path": "a"
+                    "path": "id",
+                    "type": "id"
                   },
                   {
                     "name": "b",
-                    "path": "b"
+                    "path": "id",
+                    "type": "id"
                   }
                 ]
               },
@@ -772,11 +811,13 @@
                 "column": [
                   {
                     "name": "b",
-                    "path": "b"
+                    "path": "id",
+                    "type": "id"
                   },
                   {
                     "name": "a",
-                    "path": "a"
+                    "path": "id",
+                    "type": "id"
                   }
                 ]
               }

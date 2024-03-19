@@ -30,3 +30,7 @@ A system-specific *view runner* implementation can execute a *view definition* a
 return the results as a table that can easily be used in the user's tech stack. See the
 [system layers](index.html#system-layers) for details.
 
+## Profiling
+ViewDefinitions may be profiled to meet specific needs. For instance, the [ShareableViewDefinition](StructureDefinition-ShareableViewDefinition.html) profile
+adds constraints for view definitions intended to be shared between systems. Implementers may create their
+own ViewDefinition profiles for further specialized needs.

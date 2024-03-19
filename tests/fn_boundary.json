@@ -55,11 +55,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "decimal",
-                "path": "value.ofType(Quantity).value.lowBoundary()"
+                "path": "value.ofType(Quantity).value.lowBoundary()",
+                "type": "decimal"
               }
             ]
           }
@@ -94,11 +96,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "decimal",
-                "path": "value.ofType(Quantity).value.highBoundary()"
+                "path": "value.ofType(Quantity).value.highBoundary()",
+                "type": "decimal"
               }
             ]
           }
@@ -133,11 +137,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "datetime",
-                "path": "value.ofType(dateTime).lowBoundary()"
+                "path": "value.ofType(dateTime).lowBoundary()",
+                "type": "dateTime"
               }
             ]
           }
@@ -172,11 +178,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "datetime",
-                "path": "value.ofType(dateTime).highBoundary()"
+                "path": "value.ofType(dateTime).highBoundary()",
+                "type": "dateTime"
               }
             ]
           }
@@ -211,11 +219,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "date",
-                "path": "birthDate.lowBoundary()"
+                "path": "birthDate.lowBoundary()",
+                "type": "date"
               }
             ]
           }
@@ -238,11 +248,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "date",
-                "path": "birthDate.highBoundary()"
+                "path": "birthDate.highBoundary()",
+                "type": "date"
               }
             ]
           }
@@ -265,11 +277,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "time",
-                "path": "value.ofType(time).lowBoundary()"
+                "path": "value.ofType(time).lowBoundary()",
+                "type": "time"
               }
             ]
           }
@@ -304,11 +318,13 @@
             "column": [
               {
                 "name": "id",
-                "path": "id"
+                "path": "id",
+                "type": "id"
               },
               {
                 "name": "time",
-                "path": "value.ofType(time).highBoundary()"
+                "path": "value.ofType(time).highBoundary()",
+                "type": "time"
               }
             ]
           }

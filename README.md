@@ -4,8 +4,12 @@ This project provides the source for the SQL on FHIR v2.0 Implementation Guide
 
 [**Read the specification &rarr;**](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/)
 
+Check out the [interactive playground][].
+
 [//]: # (Links used in this document)
 [ViewDefinition]: https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition.html "ViewDefinition"
+[interactive playground]: https://fhir.github.io/sql-on-fhir-v2/#pg
+[implementations page]: https://fhir.github.io/sql-on-fhir-v2/#impls
 
 ## Content
 
@@ -40,7 +44,7 @@ Building tests, see [test README](tests/README.md)
 
 This specification contains a set of tests in the `/tests` directory,
 which are set of test case files, each covering one aspect of implementation.
-A test case is represented as JSON document with `title` and `description` attributes, 
+A test case is represented as JSON document with `title` and `description` attributes,
 a set of fixtures (FHIR resources) as the `resources` attribute, and an array of test objects.
 
 A test object has a unique `title`, a [ViewDefinition][] as the `view` attribute, and and expected set of resulting
@@ -109,7 +113,7 @@ Below is an abstract representation of what a test case file might look like:
 To ensure comprehensive validation and interoperability, it is recommended for
 implementers to integrate the test suite contained in this repository directly
 into their projects. This can be achieved efficiently by adding this repository
-as a git submodule to your project. 
+as a git submodule to your project.
 
 [TODO]: # (provide instructions on how to link this repo as a submodule in a <details> collapse)
 
@@ -140,7 +144,7 @@ runner:
   - Compare the result of the evaluation with the expected results specified in
     the `expect` attribute of the test object.
 
-### Generating the Test Report 
+### Generating the Test Report
 
 The test runner should produce a `test_report.json`
 file containing the results of the test executions. The structure of the test
@@ -249,6 +253,7 @@ discovery and comparison.
 3. **Submit Your Changes**:
    - Commit your changes to the `implementations.json` file.
    - If you're working on a fork or a branch, submit a pull request to the main repository to merge your changes.
+   - Your implementation will appear on the [implementations page][].
 
 By following these steps, you'll not only make your test results publicly
 available, you'll also contribute to a collective resource that benefits the entire

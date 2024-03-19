@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { expect, test, describe, afterAll } from 'bun:test'
 import { evaluate } from '../src/index.js'
 
 function isEqual(a, b) {
@@ -9,7 +10,7 @@ function isEqual(a, b) {
   }
 }
 
-const canonicalize = (arr) => {
+function canonicalize(arr) {
   if (arr === undefined) {
     arr = []
   }
@@ -123,64 +124,42 @@ function runTest(test, resources) {
   }
 }
 
-function printResult(title, result) {
-  let testResult
-  if (result.passed === true) {
-    testResult = 'passed'
-  } else if (result.passed === false) {
-    testResult = 'failed'
-  } else {
-    testResult = 'error'
-  }
+const testDirectory = '../tests/'
+const files = fs.readdirSync(testDirectory)
+const testResult = {}
 
-  console.log(' *', title, ' => ', testResult)
-
-  if (result.passed !== true) {
-    if (result.expected && result.actual) {
-      console.log('expected:')
-      console.dir(result.expected, { depth: null })
-      console.log('got:')
-      console.dir(result.actual, { depth: null })
-    }
-    if (result.message) {
-      console.log(result.message)
-    }
-  }
-}
-
-const tests_dir = '../tests/'
-const files = fs.readdirSync(tests_dir)
-let test_summary = { pass: 0, fail: 0, error: 0 }
-
-const result = {}
-files.forEach((f) => {
-  const testcase = JSON.parse(fs.readFileSync(tests_dir + f))
-  console.log('running', testcase.title, `file ${f}`)
-
-  const testResult = testcase.tests.map((test) => {
-    let result = null
-
-    if (test.expectError) {
-      result = runThrowingTest(test, testcase.resources)
-      printResult(test.title, result)
-    } else {
-      result = runTest(test, testcase.resources)
-      printResult(test.title, result)
-    }
-
-    if (result.passed === true) {
-      test_summary.pass++
-    } else if (result.passed === false) {
-      test_summary.fail++
-    } else {
-      test_summary.error++
-    }
-
-    return { result }
-  })
-
-  result[f] = { tests: testResult }
+afterAll(() => {
+  fs.writeFileSync('../test_report/public/test-results.json', JSON.stringify(testResult))
 })
 
-fs.writeFileSync('../test_report/public/test-results.json', JSON.stringify(result))
-console.log(test_summary)
+files.forEach((f) => {
+  const testGroup = JSON.parse(fs.readFileSync(testDirectory + f))
+  const resources = testGroup.resources
+
+  describe(f, () => {
+    testResult[f] = { tests: [] }
+
+    testGroup.tests.forEach((testCase) => {
+      const view = testCase.view
+
+      if (testCase.expect !== undefined) {
+        test(testCase.title, () => {
+          const res = evaluate(view, resources)
+          expect(res).toEqual(testCase.expect)
+
+          testResult[f].tests.push({ result: runTest(testCase, resources)})
+        })
+      } else if (testCase.expectError !== undefined) {
+        test(testCase.title, () => {
+          expect(() => evaluate(view, resources)).toThrow()
+        })
+
+        testResult[f].tests.push({ result: runThrowingTest(testCase, resources)})
+      } else if (testCase.expectCount !== undefined) {
+        throw new Error('expectCount is not implemented yet')
+      } else {
+        throw new Error(`'${testCase.title}' test has no known expectation`)
+      }
+    })
+  })
+})

@@ -52,56 +52,74 @@
  }
 </style>
 <script>
+ import CodeMirror from "svelte-codemirror-editor";
+ import { json } from "@codemirror/lang-json";
  import { evaluate, get_columns } from "sof";
  import { data } from "./data.js";
 
  let observed = [];
 
-    let viewdef = `{
-    resource: 'Patient',
-    select: [
-        {
-            column: [
-                {path: 'id', name: 'id'},
-                {path: 'birthDate', name: 'birthDate'}
-            ]
-        },
-        {
-            forEach: 'name',
-            column: [
-                {path: "family", name: 'last_name'},
-                {path: "given.join(' ')", name: 'first_name'}
-            ]
-        }
-    ]
-}`
+    let viewdef = JSON.stringify({
+        resource: 'Patient',
+        select: [
+            {
+                column: [
+                    {
+                        name: 'id',
+                        path: 'id',
+                        type: 'id'
+                    },
+                    {
+                        name: 'birthDate',
+                        path: 'birthDate',
+                        type: 'date'
+                    }
+                ]
+            },
+            {
+                forEach: 'name',
+                column: [
+                    {
+                        name: 'last_name',
+                        path: 'family',
+                        type: 'string'
+                    },
+                    {
+                        name: 'first_name',
+                        path: "given.join(' ')",
+                        type: 'string'
+                    }
+                ]
+            }
+        ]
+    }, null, 2);
 
  let v = {};
  let error = null;
- let result = {cols: [], rows: []};
+ let result = { cols: [], rows: [] };
 
  function tabelize(v, results) {
-     let columns = get_columns(v)
-     let rows = []
-     for( var row of results) {
-         rows.push(columns.map((k)=>{
+     const columns = get_columns(v)
+     const rows = []
+     for (var row of results) {
+         rows.push(columns.map(k => {
              let v = row[k];
-             if(v.toString().indexOf('[object') > -1){
+             if (v.toString().indexOf('[object') > -1) {
                  v = JSON.stringify(v);
              }
              return v
          }))
      }
-     return {rows: rows, cols: columns};
+     return { rows: rows, cols: columns };
  }
 
  $: {
      try {
          error = null;
-         eval('v=' + viewdef)
-         result = tabelize(v, evaluate(v, data));
+         eval('v = ' + viewdef)
+         result = tabelize(v, evaluate(v, data, false));
          /* tabelize(result) */
-     } catch(e){
+     } catch(e) {
          error = e.toString();
      }
  }
@@ -110,7 +128,15 @@
 <div id="api-playground" class="flex-grow">
     <!-- ViewDefinition Panel -->
     <div class="panel left-panel">
-        <textarea id="view-definition" class="text-sm" bind:value={viewdef} />
+        <CodeMirror
+            bind:value={viewdef}
+            lang={json()}
+            styles={{
+                "&": {
+                    border: "1px solid #e6e6e6"
+                },
+            }}
+        />
     </div>
 
     <div class="panel right-panel">

@@ -266,12 +266,12 @@ export function get_columns(def) {
   return collect_columns([], normalize(structuredClone(def)));
 }
 
-export function evaluate(def, node) {
+export function evaluate(def, node, for_test = true) {
   if (!Array.isArray(node)) {
     return evaluate(def, [node])
   }
 
-  const validation = validate(def);
+  const validation = validate(def, for_test);
   if ((validation.errors || []).length > 0) {
     throw new Error("Incorrect view definition:\n"
       .concat(JSON.stringify(validation.errors, null, 2)));

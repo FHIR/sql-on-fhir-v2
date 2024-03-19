@@ -12,6 +12,17 @@
           }
         }
       ]
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p2",
+      "link": [
+        {
+          "other": {
+            "reference": "Patient/p3"
+          }
+        }
+      ]
     }
   ],
   "tests": [
@@ -24,7 +35,8 @@
             "column": [
               {
                 "path": "getResourceKey() = link.other.getReferenceKey()",
-                "name": "key_equal_ref"
+                "name": "key_equal_ref",
+                "type": "boolean"
               }
             ]
           }
@@ -33,6 +45,9 @@
       "expect": [
         {
           "key_equal_ref": true
+        },
+        {
+          "key_equal_ref": false
         }
       ]
     },
@@ -45,7 +60,8 @@
             "column": [
               {
                 "path": "getResourceKey() = link.other.getReferenceKey(Patient)",
-                "name": "key_equal_ref"
+                "name": "key_equal_ref",
+                "type": "boolean"
               }
             ]
           }
@@ -54,6 +70,9 @@
       "expect": [
         {
           "key_equal_ref": true
+        },
+        {
+          "key_equal_ref": false
         }
       ]
     },
@@ -66,17 +85,23 @@
             "column": [
               {
                 "path": "link.other.getReferenceKey(Observation)",
-                "name": "referenceKey"
+                "name": "referenceKey",
+                "type": "string"
               },
               {
                 "path": "getResourceKey() = link.other.getReferenceKey(Observation)",
-                "name": "key_equal_ref"
+                "name": "key_equal_ref",
+                "type": "string"
               }
             ]
           }
         ]
       },
       "expect": [
+        {
+          "referenceKey": null,
+          "key_equal_ref": null
+        },
         {
           "referenceKey": null,
           "key_equal_ref": null
