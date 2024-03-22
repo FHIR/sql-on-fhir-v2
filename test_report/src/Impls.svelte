@@ -13,7 +13,7 @@
      }
  }
 
- export let impls = [];
+ export let impls = implementations;
 
  onMount(async function () {
      for (const impl of implementations) {
