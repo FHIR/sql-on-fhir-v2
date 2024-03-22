@@ -1,30 +1,30 @@
 <script>
  import { onMount } from "svelte";
+ import implementations from '../../implementations.json';
+ import tests from '../public/tests.json';
 
  async function load(file){
      try {
          const response = await fetch(file);
          return await response.json();
      } catch (e) {
+         console.error("Failed to load file", file, e);
          return null
      }
  }
 
  export let impls = [];
- export let tests = [];
 
  onMount(async function () {
-     tests = await load('tests.json');
-     const tmp = await load('implementations.json');
-     for (const impl of tmp) {
+     for (const impl of implementations) {
          if (impl.testResultsUrl){
              let res = await load(impl.testResultsUrl);
              impl.results = res;
          }
      }
-     impls = tmp;
-     console.dir(tests, {depth: null})
-     console.dir(impls, {depth: null})
+
+     impls = implementations;
+
  });
 
 </script>

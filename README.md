@@ -4,6 +4,8 @@ This project provides the source for the SQL on FHIR v2.0 Implementation Guide
 
 [**Read the specification &rarr;**](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/)
 
+Check the existing [implementations page][] or register [your own](#registering-your-implementation)
+
 Check out the [interactive playground][].
 
 [//]: # (Links used in this document)
