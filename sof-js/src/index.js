@@ -248,9 +248,20 @@ function collect_columns(acc, def){
       return collect_columns(acc, s);
     }, acc)
   case 'unionAll':
-    return def.unionAll.reduce((acc, s)=> {
-      return collect_columns(acc, s);
-    }, acc)
+      let unions = def.unionAll.map((s)=> {
+        return collect_columns([], s);
+      })
+
+      if (unions.length > 1) {
+        let first = unions[0];
+        for (let i = 1; i < unions.length; ++i) {
+          if (!arrays_eq(first, unions[i])) {
+            throw new Error(`Union columns mismatch: ${JSON.stringify(unions)}`);
+          }
+        }
+      }
+
+      return acc.concat(unions[0])
   case 'column':
     return def.column.reduce((acc, c)=> {
       acc.push(c.name || c.path)

@@ -42,6 +42,7 @@ function viewdef_schema(for_tests = false) {
     properties: {
       title: string,
       status: string,
+      description: string,
       resourceType: string,
       name: string,
       resource: identifier,
