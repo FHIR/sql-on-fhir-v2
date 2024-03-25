@@ -16,15 +16,12 @@
  export let impls = implementations;
 
  onMount(async function () {
-     for (const impl of implementations) {
+     Promise.all(implementations.map(async (impl, idx) => {
          if (impl.testResultsUrl){
              let res = await load(impl.testResultsUrl);
-             impl.results = res;
+             impls[idx].results = res;
          }
-     }
-
-     impls = implementations;
-
+     }))
  });
 
 </script>
