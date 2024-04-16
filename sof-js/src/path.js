@@ -1,4 +1,10 @@
 import { default as fhirpath } from 'fhirpath'
+// @note: These are not exported by main export, but could be because they are useful
+import { FP_Date, FP_DateTime, FP_Time, timeRE, dateTimeRE } from 'fhirpath/src/types';
+
+// @note this is not exported by fhirpath/src/types but should be
+let dateRE = new RegExp(
+  '^[0-9][0-9][0-9][0-9](-[0-9][0-9](-[0-9][0-9])?)?$');
 
 const identity = (ctx, v) => [v]
 
@@ -21,6 +27,81 @@ function getReferenceKey(nodes, opts) {
     } else {
       return []
     }
+  })
+}
+
+function lowBoundary(nodes) {
+  return nodes.flatMap((node) => {
+    if (node == null) {
+      return null;
+    }
+    if (node.match(timeRE)) {
+      const picoSeconds = (node.split(".")[1] || "").padEnd(9, 0);
+      const time = new FP_Time(node.split(".")[0])._dateAtPrecision(2);
+      return time.toISOString().split("T")[1].slice(0, -4).concat(picoSeconds);
+    }
+    // @note for some examples of Dates and DateTimes, both are matched by this regex
+    // else if(node.match(dateRE)) {
+    //   let [year, month, day] = node.split('-');
+    //   if (!day) {
+    //     day = '01'
+    //   }
+    //   if (!month) {
+    //     month = '01'
+    //   }
+    //   return `${year}-${month}-${day}`;
+    // }
+    // if (node.match(dateTimeRE)) {
+    //   const picoSeconds = (node.split(".")[1] || "").padEnd(9, 0);
+    //   const hasTimeZone = (node.split('-').length == 4 || node.includes('+'));
+    //   const dateTime = new FP_DateTime(node.split(".")[0])._dateAtPrecision(5);
+    //   const date = dateTime.toISOString().split("T")[0];
+    //   const time = dateTime.toISOString().split("T")[1].slice(0, -4).concat(picoSeconds);
+    //   if (hasTimeZone) {
+    //     //let timeZone = 
+
+    //   } else {
+    //     time.concat("+14:00")
+    //   }
+    //   return date.concat("T", time);
+    // }
+    return [node];
+  })
+}
+
+function highBoundary(nodes) {
+  return nodes.flatMap((node) => {
+    if (node == null) {
+      return null;
+    }
+    if (node.match(timeRE)) {
+      const hasSeconds = node.split(":").length == 3;
+      const picoSeconds = (node.split(".")[1] || "").padEnd(9, 9);
+      const time = new FP_Time(node.split(".")[0])._dateAtPrecision(2);
+      if (!hasSeconds) time.setSeconds(59);
+      return time.toISOString().split("T")[1].slice(0, -4).concat(picoSeconds);
+    }
+    // @note for some examples of Dates and DateTimes, both are matched by this regex
+    // else if (node.match(dateRE)) {
+    //   let [year, month, day] = node.split('-');
+    //   if (!month) {
+    //     month = '12';
+    //     day = '31';
+    //   }
+    //   if (!day) {
+    //     if (month == "02") {
+    //       (year % 4) ? day = '28' : day = '29';
+    //     }
+    //     else if (["04", "06", "09", "11"].includes(month)) {
+    //       day = '30';
+    //     }
+    //     else {
+    //       day = '31';
+    //     }
+    //   }
+    //   return `${year}-${month}-${day}`;
+    // }
+    return [node];
   })
 }
 
@@ -52,6 +133,8 @@ let fhirpath_options = {
     getResourceKey:  { fn: getResourceKey, arity: { 0: [] } },
     getReferenceKey: { fn: getReferenceKey, arity: { 0: [], 1: ['TypeSpecifier'] } },
     identity:        { fn: (nodes) => nodes, arity: { 0: [] } },
+    lowBoundary:     { fn: lowBoundary, arity: { 0: [] }, nullable: true},
+    highBoundary:    { fn: highBoundary, arity: { 0: [] }, nullable: true},
   }
 }
 

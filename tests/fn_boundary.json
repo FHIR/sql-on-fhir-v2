@@ -39,9 +39,125 @@
       "valueTime": "12:34"
     },
     {
+      "resourceType": "Observation",
+      "id": "o5",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:01"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o6",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:00.01"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o7",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:00.000001"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o8",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:15.4621"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o9",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:59.00000036"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o10",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:08.7"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o11",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:27.918272"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o12",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:42.987654321"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o13",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2010-10-10T15:21"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o14",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2010-10-10T15:21:18"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o15",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2010-10-10T15:21:01:898998"
+    },
+    {
       "resourceType": "Patient",
       "id": "p1",
       "birthDate": "1970-06"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p2",
+      "birthDate": "1999-08"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p3",
+      "birthDate": "2003"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p4",
+      "birthDate": "2000-02"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p5",
+      "birthDate": "2001-02"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p6",
+      "birthDate": "1994-05-18"
     }
   ],
   "tests": [
@@ -156,7 +272,7 @@
         },
         {
           "id": "o2",
-          "datetime": "2010-10-10T00:00:00.000+14:00"
+          "datetime": "2010-10-10T00:00:00.000000000+14:00"
         },
         {
           "id": "o3",
@@ -165,6 +281,50 @@
         {
           "id": "o4",
           "datetime": null
+        },
+        {
+          "id": "o5",
+          "datetime": null
+        },
+        {
+          "id": "o6",
+          "datetime": null
+        },
+        {
+          "id": "o7",
+          "datetime": null
+        },
+        {
+          "id": "o8",
+          "datetime": null
+        },
+        {
+          "id": "o9",
+          "datetime": null
+        },
+        {
+          "id": "o10",
+          "datetime": null
+        },
+        {
+          "id": "o11",
+          "datetime": null
+        },
+        {
+          "id": "o12",
+          "datetime": null
+        },
+        {
+          "id": "o13",
+          "datetime": "2010-10-10T15:21:00.000000000+14:00"
+        },
+        {
+          "id": "o14",
+          "datetime": "2010-10-10T15:21:18.000000000+14:00"
+        },
+        {
+          "id": "o15",
+          "datetime": "2010-10-10T15:21:01:898998000+14:00"
         }
       ]
     },
@@ -197,7 +357,7 @@
         },
         {
           "id": "o2",
-          "datetime": "2010-10-10T23:59:59.999-12:00"
+          "datetime": "2010-10-10T23:59:59.999999999-12:00"
         },
         {
           "id": "o3",
@@ -206,6 +366,58 @@
         {
           "id": "o4",
           "datetime": null
+        },
+        {
+          "id": "o3",
+          "datetime": null
+        },
+        {
+          "id": "o4",
+          "datetime": null
+        },
+        {
+          "id": "o5",
+          "datetime": null
+        },
+        {
+          "id": "o6",
+          "datetime": null
+        },
+        {
+          "id": "o7",
+          "datetime": null
+        },
+        {
+          "id": "o8",
+          "datetime": null
+        },
+        {
+          "id": "o9",
+          "datetime": null
+        },
+        {
+          "id": "o10",
+          "datetime": null
+        },
+        {
+          "id": "o11",
+          "datetime": null
+        },
+        {
+          "id": "o12",
+          "datetime": null
+        },
+        {
+          "id": "o13",
+          "datetime": "2010-10-10T15:21:59.999999999-12:00"
+        },
+        {
+          "id": "o14",
+          "datetime": "2010-10-10T15:21:18.999999999-12:00"
+        },
+        {
+          "id": "o15",
+          "datetime": "2010-10-10T15:21:01:898998999-12:00"
         }
       ]
     },
@@ -235,6 +447,26 @@
         {
           "id": "p1",
           "date": "1970-06-01"
+        },
+        {
+          "id": "p2",
+          "date": "1999-08-01"
+        },
+        {
+          "id": "p3",
+          "date": "2003-01-01"
+        },
+        {
+          "id": "p4",
+          "date": "2000-02-01"
+        },
+        {
+          "id": "p5",
+          "date": "2001-02-01"
+        },
+        {
+          "id": "p6",
+          "date": "1994-05-18"
         }
       ]
     },
@@ -264,6 +496,26 @@
         {
           "id": "p1",
           "date": "1970-06-30"
+        },
+        {
+          "id": "p2",
+          "date": "1999-08-31"
+        },
+        {
+          "id": "p3",
+          "date": "2003-12-31"
+        },
+        {
+          "id": "p4",
+          "date": "2000-02-29"
+        },
+        {
+          "id": "p5",
+          "date": "2001-02-28"
+        },
+        {
+          "id": "p6",
+          "date": "1994-05-18"
         }
       ]
     },
@@ -304,7 +556,51 @@
         },
         {
           "id": "o4",
-          "time": "12:34:00.000"
+          "time": "12:34:00.000000000"
+        },
+        {
+          "id": "o5",
+          "time": "12:34:01.000000000"
+        },
+        {
+          "id": "o6",
+          "time": "12:34:00.010000000"
+        },
+        {
+          "id": "o7",
+          "time": "12:34:00.000001000"
+        },
+        {
+          "id": "o8",
+          "time": "12:34:15.462100000"
+        },
+        {
+          "id": "o9",
+          "time": "12:34:59.000000360"
+        },
+        {
+          "id": "o10",
+          "time": "12:34:08.700000000"
+        },
+        {
+          "id": "o11",
+          "time": "12:34:27.918272000"
+        },
+        {
+          "id": "o12",
+          "time": "12:34:42.987654321"
+        },
+        {
+          "id": "o13",
+          "time": null
+        },
+        {
+          "id": "o14",
+          "time": null
+        },
+        {
+          "id": "o15",
+          "time": null
         }
       ]
     },
@@ -345,7 +641,51 @@
         },
         {
           "id": "o4",
-          "time": "12:34:59.999"
+          "time": "12:34:59.999999999"
+        },
+        {
+          "id": "o5",
+          "time": "12:34:01.999999999"
+        },
+        {
+          "id": "o6",
+          "time": "12:34:00.019999999"
+        },
+        {
+          "id": "o7",
+          "time": "12:34:00.000001999"
+        },
+        {
+          "id": "o8",
+          "time": "12:34:15.462199999"
+        },
+        {
+          "id": "o9",
+          "time": "12:34:59.000000369"
+        },
+        {
+          "id": "o10",
+          "time": "12:34:08.799999999"
+        },
+        {
+          "id": "o11",
+          "time": "12:34:27.918272999"
+        },
+        {
+          "id": "o12",
+          "time": "12:34:42.987654321"
+        },
+        {
+          "id": "o13",
+          "time": null
+        },
+        {
+          "id": "o14",
+          "time": null
+        },
+        {
+          "id": "o15",
+          "time": null
         }
       ]
     }
