@@ -436,16 +436,7 @@
           }
         ]
       },
-      "expectColumns": [
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "f",
-        "g",
-        "h"
-      ],
+      "expectColumns": ["a", "b", "c", "d", "e", "f", "g", "h"],
       "expect": [
         {
           "a": "A",
