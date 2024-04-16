@@ -363,42 +363,77 @@ To change the column ordering, it is possible to place the columns or the `union
 
 For example, the `column`s in this ViewDefinition will appear in alphabetical order:
 
-```js
+```json
 {
   "name": "column_order_example",
   "resource": "...",
-  "select": [{
-    "column": [
-      { "path": "'A'", "name": "a" },
-      { "path": "'B'", "name": "b" }
-    ]
-    "select": [{
-      "forEach": "aNestedStructure",
+  "select": [
+    {
       "column": [
-        { "path": "'C'", "name": "c" },
-        { "path": "'D'", "name": "d" }
-      ]
-    }],
-    "unionAll" : [{
-      "column": [
-        { "path": "'E1'", "name": "e" },
-        { "path": "'F1'", "name": "f" }
+        {
+          "path": "'A'",
+          "name": "a"
+        },
+        {
+          "path": "'B'",
+          "name": "b"
+        }
+      ],
+      "select": [
+        {
+          "forEach": "aNestedStructure",
+          "column": [
+            {
+              "path": "'C'",
+              "name": "c"
+            },
+            {
+              "path": "'D'",
+              "name": "d"
+            }
+          ]
+        }
+      ],
+      "unionAll": [
+        {
+          "column": [
+            {
+              "path": "'E1'",
+              "name": "e"
+            },
+            {
+              "path": "'F1'",
+              "name": "f"
+            }
+          ]
+        },
+        {
+          "column": [
+            {
+              "path": "'E2'",
+              "name": "e"
+            },
+            {
+              "path": "'F2'",
+              "name": "f"
+            }
+          ]
+        }
       ]
     },
     {
       "column": [
-        { "path": "'E2'", "name": "e" },
-        { "path": "'F2'", "name": "f" }
+        {
+          "path": "'G'",
+          "name": "g"
+        },
+        {
+          "path": "'H'",
+          "name": "h"
+        }
       ]
     }
-    ]
-  },
-  {
-    "column": [
-      { "path": "'G'", "name": "g" },
-      { "path": "'H'", "name": "h" }
-    ]
-  }]
+  ]
 }
 ```
 
