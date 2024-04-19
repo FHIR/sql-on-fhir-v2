@@ -117,6 +117,18 @@ Example view runners may include:
 * A runner that queries FHIR JSON directly and creates a table in a web application
 * A runner that loads data directly into a notebook or other data analysis tool
 
+#### Generating Schemas
+The output of many runners will have technology-specific schemas, such as database table
+definitions or schema for structured files like Parquet. This will be runner- and technology-
+specific, but runner implementaitons SHOULD offer a way to compute that schema from a ViewDefinition
+when applicable.
+
+For example, a runner that produces a table in a database system could return a "CREATE TABLE" or
+"CREATE VIEW" statement based on the ViewDefinition, allowing the system to define tables prior to 
+populating them by evaluating the views over data.
+
+This would not apply to outputs that do not have common a schema specification, like CSV files. 
+
 ### The Analytics Layer
 
 Finally, users must be able to easily leverage the above views with the analytic
