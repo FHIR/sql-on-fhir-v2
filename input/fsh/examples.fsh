@@ -23,6 +23,43 @@ Usage:  #example
     * path = "family"
     * name = "family_name"
 
+Instance:   ShareablePatientDemographics
+InstanceOf: ViewDefinition
+Description: """
+Creates the same view as the 'PatientDemographics' example, but applies both the
+ShareableViewDefinition and TabularViewDefinition profiles.
+"""
+Usage:  #example
+* url = "http://example.com/ShareablePatientDemographics"
+* name = "patient_demographics"
+* fhirVersion[+] = #4.0
+* fhirVersion[+] = #5.0
+* status = #draft
+* resource = #Patient
+* meta
+  * profile[+] = "http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ShareableViewDefinition"
+  * profile[+] = "http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/TabularViewDefinition"
+* select[+]
+  * column[+]
+    * path = "getResourceKey()"
+    * name = "id"
+    * type = "string"
+  * column[+]
+    * path = "gender"
+    * name = "gender"
+    * type = "string"
+* select[+]
+  * forEach = "name.where(use = 'official').first()"
+  * column[+]
+    * path = "given.join(' ')"
+    * name = "given_name"
+    * description = "A single given name field with all names joined together."
+    * type = "string"
+  * column[+]
+    * path = "family"
+    * name = "family_name"
+    * type = "string"
+
 Instance:   PatientAddresses
 InstanceOf: ViewDefinition
 Description: """An example of unnesting patient addresses into multiple
