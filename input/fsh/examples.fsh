@@ -156,7 +156,7 @@ Usage: #example
     * path = "getResourceKey()"
     * name = "id"
   * column[+]
-    * path = "subject.getReferenceKey('Patient')"
+    * path = "subject.getReferenceKey(Patient)"
     * name = "patient_id"
     * description = "Can be used to join to patient tables created by other views."
   * column[+]
