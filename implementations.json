@@ -18,9 +18,10 @@
         "testResultsUrl": "https://pathling.csiro.au/test-results/refs/heads/issue/1759/sof-test-results.json"
     },
     {
-        "name": "Google",
-        "url": "TBD",
-        "description": "TBD"
+        "name": "Google (Open Health Stack)",
+        "url": "https://developers.google.com/open-health-stack/fhir-analytics/data-pipes",
+        "description": "OHS's fhir-data-pipes offers an option to use ViewDefinitions for creating 'flat tables' from FHIR resources. The actual implementation is in this package: https://github.com/google/fhir-data-pipes/tree/master/pipelines/common/src/main/java/com/google/fhir/analytics/view",
+        "testResultsUrl": "https://raw.githubusercontent.com/google/fhir-data-pipes/master/pipelines/common/src/test/resources/sql-on-fhir-v2-test-result.json"
     },
     {
         "name": "Grahame Impl",
