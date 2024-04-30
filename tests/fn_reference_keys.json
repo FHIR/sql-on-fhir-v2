@@ -91,7 +91,7 @@
               {
                 "path": "getResourceKey() = link.other.getReferenceKey(Observation)",
                 "name": "key_equal_ref",
-                "type": "string"
+                "type": "boolean"
               }
             ]
           }
