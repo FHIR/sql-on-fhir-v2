@@ -231,9 +231,10 @@ the process of publishing your test report and registering your implementation.
 ### Registering Your Implementation
 
 Once your test report is published and accessible, the final step is to register
-your implementation in the `./implementations.json` file. This file serves as a
-registry of available implementations and their test results, facilitating
-discovery and comparison.
+your implementation in the
+[`test_report/public/implementations.json`](test_report/public/implementations.json)
+file. This file serves as a registry of available implementations and their test
+results, facilitating discovery and comparison.
 
 1. **Format of `implementations.json`**:
    - The `implementations.json` file is a JSON document that lists implementations along with URLs to their test reports.
