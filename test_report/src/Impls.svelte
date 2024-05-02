@@ -1,6 +1,6 @@
 <script>
  import { onMount } from "svelte";
- import implementations from '../../implementations.json';
+ import implementations from '../public/implementations.json';
  import tests from '../public/tests.json';
 
  async function load(file){
