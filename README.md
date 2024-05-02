@@ -155,9 +155,9 @@ file containing the results of the test executions. The structure of the test
 report is a map where:
 - each key is the name of a test file,
 - each value is a map with a single `tests` list,
-- each element of the `tests` list has a `name` and a `result` fields, reporting
-  whether the `name` test `passed` or not. It can optionally have a
-  `failureReason` text field as well.
+- each element of the `tests` list has a `name` and a `result` field, reporting
+  whether the `name` test `passed` or not. Beside `passed`, the `result` map 
+  may also have a `reason` text field describing why the test did not pass.
 Here is an example:
 
 ```js
@@ -167,16 +167,18 @@ Here is an example:
     "tests": [
       {
         "name": "filtering with 'and'",
-        "passed": true
+        "result": {
+          "passed": true
+        }
       },
       {
         "name": "filtering with 'or'",
-        "passed": true
+        "result": {
+          "passed": false,
+          "reason": "skipped"
+        }
       },
-      {
-        "name": "filtering with 'not'",
-        "passed": true
-      }
+      ...
     ]
   },
   ...
