@@ -48,7 +48,7 @@
           "key_equal_ref": true
         },
         {
-          "key_equal_ref": false
+          "key_equal_ref": null
         }
       ]
     },
@@ -73,7 +73,7 @@
           "key_equal_ref": true
         },
         {
-          "key_equal_ref": false
+          "key_equal_ref": null
         }
       ]
     },

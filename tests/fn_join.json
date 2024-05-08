@@ -86,7 +86,7 @@
               {
                 "path": "name.given.join()",
                 "name": "given",
-                "type": "name"
+                "type": "string"
               }
             ]
           }
