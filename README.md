@@ -64,6 +64,10 @@ components of a test case file are:
 - **Description** (`description` attribute): A detailed explanation of what the test case aims to
   validate, including any relevant context or specifications that the test is
   based on.
+- **FHIR version**: A list of FHIR version strings like `['4.0.1', '5.0.0']`.
+  This applies to all FHIR resources in the test suite. The version numbers come
+  from [this ValueSet](https://hl7.org/fhir/R5/valueset-FHIR-version.html) and
+  can only include "Release" versions.
 - **Fixtures** (`resources` attribute): A set of FHIR resources that serve as
   input data for the test. These fixtures are essential for setting up the test
   environment and conditions.
@@ -83,26 +87,27 @@ Below is an abstract representation of what a test case file might look like:
 ```js
 {
   // unique name of test
-  title: 'title',
-  description: '...',
+  'title': 'title',
+  'description': '...',
+  'fhirVersion': ['5.0.0', '4.0.1'],
   // fixtures
-  resources: [
-    {resourceType: 'Patient', id: 'pt-1'},
-    {resourceType: 'Patient', id: 'pt-2'}
+  'resources': [
+    {'resourceType': 'Patient', 'id': 'pt-1'},
+    {'resourceType': 'Patient', 'id': 'pt-2'}
   ]
-  tests: [
+  'tests': [
     ...
     {
-      title: 'title of test case',
+      'title': 'title of test case',
       // ViewDefintion
-      view: {
-       select: [
-        {column: [{name: 'id', path: 'id'}]}
-      ]},
+      'view': {
+        'select': [
+          {'column': [{'name': 'id', 'path': 'id'}]}
+        ]},
       // expected result
-      expect: [
-        {id: 'pt-1'},
-        {id: 'pt-2'}
+      'expect': [
+        {'id': 'pt-1'},
+        {'id': 'pt-2'}
       ]
     }
     ...
@@ -150,37 +155,36 @@ runner:
 
 The test runner should produce a `test_report.json`
 file containing the results of the test executions. The structure of the test
-report should mirror that of the original test cases, with an additional
-attribute `result` added to each test object. This attribute should contain the
-set of rows returned by the implementation when evaluating the test. Ensure
-the result accurately reflects the output of your implementation for each
-test, facilitating a straightforward comparison between expected and actual
-outcomes.
+report is a map where:
+- each key is the name of a test file,
+- each value is a map with a single `tests` list,
+- each element of the `tests` list has a `name` and a `result` field, reporting
+  whether the `name` test `passed` or not. Beside `passed`, the `result` map 
+  may also have a `reason` text field describing why the test did not pass.
+Here is an example:
 
 ```js
 //example test_report.json
 {
-  "title": "Example Test Case",
-  "description": "This test case validates...",
-  "resources": [...],
-  "tests": [
-    {
-      "title": "Test Object 1",
-      "view": {...},
-      "expect": [...],
-      "result": [
-        // Actual rows returned by your implementation
-      ]
-    },
-    {
-      "title": "Test Object 2",
-      "view": {...},
-      "expect": [...],
-      "result": [
-        // Actual rows returned by your implementation
-      ]
-    }
-  ]
+  "logic.json": {
+    "tests": [
+      {
+        "name": "filtering with 'and'",
+        "result": {
+          "passed": true
+        }
+      },
+      {
+        "name": "filtering with 'or'",
+        "result": {
+          "passed": false,
+          "reason": "skipped"
+        }
+      },
+      ...
+    ]
+  },
+  ...
 }
 ```
 
