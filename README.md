@@ -64,10 +64,10 @@ components of a test case file are:
 - **Description** (`description` attribute): A detailed explanation of what the test case aims to
   validate, including any relevant context or specifications that the test is
   based on.
-- **FHIR version**: A list of FHIR version strings like `[4.0.1, 5.0.0]`. This
-  applies to all FHIR resources in the test suite. The version numbers come from
-  [this ValueSet](https://hl7.org/fhir/R5/valueset-FHIR-version.html) and can
-  only be one of "Release" versions.
+- **FHIR version**: A list of FHIR version strings like `['4.0.1', '5.0.0']`.
+  This applies to all FHIR resources in the test suite. The version numbers come
+  from [this ValueSet](https://hl7.org/fhir/R5/valueset-FHIR-version.html) and
+  can only include "Release" versions.
 - **Fixtures** (`resources` attribute): A set of FHIR resources that serve as
   input data for the test. These fixtures are essential for setting up the test
   environment and conditions.
@@ -87,26 +87,27 @@ Below is an abstract representation of what a test case file might look like:
 ```js
 {
   // unique name of test
-  title: 'title',
-  description: '...',
+  'title': 'title',
+  'description': '...',
+  'fhirVersion': ['5.0.0', '4.0.1'],
   // fixtures
-  resources: [
-    {resourceType: 'Patient', id: 'pt-1'},
-    {resourceType: 'Patient', id: 'pt-2'}
+  'resources': [
+    {'resourceType': 'Patient', 'id': 'pt-1'},
+    {'resourceType': 'Patient', 'id': 'pt-2'}
   ]
-  tests: [
+  'tests': [
     ...
     {
-      title: 'title of test case',
+      'title': 'title of test case',
       // ViewDefintion
-      view: {
-       select: [
-        {column: [{name: 'id', path: 'id'}]}
-      ]},
+      'view': {
+        'select': [
+          {'column': [{'name': 'id', 'path': 'id'}]}
+        ]},
       // expected result
-      expect: [
-        {id: 'pt-1'},
-        {id: 'pt-2'}
+      'expect': [
+        {'id': 'pt-1'},
+        {'id': 'pt-2'}
       ]
     }
     ...
