@@ -248,6 +248,21 @@
       "resourceType": "Patient",
       "id": "p6",
       "birthDate": "1994-05-18"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p7",
+      "birthDate": "2100-02"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p8",
+      "birthDate": "1900-02"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p9",
+      "birthDate": "2024-02"
     }
   ],
   "tests": [
@@ -797,6 +812,18 @@
         {
           "id": "p6",
           "date": "1994-05-18"
+        },
+        {
+          "id": "p7",
+          "date": "2100-02-01"
+        },
+        {
+          "id": "p8",
+          "date": "1900-02-01"
+        },
+        {
+          "id": "p9",
+          "date": "2024-02-01"
         }
       ]
     },
@@ -846,6 +873,18 @@
         {
           "id": "p6",
           "date": "1994-05-18"
+        },
+        {
+          "id": "p7",
+          "date": "2100-02-28"
+        },
+        {
+          "id": "p8",
+          "date": "1900-02-28"
+        },
+        {
+          "id": "p9",
+          "date": "2024-02-29"
         }
       ]
     },

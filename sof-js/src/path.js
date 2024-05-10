@@ -42,7 +42,7 @@ function checkDate (date, type) {
     }
     if (!day) {
       if (month == "02") {
-        (year % 4) ? day = '28' : day = '29';
+        (year % 4 || !(year % 100) && year % 400) ? day = '28' : day = '29';
       }
       else if (["04", "06", "09", "11"].includes(month)) {
         day = '30';
