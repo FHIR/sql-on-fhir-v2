@@ -220,6 +220,72 @@
       "valueDateTime": "2007-03"
     },
     {
+      "resourceType": "Observation",
+      "id": "o26",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 1.587
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o27",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 10235.66
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o28",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 353600.89123
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o29",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": -353600.89123
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o30",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 0.1
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o31",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 123456789123.1234
+      }
+    },
+    {
       "resourceType": "Patient",
       "id": "p1",
       "birthDate": "1970-06"
@@ -291,7 +357,7 @@
       "expect": [
         {
           "id": "o1",
-          "decimal": 0.95
+          "decimal": 1.00000000
         },
         {
           "id": "o2",
@@ -387,6 +453,30 @@
         },
         {
           "id": "o25",
+          "decimal": null
+        },
+        {
+          "id": "o26",
+          "decimal": 1.58700000
+        },
+        {
+          "id": "o27",
+          "decimal": 10235.66000000
+        },
+        {
+          "id": "o28",
+          "decimal": 353600.89123000
+        },
+        {
+          "id": "o29",
+          "decimal": -353600.89123000
+        },
+        {
+          "id": "o30",
+          "decimal": 0.10000000
+        },
+        {
+          "id": "o31",
           "decimal": null
         }
       ]
@@ -416,7 +506,7 @@
       "expect": [
         {
           "id": "o1",
-          "decimal": 1.05
+          "decimal": 1.99999999
         },
         {
           "id": "o2",
@@ -512,6 +602,30 @@
         },
         {
           "id": "o25",
+          "decimal": null
+        },
+        {
+          "id": "o26",
+          "decimal": 1.58799999
+        },
+        {
+          "id": "o27",
+          "decimal": 10235.66999999
+        },
+        {
+          "id": "o28",
+          "decimal": 353600.89123999
+        },
+        {
+          "id": "o29",
+          "decimal": -353600.89123999
+        },
+        {
+          "id": "o30",
+          "decimal": 0.19999999
+        },
+        {
+          "id": "o31",
           "decimal": null
         }
       ]
@@ -638,6 +752,30 @@
         {
           "id": "o25",
           "datetime": "2007-03-01T00:00:00.000000000+14:00"
+        },
+        {
+          "id": "o26",
+          "datetime": null
+        },
+        {
+          "id": "o27",
+          "datetime": null
+        },
+        {
+          "id": "o28",
+          "datetime": null
+        },
+        {
+          "id": "o29",
+          "datetime": null
+        },
+        {
+          "id": "o30",
+          "datetime": null
+        },
+        {
+          "id": "o31",
+          "datetime": null
         }
       ]
     },
@@ -763,6 +901,30 @@
         {
           "id": "o25",
           "datetime": "2007-03-31T23:59:59.999999999-12:00"
+        },
+        {
+          "id": "o26",
+          "datetime": null
+        },
+        {
+          "id": "o27",
+          "datetime": null
+        },
+        {
+          "id": "o28",
+          "datetime": null
+        },
+        {
+          "id": "o29",
+          "datetime": null
+        },
+        {
+          "id": "o30",
+          "datetime": null
+        },
+        {
+          "id": "o31",
+          "datetime": null
         }
       ]
     },
@@ -1010,6 +1172,30 @@
         {
           "id": "o25",
           "time": null
+        },
+        {
+          "id": "o26",
+          "time": null
+        },
+        {
+          "id": "o27",
+          "time": null
+        },
+        {
+          "id": "o28",
+          "time": null
+        },
+        {
+          "id": "o29",
+          "time": null
+        },
+        {
+          "id": "o30",
+          "time": null
+        },
+        {
+          "id": "o31",
+          "time": null
         }
       ]
     },
@@ -1134,6 +1320,30 @@
         },
         {
           "id": "o25",
+          "time": null
+        },
+        {
+          "id": "o26",
+          "time": null
+        },
+        {
+          "id": "o27",
+          "time": null
+        },
+        {
+          "id": "o28",
+          "time": null
+        },
+        {
+          "id": "o29",
+          "time": null
+        },
+        {
+          "id": "o30",
+          "time": null
+        },
+        {
+          "id": "o31",
           "time": null
         }
       ]

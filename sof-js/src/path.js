@@ -61,7 +61,12 @@ function lowBoundary(nodes) {
       return null;
     }
     const { name: type } = node.getTypeInfo();
-    if (type === "time") {
+    if (type === "decimal") {
+      let integer = (node.data.toString().split(".")[0] || "").length;
+      let precision = (node.data.toString().split(".")[1] || "").length;
+      return (integer > 8 || precision > 8) ? null : parseFloat(node.data.toFixed(8));
+    }
+    else if (type === "time") {
       const picoSeconds = (node.data.split(".")[1] || "").padEnd(9, 0);
       const time = new FP_Time(node.data.split(".")[0])._dateAtPrecision(2);
       return time.toISOString().split("T")[1].slice(0, -4).concat(picoSeconds);
@@ -96,7 +101,14 @@ function highBoundary(nodes) {
       return null;
     }
     const { name: type } = node.getTypeInfo();
-    if (type === "time") {
+    if (type === "decimal") {
+      let integer = (node.data.toString().split(".")[0] || "").length;
+      let precision = (node.data.toString().split(".")[1] || "").length;
+      return (integer > 8 || precision > 8) 
+            ? null 
+            : parseFloat(node.data.toString().split(".")[0] + '.' + (node.data.toString().split(".")[1] || "").padEnd(8, 9));
+    }
+    else if (type === "time") {
       const hasSeconds = node.data.split(":").length == 3;
       const picoSeconds = (node.data.split(".")[1] || "").padEnd(9, 9);
       const time = new FP_Time(node.data.split(".")[0])._dateAtPrecision(2);
