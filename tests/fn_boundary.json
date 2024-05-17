@@ -286,6 +286,28 @@
       }
     },
     {
+      "resourceType": "Observation",
+      "id": "o32",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 0.007
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o33",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 15.080
+      }
+    },
+    {
       "resourceType": "Patient",
       "id": "p1",
       "birthDate": "1970-06"
@@ -478,6 +500,14 @@
         {
           "id": "o31",
           "decimal": null
+        },
+        {
+          "id": "o32",
+          "decimal": 0.00700000
+        },
+        {
+          "id": "o33",
+          "decimal": 15.08000000
         }
       ]
     },
@@ -506,7 +536,7 @@
       "expect": [
         {
           "id": "o1",
-          "decimal": 1.99999999
+          "decimal": 1.09999999
         },
         {
           "id": "o2",
@@ -627,6 +657,14 @@
         {
           "id": "o31",
           "decimal": null
+        },
+        {
+          "id": "o32",
+          "decimal": 0.00799999
+        },
+        {
+          "id": "o33",
+          "decimal": 15.0809999
         }
       ]
     },
@@ -776,6 +814,14 @@
         {
           "id": "o31",
           "datetime": null
+        },
+        {
+          "id": "o32",
+          "datetime": null
+        },
+        {
+          "id": "o33",
+          "datetime": null
         }
       ]
     },
@@ -924,6 +970,14 @@
         },
         {
           "id": "o31",
+          "datetime": null
+        },
+        {
+          "id": "o32",
+          "datetime": null
+        },
+        {
+          "id": "o33",
           "datetime": null
         }
       ]
@@ -1196,6 +1250,14 @@
         {
           "id": "o31",
           "time": null
+        },
+        {
+          "id": "o32",
+          "time": null
+        },
+        {
+          "id": "o33",
+          "time": null
         }
       ]
     },
@@ -1344,6 +1406,14 @@
         },
         {
           "id": "o31",
+          "time": null
+        },
+        {
+          "id": "o32",
+          "time": null
+        },
+        {
+          "id": "o33",
           "time": null
         }
       ]

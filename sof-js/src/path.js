@@ -106,7 +106,7 @@ function highBoundary(nodes) {
       let precision = (node.data.toString().split(".")[1] || "").length;
       return (integer > 8 || precision > 8) 
             ? null 
-            : parseFloat(node.data.toString().split(".")[0] + '.' + (node.data.toString().split(".")[1] || "").padEnd(8, 9));
+            : parseFloat(node.data.toString().split(".")[0] + '.' + (node.data.toString().split(".")[1] || "0").padEnd(8, 9));
     }
     else if (type === "time") {
       const hasSeconds = node.data.split(":").length == 3;
