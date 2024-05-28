@@ -1,6 +1,7 @@
 {
   "title": "fn_join",
   "description": "FHIRPath `join` function.",
+  "fhirVersion": ["5.0.0", "4.0.1"],
   "resources": [
     {
       "resourceType": "Patient",
@@ -85,7 +86,7 @@
               {
                 "path": "name.given.join()",
                 "name": "given",
-                "type": "name"
+                "type": "string"
               }
             ]
           }
