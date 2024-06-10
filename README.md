@@ -1,10 +1,25 @@
 # SQL on FHIR® (v2.0)
 
-This project provides the source for the SQL on FHIR v2.0 Implementation Guide
+## Introduction
+
+This project provides the source for the SQL on FHIR v2.0 Implementation Guide.
+
+SQL on FHIR is a specification that defines a standard way to define portable,
+tabular projections of FHIR data.
+
+The [FHIR®](https://hl7.org/fhir) standard is a great fit for RESTful and
+JSON-based systems, helping make healthcare data liquidity real. This spec aims
+to take FHIR usage a step futher, making FHIR work well with familiar and
+efficient SQL engines and surrounding ecosystems.
+
+We do this by creating simple, tabular *views* of the underlying FHIR data that
+are tailored to specific needs. Views are defined
+with [FHIRPath](https://hl7.org/fhirpath/) expressions in a logical structure to
+specify things like column names and unnested items.
 
 [**Read the specification &rarr;**](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/)
 
-Check the existing [implementations page][] or register [your own](#registering-your-implementation)
+Check the existing [implementations page](https://fhir.github.io/sql-on-fhir-v2/#impls) or register [your own](#registering-your-implementation).
 
 Check out the [interactive playground][].
 
@@ -12,6 +27,21 @@ Check out the [interactive playground][].
 [ViewDefinition]: https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition.html "ViewDefinition"
 [interactive playground]: https://fhir.github.io/sql-on-fhir-v2/#pg
 [implementations page]: https://fhir.github.io/sql-on-fhir-v2/#impls
+
+## FHIR Foundation Project Statement
+
+* Maintainers: Ryan Brush, Dan Gottlieb, John Grimes, Josh Mandel, Nikolai
+  Ryzhikov, Arjun Sanyal
+* Issues /
+  Discussion: [analytics on FHIR](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
+  @chat.fhir.org
+* License: [MIT](./LICENSE.md)
+* Contribution Policy: [CONTRIBUTING.md](./CONTRIBUTING.md)
+* Security Information: This repository consists of code to build a static
+  implementation guide, and an implementation for reference only.
+* Compliance Information: This specification and its reference implementation
+  are tested using the test suite in the [tests](./tests) directory.
+  See [Tests Overview](#tests-overview) for more information.
 
 ## Content
 
