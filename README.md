@@ -9,7 +9,7 @@ tabular projections of FHIR data.
 
 The [FHIR®](https://hl7.org/fhir) standard is a great fit for RESTful and
 JSON-based systems, helping make healthcare data liquidity real. This spec aims
-to take FHIR usage a step futher, making FHIR work well with familiar and
+to take FHIR usage a step further, making FHIR work well with familiar and
 efficient SQL engines and surrounding ecosystems.
 
 We do this by creating simple, tabular *views* of the underlying FHIR data that
