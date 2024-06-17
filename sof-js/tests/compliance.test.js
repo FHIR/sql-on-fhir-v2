@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { expect, test, describe, afterAll } from 'bun:test'
+import { afterAll, describe, expect, test } from 'bun:test'
 import { evaluate } from '../src/index.js'
 
 function isEqual(a, b) {
@@ -22,8 +22,12 @@ function canonicalize(arr) {
     const keysB = Object.keys(b).sort()
 
     for (let i = 0; i < Math.min(keysA.length, keysB.length); i++) {
-      if (a[keysA[i]] < b[keysB[i]]) return -1
-      if (a[keysA[i]] > b[keysB[i]]) return 1
+      if (a[keysA[i]] < b[keysB[i]]) {
+        return -1
+      }
+      if (a[keysA[i]] > b[keysB[i]]) {
+        return 1
+      }
     }
 
     return keysA.length - keysB.length // if one has more keys than the other
@@ -147,14 +151,14 @@ files.forEach((f) => {
           const res = evaluate(view, resources)
           expect(res).toEqual(testCase.expect)
 
-          testResult[f].tests.push({ result: runTest(testCase, resources)})
+          testResult[f].tests.push({ result: runTest(testCase, resources) })
         })
       } else if (testCase.expectError !== undefined) {
         test(testCase.title, () => {
           expect(() => evaluate(view, resources)).toThrow()
         })
 
-        testResult[f].tests.push({ result: runThrowingTest(testCase, resources)})
+        testResult[f].tests.push({ result: runThrowingTest(testCase, resources) })
       } else if (testCase.expectCount !== undefined) {
         throw new Error('expectCount is not implemented yet')
       } else {
