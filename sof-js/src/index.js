@@ -240,7 +240,6 @@ let fns = {
 }
 
 function do_eval(select_expr, node, def) {
-  console.log('do_eval', 'select_expr', select_expr, 'node', node, 'def', def)
   let f = fns[select_expr.type] || fns['unknown']
   return f(select_expr, node, def)
 }
