@@ -174,6 +174,15 @@ function normalize(def) {
 
     def.select = def.select.map((s) => normalize(s))
     return def
+  } else if (def.column && def.select && def.unionAll) {
+    def.type = 'select'
+    def.select.unshift({ column: def.column })
+    def.select.unshift({ unionAll: def.unionAll })
+    delete def.column
+    delete def.unionAll
+
+    def.select = def.select.map((s) => normalize(s))
+    return def
   } else if (def.unionAll && def.select) {
     def.type = 'select'
     def.select.unshift({ unionAll: def.unionAll })
@@ -231,6 +240,7 @@ let fns = {
 }
 
 function do_eval(select_expr, node, def) {
+  console.log('do_eval', 'select_expr', select_expr, 'node', node, 'def', def)
   let f = fns[select_expr.type] || fns['unknown']
   return f(select_expr, node, def)
 }
