@@ -26,7 +26,7 @@ jobs:
         run: bun run validate
       - name: Run tests
         working-directory: sof-js
-        run: bun test
+        run: bun run test
         continue-on-error: true
       - name: Build test report
         working-directory: test_report
