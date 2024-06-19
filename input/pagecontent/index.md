@@ -5,7 +5,7 @@ can [still be found here](https://github.com/FHIR/sql-on-fhir-archived)._
 
 The [FHIR®](https://hl7.org/fhir) standard is a great fit for RESTful and
 JSON-based systems, helping make healthcare data liquidity real. This spec aims
-to take FHIR usage a step futher, making FHIR work well with familiar and
+to take FHIR usage a step further, making FHIR work well with familiar and
 efficient SQL engines and surrounding ecosystems.
 
 We do this by creating simple, tabular *views* of the underlying FHIR data that
@@ -164,7 +164,7 @@ Example view runners may include:
 
 The output of many runners will have technology-specific schemas, such as
 database table definitions or schema for structured files like Parquet. This
-will be runner- and technology- specific, but runner implementaitons SHOULD
+will be runner- and technology- specific, but runner implementations SHOULD
 offer a way to compute that schema from a ViewDefinition when applicable.
 
 For example, a runner that produces a table in a database system could return
