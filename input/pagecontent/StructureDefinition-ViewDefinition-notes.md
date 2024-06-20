@@ -128,9 +128,9 @@ A view of  *Observation* resources would then have its own row key and a foreign
         "name": "id"
       },
       {
-        // The 'Patient' parameter is optional, but ensures the returned value
+        // The `Patient` parameter is optional, but ensures the returned value
         // will either be a patient row key or null.
-        "path": "subject.getReferenceKey('Patient')",
+        "path": "subject.getReferenceKey(Patient)",
         "name": "patient_id"
       }
     ]

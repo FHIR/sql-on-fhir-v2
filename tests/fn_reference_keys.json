@@ -1,6 +1,7 @@
 {
   "title": "fn_reference_keys",
   "description": "TBD",
+  "fhirVersion": ["5.0.0", "4.0.1", "3.0.2"],
   "resources": [
     {
       "resourceType": "Patient",
@@ -47,7 +48,7 @@
           "key_equal_ref": true
         },
         {
-          "key_equal_ref": false
+          "key_equal_ref": null
         }
       ]
     },
@@ -72,7 +73,7 @@
           "key_equal_ref": true
         },
         {
-          "key_equal_ref": false
+          "key_equal_ref": null
         }
       ]
     },
@@ -91,7 +92,7 @@
               {
                 "path": "getResourceKey() = link.other.getReferenceKey(Observation)",
                 "name": "key_equal_ref",
-                "type": "string"
+                "type": "boolean"
               }
             ]
           }
