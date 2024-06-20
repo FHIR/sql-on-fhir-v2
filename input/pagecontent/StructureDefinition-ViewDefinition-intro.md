@@ -9,7 +9,7 @@ logical model is described below.
 
 Each ViewDefinition instance is tied to a single
 FHIR [resource type](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.resource),
-such as *Patient* or *Observation*. It will then create zero or more rows for
+such as Patient or Observation. It will then create zero or more rows for
 each resource
 instance. [Examples](StructureDefinition-ViewDefinition-examples.html) include
 simple tabular views of patients, unrolling patient addresses into an address
