@@ -493,3 +493,18 @@ See [Processing Algorithm](implementer_guidance.html#processing-model) for a des
 process a FHIR resource as input for a `ViewDefinition`. Implementations do not
 need to follow this algorithm directly, but their outputs should be consistent
 with what this model produces.
+
+## Generating Schemas
+
+The output format produced by a View Runner will be technology-specific, such as
+a SQL database query or a structured file like Parquet. View Runner
+implementations SHOULD offer a way to compute the output schema from a
+ViewDefinition when applicable.
+
+For example, a runner that produces a table in a database system could return
+a "CREATE TABLE" or "CREATE VIEW" statement based on the ViewDefinition,
+allowing the system to define tables prior to populating them by evaluating the
+views over data.
+
+This would not apply to outputs that do not have a way of specifying their
+schema, like CSV files.

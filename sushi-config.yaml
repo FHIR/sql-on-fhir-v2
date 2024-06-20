@@ -71,7 +71,6 @@ parameters:
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 menu:
   Overview: index.html
-  Purpose: purpose.html
   View Definition: StructureDefinition-ViewDefinition.html
   Implementer Guidance: implementer_guidance.html
   Artifacts: artifacts.html
