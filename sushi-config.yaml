@@ -72,7 +72,6 @@ parameters:
 menu:
   Overview: index.html
   View Definition: StructureDefinition-ViewDefinition.html
-  Implementer Guidance: implementer_guidance.html
   Artifacts: artifacts.html
   Contributing: contributing.html
 
