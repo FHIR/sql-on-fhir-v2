@@ -62,7 +62,6 @@ name as the table name:
 | 1  | female | Malvina Gerda | Vicario     |
 | 2  | male   | Yolotzin Adel | Bristow     |
 | 3  | other  | Jin Gomer     | Aarens      |
-
 {:.table-data}
 
 Such tabular views can be created for any FHIR resource,
