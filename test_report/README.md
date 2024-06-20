@@ -5,11 +5,11 @@
 Install the dependencies...
 
 ```bash
-cd svelte-app
 npm install
 ```
 
-...then start [Rollup](https://rollupjs.org):
+...then start [Rollup](https://rollupjs.org) (you need to have
+[Bun](https://bun.sh/docs/installation) installed as well) :
 
 ```bash
 npm run dev

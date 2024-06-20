@@ -64,6 +64,31 @@ Such tabular views can be created for any FHIR resource, with
 [View Definition page](StructureDefinition-ViewDefinition.html) for the full definition
 of the above structure.
 
+### View Definition non-goals
+View Definitions are intentionally constrained to a narrow set of functionality to make them easily
+and broadly implementable, while deferring higher-level capabilities to database engines or processing
+pipelines that solve those problems well. Therefore it's important to know what View Definitions
+do *not* do, by design:
+
+#### A single View Definition will not join different resources in any way
+A single View Definition defines a tabular view of exactly one resource type, like a view of `Patient`
+or a view of `Condition` resources. Any joins between resources are exclusively in downstream systems,
+like between database tables computed by view definitions. This makes it possible for a wide set of
+FHIR infrastructure to implement this spec, and lets database engines or processing pipelines join as
+needed.
+
+#### View Definitions do not have sorting, aggregation, or limit capabilities
+View Definitions define only the logical schema of views, and therefore defer sorting, aggergation or limit
+operations to engines, along with cross-view joins. *View Runners* (described below) or future FHIR
+server operations may accept limits or sort columns as part of their operations, so users at runtime can
+specify what they need dynamically and independently of the definition of the view itself.
+
+#### View Definitions are not aware of output formats
+View Definitions themselves are independent of any tech stack and therefore unaware of the output format.
+*View Runners* are the component that applies definitions to a particular stack, producing output like
+a database table, Parquet file, CSV, or another format specific to the runner.
+
+
 ### System Layers
 
 The [View Definition](StructureDefinition-ViewDefinition.html) is the central element of this
@@ -116,6 +141,18 @@ Example view runners may include:
 * A runner that creates a virtual, tabular view in an analytic database
 * A runner that queries FHIR JSON directly and creates a table in a web application
 * A runner that loads data directly into a notebook or other data analysis tool
+
+#### Generating Schemas
+The output of many runners will have technology-specific schemas, such as database table
+definitions or schema for structured files like Parquet. This will be runner- and technology-
+specific, but runner implementaitons SHOULD offer a way to compute that schema from a ViewDefinition
+when applicable.
+
+For example, a runner that produces a table in a database system could return a "CREATE TABLE" or
+"CREATE VIEW" statement based on the ViewDefinition, allowing the system to define tables prior to 
+populating them by evaluating the views over data.
+
+This would not apply to outputs that do not have common a schema specification, like CSV files. 
 
 ### The Analytics Layer
 
