@@ -764,7 +764,7 @@
               },
               {
                 "name": "bool",
-                "path": "value.ofType(Time) = %t",
+                "path": "value.ofType(time) = %t",
                 "type": "boolean"
               }
             ]
