@@ -429,7 +429,7 @@
         "constant": [
           {
             "name": "id_time",
-            "valueDate": "2016-11-12"
+            "valueDateTime": "2016-11-12"
           }
         ],
         "select": [
@@ -442,7 +442,7 @@
               },
               {
                 "name": "bool",
-                "path": "identified.ofType(DateTime) = %id_time",
+                "path": "identified.ofType(dateTime) = %id_time",
                 "type": "boolean"
               }
             ]
