@@ -641,7 +641,7 @@
         "constant": [
           {
             "name": "oid",
-            "valueUrl": "urn:oid:1.0"
+            "valueOid": "urn:oid:1.0"
           }
         ],
         "select": [
