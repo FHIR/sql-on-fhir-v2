@@ -603,7 +603,7 @@
               },
               {
                 "name": "bool",
-                "path": "effective.ofType(Instant) = %eff",
+                "path": "effective.ofType(instant) = %eff",
                 "type": "boolean"
               }
             ]
