@@ -85,11 +85,6 @@
           {
             "column": [
               {
-                "path": "link.other.getReferenceKey(Observation)",
-                "name": "referenceKey",
-                "type": "string"
-              },
-              {
                 "path": "getResourceKey() = link.other.getReferenceKey(Observation)",
                 "name": "key_equal_ref",
                 "type": "boolean"
@@ -100,11 +95,9 @@
       },
       "expect": [
         {
-          "referenceKey": null,
           "key_equal_ref": null
         },
         {
-          "referenceKey": null,
           "key_equal_ref": null
         }
       ]
