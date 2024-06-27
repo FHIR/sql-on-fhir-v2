@@ -33,5 +33,11 @@
     "url": "https://github.com/ncqa-org/fhir-analytics/tree/main",
     "description": "TBD",
     "testResultsUrl": "https://raw.githubusercontent.com/ncqa-org/fhir-analytics/fca5934a937ac399237391d28a2dfeac70be8565/test_results.json"
+  },
+  {
+    "name": "Medplum",
+    "url": "https://www.medplum.com/",
+    "description": "Medplum JavaScript/TypeScript SDK includes a WIP SQL on FHIR implementation. The SDK is open source and available at https://github.com/medplum/medplum",
+    "testResultsUrl": "https://raw.githubusercontent.com/medplum/medplum/main/packages/core/src/sql-on-fhir/test_report.json"
   }
 ]
