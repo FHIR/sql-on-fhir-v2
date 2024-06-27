@@ -47,7 +47,7 @@ Usage:  #example
   * column[+]
     * path = "gender"
     * name = "gender"
-    * type = "string"
+    * type = "code"
 * select[+]
   * forEach = "name.where(use = 'official').first()"
   * column[+]

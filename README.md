@@ -227,6 +227,8 @@ publicly accessible HTTP server enables broader visibility and verification of
 your implementations compliance with the specifications. This guide outlines
 the process of publishing your test report and registering your implementation.
 
+You can validate the structure of your test report file using the [test report JSON schema](test_report/test-report.schema.json).
+
 ## Publishing the Test Report
 
 1. **Choose a Hosting Service**: Select an HTTP server or a cloud storage

@@ -7,7 +7,8 @@
   "scripts": {
     "fmt": "prettier -w ../tests",
     "check-fmt": "prettier -c ../tests",
-    "validate": "ajv -s ../tests.schema.json -d \"../tests/*.json\""
+    "validate": "ajv -s ../tests.schema.json -d \"../tests/*.json\"",
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
   },
   "author": "niquola,jmandel",
   "license": "ISC",
@@ -22,5 +23,9 @@
     "tabWidth": 2,
     "semi": false,
     "singleQuote": true
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "jest": "^29.7.0"
   }
 }
