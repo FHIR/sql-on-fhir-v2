@@ -354,6 +354,132 @@
           "s_id": "pt3"
         }
       ]
+    },
+    {
+      "title": "column ordering",
+      "view": {
+        "resource": "Patient",
+        "select": [
+          {
+            "column": [
+              {
+                "path": "'A'",
+                "name": "a",
+                "type": "string"
+              },
+              {
+                "path": "'B'",
+                "name": "b",
+                "type": "string"
+              }
+            ],
+            "select": [
+              {
+                "forEach": "name",
+                "column": [
+                  {
+                    "path": "'C'",
+                    "name": "c",
+                    "type": "string"
+                  },
+                  {
+                    "path": "'D'",
+                    "name": "d",
+                    "type": "string"
+                  }
+                ]
+              }
+            ],
+            "unionAll": [
+              {
+                "column": [
+                  {
+                    "path": "'E1'",
+                    "name": "e",
+                    "type": "string"
+                  },
+                  {
+                    "path": "'F1'",
+                    "name": "f",
+                    "type": "string"
+                  }
+                ]
+              },
+              {
+                "column": [
+                  {
+                    "path": "'E2'",
+                    "name": "e",
+                    "type": "string"
+                  },
+                  {
+                    "path": "'F2'",
+                    "name": "f",
+                    "type": "string"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "column": [
+              {
+                "path": "'G'",
+                "name": "g",
+                "type": "string"
+              },
+              {
+                "path": "'H'",
+                "name": "h",
+                "type": "string"
+              }
+            ]
+          }
+        ]
+      },
+      "expectColumns": ["a", "b", "c", "d", "e", "f", "g", "h"],
+      "expect": [
+        {
+          "a": "A",
+          "b": "B",
+          "c": "C",
+          "d": "D",
+          "e": "E1",
+          "f": "F1",
+          "g": "G",
+          "h": "H"
+        },
+        {
+          "a": "A",
+          "b": "B",
+          "c": "C",
+          "d": "D",
+          "e": "E2",
+          "f": "F2",
+          "g": "G",
+          "h": "H"
+        },
+        {
+          "a": "A",
+          "b": "B",
+          "c": "C",
+          "d": "D",
+          "e": "E1",
+          "f": "F1",
+          "g": "G",
+          "h": "H"
+        },
+        {
+          "a": "A",
+          "b": "B",
+          "c": "C",
+          "d": "D",
+          "e": "E2",
+          "f": "F2",
+          "g": "G",
+          "h": "H"
+        }
+      ]
     }
   ]
 }

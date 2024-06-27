@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { expect, test, describe, afterAll } from 'bun:test'
+import { afterAll, describe, expect, test } from '@jest/globals'
 import { evaluate } from '../src/index.js'
 
 function isEqual(a, b) {
@@ -22,8 +22,12 @@ function canonicalize(arr) {
     const keysB = Object.keys(b).sort()
 
     for (let i = 0; i < Math.min(keysA.length, keysB.length); i++) {
-      if (a[keysA[i]] < b[keysB[i]]) return -1
-      if (a[keysA[i]] > b[keysB[i]]) return 1
+      if (a[keysA[i]] < b[keysB[i]]) {
+        return -1
+      }
+      if (a[keysA[i]] > b[keysB[i]]) {
+        return 1
+      }
     }
 
     return keysA.length - keysB.length // if one has more keys than the other
@@ -78,15 +82,28 @@ function arraysMatch(arr1, arr2) {
 }
 
 function runThrowingTest(test, resources) {
+  let report = test
+  report.name = test.title
+  delete test.title
+
   try {
     const result = evaluate(test.view, resources)
-    return {
-      passed: false,
-      expectedFail: true,
+    report = {
+      ...report,
+      result: {
+        passed: false,
+      },
       actual: result,
     }
+    delete report.title
+    return report
   } catch (e) {
-    return { passed: true }
+    return {
+      ...report,
+      result: {
+        passed: true,
+      },
+    }
   }
 }
 
@@ -94,42 +111,56 @@ function runTest(test, resources) {
   if (test.expectError) {
     return runThrowingTest(test)
   }
+  let report = test
+  report.name = test.title
+  delete test.title
 
   try {
     const result = evaluate(test.view, resources)
 
     if (test.expectCount) {
       const passed = result.length === test.expectCount
-      return passed
-        ? { passed }
-        : {
-            passed,
-            expectedCount: test.expectCount,
-            actual: result.length,
-          }
-    } else {
+      report = {
+        ...report,
+        result: { passed },
+        actualCount: result.length,
+      }
+      if (!report.passed) {
+        return report
+      }
+    }
+
+    if (test.expect) {
       const match = arraysMatch(result, test.expect)
-      return {
-        passed: match.passed,
-        expected: test.expect,
+      report = {
+        ...report,
+        result: {
+          passed: match.passed,
+        },
         actual: result,
         message: match.message,
       }
+      return report
     }
   } catch (e) {
     return {
-      passed: null,
+      ...report,
+      result: {
+        passed: false,
+      },
       message: e.toString(),
     }
   }
+
+  throw new Error('No expectation provided')
 }
 
 const testDirectory = '../tests/'
 const files = fs.readdirSync(testDirectory)
-const testResult = {}
+global.testResults = {}
 
 afterAll(() => {
-  fs.writeFileSync('../test_report/public/test-results.json', JSON.stringify(testResult))
+  fs.writeFileSync('../test_report/public/test-results.json', JSON.stringify(global.testResults))
 })
 
 files.forEach((f) => {
@@ -137,29 +168,17 @@ files.forEach((f) => {
   const resources = testGroup.resources
 
   describe(f, () => {
-    testResult[f] = { tests: [] }
-
+    global.testResults[f] = { tests: [] }
     testGroup.tests.forEach((testCase) => {
-      const view = testCase.view
-
-      if (testCase.expect !== undefined) {
-        test(testCase.title, () => {
-          const res = evaluate(view, resources)
-          expect(res).toEqual(testCase.expect)
-
-          testResult[f].tests.push({ result: runTest(testCase, resources)})
-        })
-      } else if (testCase.expectError !== undefined) {
-        test(testCase.title, () => {
-          expect(() => evaluate(view, resources)).toThrow()
-        })
-
-        testResult[f].tests.push({ result: runThrowingTest(testCase, resources)})
-      } else if (testCase.expectCount !== undefined) {
-        throw new Error('expectCount is not implemented yet')
-      } else {
-        throw new Error(`'${testCase.title}' test has no known expectation`)
-      }
+      test(testCase.title, async () => {
+        const report = runTest(testCase, resources)
+        if (!report.result.passed) {
+          console.error('Test failed: ', report)
+        }
+        global.testResults[f].tests.push(report)
+        expect(report.result.passed).toBe(true)
+        return report
+      })
     })
   })
 })
