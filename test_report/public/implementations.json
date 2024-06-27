@@ -24,7 +24,7 @@
     "testResultsUrl": "https://raw.githubusercontent.com/google/fhir-data-pipes/master/pipelines/common/src/test/resources/sql-on-fhir-v2-test-result.json"
   },
   {
-    "name": "Grahame Impl",
+    "name": "IG Builder (HL7)",
     "url": "TBD",
     "description": "TBD"
   },
