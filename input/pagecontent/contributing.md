@@ -1,18 +1,27 @@
-Contributors and early users are welcome! Here are some places to start:
+Contributors are welcome! Here are some places to start:
 
-* Contribute to [github discussion](https://github.com/FHIR/sql-on-fhir-v2/discussions)
+* Join the discussion on the [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
 * Join us on weekly meetings, Tuesday 3pm US Eastern time, Zoom links posted in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
-* Ask any questions in [FHIR chat](https://chat.fhir.org/#narrow/stream/179219-analytics-on-FHIR)
+* Contribute issues or pull requests on [GitHub](https://github.com/FHIR/sql-on-fhir-v2)
 
 ### Credits
+
 * Nikolai Ryzhikov @niquola (Health Samurai)
+* Ryan Brush @rbrush (Google)
+* John Grimes @johngrimes (CSIRO)
+* Josh Mandel @jmandel (Microsoft)
 * Dan Gottlieb @gotdan (Central Square Solutions)
+* Arjun Sanyal @arjun (NCQA)
+* Igor Kislitsyn @Yngwarr (Health Samurai)
+* Maxim Putinstev @mput (Health Samurai)
+* Bashir Sadjad @bashir2 (Google)
+* Alex Walley @awalley-ncqa (NCQA)
 * Vadim Peretokin @vadi2 (Philips)
 * Marat Surmashev @aitem (Health Samurai)
-* Ryan Brush @rbrush (Google)
 * Brian Kaney @bkaney (Vermonster)
-* Josh Mandel @jmandel (Microsoft)
-* John Grimes @johngrimes (CSIRO)
+* Carl Anderson @barabo (Mayo Clinic)
+* Joel Montavon @joelmontavon (Pharmacy Quality Alliance)
+* Daniel Kapitan @dkapitan (PharmAccess Foundation)
 * FHIR Community - https://chat.fhir.org/
 
 Work is sponsored and supported by:

@@ -9,7 +9,7 @@ name: SQLonFHIR
 title: SQL on FHIR
 # description: Example Implementation Guide for getting started with SUSHI
 status: draft # draft | active | retired | unknown
-version: 0.0.1-pre
+version: 2.0.0-pre
 fhirVersion: 5.0.0 # https://www.hl7.org/fhir/valueset-FHIR-version.html
 copyrightYear: 2023+
 releaseLabel: ci-build # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
@@ -58,7 +58,7 @@ publisher:
 parameters:
   excludettl: true
   path-test: tests
-  
+
 #   validation: [allow-any-extensions, no-broken-links]
 #
 # ╭────────────────────────────────────────────menu.xml────────────────────────────────────────────╮
@@ -71,9 +71,7 @@ parameters:
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 menu:
   Overview: index.html
-  Purpose: purpose.html
   View Definition: StructureDefinition-ViewDefinition.html
-  Implementer Guidance: implementer_guidance.html
   Artifacts: artifacts.html
   Contributing: contributing.html
 

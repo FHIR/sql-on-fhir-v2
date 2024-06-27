@@ -21,7 +21,7 @@ Expression: "(forEach | forEachOrNull).count() <= 1"
 Logical: ViewDefinition
 Title: "View Definition"
 Description: """
-View definitions represent a tabular projection of a FHIR resource, where the columns and inclusion 
+A ViewDefinition represents a tabular projection of a FHIR resource, where the columns and inclusion 
 criteria are defined by FHIRPath expressions. 
 """
 * url 0..1 uri "Canonical identifier for this view definition, represented as a URI (globally unique)"
