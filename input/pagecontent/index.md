@@ -112,7 +112,7 @@ pipelines join as needed.
 #### View Definitions do not have sorting, aggregation, or limit capabilities
 
 View Definitions define only the logical schema of views, and therefore defer
-sorting, aggergation or limit operations to engines, along with cross-view
+sorting, aggregation or limit operations to engines, along with cross-view
 joins. *View Runners* (described below) or future FHIR server operations may
 accept limits or sort columns as part of their operations, so users at runtime
 can specify what they need dynamically and independently of the definition of
@@ -185,6 +185,10 @@ their choice. This specification purposefully does not define what these are,
 but common use cases may be SQL queries by consuming applications,
 dataframe-based data science tools in Python or R, or integration with business
 intelligence tools.
+
+### Glossary
+
+See the [Glossary](glossary.html) for the definitions of terms used in this specification.
 
 ### License
 
