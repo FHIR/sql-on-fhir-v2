@@ -19,13 +19,20 @@ queries performed in this layer.
 ### data layer
 
 The optional first conceptual layer described by this specification. The
-purpose of this layer is to losslessly "annotate" FHIR data to improve the
-ease of use or performance of queries performed on the tabularized FHIR data. 
+purpose of this layer is to provide access to a lossless representation of the
+FHIR data for onward data transformation.
+
+Examples of this layer include FHIR NDJSON files, FHIR resources held within a
+JSON-typed column within a relational database, or Parquet files containing full
+representations of FHIR resources.
+
+The data may optionally be "annotated" to improve the ease of use or performance
+of these transformation queries.
 
 Examples of possible annotations include:
 - The lossless extraction of resource ids in references to improve join
 performance
-- The normalization of FHIR dates (e.g. "1986" ) to ANSI SQL TIMESTAMPs to
+- The normalization of FHIR dates (e.g. "1986") to ANSI SQL TIMESTAMPs to
 simplify queries
 - The creation of hash-based resource ids to avoid conflicts when data from
 multiple sources are combined
@@ -46,7 +53,7 @@ also refer to R or Pandas "dataframe" and similar abstractions.
 ### tabular views
 
 FHIR data projected into a tabular form. Note there is no requirement that the
-data be persisted or materialized i.e. the table may be dynamic and/or
+data be persisted or materialized, i.e. the table may be dynamic and/or
 ephemeral.
 
 
@@ -88,7 +95,7 @@ The second "layer" in the conceptual architecture and the central focus of
 this specification. The purpose of the "view layer" is to define and transform
 FHIR data into the desired tabular form.
 
-The "view layer" is composed of sets of two main components:"view definitions"
+The "view layer" is composed of sets of two main components: "view definitions"
 and "view runners".
 
 
@@ -97,7 +104,7 @@ and "view runners".
 System-specific tools or libraries that apply view definitions to the "data
 layer" creating the tabular views of the "analytics layer".
 
-Example view runners may include: A runner that creates a virtual, tabular
-view in an analytic database A runner that queries FHIR JSON directly and
-creates a table in a web application A runner that loads data directly into a
-notebook or other data analysis tool
+Example view runners may include:
+- A runner that creates a virtual, tabular view in an analytic database
+- A runner that queries FHIR JSON directly and creates a table in a web application
+- A runner that loads data directly into a notebook or other data analysis tool
