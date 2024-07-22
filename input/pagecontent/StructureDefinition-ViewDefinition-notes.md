@@ -15,14 +15,14 @@ capabilities:
 * [exists](https://hl7.org/fhirpath/#existscriteria-expression-boolean) function
 * [empty](https://hl7.org/fhirpath/#empty-boolean) function
 * [extension](https://hl7.org/fhir/R4/fhirpath.html#functions) function
-* [join](https://build.fhir.org/ig/HL7/FHIRPath/#joinseparator-string-string)
-  function<sup>*</sup>
+* *[join](https://build.fhir.org/ig/HL7/FHIRPath/#joinseparator-string-string)
+  function*<sup>*</sup>
 * [ofType](https://hl7.org/fhirpath/#oftypetype-type-specifier-collection)
   function
 * [first](https://hl7.org/fhirpath/#first-collection) function
-* [lowBoundary](https://build.fhir.org/ig/HL7/FHIRPath/#lowboundaryprecision-integer-decimal--date--datetime--time)
+* *[lowBoundary](https://build.fhir.org/ig/HL7/FHIRPath/#lowboundaryprecision-integer-decimal--date--datetime--time)
   and [highBoundary](https://build.fhir.org/ig/HL7/FHIRPath/#highboundaryprecision-integer-decimal--date--datetime--time)
-  functions (including on [Period](https://hl7.org/fhir/datatypes.html#Period))<sup>*</sup>
+  functions (including on [Period](https://hl7.org/fhir/datatypes.html#Period))*<sup>*</sup>
 * Boolean
   operators: [and](https://hl7.org/fhirpath/#and), [or](https://hl7.org/fhirpath/#or), [not](https://hl7.org/fhirpath/#not-boolean)
 * Math
@@ -31,8 +31,8 @@ capabilities:
   operators: [equals (=)](https://hl7.org/fhirpath/#equals), [not equals (!=)](https://hl7.org/fhirpath/#not-equals), [greater than (>)](https://hl7.org/fhirpath/#greater-than), [less or equal (<=)](https://hl7.org/fhirpath/#less-or-equal)
 * [Indexer expressions](https://hl7.org/fhirpath/#index-integer-collection)
 
-<sup>*</sup> Not yet part of the normative [FHIRPath](https://hl7.org/fhirpath/)
-release, currently in draft.
+<sup>*</sup> *Not yet part of the normative [FHIRPath](https://hl7.org/fhirpath/)
+release, currently in draft.*
 
 ### Optional FHIRPath Functions
 
