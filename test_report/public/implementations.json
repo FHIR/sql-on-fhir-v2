@@ -39,5 +39,11 @@
     "url": "https://www.medplum.com/",
     "description": "Medplum JavaScript/TypeScript SDK includes a WIP SQL on FHIR implementation. The SDK is open source and available at https://github.com/medplum/medplum",
     "testResultsUrl": "https://raw.githubusercontent.com/medplum/medplum/main/packages/core/src/sql-on-fhir/test_report.json"
+  },
+  {
+    "name": "Safhire",
+    "url": "https://github.com/kayyagari/safhire",
+    "description": "Safhire is a standalone analytics engine for Healthcare data in FHIR format",
+    "testResultsUrl": "https://github.com/kayyagari/safhire/blob/master/test_report.json"
   }
 ]
