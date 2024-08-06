@@ -20,11 +20,13 @@
   "tests": [
     {
       "title": "empty",
+      "tags": ["core"],
       "view": {},
       "expectError": true
     },
     {
       "title": "missing resource",
+      "tags": ["core"],
       "view": {
         "select": [
           {
@@ -42,6 +44,7 @@
     },
     {
       "title": "wrong fhirpath",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -55,6 +58,7 @@
     },
     {
       "title": "wrong type in forEach",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -68,6 +72,7 @@
     },
     {
       "title": "where with path resolving to not boolean",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "status": "active",

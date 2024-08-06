@@ -29,6 +29,7 @@
   "tests": [
     {
       "title": "getReferenceKey result matches getResourceKey without type specifier",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -54,6 +55,7 @@
     },
     {
       "title": "getReferenceKey result matches getResourceKey with right type specifier",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -79,6 +81,7 @@
     },
     {
       "title": "getReferenceKey result matches getResourceKey with wrong type specifier",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "select": [
