@@ -294,6 +294,7 @@
   "tests": [
     {
       "title": "base64Binary",
+      "tags": ["core"],
       "view": {
         "resource": "Device",
         "status": "active",
@@ -337,6 +338,7 @@
     },
     {
       "title": "code",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -380,6 +382,7 @@
     },
     {
       "title": "date",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -423,6 +426,7 @@
     },
     {
       "title": "dateTime",
+      "tags": ["core"],
       "view": {
         "resource": "DetectedIssue",
         "status": "active",
@@ -466,6 +470,7 @@
     },
     {
       "title": "decimal",
+      "tags": ["core"],
       "view": {
         "resource": "Observation",
         "status": "active",
@@ -517,6 +522,7 @@
     },
     {
       "title": "id",
+      "tags": ["core"],
       "view": {
         "resource": "Task",
         "status": "active",
@@ -584,6 +590,7 @@
     },
     {
       "title": "instant",
+      "tags": ["core"],
       "view": {
         "resource": "Observation",
         "status": "active",
@@ -635,6 +642,7 @@
     },
     {
       "title": "oid",
+      "tags": ["core"],
       "view": {
         "resource": "Task",
         "status": "active",
@@ -702,6 +710,7 @@
     },
     {
       "title": "positiveInt",
+      "tags": ["core"],
       "view": {
         "resource": "ClaimResponse",
         "status": "active",
@@ -745,6 +754,7 @@
     },
     {
       "title": "time",
+      "tags": ["core"],
       "view": {
         "resource": "Observation",
         "status": "active",
@@ -796,6 +806,7 @@
     },
     {
       "title": "unsignedInt",
+      "tags": ["core"],
       "view": {
         "resource": "ImagingStudy",
         "status": "active",
@@ -839,6 +850,7 @@
     },
     {
       "title": "uri",
+      "tags": ["core"],
       "view": {
         "resource": "Measure",
         "status": "active",
@@ -882,6 +894,7 @@
     },
     {
       "title": "url",
+      "tags": ["core"],
       "view": {
         "resource": "Task",
         "status": "active",
@@ -949,6 +962,7 @@
     },
     {
       "title": "uuid",
+      "tags": ["core"],
       "view": {
         "resource": "Task",
         "status": "active",

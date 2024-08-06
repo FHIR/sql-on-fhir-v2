@@ -21,6 +21,7 @@
   "tests": [
     {
       "title": "empty names",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "status": "active",

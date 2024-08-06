@@ -48,6 +48,7 @@
   "tests": [
     {
       "title": "simple where path with result",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -75,6 +76,7 @@
     },
     {
       "title": "where path with no results",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -98,6 +100,7 @@
     },
     {
       "title": "where path with greater than inequality",
+      "tags": ["core"],
       "view": {
         "resource": "Observation",
         "select": [
@@ -125,6 +128,7 @@
     },
     {
       "title": "where path with less than inequality",
+      "tags": ["core"],
       "view": {
         "resource": "Observation",
         "select": [
@@ -152,6 +156,7 @@
     },
     {
       "title": "multiple where paths",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -182,6 +187,7 @@
     },
     {
       "title": "where path with an 'and' connector",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -209,6 +215,7 @@
     },
     {
       "title": "where path with an 'or' connector",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -239,6 +246,7 @@
     },
     {
       "title": "where path that evaluates to true when empty",
+      "tags": ["core"],
       "view": {
         "resource": "Patient",
         "select": [
