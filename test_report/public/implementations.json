@@ -44,6 +44,6 @@
     "name": "Safhire",
     "url": "https://github.com/kayyagari/safhire",
     "description": "Safhire is a standalone analytics engine for Healthcare data in FHIR format",
-    "testResultsUrl": "https://github.com/kayyagari/safhire/blob/master/test_report.json"
+    "testResultsUrl": "https://raw.githubusercontent.com/kayyagari/safhire/master/test_report.json"
   }
 ]
