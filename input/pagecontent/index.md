@@ -171,16 +171,19 @@ View Runners will be specific to the data layer they use. Each data layer may
 have one or more corresponding view runners, but a given View Definition can be
 run by many runners over many data layers.
 
-Example view runners may include:
+There are two popular categories of runners:
+* **In-memory runner** consume resources, flatten, and output results into a stream, a file or a table.
+You can imagine the ETL pipeline from FHIR Bulk export ndjson files transformed into parquet files.
+* **In-database runner** translate ViewDefinition into SQL query over an FHIR-native database.
+In that case the view can be a real database view or table. In-database runner could be way more efficient than in-memory
+,speed and storage resources but much more complex for implementers.
 
-* A runner that creates a virtual, tabular view in an analytic database.
-* A runner that queries FHIR JSON directly and creates a table in a web
-  application.
-* A runner that loads data directly into a notebook or other data analysis tool.
+![image](viewdef-runners.jpeg)
+
 
 #### The Analytics Layer
 
-Users must be able to easily leverage the above views with the analytic tools of 
+Users must be able to easily leverage the above views with the analytic tools of
 their choice. This specification purposefully does not define what these are,
 but common use cases may be SQL queries by consuming applications,
 dataframe-based data science tools in Python or R, or integration with business
