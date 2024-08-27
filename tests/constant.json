@@ -36,7 +36,7 @@
   "tests": [
     {
       "title": "constant in path",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -76,7 +76,7 @@
     },
     {
       "title": "constant in forEach",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -107,7 +107,7 @@
     },
     {
       "title": "constant in where element",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -142,7 +142,7 @@
     },
     {
       "title": "constant in unionAll",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -197,7 +197,7 @@
     },
     {
       "title": "integer constant",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -237,7 +237,7 @@
     },
     {
       "title": "boolean constant",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -272,7 +272,7 @@
     },
     {
       "title": "accessing an undefined constant",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -299,7 +299,7 @@
     },
     {
       "title": "incorrect constant definition",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",

@@ -47,7 +47,7 @@
   "tests": [
     {
       "title": "one element",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -77,7 +77,7 @@
     },
     {
       "title": "two elements + first",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -107,7 +107,7 @@
     },
     {
       "title": "collection",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -138,7 +138,7 @@
     },
     {
       "title": "index[0]",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -168,7 +168,7 @@
     },
     {
       "title": "index[1]",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -198,7 +198,7 @@
     },
     {
       "title": "out of index",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -228,7 +228,7 @@
     },
     {
       "title": "where",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -258,7 +258,7 @@
     },
     {
       "title": "exists",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -296,7 +296,7 @@
     },
     {
       "title": "nested exists",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -334,7 +334,7 @@
     },
     {
       "title": "string join",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -372,7 +372,7 @@
     },
     {
       "title": "string join: default separator",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",

@@ -48,7 +48,7 @@
   "tests": [
     {
       "title": "simple where path with result",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -76,7 +76,7 @@
     },
     {
       "title": "where path with no results",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -100,7 +100,7 @@
     },
     {
       "title": "where path with greater than inequality",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Observation",
         "select": [
@@ -128,7 +128,7 @@
     },
     {
       "title": "where path with less than inequality",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Observation",
         "select": [
@@ -156,7 +156,7 @@
     },
     {
       "title": "multiple where paths",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -187,7 +187,7 @@
     },
     {
       "title": "where path with an 'and' connector",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -215,7 +215,7 @@
     },
     {
       "title": "where path with an 'or' connector",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -246,7 +246,7 @@
     },
     {
       "title": "where path that evaluates to true when empty",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "select": [

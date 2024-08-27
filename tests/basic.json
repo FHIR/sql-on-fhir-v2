@@ -31,7 +31,7 @@
   "tests": [
     {
       "title": "basic attribute",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -61,7 +61,7 @@
     },
     {
       "title": "boolean attribute with false",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -99,7 +99,7 @@
     },
     {
       "title": "two columns",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -137,7 +137,7 @@
     },
     {
       "title": "two selects with columns",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -179,7 +179,7 @@
     },
     {
       "title": "where - 1",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -208,7 +208,7 @@
     },
     {
       "title": "where - 2",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -237,7 +237,7 @@
     },
     {
       "title": "where returns non-boolean for some cases",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -266,7 +266,7 @@
     },
     {
       "title": "where as expr - 1",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -295,7 +295,7 @@
     },
     {
       "title": "where as expr - 2",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -324,7 +324,7 @@
     },
     {
       "title": "select & column",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -367,7 +367,7 @@
     },
     {
       "title": "column ordering",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "select": [

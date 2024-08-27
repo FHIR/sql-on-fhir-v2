@@ -23,7 +23,7 @@
   "tests": [
     {
       "title": "add observation",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Observation",
         "status": "active",

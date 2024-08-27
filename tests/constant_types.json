@@ -294,7 +294,7 @@
   "tests": [
     {
       "title": "base64Binary",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Device",
         "status": "active",
@@ -338,7 +338,7 @@
     },
     {
       "title": "code",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -382,7 +382,7 @@
     },
     {
       "title": "date",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -426,7 +426,7 @@
     },
     {
       "title": "dateTime",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "DetectedIssue",
         "status": "active",
@@ -470,7 +470,7 @@
     },
     {
       "title": "decimal",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Observation",
         "status": "active",
@@ -522,7 +522,7 @@
     },
     {
       "title": "id",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Task",
         "status": "active",
@@ -590,7 +590,7 @@
     },
     {
       "title": "instant",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Observation",
         "status": "active",
@@ -642,7 +642,7 @@
     },
     {
       "title": "oid",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Task",
         "status": "active",
@@ -710,7 +710,7 @@
     },
     {
       "title": "positiveInt",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "ClaimResponse",
         "status": "active",
@@ -754,7 +754,7 @@
     },
     {
       "title": "time",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Observation",
         "status": "active",
@@ -806,7 +806,7 @@
     },
     {
       "title": "unsignedInt",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "ImagingStudy",
         "status": "active",
@@ -850,7 +850,7 @@
     },
     {
       "title": "uri",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Measure",
         "status": "active",
@@ -894,7 +894,7 @@
     },
     {
       "title": "url",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Task",
         "status": "active",
@@ -962,7 +962,7 @@
     },
     {
       "title": "uuid",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Task",
         "status": "active",

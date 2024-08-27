@@ -29,7 +29,7 @@
   "tests": [
     {
       "title": "table level first()",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -52,7 +52,7 @@
     },
     {
       "title": "table and field level first()",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "select": [

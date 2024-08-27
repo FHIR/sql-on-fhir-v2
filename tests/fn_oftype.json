@@ -33,7 +33,7 @@
   "tests": [
     {
       "title": "select string values",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Observation",
         "status": "active",
@@ -71,7 +71,7 @@
     },
     {
       "title": "select integer values",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Observation",
         "status": "active",

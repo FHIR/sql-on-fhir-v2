@@ -105,11 +105,8 @@ components of a test case file are:
     -   **Title** (`title` attribute): A unique, descriptive title for the test object, differentiating
         it from others in the same test case.
     -   **Tags** (`tags` attribute): A list of strings that categorize the test
-        case into relevant groups. This attribute helps in organizing and 
-        filtering test cases based on their scope or focus. The reserved "core" 
-        tag is considered to represent only required aspects of the 
-        specification, other suites may be used for optional or experimental 
-        aspects.
+        case into relevant groups. This attribute helps in organizing and
+        filtering test cases based on their scope or focus. See [Reserved Tags](#reserved-tags).
     -   **ViewDefinition** (`view` attribute): Specifies the [ViewDefinition][] being
         tested. This attribute outlines the expected data view or transformation
         applied to the input fixtures.
@@ -121,52 +118,56 @@ Below is an abstract representation of what a test case file might look like:
 
 ```json
 {
-  "title": "title",
-  "description": "...",
-  "fhirVersion": [
-    "5.0.0",
-    "4.0.1"
-  ],
-  "resources": [
-    {
-      "resourceType": "Patient",
-      "id": "pt-1"
-    },
-    {
-      "resourceType": "Patient",
-      "id": "pt-2"
-    }
-  ],
-  "tests": [
-    {
-      "title": "title of test case",
-      "tags": [
-        "core"
-      ],
-      "view": {
-        "select": [
-          {
-            "column": [
-              {
-                "name": "id",
-                "path": "id"
-              }
-            ]
-          }
-        ]
-      },
-      "expect": [
+    "title": "title",
+    "description": "...",
+    "fhirVersion": ["5.0.0", "4.0.1"],
+    "resources": [
         {
-          "id": "pt-1"
+            "resourceType": "Patient",
+            "id": "pt-1"
         },
         {
-          "id": "pt-2"
+            "resourceType": "Patient",
+            "id": "pt-2"
         }
-      ]
-    }
-  ]
+    ],
+    "tests": [
+        {
+            "title": "title of test case",
+            "tags": ["shareable"],
+            "view": {
+                "select": [
+                    {
+                        "column": [
+                            {
+                                "name": "id",
+                                "path": "id"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "expect": [
+                {
+                    "id": "pt-1"
+                },
+                {
+                    "id": "pt-2"
+                }
+            ]
+        }
+    ]
 }
 ```
+
+### Reserved Tags
+
+The following tags are reserved for categorizing test cases based on their
+applicability to profiles within the core specification:
+
+-   **shareable**: Test cases that validate conformance with the Shareable View Definition profile.
+-   **tabular**: Test cases that validate conformance with the Tabular View Definition profile.
+-   **experimental**: Test cases that cover experimental aspects of the specification.
 
 ## Implement Test Runner
 

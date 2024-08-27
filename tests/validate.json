@@ -20,13 +20,13 @@
   "tests": [
     {
       "title": "empty",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {},
       "expectError": true
     },
     {
       "title": "missing resource",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "select": [
           {
@@ -44,7 +44,7 @@
     },
     {
       "title": "wrong fhirpath",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -58,7 +58,7 @@
     },
     {
       "title": "wrong type in forEach",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",
@@ -72,7 +72,7 @@
     },
     {
       "title": "where with path resolving to not boolean",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "view": {
         "resource": "Patient",
         "status": "active",

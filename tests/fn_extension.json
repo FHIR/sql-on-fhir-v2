@@ -95,7 +95,7 @@
   "tests": [
     {
       "title": "simple extension",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "description": "flatten simple extension",
       "view": {
         "resource": "Patient",
@@ -133,7 +133,7 @@
     },
     {
       "title": "nested extension",
-      "tags": ["core"],
+      "tags": ["shareable"],
       "description": "flatten simple extension",
       "view": {
         "resource": "Patient",
