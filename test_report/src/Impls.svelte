@@ -10,8 +10,6 @@
           t.tags.forEach(tag => tags.add(tag));
      });
  });
- console.log("tests", tests);
- console.log("tags", tags);
  // Construct a mapping of tag to display name, with the reserved tags first.
  const reservedTags = {
      shareable: "Profile: Shareable View Definition",
@@ -25,7 +23,6 @@
          return acc;
      }, {});
  const sections = { ...reservedTags, ...otherTags }
- console.log("sections", sections);
 
  async function load(file){
      try {
