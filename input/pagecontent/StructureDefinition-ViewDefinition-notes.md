@@ -1,46 +1,11 @@
-## Supported FHIRPath Functionality
+## FHIRPath Functionality
 
-The [FHIRPath](https://hl7.org/fhirpath/) expressions used in views are
-evaluated by the View Runner. Only a subset of FHIRPath features is required to
-be supported by all View Runners, and a set of additional features can be
-optionally supported.
+Columns within a view are defined using the [FHIRPath](https://hl7.org/fhirpath/) language. FHIRPath contains a large number of functions and syntax constructs - not all of these are required to be implemented within a SQL on FHIR view runner.
 
-### Required FHIRPath Expressions/Functions
-
-All View Runners must implement these [FHIRPath](https://hl7.org/fhirpath/)
-capabilities:
-
-* [Literals](https://hl7.org/fhirpath/#literals) for String, Integer and Decimal
-* [where](https://hl7.org/fhirpath/#wherecriteria-expression-collection)function
-* [exists](https://hl7.org/fhirpath/#existscriteria-expression-boolean) function
-* [empty](https://hl7.org/fhirpath/#empty-boolean) function
-* [extension](https://hl7.org/fhir/R4/fhirpath.html#functions) function
-* [join](https://build.fhir.org/ig/HL7/FHIRPath/#joinseparator-string-string)
-  function<sup>*</sup>
-* [ofType](https://hl7.org/fhirpath/#oftypetype-type-specifier-collection)
-  function
-* [first](https://hl7.org/fhirpath/#first-collection) function
-* [lowBoundary](https://build.fhir.org/ig/HL7/FHIRPath/#lowboundaryprecision-integer-decimal--date--datetime--time)
-  and [highBoundary](https://build.fhir.org/ig/HL7/FHIRPath/#highboundaryprecision-integer-decimal--date--datetime--time)
-  functions (including on [Period](https://hl7.org/fhir/datatypes.html#Period))<sup>*</sup>
-* Boolean
-  operators: [and](https://hl7.org/fhirpath/#and), [or](https://hl7.org/fhirpath/#or), [not](https://hl7.org/fhirpath/#not-boolean)
-* Math
-  operators: [addition (+)](https://hl7.org/fhirpath/#addition), [subtraction (-)](https://hl7.org/fhirpath/#subtraction), [multiplication (*)](https://hl7.org/fhirpath/#multiplication), [division (/)](https://hl7.org/fhirpath/#division)
-* Comparison
-  operators: [equals (=)](https://hl7.org/fhirpath/#equals), [not equals (!=)](https://hl7.org/fhirpath/#not-equals), [greater than (>)](https://hl7.org/fhirpath/#greater-than), [less or equal (<=)](https://hl7.org/fhirpath/#less-or-equal)
-* [Indexer expressions](https://hl7.org/fhirpath/#index-integer-collection)
-
-<sup>*</sup> Not yet part of the normative [FHIRPath](https://hl7.org/fhirpath/)
-release, currently in draft.
-
-### Optional FHIRPath Functions
-
-View Runners are encouraged to implement these functions to support a broader
-set of use cases:
-
-* [memberOf](https://hl7.org/fhir/fhirpath.html#fn-memberOf) function
-* [toQuantity](https://hl7.org/fhirpath/#toquantityunit-string-quantity) function
+View runner implementations MUST support the following required additional FHIRPath functions. In
+addition to this, runners SHOULD implement the FHIRPath subset defined in the
+[Shareable View Definition](StructureDefinition-ShareableViewDefinition.html) profile if the intent is for the runner to be able to
+execute shared view definitions.
 
 ### Required Additional Functions
 
@@ -48,10 +13,10 @@ All View Runners must implement these functions that extend the FHIRPath
 specification. Despite not being in the [FHIRPath](https://hl7.org/fhirpath/)
 specification, they are necessary in the context of defining views:
 
-* [getResourceKey](#getresourcekey--keytype) function
-* [getReferenceKey](#getreferencekeyresource-type-specifier--keytype) function
+-   [getResourceKey](#getresourcekey--keytype) function
+-   [getReferenceKey](#getreferencekeyresource-type-specifier--keytype) function
 
-#### getResourceKey() : *KeyType*
+#### getResourceKey() : _KeyType_
 
 This is invoked at the root of a FHIR Resource and returns an opaque value to be
 used as the primary key for the row associated with the resource. In many cases
@@ -62,7 +27,7 @@ with [getReferenceKey](#getreferencekeyresource-type-specifier--keytype),
 which returns
 an equal value from references that point to this resource.
 
-The returned *KeyType* is implementation dependent, but must be a FHIR primitive
+The returned _KeyType_ is implementation dependent, but must be a FHIR primitive
 type that can be used for efficient joins in the system's underlying data
 storage. Integers, strings, UUIDs, and other primitive types may be appropriate.
 
@@ -70,7 +35,7 @@ See
 the [Joins with Resource and Reference Keys](#joins-with-resource-and-reference-keys)
 section below for details.
 
-#### getReferenceKey([resource: type specifier]) : *KeyType*
+#### getReferenceKey([resource: type specifier]) : _KeyType_
 
 This is invoked on [Reference](https://hl7.org/fhir/references.html#Reference)
 elements and returns an opaque value that represents the database key of the row
@@ -80,25 +45,25 @@ itself.
 
 Users may pass an optional resource type (e.g., Patient or Observation) to
 indicate the expected type that the reference should point to. The
-getReferenceKey function will return an empty collection (effectively *null*
+getReferenceKey function will return an empty collection (effectively _null_
 since FHIRPath always returns collections) if the reference is not of the
 expected type. For example, `Observation.subject.getReferenceKey(Patient)` would
 return a row key if the subject is a Patient, or the empty collection (
 i.e., `{}`) if it is not.
 
-The returned *KeyType* is implementation dependent, but must be a FHIR primitive
+The returned _KeyType_ is implementation dependent, but must be a FHIR primitive
 type that can be used for efficient joins in the systems underlying data
 storage. Integers, strings, UUIDs, and other primitive types may be appropriate.
 
 The getReferenceKey function has both required and optional functionality:
 
-* Implementations MUST support the relative literal form of reference (
-  e.g., `Patient/123`), and MAY support other types of references. If the
-  implementation does not support the reference type, or is unable to resolve
-  the reference, it MUST return the empty collection (i.e., `{}`).
-* Implementations MAY generate a list of unprocessable references through query
-  responses, logging or reporting. The details of how this information would be
-  provided to the user is implementation specific.
+-   Implementations MUST support the relative literal form of reference (
+    e.g., `Patient/123`), and MAY support other types of references. If the
+    implementation does not support the reference type, or is unable to resolve
+    the reference, it MUST return the empty collection (i.e., `{}`).
+-   Implementations MAY generate a list of unprocessable references through query
+    responses, logging or reporting. The details of how this information would be
+    provided to the user is implementation specific.
 
 See the [Joins with Resource and Reference Keys](#joins-with-resource-and-reference-keys) section below for details.
 
@@ -180,7 +145,7 @@ resource has at least one `Patient.address`, similar to an `INNER JOIN` in SQL:
 
 In contrast, this view
 with [forEachOrNull](StructureDefinition-ViewDefinition-definitions.html#diff_ViewDefinition.select.forEachOrNull)
-will produce the `id` column for *every* Patient resource. If the Patient
+will produce the `id` column for _every_ Patient resource. If the Patient
 resource has no `Patient.address`, there will be a single row for the Patient
 resource and the `zip` column will contain null. For Patient resources with one
 or more `Patient.address`, the result will be identical to the expression above.
@@ -207,10 +172,10 @@ parts of the resources.
 The multiple rows produced using `forEach` or `forEachOrNull` from a `select`are
 joined to others with the following rules:
 
-* Parent/child `select`s will repeat values from the parent `select` for each
-  item in the child `select`.
-* Sibling `select`s are effectively cross joined, where each row in
-  each `select` is duplicated for every row in sibling `select`s.
+-   Parent/child `select`s will repeat values from the parent `select` for each
+    item in the child `select`.
+-   Sibling `select`s are effectively cross joined, where each row in
+    each `select` is duplicated for every row in sibling `select`s.
 
 The [examples](StructureDefinition-ViewDefinition-examples.html) illustrate this
 behavior.
@@ -344,75 +309,75 @@ order:
 
 ```json
 {
-  "name": "column_order_example",
-  "resource": "...",
-  "select": [
-    {
-      "column": [
+    "name": "column_order_example",
+    "resource": "...",
+    "select": [
         {
-          "path": "'A'",
-          "name": "a"
+            "column": [
+                {
+                    "path": "'A'",
+                    "name": "a"
+                },
+                {
+                    "path": "'B'",
+                    "name": "b"
+                }
+            ],
+            "select": [
+                {
+                    "forEach": "aNestedStructure",
+                    "column": [
+                        {
+                            "path": "'C'",
+                            "name": "c"
+                        },
+                        {
+                            "path": "'D'",
+                            "name": "d"
+                        }
+                    ]
+                }
+            ],
+            "unionAll": [
+                {
+                    "column": [
+                        {
+                            "path": "'E1'",
+                            "name": "e"
+                        },
+                        {
+                            "path": "'F1'",
+                            "name": "f"
+                        }
+                    ]
+                },
+                {
+                    "column": [
+                        {
+                            "path": "'E2'",
+                            "name": "e"
+                        },
+                        {
+                            "path": "'F2'",
+                            "name": "f"
+                        }
+                    ]
+                }
+            ]
         },
         {
-          "path": "'B'",
-          "name": "b"
+            "column": [
+                {
+                    "path": "'G'",
+                    "name": "g"
+                },
+                {
+                    "path": "'H'",
+                    "name": "h"
+                }
+            ]
         }
-      ],
-      "select": [
-        {
-          "forEach": "aNestedStructure",
-          "column": [
-            {
-              "path": "'C'",
-              "name": "c"
-            },
-            {
-              "path": "'D'",
-              "name": "d"
-            }
-          ]
-        }
-      ],
-      "unionAll": [
-        {
-          "column": [
-            {
-              "path": "'E1'",
-              "name": "e"
-            },
-            {
-              "path": "'F1'",
-              "name": "f"
-            }
-          ]
-        },
-        {
-          "column": [
-            {
-              "path": "'E2'",
-              "name": "e"
-            },
-            {
-              "path": "'F2'",
-              "name": "f"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "column": [
-        {
-          "path": "'G'",
-          "name": "g"
-        },
-        {
-          "path": "'H'",
-          "name": "h"
-        }
-      ]
-    }
-  ]
+    ]
 }
 ```
 
@@ -522,7 +487,7 @@ For example, a minimal view of Patient resources could look like this:
 }
 ```
 
-A view of  Observation resources would then have its own row key and a foreign
+A view of Observation resources would then have its own row key and a foreign
 key to easily join to the view of Patient resources, like this:
 
 ```js
@@ -553,7 +518,7 @@ to `active_patients.id` using common join semantics.
 
 While [getResourceKey](#getresourcekey--keytype)
 and [getReferenceKey](#getreferencekeyresource-type-specifier--keytype) must
-return matching values for the same row, *how* they do so is left to the
+return matching values for the same row, _how_ they do so is left to the
 implementation. This is by design, allowing ViewDefinitions to be run across a
 wide set of systems that have different data invariants or pre-processing
 capabilities.
@@ -684,7 +649,8 @@ model produces.
 **Purpose**: This step ensures that a ViewDefinition's columns are valid, by setting up a recursive call.
 
 **Inputs**
-* `V`: a `ViewDefinition` to validate
+
+-   `V`: a `ViewDefinition` to validate
 
 1. Call `ValidateColumns(V, C)` according to the recursive step below.
 
@@ -693,35 +659,41 @@ model produces.
 **Purpose:** This step ensures that column names are unique across `S` and disjoint from `C`
 
 **Inputs**
-* `S`: a single Selection Structure
-* `C`: a list of Columns that exist prior to this call
+
+-   `S`: a single Selection Structure
+-   `C`: a list of Columns that exist prior to this call
 
 **Outputs**
-* `Ret`: a list of Columns
+
+-   `Ret`: a list of Columns
 
 **Errors**
-* Column Already Defined
-* Union Branches Inconsistent
+
+-   Column Already Defined
+-   Union Branches Inconsistent
 
 0. Initialize `Ret` to equal `C`
 
 1. For each Column `col` in `S.column[]`
-    * If a Column with name `col.name` already exists in `Ret`, throw "Column Already Defined"
-    * Otherwise, append `col` to `Ret`
+
+    - If a Column with name `col.name` already exists in `Ret`, throw "Column Already Defined"
+    - Otherwise, append `col` to `Ret`
 
 2. For each Selection Structure `sel` in `S.select[]`
-    * For each Column `c` in `Validate(sel, Ret)`
-        * If a Column with name `c.name` already exists in `Ret`, throw "Column Already Defined"
-        * Otherwise, append `c` to the end of `Ret`
+
+    - For each Column `c` in `Validate(sel, Ret)`
+        - If a Column with name `c.name` already exists in `Ret`, throw "Column Already Defined"
+        - Otherwise, append `c` to the end of `Ret`
 
 3. If `S.unionAll[]` is present
+
     1. Define `u0` as `Validate(S.unionAll[0], Ret)`
     2. For each Selection Structure `sel` in `S.unionAll[]`
-        * Define `u` as  `ValidateColumns(sel, Ret)`
-            * If the list of names from `u0` is different from the list of names from `u`, throw "Union Branches Inconsistent"
-            * Otherwise, continue
+        - Define `u` as `ValidateColumns(sel, Ret)`
+            - If the list of names from `u0` is different from the list of names from `u`, throw "Union Branches Inconsistent"
+            - Otherwise, continue
     3. For each Column `col` in `u0`
-        * Append `col` to `Ret`
+        - Append `col` to `Ret`
 
 4. Return `Ret`
 
@@ -732,21 +704,21 @@ Resource, by setting up a recursive call.
 
 **Inputs**
 
-* `V`: a `ViewDefinition`
-* `R`: a FHIR Resource to process with `V`
+-   `V`: a `ViewDefinition`
+-   `R`: a FHIR Resource to process with `V`
 
 **Emits:** one output row at a time
 
 1. Ensure resource type is correct
-    * If `R.resourceType` is different from `V.resource`, return immediately
+    - If `R.resourceType` is different from `V.resource`, return immediately
       without emitting any rows
-    * Otherwise, continue
+    - Otherwise, continue
 2. If `V.where` is defined, ensure constraints are met
-    * Evaluate `fhirpath(V.where.path, R)` to determine whether `R` is a
+    - Evaluate `fhirpath(V.where.path, R)` to determine whether `R` is a
       candidate for `V`
-        * If `R` is not a candidate for `V`, return immediately without emitting
+        - If `R` is not a candidate for `V`, return immediately without emitting
           any rows
-        * Otherwise, continue
+        - Otherwise, continue
 3. Emit all rows from `Process(S, V)`
 
 ### `Process(S, N)` (recursive step)
@@ -756,81 +728,94 @@ We first generate sets of "partial rows" (i.e., sets of incomplete column
 bindings from the various clauses of `V`) and combine them to emit complete
 rows. For example, if there are two sets of partial rows:
 
-* `[{"a": 1},{"a": 2}]` with bindings for the variable `a`
-* `[{"b": 3},{"b": 4}]` with bindings for the variable `b`
+-   `[{"a": 1},{"a": 2}]` with bindings for the variable `a`
+-   `[{"b": 3},{"b": 4}]` with bindings for the variable `b`
 
 Then the Cartesian product of these sets consists of four complete rows:
 
 ```json
 [
-  {"a": 1, "b": 3},
-  {"a": 1, "b": 4},
-  {"a": 2, "b": 3},
-  {"a": 2, "b": 4}
+    { "a": 1, "b": 3 },
+    { "a": 1, "b": 4 },
+    { "a": 2, "b": 3 },
+    { "a": 2, "b": 4 }
 ]
 ```
 
 **Inputs**
-* `S`: a Selection Structure
-* `N`: a Node (element) from a FHIR resource
+
+-   `S`: a Selection Structure
+-   `N`: a Node (element) from a FHIR resource
 
 **Errors**
-* Multiple values found but not expected for column
+
+-   Multiple values found but not expected for column
 
 **Emits:** One output row at a time
 
 1. Define a list of Nodes `foci` as
-    * If `S.forEach` is defined: `fhirpath(S.forEach, N)`
-    * Else if `S.forEachOrNull` is defined: `fhirpath(S.forEachOrNull, N)`
-    * Otherwise: `[N]` (a list with just the input node)
+
+    - If `S.forEach` is defined: `fhirpath(S.forEach, N)`
+    - Else if `S.forEachOrNull` is defined: `fhirpath(S.forEachOrNull, N)`
+    - Otherwise: `[N]` (a list with just the input node)
 
 2. For each element `f` of `foci`
+
     1. Initialize an empty list `parts` (each element of `parts` will be a list
        of partial rows)
     2. Process Columns:
-        * For each Column `col` of `S.column`, define `val`
-          as  `fhirpath(col.path, f)`
+
+        - For each Column `col` of `S.column`, define `val`
+          as `fhirpath(col.path, f)`
+
             1. Define `b` as a row whose column named `col.name` takes the value
-                * If `val` was the empty set: `null`
-                * Else if `val` has a single element `e`: `e`
-                * Else if `col.collection` is true: `val`
-                * Else: throw "Multiple values found but not expected for
+                - If `val` was the empty set: `null`
+                - Else if `val` has a single element `e`: `e`
+                - Else if `col.collection` is true: `val`
+                - Else: throw "Multiple values found but not expected for
                   column"
             2. Append `[b]` to `parts`
 
-            * (Note: append a list so the final element of `parts` is now a list
+            - (Note: append a list so the final element of `parts` is now a list
               containing the single row `b`).
+
     3. Process Selects:
-        * For each selection structure `sel` of `S.select`
+
+        - For each selection structure `sel` of `S.select`
+
             1. Define `rows` as the collection of all rows emitted
                by `Process(sel, f)`
             2. Append `rows` to `parts`
 
-            * (Note: do not append the elements but the whole list, so the final
+            - (Note: do not append the elements but the whole list, so the final
               element of `parts` is now the list `rows`)
+
     4. Process UnionAlls:
+
         1. Initialize `urows` as an empty list of rows
         2. For each selection structure `u` of `S.unionAll`
-            * For each row `r` in `Process(u, f)`
-                * Append `r` to `urows`
+            - For each row `r` in `Process(u, f)`
+                - Append `r` to `urows`
         3. Append `urows` to `parts`
 
-        * (Note: do not append the elements but the whole list, so the final
+        - (Note: do not append the elements but the whole list, so the final
           element of `parts` is now the list `urows`)
+
     5. For every list of partial rows `prows` in the Cartesian product
        of `parts`
         1. Initialize a blank row `r`
         2. For each partial row `p` in `prows`
-            * Add `p`'s column bindings to the row `r`
+            - Add `p`'s column bindings to the row `r`
         3. Emit the row `r`
-            * (Note: the Cartesian product is always between a Selection
+            - (Note: the Cartesian product is always between a Selection
               Structure and its direct children, not deeper descendants. Because
               the process is recursive, rows generated by, for example,
               a `.select[0].select[0].select[0]` will eventually bubble up to
               the top level, but the bubbling happens one level at a time.)
+
 3. If `foci` is an empty list and `S.forEachOrNull` is defined (Note: when this
    condition is met, no rows have been emitted so far)
     1. Initialize a blank row `r`
     2. For each Column `c` in `ValidateColumns(V, [])`
-        * Bind the column `c.name` to `null` in the row `r`
+        - Bind the column `c.name` to `null` in the row `r`
     3. Emit the row `r`

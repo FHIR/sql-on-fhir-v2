@@ -46,7 +46,7 @@ chosen tech stack. See [System Layers](index.html#system-layers) for details.
 ## Profiling
 
 ViewDefinitions may be profiled to meet specific needs. For instance,
-the [ShareableViewDefinition](StructureDefinition-ShareableViewDefinition.html)
+the [Shareable View Definition](StructureDefinition-ShareableViewDefinition.html)
 profile adds constraints for ViewDefinitions intended to be shared between
 systems. Implementers may create their own ViewDefinition profiles for further
 specialized needs.
