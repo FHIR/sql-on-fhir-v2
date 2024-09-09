@@ -37,60 +37,106 @@ that comprise essential data elements. The availability of these view
 definitions will greatly reduce the need for analysts to perform repetitive and
 redundant transformation tasks for common use cases.
 
-Let's start with a simple example, defining a "patient_demographics" view with
+Let's start with a simple example, defining a "patient_demographics" and "diagnoses" views with
 the following [ViewDefinition](StructureDefinition-ViewDefinition.html)
 structure:
 
 ```json
 {
-    "name": "patient_demographics",
-    "resource": "Patient",
-    "select": [
-        {
-            "column": [
-                {
-                    "path": "getResourceKey()",
-                    "name": "id"
-                },
-                {
-                    "path": "gender",
-                    "name": "gender"
-                }
-            ]
-        },
-        {
-            "forEach": "name.where(use = 'official').first()",
-            "column": [
-                {
-                    "path": "given.join(' ')",
-                    "name": "given_name",
-                    "description": "A single given name field with all names joined together."
-                },
-                {
-                    "path": "family",
-                    "name": "family_name"
-                }
-            ]
-        }
-    ]
-}
+  "resourceType": "ViewDefinition",
+  "resource": "patient",
+  "name": "patient_demographics",
+  "select": [
+    {
+      "column": [
+        {"name": "patient_id", "path": "getResourceKey()"},
+        {"name": "gender", "path": "gender"},
+        {"name": "dob", "path": "birthDate"}
+      ],
+      {
+        "forEach": "name.where(use = 'official').first()",
+        "column": [
+          {"path": "given.join(' ')", "name": "given_name",},
+          {"path": "family", "name": "family_name"}
+        ]
+      }
+
+    }
+  ]}
 ```
 
-This will result in a "patient_demographics" table that looks like this. The
-table can be persisted and queried in your database of choice, using the view
-name as the table name:
 
-| id | gender | given_name    | family_name |
-|----|--------|---------------|-------------|
-| 1  | female | Malvina Gerda | Vicario     |
-| 2  | male   | Yolotzin Adel | Bristow     |
-| 3  | other  | Jin Gomer     | Aarens      |
+| id            | gender | dob        | given_name    | family_name |
+|---------------|--------|------------|---------------|-------------|
+| 5e23837b-.... | female | 1952-03-08 | Malvina Gerda | Vicario     |
+| 93f09189-.... | male   | 1981-08-08 | Yolotzin Adel | Bristow     |
+| 44d86263-.... | other  | 2015-01-28 | Jin Gomer     | Aarens      |
 {:.table-data}
+
+
+
+```json
+{
+  "resourceType": "ViewDefinition",
+  "resource": "condition",
+  "name": "diagnoses_view",
+  "select": [
+    {
+      "column": [
+        {"name": "condition_id", "path": "id"},
+        {"name": "onset", "path": "onset.dateTime"},
+        {"name": "abatement", "path": "abatement.dateTime"},
+        {"name": "status", "path": "clinicalStatus.coding.code.first()"},
+        {"name": "code", "path": "code.coding.where(system='http://snomed.info/sct').code.first()"},
+        {"name": "display", "path": "code.text"},
+        {"name": "patient_id", "path": "subject.id"}
+      ]
+    }
+  ]
+}
+
+```
+
+| condition_id | onset                     | status   | code      | display                                   | patient_id    |
+|--------------|---------------------------|----------|-----------|-------------------------------------------|---------------|
+| 011b6e34-... | 2016-08-06T02:13:33+03:00 | resolved | 444814009 | Viral sinusitis (disorder)                | 5e23837b-.... |
+| 014774ea-... | 2016-05-27T13:44:17+03:00 | resolved | 195662009 | Acute viral pharyngitis (disorder)        | 93f09189-.... |
+| 02116b05-... | 2003-02-14T18:25:00+03:00 | resolved | 195662009 | Acute viral pharyngitis (disorder)        | 44d86263-.... |
+| 0287a9bc-... | 2019-03-30T08:53:34+03:00 | resolved | 10509002  | Acute bronchitis (disorder)               | 41907da4-.... |
+| 02a79009-... | 2013-07-04T14:17:52+04:00 | resolved | 43878008  | Streptococcal sore throat (disorder)      | 5bad6369-.... |
+| 02bfc9af-... | 2016-10-06T05:24:13+03:00 | resolved | 195662009 | Acute viral pharyngitis (disorder)        | 8742d4ba-.... |
+{:.table-data}
+
 
 Such tabular views can be created for any FHIR resource,
 with [more examples here](artifacts.html#example-example-instances). See
 the [View Definition page](StructureDefinition-ViewDefinition.html) for the full
 definition of the above structure.
+
+The views can be persisted and queried in your database of choice, using the view
+name as the table name:
+
+```sql
+ SELECT  DATE_PART('year', AGE(pt.dob::timestamp)) AS age,
+         gender,
+         dg.code,
+         dg.display,
+         count(*)
+    FROM patient_demographics pt
+    JOIN diagnoses dg using (patient_id)
+GROUP BY 1,2,3,4
+ORDER BY 1, 5 desc
+```
+
+Example output:
+
+|age|	gender|code|display	countr|
+----|-------|----|--------------|
+|7| female| 444814009| Viral sinusitis (disorder)| 1340
+|7| female| 65363002| Otitis media| 2345
+|7| female| 43878008| Streptococcal sore throat (disorder)| 42
+{:.table-data}
+
 
 ### Non-goals
 
@@ -135,7 +181,7 @@ system. A broader view of the system includes three layers:
 - The *View Layer*, and;
 - The *Analytics Layer*.
 
-<img src="layers.svg" alt="High-level diagram of layers" style="float: none; width: 700px"/>
+<img src="layers.svg" alt="High-level diagram of layers" style="float: none; width: 100%"/>
 
 **Figure 1: High-level diagram of layers**
 
@@ -171,16 +217,19 @@ View Runners will be specific to the data layer they use. Each data layer may
 have one or more corresponding view runners, but a given View Definition can be
 run by many runners over many data layers.
 
-Example view runners may include:
+There are two popular categories of runners:
+* **In-memory runner** consume resources, flatten, and output results into a stream, a file or a table.
+You can imagine the ETL pipeline from FHIR Bulk export ndjson files transformed into parquet files.
+* **In-database runner** translate ViewDefinition into SQL query over an FHIR-native database.
+In that case the view can be a real database view or table. In-database runner could be way more efficient than in-memory
+,speed and storage resources but much more complex for implementers.
 
-* A runner that creates a virtual, tabular view in an analytic database.
-* A runner that queries FHIR JSON directly and creates a table in a web
-  application.
-* A runner that loads data directly into a notebook or other data analysis tool.
+<img src="viewdef-runners.jpeg" alt="Diagram comparing in-memory and in-database runners" style="float: none; width: 700px">
+
 
 #### The Analytics Layer
 
-Users must be able to easily leverage the above views with the analytic tools of 
+Users must be able to easily leverage the above views with the analytic tools of
 their choice. This specification purposefully does not define what these are,
 but common use cases may be SQL queries by consuming applications,
 dataframe-based data science tools in Python or R, or integration with business
