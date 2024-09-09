@@ -17,6 +17,7 @@
   "tests": [
     {
       "title": "join with comma",
+      "tags": ["experimental"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -45,6 +46,7 @@
     },
     {
       "title": "join with empty value",
+      "tags": ["experimental"],
       "view": {
         "resource": "Patient",
         "select": [
@@ -73,6 +75,7 @@
     },
     {
       "title": "join with no value - default to no separator",
+      "tags": ["experimental"],
       "view": {
         "resource": "Patient",
         "select": [

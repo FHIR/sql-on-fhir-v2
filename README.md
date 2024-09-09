@@ -105,6 +105,9 @@ components of a test case file are:
   scenario within the case. Every test object includes:
   - **Title** (`title` attribute): A unique, descriptive title for the test object, differentiating
     it from others in the same test case.
+  - **Tags** (`tags` attribute): A list of strings that categorize the test
+    case into relevant groups. This attribute helps in organizing and
+    filtering test cases based on their scope or focus. See [Reserved Tags](#reserved-tags).
   - **ViewDefinition** (`view` attribute): Specifies the [ViewDefinition][] being
     tested. This attribute outlines the expected data view or transformation
     applied to the input fixtures.
@@ -129,6 +132,7 @@ Below is an abstract representation of what a test case file might look like:
     ...
     {
       'title': 'title of test case',
+      'tags': ['shareable'],
       // ViewDefintion
       'view': {
         'select': [
@@ -144,6 +148,15 @@ Below is an abstract representation of what a test case file might look like:
   ]
  }
 ```
+
+### Reserved Tags
+
+The following tags are reserved for categorizing test cases based on their
+applicability to profiles within the core specification:
+
+- **shareable**: Test cases that validate conformance with the Shareable View Definition profile.
+- **tabular**: Test cases that validate conformance with the Tabular View Definition profile.
+- **experimental**: Test cases that cover experimental aspects of the specification.
 
 ## Implement Test Runner
 
