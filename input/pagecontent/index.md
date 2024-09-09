@@ -224,7 +224,7 @@ You can imagine the ETL pipeline from FHIR Bulk export ndjson files transformed 
 In that case the view can be a real database view or table. In-database runner could be way more efficient than in-memory
 ,speed and storage resources but much more complex for implementers.
 
-<img src="viewdef-runners.jpeg" alt="Diagram comparing in-memory and in-database runners" style="float: none; width: 700px">
+<img src="viewdef-runners.jpeg" alt="Diagram comparing in-memory and in-database runners" style="float: none; width: 100%">
 
 
 #### The Analytics Layer
