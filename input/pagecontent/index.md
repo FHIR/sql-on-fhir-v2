@@ -181,7 +181,7 @@ system. A broader view of the system includes three layers:
 - The *View Layer*, and;
 - The *Analytics Layer*.
 
-<img src="layers.svg" alt="High-level diagram of layers" style="float: none; width: 100%"/>
+<img src="layers.svg" alt="High-level diagram of layers" style="float: none; width: 700px"/>
 
 **Figure 1: High-level diagram of layers**
 
