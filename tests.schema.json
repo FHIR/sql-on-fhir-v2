@@ -75,6 +75,13 @@
             "type": "string",
             "description": "A description of the test."
           },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of tags that can be used to categorize this test."
+          },
           "view": {
             "type": "object",
             "description": "The view to run the test against."
