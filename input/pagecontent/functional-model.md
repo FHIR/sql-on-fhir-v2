@@ -1,63 +1,63 @@
-This flattening transformation is described with a special resource type: ViewDefinition.
-Although there are no universal flat views for most FHIR resources, we believe many useful use-case-specific views could exist.
-ViewDefinitions are Canonical Resources.
-ViewDefinitions can be published as part of Implementation Guides.
-Complemented with standard ANSI SQL queries, they could be the foundation for interoperable analytics and reporting on FHIR.
-This post will help you understand how ViewDefinition “works.”
 
-ViewDefinition is an algorithm that describes the flattening transformation of FHIR resources, composed of combinations of few functions: 
+This document will help you understand how ViewDefinitions work "under the hood" using a functional paradigm.
 
-* `column({name:column_name,path: fhirpath},...)` - the main workhorse of transformation, this function will extract elements by fhirpath expressions and put the result into columns
-* `where(fhirpath)` - function, which filters resources by fhirpath expression. For example, you may want to transform only specific profiles like blood pressure into a simple table
-* `forEach(expr, transform)` - this function unnests collection elements into separate rows
-* `select(rows1, rows2)` - this function cross-joins `rows1` and `rows2`, and is mostly used to join results of `forEach` with top-level columns
-* `union(rows, rows)` - concatenates sets of rows. Main use case is combining rows from different branches of a resource (for example, `telecom` and `contact.telecom`).
+The application of a ViewDefinition is an algorithm that describes the transformation of FHIR resources and is composed of combinations of a small set of functions:
+* `column({name:column_name,path: fhirpath},...)` - The main workhorse of transformation. This function will extract elements by FHIRPath expressions and put the result into columns
+* `where(fhirpath)` - This function filters resources by FHIRPath expression. For example, you may want to transform only specific profiles like blood pressure into a simple table
+* `forEach(expr, transform)` - This function unnests collection elements into separate rows
+* `select(rows1, rows2)` - This function cross-joins `rows1` and `rows2`, and is mostly used to join results of `forEach` with top-level columns
+* `union(rows, rows)` - This function concatenates sets of rows. It's main use case is combining rows from different branches of a resource (for example, `telecom` and `contact.telecom`)
 
-A ViewDefinition is represented as a FHIR Resource ( JSON document) where the elements (keywords) correspond to the functions:
+A ViewDefinition is represented as a FHIR logical model (in this case as a JSON document) where the keywords of the ViewDefinition correspond to the functions described above.
+
+### An Example ViewDefinition
 
 ```js
 {
     "resourceType": "ViewDefinition",
     "resource": "Patient",
-    // (0)
-    "where": [{filter: "active = true"}],
-    // (5)
+    // Step 1
+    "where": [{"path": "active = true"}],
+    // Step 6
     "select": [
         {
-          // (4)
+          // Step 5
           "column": [
              {"path": "getResourceKey()", "name": "id"},
              {"path": "identifier.where(system='ssn')", "name": "ssn"},
           ]
         },
         { 
-          // (3)
+          // Step 4
           "unionAll": [
             {
-              // (1)
+              // Step 2
               "forEach": "telecom.where(system='phone')",
               "column": [{"path": "value", "name": "phone"}] 
             },
             { 
-              // (2)
+              // Step 3
               "forEach": "contact.telecom.where(system='phone')",
               "column": [{"path": "value",  "name": "phone"}] 
             }
-       ]}       
+       ]}
     ]
 }
 ```
 
-This view produce a table of patient contacts - row per telecom:
- 
- 0. "where" filter only active patients
- 1. "forEach" unnest `Patient.telecom` and select phone
- 2. "forEach" unnest `Patient.contact.telecom` and select phone
- 3. "unionAll" concatinate results of 1 and 2
- 4. "column" statement extracts id and ssn
- 5. "select" statement cross-joins id and ssn with telecom phones
- 
- Here is example input and output for this ViewDefinition
+### Applying the ViewDefinition
+The application of this ViewDefinition produces a table of contacts with one row per telecom from two different locations in a FHIR Patient resource.
+
+Algorithmically the application can be though of in the following steps:
+ 1. "where": filter data to only the active patients
+ 2. "forEach": unnest `Patient.telecom` and select "phone"
+ 3. "forEach": unnest `Patient.contact.telecom` and select "phone"
+ 4. "unionAll": concatenate the results of 2 and 3
+ 5. "column": extracts "id" and "ssn"
+ 6. "select": cross-join "id" and "ssn" with telecom phones from step 4
+
+
+Here is example input and output for this ViewDefinition
 
 ```json
 [
@@ -84,10 +84,10 @@ This view produce a table of patient contacts - row per telecom:
 ]
 ```
 
-### Result
+The resulting output:
 
 | id | ssn  | phone  |
-| -------- | -------- | -------- |
+| -- |----- | ------ |
 | pt1     | s1     | t11     |
 | pt1     | s1     | t12     |
 | pt1     | s1     | t13     |
@@ -97,23 +97,19 @@ This view produce a table of patient contacts - row per telecom:
 
 
 
+## The FHIRPath Subset
+ViewDefnitions use [minimal subset of FHIRPath](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition.html#fhirpath-functionality) to make implementation as simple as possible. 
+
+The specification also introduces two special functions:
+* `getResourceKey` - Indirectly get a resource's id. Since it my not be straightforward to access a resource's id, this layer of indirection is useful
+* `getReferenceKey(resourceType)` - A similar function to get an id from a reference
 
 
-## FHIRPath subset
+## The Functions in Detail
+Let’s walk through every function in detail with examples:
 
-ViewDefnitions use [minimal subset of FHIRPath](https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition.html#supported-fhirpath-functionality) to make implementation as simple as possible. As well spec introduces few special functions:
-* `getResourceKey` - inderectly get resource id. Sometimes it could be complicated, that's why this layer of indirection!
-* `getReferenceKey(resourceType)` - similar function to get id from reference
-
-
-
-## Functions / Keywords
-
-Let’s walk through every function in detail with examples
-
-### column
-
-The column function extracts elements into columns using FHIRPath expressions. The algorithm starts by receiving a list of {name, path} pairs. For each record in the given context, it evaluates the path expression to extract the desired elements. The resulting values are then added as columns to the output row. 
+### The `column` Function
+`column` extracts elements into tabular columns using FHIRPath expressions. The algorithm for this function begins by receiving a list of {name, path} pairs. For each record in the given context, it evaluates the path expression to extract the desired elements. The resulting values are then added as columns to the output row.
 
 ```json
 {
@@ -128,12 +124,12 @@ The column function extracts elements into columns using FHIRPath expressions. T
 }
 ```
 
-Here is the naive js implementation:
+Here is the naive JavaScript implementation:
 
 ```javascript
 function column(cols, rows) {
     return rows.map((row)=> {
-        return cols.reduce((res, col ) => {
+        return cols.reduce((res, col) => {
             res[col.name] = fhirpath(col.path, row)
             return res
         }, {})
@@ -141,22 +137,21 @@ function column(cols, rows) {
 }
 ```
 
-### where
-
-The where function retains only those records for which it FHIRPath expression returns true. 
+### The `where` Function
+`where` retains only those records for which it FHIRPath expression returns true.
 
 ```json
 {
   "resourceType": "ViewDefinition",
   "resource": "Patient",
   "where": [
-      {"filter": "meta.profile.where($this = 'myprofile').exists()"},
-      {"filter": "active = 'true'"}
+      {"path": "meta.profile.where($this = 'myprofile').exists()"},
+      {"path": "active = 'true'"}
   ]
 }
 ```
 
-Basic js implementation:
+Basic JavaScript implementation:
 
 ```javascript
 function where(exprs, rows) {
@@ -169,8 +164,8 @@ function where(exprs, rows) {
 ```
 
 
-### forEach & forEachOrNull
-The `forEach` function is intended to flattening nested collections by applying a transformation to each element. It consists of FHIRPath expression for collection to iterate and transformation to apply to each item. This function is akin to `flatMap` or `mapcat` in other programming languages. 
+### The `forEach` & `forEachOrNull` Functions
+`forEach` and `forEachOrNull` are intended for flattening nested collections by applying a transformation to each element. It consists of FHIRPath expression for collection to iterate and transformation to apply to each item. This function is akin to `flatMap` or `mapcat` in other programming languages.
 
 ```json
 {
@@ -186,7 +181,9 @@ The `forEach` function is intended to flattening nested collections by applying 
 }
 ```
 
-There are two versions of this function: `forEach` and `forEachOrNul`. The primary difference is that `forEach` removes records where the FHIRPath expression returns no results, whereas `forEachOrNull` keeps an empty record in such cases.
+There are two versions of this function: `forEach` and `forEachOrNull`. The primary difference is that `forEach` removes records where the FHIRPath expression returns no results, whereas `forEachOrNull` keeps an empty record in such cases.
+
+Basic JavaScript implementation:
 
 ```javascript
 function forEach(path, expr, rows) {
@@ -199,10 +196,10 @@ function forEach(path, expr, rows) {
 }
 ```
 
-### select
+### The `select` Function
+`select` is used in combination with `forEach` or `forEachOrNull` to cross-join parent elements with unnested collection elements. For example, `Patient.id` with an unnested collection such as `Patient.name`.
 
-The select function is used in combination with forEach to cross-join parent elements (like `Patient.id`) with unnested collection elements like ( `Patient.name` ).
-This function merges columns from each row set, resulting in a comprehensive combination of data from the input collections.
+Put another way, this function merges columns from each row set, resulting in a comprehensive combination of data from the input collections.
 
 ```json
 {
@@ -225,7 +222,7 @@ This function merges columns from each row set, resulting in a comprehensive com
 }
 ```
 
-Naive implementation is:
+The naive JavaScript implementation:
 
 ```javascript
 function select(rows1, rows2){
@@ -245,9 +242,8 @@ select([{a: 1}, {a: 2}], [{b: 1}, {b: 2}])
  {a: 2, b: 2}]
 ```
 
-### unionAll
-
-The `unionAll` function combines rows from different branches of a resource tree by concatenating multiple record sets. This function essentially concatinates several collections of records into a single, unified collection, preserving all rows from the input sets.
+### The `unionAll` Function
+`unionAll` combines rows from different branches of a resource tree by concatenating multiple record sets. Essentially a concatenation of several collections of records into a single, unified collection while preserving all rows from the input sets.
 
 ```json
 {
@@ -274,7 +270,7 @@ The `unionAll` function combines rows from different branches of a resource tree
 }
 ```
 
-Implementation is just a simple concatination:
+In JavaScript this is just a simple concatenation:
 
 ```javascript
 function unionAll(rowSets){
@@ -286,22 +282,26 @@ unionAll([1,2,3], [3,4,5])
 [1,2,3,3,4,5]
 ```
 
-In resource, different keywords could appear at the same level.
-For example, `select`, `forEach` and `unionAll` in the same JSON node.
+
+### Function Precedence
 To interpret such nodes, you have to re-order keywords (functions) according to precedence (higher bubble up):
 
-* forEach(OrNull)
+In a ViewDefinition, different keywords/functions can appear at the same level. To interpret such node in a ViewDefinition, an implementation must reorder the keywords/functions according to the following precedence rule.
+
+Keyword/function reordering rule (highest to lowest precedence):
+* forEach or forEachOrNull
 * select
 * unionAll
 * column
 
 
+For example given the following ViewDefinition snippet with all keywords/functions at the top level, the keywords/functions should be reordered as shown in the output.
 
 ```js
 {
     "forEach":   FOREACH,
-    "column":    [COLUMNS], // got into select
-    "unionALL":  [UNIONS],  // got into select
+    "column":    [COLUMNS], // reorder to be nested under select
+    "unionALL":  [UNIONS],  // reorder to be nested under select
     "select":    [SELECTS]
 }
 //=>
@@ -316,7 +316,4 @@ To interpret such nodes, you have to re-order keywords (functions) according to 
 ```
 
 ### Reference Implementation
-
-To understand functional model in more details
-take a look at [reference javascript implementation](https://github.com/FHIR/sql-on-fhir-v2/sof-js) 
-- it's just ~400 lines of code.
+The [JavaScript reference implementation](https://github.com/FHIR/sql-on-fhir-v2/tree/master/sof-js) implements the functional model described here. It is very concise at roughly 400 lines of code and reading it is a good way to understand the model in detail.
