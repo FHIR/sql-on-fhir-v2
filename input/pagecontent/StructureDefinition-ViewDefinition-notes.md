@@ -819,3 +819,10 @@ Then the Cartesian product of these sets consists of four complete rows:
     2. For each Column `c` in `ValidateColumns(V, [])`
         - Bind the column `c.name` to `null` in the row `r`
     3. Emit the row `r`
+
+## Functional Model
+
+ViewDefinitions can be modeled and implemented using the functional paradigm. In
+fact, the [JavaScript reference implementation](https://github.com/FHIR/sql-on-fhir-v2/tree/master/sof-js)
+takes such an approach. See [Functional Model](functional-model.html) for a
+detailed examination of this approach.
