@@ -1,6 +1,9 @@
 ## Functional Model
 
-ViewDefinitions can be modeled and implemented using the functional paradigm. In fact, the [JavaScript reference implementation](https://github.com/FHIR/sql-on-fhir-v2/tree/master/sof-js) takes such an approach. See [Functional Model](functional-model.html) for a detailed examination of this approach.
+ViewDefinitions can be modeled and implemented using the functional paradigm. In
+fact, the [JavaScript reference implementation](https://github.com/FHIR/sql-on-fhir-v2/tree/master/sof-js)
+takes such an approach. See [Functional Model](functional-model.html) for a
+detailed examination of this approach.
 
 ## FHIRPath Functionality
 
