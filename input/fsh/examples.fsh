@@ -37,8 +37,8 @@ Usage:  #example
 * status = #draft
 * resource = #Patient
 * meta
-  * profile[+] = "http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ShareableViewDefinition"
-  * profile[+] = "http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/TabularViewDefinition"
+  * profile[+] = "https://sql-on-fhir.org/ig/StructureDefinition/ShareableViewDefinition"
+  * profile[+] = "https://sql-on-fhir.org/ig/StructureDefinition/TabularViewDefinition"
 * select[+]
   * column[+]
     * path = "getResourceKey()"

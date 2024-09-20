@@ -1,5 +1,5 @@
 {
-  "$id": "http://hl7.org/fhir/uv/sql-on-fhir/tests",
+  "$id": "https://sql-on-fhir.org/ig/tests",
   "title": "SQL on FHIR tests schema",
   "description": "Standard format for JSON test definitions used to validate SQL on FHIR view runner implementations.",
   "type": "object",

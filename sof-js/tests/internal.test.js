@@ -42,7 +42,12 @@ describe('internal tests', () => {
           {
             forEach: 'contact',
             column: [{ name: 'contact_type', path: 'type' }],
-            select: [{ forEach: 'person', column: [{ name: 'name', path: 'name' }] }],
+            select: [
+              {
+                forEach: 'person',
+                column: [{ name: 'name', path: 'name' }],
+              },
+            ],
           },
         ],
       }),

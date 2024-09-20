@@ -1,5 +1,5 @@
 {
-  "$id": "http://hl7.org/fhir/uv/sql-on-fhir/tests",
+  "$id": "https://sql-on-fhir.org/ig/tests",
   "title": "SQL on FHIR Tests Schema",
   "description": "Schema for tests",
   "type": "object",

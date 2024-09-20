@@ -9,15 +9,15 @@ function getResourceKey(nodes) {
 }
 
 function getReferenceKey(nodes, opts) {
-  let resource = opts?.name;
+  let resource = opts?.name
   return nodes.flatMap((node) => {
     const parts = node.reference.replaceAll('//', '').split('/_history')[0].split('/')
-    const type = parts[parts.length - 2];
-    const key  = parts[parts.length - 1];
-    if(!resource) {
-      return [key];
-    } else if(resource && resource == type) {
-      return [key];
+    const type = parts[parts.length - 2]
+    const key = parts[parts.length - 1]
+    if (!resource) {
+      return [key]
+    } else if (resource && resource == type) {
+      return [key]
     } else {
       return []
     }
@@ -29,10 +29,9 @@ function ofType(ctx, nodes, a1, a2, a3) {
   return 'ups'
 }
 
-
 function rewrite_path(path) {
-  if(path.startsWith('$this')){
-    path =  'identity()' + path.slice('$this'.length)
+  if (path.startsWith('$this')) {
+    path = 'identity()' + path.slice('$this'.length)
   }
   const ofTypeRegex = /\.ofType\(([^)]+)\)/g
   let match
@@ -43,43 +42,45 @@ function rewrite_path(path) {
     const replacement = match[1].charAt(0).toUpperCase() + match[1].slice(1)
     path = path.replace(match[0], `${replacement}`)
   }
-  return path;
+  return path
 }
-
 
 let fhirpath_options = {
   userInvocationTable: {
-    getResourceKey:  { fn: getResourceKey, arity: { 0: [] } },
-    getReferenceKey: { fn: getReferenceKey, arity: { 0: [], 1: ['TypeSpecifier'] } },
-    identity:        { fn: (nodes) => nodes, arity: { 0: [] } },
-  }
+    getResourceKey: { fn: getResourceKey, arity: { 0: [] } },
+    getReferenceKey: {
+      fn: getReferenceKey,
+      arity: { 0: [], 1: ['TypeSpecifier'] },
+    },
+    identity: { fn: (nodes) => nodes, arity: { 0: [] } },
+  },
 }
 
 function process_constants(constants) {
   return constants.reduce((acc, x) => {
-    let name, val;
+    let name, val
     for (const key in x) {
-      if (key === "name") {
-        name = x[key];
+      if (key === 'name') {
+        name = x[key]
       }
-      if (key.startsWith("value")) {
-        val = x[key];
+      if (key.startsWith('value')) {
+        val = x[key]
       }
     }
-    acc[name] = val;
-    return acc;
-  }, {});
+    acc[name] = val
+    return acc
+  }, {})
 }
 
 export function fhirpath_evaluate(data, path, constants = []) {
-  return fhirpath.evaluate(data, rewrite_path(path), process_constants(constants), null, fhirpath_options);
+  return fhirpath.evaluate(data, rewrite_path(path), process_constants(constants), null, fhirpath_options)
 }
 
 export function fhirpath_validate(path) {
   try {
-    fhirpath.compile(path, null, fhirpath_options);
-    return true;
+    fhirpath.compile(path, null, fhirpath_options)
+    return true
   } catch (e) {
-    return false;
+    return false
   }
 }

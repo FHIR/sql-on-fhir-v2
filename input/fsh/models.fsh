@@ -111,7 +111,7 @@ criteria are defined by FHIRPath expressions.
         be used to represent the value within an ANSI SQL database.
       """
       * value 1..1 string "Value of tag"
-  * select 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select  "Nested select relative to a parent expression." """
+  * select 0..* contentReference https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition#ViewDefinition.select  "Nested select relative to a parent expression." """
   Nested select relative to a parent expression. If the parent `select` has a `forEach` or `forEachOrNull`, this child select will apply for each item in that expression. 
   """
   * forEach 0..1 string "A FHIRPath expression to retrieve the parent element(s) used in the containing select. The default is effectively `$this`." """
@@ -124,7 +124,7 @@ criteria are defined by FHIRPath expressions.
     with a Patient resource, a `forEachOrNull` on address will produce a row for each patient even if there are no addresses; it will
     simply set the address columns to `null`.
   """
-  * unionAll 0..* contentReference http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition#ViewDefinition.select  "Creates a union of all rows in the given selection structures." """
+  * unionAll 0..* contentReference https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition#ViewDefinition.select  "Creates a union of all rows in the given selection structures." """
     A `unionAll` combines the results of multiple selection structures. Each structure under the `unionAll` must produce the same column names
     and types. The results from each nested selection will then have their own row.
     """
