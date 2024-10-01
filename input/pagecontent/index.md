@@ -78,7 +78,7 @@ structure:
 ```json
 {
   "resourceType": "ViewDefinition",
-  "resource": "condition",
+  "resource": "Condition",
   "name": "diagnoses_view",
   "select": [
     {
