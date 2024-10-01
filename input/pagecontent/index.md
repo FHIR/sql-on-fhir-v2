@@ -44,7 +44,7 @@ structure:
 ```json
 {
   "resourceType": "ViewDefinition",
-  "resource": "patient",
+  "resource": "Patient",
   "name": "patient_demographics",
   "select": [
     {
