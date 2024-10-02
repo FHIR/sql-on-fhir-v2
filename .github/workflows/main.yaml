@@ -37,7 +37,7 @@ jobs:
         working-directory: test_report
         run: bun install && bun run prepare && bun run build
       - name: Build IG
-        run: bun i fsh-sushi && ./scripts/_updatePublisher.sh && ./scripts/_genonce.sh && cp -R test_report/public output/extra
+        run: bun i fsh-sushi && ./scripts/_updatePublisher.sh -y && ./scripts/_genonce.sh && cp -R test_report/public output/extra
       - name: Setup Pages
         uses: actions/configure-pages@v3
         if: ${{ github.ref == 'refs/heads/master' }}
