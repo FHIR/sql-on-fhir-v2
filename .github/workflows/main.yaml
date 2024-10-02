@@ -23,6 +23,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+      - run: export GEM_HOME="$HOME/gems" && export PATH="$HOME/gems/bin:$PATH" && gem install jekyll bundler
       - name: Install dependencies
         working-directory: sof-js
         run: bun install
