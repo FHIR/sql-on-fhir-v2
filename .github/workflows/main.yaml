@@ -12,6 +12,11 @@ jobs:
     name: Test and Deploy Playground
     steps:
       - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.0'
+      - run: export GEM_HOME="$HOME/gems" && export PATH="$HOME/gems/bin:$PATH" && gem install jekyll bundler
+      - run: export GEM_HOME="$HOME/gems" && export PATH="$HOME/gems/bin:$PATH" && jekyll -h
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: latest
@@ -23,11 +28,6 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.0'
-      - run: export GEM_HOME="$HOME/gems" && export PATH="$HOME/gems/bin:$PATH" && gem install jekyll bundler
-      - run: export PATH="$HOME/gems/bin:$PATH" && jekyll -h
       - name: Install dependencies
         working-directory: sof-js
         run: bun install
