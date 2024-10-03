@@ -7,10 +7,10 @@
      {title: "Overview", href: "/index.html"},
      {title: "View Definition", href: "/StructureDefinition-ViewDefinition.html"},
      {title: "Artifacts", href: "/artifacts.html"},
+     {title: "Contributing", href: "/contributing.html"},
      {title: "Playground", href: prefix + "/playground.html"},
      {title: "Tests", href: prefix + "/tests.html"},
-     {title: "Implementations", href: prefix + "/impls.html"},
-     {title: "Contributing", href: "/contributing.html"}
+     {title: "Implementations", href: prefix + "/impls.html"}
  ]
 
 </script>
@@ -20,10 +20,10 @@
 
  #family-nav {
 
-    line-height: 50px;
-    float: right;
-    margin-top: 4px;
-    margin-bottom: 8px;
+     line-height: 50px;
+     float: right;
+     margin-top: 4px;
+     margin-bottom: 8px;
  }
 
  #project-nav {
