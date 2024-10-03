@@ -44,33 +44,29 @@
 
 </style>
 
-<div id="segment-header" class="segment">
-    <div style="position:relative; height: 70px; padding: 0 3em;">
-        <div id="project-nav" style="float: left">
-            <a no-external="true" id="project-logo" href="index.html">
-                <img style="height: 50px;" src="http://sql-on-fhir.org/assets/images/sof-logo.svg" alt="SQL on FHIR" height="50">
-            </a>
-        </div>
+<div class="flex my-1 mx-6 space-x-8">
+    <a no-external="true" id="project-logo" href="index.html">
+        <img style="height: 50px;" src="http://sql-on-fhir.org/assets/images/sof-logo.svg" alt="SQL on FHIR">
+    </a>
 
-        <div id="family-nav">
-            <a no-external="true" id="family-logo" href="http://hl7.org/fhir">
-                <img style="height: 50px;"
-                     src="http://sql-on-fhir.org/assets/images/fhir-logo-www.png" alt="FHIR website">
-            </a>
-        </div>
-
-        <div id="ig-status">
-            <p><span style="font-size:12pt;font-weight:bold">SQL on FHIR</span>
+    <div class="flex-1">
+        <center>
+            <p>
+                <span style="font-size:12pt;font-weight:bold">SQL on FHIR</span>
                 <br>
                 <span style="display:inline-block;">2.0.0-pre - ci-build
                     <img style="height: 16px; display: inline;" src="http://sql-on-fhir.org/assets/images/001.svg" alt="International flag" title="International">
                 </span>
             </p>
-        </div>
+        </center>
     </div>
+
+    <a no-external="true" id="family-logo" href="http://hl7.org/fhir">
+        <img style="height: 50px;" src="http://sql-on-fhir.org/assets/images/fhir-logo-www.png" alt="FHIR website">
+    </a>
 </div>
 
-<div class="flex space-x-4 border-b items-center text-white" style="background-color: #525ebb; padding: 0.5rem 3em;">
+<div class="flex space-x-4 border-b items-center text-sm" style="color: #e6e6e6; background-color: #525ebb; padding: 0.5rem 3em;">
     {#each items as item}
         <a href="{item.href}" class="px-2 hover:text-white hover:bg-gray-150">{item.title}</a>
     {/each}
