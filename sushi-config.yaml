@@ -73,10 +73,11 @@ menu:
   Overview: index.html
   View Definition: StructureDefinition-ViewDefinition.html
   Artifacts: artifacts.html
-  Playground: extra/playground.html
-  Tests: extra/tests.html
-  Implementations: extra/impls.html
   Contributing: contributing.html
+  # extra/playground.html does not work - TODO: use relative ulrs
+  Playground: http://sql-on-fhir.org/extra/playground.html
+  Tests: http://sql-on-fhir.org/extra/tests.html
+  Implementations: http://sql-on-fhir.org/extra/impls.html
 
 # ╭───────────────────────────Less Common Implementation Guide Properties──────────────────────────╮
 # │  Uncomment the properties below to configure additional properties on the ImplementationGuide  │
