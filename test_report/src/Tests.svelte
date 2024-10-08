@@ -1,8 +1,6 @@
 <script>
  import { onMount } from "svelte";
 
- export let name;
-
  export let menu = [];
  export let impls = [];
  export let current = {};

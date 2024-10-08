@@ -3,7 +3,7 @@
     "name": "Ref.Impl",
     "url": "https://github.com/FHIR/sql-on-fhir-v2",
     "description": "Official reference implementation in JavaScript",
-    "testResultsUrl": "https://fhir.github.io/sql-on-fhir-v2/test-results.json"
+    "testResultsUrl": "http://sql-on-fhir.org/extra/test-results.json"
   },
   {
     "name": "Aidbox",
