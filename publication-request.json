@@ -6,7 +6,7 @@
   "mode" : "milestone",
   "status" : "release",
   "sequence" : "R2",
-  "first" : true,
+  "first" : false,
   "title" : "SQL on FHIR",
   "ci-build" : "https://build.fhir.org/ig/FHIR/sql-on-fhir-v2",
   "category" : "Infrastructure",
