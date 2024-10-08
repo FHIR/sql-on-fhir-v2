@@ -53,28 +53,28 @@ jobs:
 
       # Install dependencies for sof-js
       - name: Install dependencies
-        working-directory: sof-js
+        working-directory: current_branch/sof-js
         run: bun install
 
       # Run code formatting checks
       - name: Check formatting
-        working-directory: sof-js
+        working-directory: current_branch/sof-js
         run: bun run check-fmt
 
       # Validate JSON tests
       - name: Validate JSON tests
-        working-directory: sof-js
+        working-directory: current_branch/sof-js
         run: bun run validate
 
       # Run tests
       - name: Run tests
-        working-directory: sof-js
+        working-directory: current_branch/sof-js
         run: bun run test
         continue-on-error: true
 
       # Build test report and output to playground directory
       - name: Build test report
-        working-directory: test_report
+        working-directory: current_branch/test_report
         run: |
           bun install
           bun run prepare
@@ -82,10 +82,11 @@ jobs:
         # Copy test_report output to the playground directory in the base content
       - run: |
           mkdir -p base_content/playground
-          cp -R test_report/public/* base_content/playground/
+          cp -R current_branch/test_report/public/* base_content/playground/
 
       # Build IG and output to ig/latest directory
       - name: Build IG
+        working-directory: current_branch
         run: |
           export GEM_HOME="$HOME/gems"
           export PATH="$HOME/gems/bin:$HOME/.bun/bin:$PATH"
