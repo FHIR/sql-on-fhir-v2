@@ -40,9 +40,318 @@
       "valueTime": "12:34"
     },
     {
+      "resourceType": "Observation",
+      "id": "o5",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:01"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o6",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:00.01"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o7",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:00.000001"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o8",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:15.4621"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o9",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:59.00000036"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o10",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:08.7"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o11",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:27.918272"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o12",
+      "code": {
+        "text": "code"
+      },
+      "valueTime": "12:34:42.987654321"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o13",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "1900-02"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o14",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2010-10-10T15:21:18"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o15",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2010-10-10T13:41:01.898998"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o16",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2010-10-10T11:45:50.12345-10:00"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o17",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2010-10-10T19:07:13.123456789+09:00"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o18",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2010-10-10T07:39:01.5+05:00"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o19",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2020-05-17T18:19:43.6789Z"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o20",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2022-03-15T12:30:45-08:00"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o21",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2018-03-15T21:43-05:00"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o22",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2016-07-23T14:35Z"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o23",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2009-11-27T05:18+03:00"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o24",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2005"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o25",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueDateTime": "2007-03"
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o26",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 1.587
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o27",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 10235.66
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o28",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 353600.89123
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o29",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": -353600.89123
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o30",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 0.1
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o31",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 123456789123.1234
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o32",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 0.007
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "o33",
+      "code": {
+        "text": "code"
+      },
+      "status": "final",
+      "valueQuantity": {
+        "value": 15.080
+      }
+    },
+    {
       "resourceType": "Patient",
       "id": "p1",
       "birthDate": "1970-06"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p2",
+      "birthDate": "1999-08"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p3",
+      "birthDate": "2003"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p4",
+      "birthDate": "2000-02"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p5",
+      "birthDate": "2001-02"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p6",
+      "birthDate": "1994-05-18"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p7",
+      "birthDate": "2100-02"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p8",
+      "birthDate": "1900-02"
+    },
+    {
+      "resourceType": "Patient",
+      "id": "p9",
+      "birthDate": "2024-02"
     }
   ],
   "tests": [
@@ -72,7 +381,7 @@
       "expect": [
         {
           "id": "o1",
-          "decimal": 0.95
+          "decimal": 1.00000000
         },
         {
           "id": "o2",
@@ -85,6 +394,122 @@
         {
           "id": "o4",
           "decimal": null
+        },
+        {
+          "id": "o5",
+          "decimal": null
+        },
+        {
+          "id": "o6",
+          "decimal": null
+        },
+        {
+          "id": "o7",
+          "decimal": null
+        },
+        {
+          "id": "o8",
+          "decimal": null
+        },
+        {
+          "id": "o9",
+          "decimal": null
+        },
+        {
+          "id": "o10",
+          "decimal": null
+        },
+        {
+          "id": "o11",
+          "decimal": null
+        },
+        {
+          "id": "o12",
+          "decimal": null
+        },
+        {
+          "id": "o13",
+          "decimal": null
+        },
+        {
+          "id": "o14",
+          "decimal": null
+        },
+        {
+          "id": "o15",
+          "decimal": null
+        },
+        {
+          "id": "o16",
+          "decimal": null
+        },
+        {
+          "id": "o17",
+          "decimal": null
+        },
+        {
+          "id": "o18",
+          "decimal": null
+        },
+        {
+          "id": "o19",
+          "decimal": null
+        },
+        {
+          "id": "o20",
+          "decimal": null
+        },
+        {
+          "id": "o21",
+          "decimal": null
+        },
+        {
+          "id": "o22",
+          "decimal": null
+        },
+        {
+          "id": "o23",
+          "decimal": null
+        },
+        {
+          "id": "o24",
+          "decimal": null
+        },
+        {
+          "id": "o25",
+          "decimal": null
+        },
+        {
+          "id": "o26",
+          "decimal": 1.58700000000000000
+        },
+        {
+          "id": "o27",
+          "decimal": 10235.66000000000000000
+        },
+        {
+          "id": "o28",
+          "decimal": 353600.89123000000000000
+        },
+        {
+          "id": "o29",
+          "decimal": -353600.89123000000000000
+        },
+        {
+          "id": "o30",
+          "decimal": 0.10000000000000000
+        },
+        {
+          "id": "o31",
+          "decimal": 123456789123.12340000000000000
+        },
+        {
+          "id": "o32",
+          "decimal": 0.00700000000000000
+        },
+        {
+          "id": "o33",
+          "decimal": 15.08000000000000000
         }
       ]
     },
@@ -114,7 +539,7 @@
       "expect": [
         {
           "id": "o1",
-          "decimal": 1.05
+          "decimal": 1.09999999
         },
         {
           "id": "o2",
@@ -127,6 +552,122 @@
         {
           "id": "o4",
           "decimal": null
+        },
+        {
+          "id": "o5",
+          "decimal": null
+        },
+        {
+          "id": "o6",
+          "decimal": null
+        },
+        {
+          "id": "o7",
+          "decimal": null
+        },
+        {
+          "id": "o8",
+          "decimal": null
+        },
+        {
+          "id": "o9",
+          "decimal": null
+        },
+        {
+          "id": "o10",
+          "decimal": null
+        },
+        {
+          "id": "o11",
+          "decimal": null
+        },
+        {
+          "id": "o12",
+          "decimal": null
+        },
+        {
+          "id": "o13",
+          "decimal": null
+        },
+        {
+          "id": "o14",
+          "decimal": null
+        },
+        {
+          "id": "o15",
+          "decimal": null
+        },
+        {
+          "id": "o16",
+          "decimal": null
+        },
+        {
+          "id": "o17",
+          "decimal": null
+        },
+        {
+          "id": "o18",
+          "decimal": null
+        },
+        {
+          "id": "o19",
+          "decimal": null
+        },
+        {
+          "id": "o20",
+          "decimal": null
+        },
+        {
+          "id": "o21",
+          "decimal": null
+        },
+        {
+          "id": "o22",
+          "decimal": null
+        },
+        {
+          "id": "o23",
+          "decimal": null
+        },
+        {
+          "id": "o24",
+          "decimal": null
+        },
+        {
+          "id": "o25",
+          "decimal": null
+        },
+        {
+          "id": "o26",
+          "decimal": 1.58799999999999999
+        },
+        {
+          "id": "o27",
+          "decimal": 10235.66999999999999999
+        },
+        {
+          "id": "o28",
+          "decimal": 353600.89123999999999999
+        },
+        {
+          "id": "o29",
+          "decimal": -353600.89123999999999999
+        },
+        {
+          "id": "o30",
+          "decimal": 0.19999999999999999
+        },
+        {
+          "id": "o31",
+          "decimal": 123456789123.12349999999999999
+        },
+        {
+          "id": "o32",
+          "decimal": 0.00799999999999999
+        },
+        {
+          "id": "o33",
+          "decimal": 15.08099999999999999
         }
       ]
     },
@@ -160,7 +701,7 @@
         },
         {
           "id": "o2",
-          "datetime": "2010-10-10T00:00:00.000+14:00"
+          "datetime": "2010-10-10T00:00:00.000000000+14:00"
         },
         {
           "id": "o3",
@@ -168,6 +709,122 @@
         },
         {
           "id": "o4",
+          "datetime": null
+        },
+        {
+          "id": "o5",
+          "datetime": null
+        },
+        {
+          "id": "o6",
+          "datetime": null
+        },
+        {
+          "id": "o7",
+          "datetime": null
+        },
+        {
+          "id": "o8",
+          "datetime": null
+        },
+        {
+          "id": "o9",
+          "datetime": null
+        },
+        {
+          "id": "o10",
+          "datetime": null
+        },
+        {
+          "id": "o11",
+          "datetime": null
+        },
+        {
+          "id": "o12",
+          "datetime": null
+        },
+        {
+          "id": "o13",
+          "datetime": "1900-02-01T00:00:00.000000000+14:00"
+        },
+        {
+          "id": "o14",
+          "datetime": "2010-10-10T15:21:18.000000000+14:00"
+        },
+        {
+          "id": "o15",
+          "datetime": "2010-10-10T13:41:01.898998000+14:00"
+        },
+        {
+          "id": "o16",
+          "datetime": "2010-10-10T11:45:50.123450000-10:00"
+        },
+        {
+          "id": "o17",
+          "datetime": "2010-10-10T19:07:13.123456789+09:00"
+        },
+        {
+          "id": "o18",
+          "datetime": "2010-10-10T07:39:01.500000000+05:00"
+        },
+        {
+          "id": "o19",
+          "datetime": "2020-05-17T18:19:43.678900000Z"
+        },
+        {
+          "id": "o20",
+          "datetime": "2022-03-15T12:30:45.000000000-08:00"
+        },
+        {
+          "id": "o21",
+          "datetime": "2018-03-15T21:43:00.000000000-05:00"
+        },
+        {
+          "id": "o22",
+          "datetime": "2016-07-23T14:35:00.000000000Z"
+        },
+        {
+          "id": "o23",
+          "datetime": "2009-11-27T05:18:00.000000000+03:00"
+        },
+        {
+          "id": "o24",
+          "datetime": "2005-01-01T00:00:00.000000000+14:00"
+        },
+        {
+          "id": "o25",
+          "datetime": "2007-03-01T00:00:00.000000000+14:00"
+        },
+        {
+          "id": "o26",
+          "datetime": null
+        },
+        {
+          "id": "o27",
+          "datetime": null
+        },
+        {
+          "id": "o28",
+          "datetime": null
+        },
+        {
+          "id": "o29",
+          "datetime": null
+        },
+        {
+          "id": "o30",
+          "datetime": null
+        },
+        {
+          "id": "o31",
+          "datetime": null
+        },
+        {
+          "id": "o32",
+          "datetime": null
+        },
+        {
+          "id": "o33",
           "datetime": null
         }
       ]
@@ -202,7 +859,7 @@
         },
         {
           "id": "o2",
-          "datetime": "2010-10-10T23:59:59.999-12:00"
+          "datetime": "2010-10-10T23:59:59.999999999-12:00"
         },
         {
           "id": "o3",
@@ -210,6 +867,122 @@
         },
         {
           "id": "o4",
+          "datetime": null
+        },
+        {
+          "id": "o5",
+          "datetime": null
+        },
+        {
+          "id": "o6",
+          "datetime": null
+        },
+        {
+          "id": "o7",
+          "datetime": null
+        },
+        {
+          "id": "o8",
+          "datetime": null
+        },
+        {
+          "id": "o9",
+          "datetime": null
+        },
+        {
+          "id": "o10",
+          "datetime": null
+        },
+        {
+          "id": "o11",
+          "datetime": null
+        },
+        {
+          "id": "o12",
+          "datetime": null
+        },
+        {
+          "id": "o13",
+          "datetime": "1900-02-28T23:59:59.999999999-12:00"
+        },
+        {
+          "id": "o14",
+          "datetime": "2010-10-10T15:21:18.999999999-12:00"
+        },
+        {
+          "id": "o15",
+          "datetime": "2010-10-10T13:41:01.898998999-12:00"
+        },
+        {
+          "id": "o16",
+          "datetime": "2010-10-10T11:45:50.123459999-10:00"
+        },
+        {
+          "id": "o17",
+          "datetime": "2010-10-10T19:07:13.123456789+09:00"
+        },
+        {
+          "id": "o18",
+          "datetime": "2010-10-10T07:39:01.599999999+05:00"
+        },
+        {
+          "id": "o19",
+          "datetime": "2020-05-17T18:19:43.678999999Z"
+        },
+        {
+          "id": "o20",
+          "datetime": "2022-03-15T12:30:45.999999999-08:00"
+        },
+        {
+          "id": "o21",
+          "datetime": "2018-03-15T21:43:59.999999999-05:00"
+        },
+        {
+          "id": "o22",
+          "datetime": "2016-07-23T14:35:59.999999999Z"
+        },
+        {
+          "id": "o23",
+          "datetime": "2009-11-27T05:18:59.999999999+03:00"
+        },
+        {
+          "id": "o24",
+          "datetime": "2005-12-31T23:59:59.999999999-12:00"
+        },
+        {
+          "id": "o25",
+          "datetime": "2007-03-31T23:59:59.999999999-12:00"
+        },
+        {
+          "id": "o26",
+          "datetime": null
+        },
+        {
+          "id": "o27",
+          "datetime": null
+        },
+        {
+          "id": "o28",
+          "datetime": null
+        },
+        {
+          "id": "o29",
+          "datetime": null
+        },
+        {
+          "id": "o30",
+          "datetime": null
+        },
+        {
+          "id": "o31",
+          "datetime": null
+        },
+        {
+          "id": "o32",
+          "datetime": null
+        },
+        {
+          "id": "o33",
           "datetime": null
         }
       ]
@@ -241,6 +1014,38 @@
         {
           "id": "p1",
           "date": "1970-06-01"
+        },
+        {
+          "id": "p2",
+          "date": "1999-08-01"
+        },
+        {
+          "id": "p3",
+          "date": "2003-01-01"
+        },
+        {
+          "id": "p4",
+          "date": "2000-02-01"
+        },
+        {
+          "id": "p5",
+          "date": "2001-02-01"
+        },
+        {
+          "id": "p6",
+          "date": "1994-05-18"
+        },
+        {
+          "id": "p7",
+          "date": "2100-02-01"
+        },
+        {
+          "id": "p8",
+          "date": "1900-02-01"
+        },
+        {
+          "id": "p9",
+          "date": "2024-02-01"
         }
       ]
     },
@@ -271,6 +1076,38 @@
         {
           "id": "p1",
           "date": "1970-06-30"
+        },
+        {
+          "id": "p2",
+          "date": "1999-08-31"
+        },
+        {
+          "id": "p3",
+          "date": "2003-12-31"
+        },
+        {
+          "id": "p4",
+          "date": "2000-02-29"
+        },
+        {
+          "id": "p5",
+          "date": "2001-02-28"
+        },
+        {
+          "id": "p6",
+          "date": "1994-05-18"
+        },
+        {
+          "id": "p7",
+          "date": "2100-02-28"
+        },
+        {
+          "id": "p8",
+          "date": "1900-02-28"
+        },
+        {
+          "id": "p9",
+          "date": "2024-02-29"
         }
       ]
     },
@@ -312,7 +1149,123 @@
         },
         {
           "id": "o4",
-          "time": "12:34:00.000"
+          "time": "12:34:00.000000000"
+        },
+        {
+          "id": "o5",
+          "time": "12:34:01.000000000"
+        },
+        {
+          "id": "o6",
+          "time": "12:34:00.010000000"
+        },
+        {
+          "id": "o7",
+          "time": "12:34:00.000001000"
+        },
+        {
+          "id": "o8",
+          "time": "12:34:15.462100000"
+        },
+        {
+          "id": "o9",
+          "time": "12:34:59.000000360"
+        },
+        {
+          "id": "o10",
+          "time": "12:34:08.700000000"
+        },
+        {
+          "id": "o11",
+          "time": "12:34:27.918272000"
+        },
+        {
+          "id": "o12",
+          "time": "12:34:42.987654321"
+        },
+        {
+          "id": "o13",
+          "time": null
+        },
+        {
+          "id": "o14",
+          "time": null
+        },
+        {
+          "id": "o15",
+          "time": null
+        },
+        {
+          "id": "o16",
+          "time": null
+        },
+        {
+          "id": "o17",
+          "time": null
+        },
+        {
+          "id": "o18",
+          "time": null
+        },
+        {
+          "id": "o19",
+          "time": null
+        },
+        {
+          "id": "o20",
+          "time": null
+        },
+        {
+          "id": "o21",
+          "time": null
+        },
+        {
+          "id": "o22",
+          "time": null
+        },
+        {
+          "id": "o23",
+          "time": null
+        },
+        {
+          "id": "o24",
+          "time": null
+        },
+        {
+          "id": "o25",
+          "time": null
+        },
+        {
+          "id": "o26",
+          "time": null
+        },
+        {
+          "id": "o27",
+          "time": null
+        },
+        {
+          "id": "o28",
+          "time": null
+        },
+        {
+          "id": "o29",
+          "time": null
+        },
+        {
+          "id": "o30",
+          "time": null
+        },
+        {
+          "id": "o31",
+          "time": null
+        },
+        {
+          "id": "o32",
+          "time": null
+        },
+        {
+          "id": "o33",
+          "time": null
         }
       ]
     },
@@ -354,7 +1307,123 @@
         },
         {
           "id": "o4",
-          "time": "12:34:59.999"
+          "time": "12:34:59.999999999"
+        },
+        {
+          "id": "o5",
+          "time": "12:34:01.999999999"
+        },
+        {
+          "id": "o6",
+          "time": "12:34:00.019999999"
+        },
+        {
+          "id": "o7",
+          "time": "12:34:00.000001999"
+        },
+        {
+          "id": "o8",
+          "time": "12:34:15.462199999"
+        },
+        {
+          "id": "o9",
+          "time": "12:34:59.000000369"
+        },
+        {
+          "id": "o10",
+          "time": "12:34:08.799999999"
+        },
+        {
+          "id": "o11",
+          "time": "12:34:27.918272999"
+        },
+        {
+          "id": "o12",
+          "time": "12:34:42.987654321"
+        },
+        {
+          "id": "o13",
+          "time": null
+        },
+        {
+          "id": "o14",
+          "time": null
+        },
+        {
+          "id": "o15",
+          "time": null
+        },
+        {
+          "id": "o16",
+          "time": null
+        },
+        {
+          "id": "o17",
+          "time": null
+        },
+        {
+          "id": "o18",
+          "time": null
+        },
+        {
+          "id": "o19",
+          "time": null
+        },
+        {
+          "id": "o20",
+          "time": null
+        },
+        {
+          "id": "o21",
+          "time": null
+        },
+        {
+          "id": "o22",
+          "time": null
+        },
+        {
+          "id": "o23",
+          "time": null
+        },
+        {
+          "id": "o24",
+          "time": null
+        },
+        {
+          "id": "o25",
+          "time": null
+        },
+        {
+          "id": "o26",
+          "time": null
+        },
+        {
+          "id": "o27",
+          "time": null
+        },
+        {
+          "id": "o28",
+          "time": null
+        },
+        {
+          "id": "o29",
+          "time": null
+        },
+        {
+          "id": "o30",
+          "time": null
+        },
+        {
+          "id": "o31",
+          "time": null
+        },
+        {
+          "id": "o32",
+          "time": null
+        },
+        {
+          "id": "o33",
+          "time": null
         }
       ]
     }
