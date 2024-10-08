@@ -1,0 +1,305 @@
+{
+  "date" : "Tue, 08 Oct, 2024 20:11:57 +1000",
+  "doco" : "For each file: start is seconds after start activity occurred. Length = milliseconds activity took",
+  "files" : [
+    {
+      "name" : "/fsh-generated/resources/ImplementationGuide-org.sql-on-fhir.ig.json",
+      "size" : 7246,
+      "processes" : [
+        {
+          "activity" : "load",
+          "start" : 33,
+          "length" : 8
+        },
+        {
+          "activity" : "checkR4R4B",
+          "start" : 33,
+          "length" : 1
+        },
+        {
+          "activity" : "generateNarratives",
+          "start" : 33,
+          "length" : 91
+        },
+        {
+          "activity" : "validate",
+          "start" : 36,
+          "length" : 304
+        },
+        {
+          "activity" : "generate1",
+          "start" : 36,
+          "length" : 40
+        },
+        {
+          "activity" : "generate2",
+          "start" : 41,
+          "length" : 52
+        },
+        {
+          "activity" : "generateValidationPack",
+          "start" : 56,
+          "length" : 1
+        }
+      ]
+    },
+    {
+      "name" : "fsh-generated/resources/StructureDefinition-ShareableViewDefinition.json",
+      "size" : 1445,
+      "processes" : [
+        {
+          "activity" : "loadResources",
+          "start" : 33,
+          "length" : 11
+        },
+        {
+          "activity" : "load",
+          "start" : 33,
+          "length" : 19
+        },
+        {
+          "activity" : "generateSnapshots",
+          "start" : 33,
+          "length" : 30
+        },
+        {
+          "activity" : "generateNarratives",
+          "start" : 33,
+          "length" : 20
+        },
+        {
+          "activity" : "validate",
+          "start" : 34,
+          "length" : 1639
+        },
+        {
+          "activity" : "scanForUsageStats",
+          "start" : 36,
+          "length" : 1
+        },
+        {
+          "activity" : "generate1",
+          "start" : 36,
+          "length" : 127
+        },
+        {
+          "activity" : "generate2",
+          "start" : 41,
+          "length" : 2699
+        },
+        {
+          "activity" : "generateValidationPack",
+          "start" : 56,
+          "length" : 4
+        },
+        {
+          "activity" : "scanProfilesForR5",
+          "start" : 62,
+          "length" : 1
+        }
+      ]
+    },
+    {
+      "name" : "fsh-generated/resources/StructureDefinition-TabularViewDefinition.json",
+      "size" : 1800,
+      "processes" : [
+        {
+          "activity" : "loadResources",
+          "start" : 33,
+          "length" : 9
+        },
+        {
+          "activity" : "load",
+          "start" : 33,
+          "length" : 6
+        },
+        {
+          "activity" : "generateSnapshots",
+          "start" : 33,
+          "length" : 9
+        },
+        {
+          "activity" : "generateNarratives",
+          "start" : 33,
+          "length" : 11
+        },
+        {
+          "activity" : "validate",
+          "start" : 35,
+          "length" : 103
+        },
+        {
+          "activity" : "generate1",
+          "start" : 36,
+          "length" : 115
+        },
+        {
+          "activity" : "generate2",
+          "start" : 43,
+          "length" : 373
+        },
+        {
+          "activity" : "generateValidationPack",
+          "start" : 56,
+          "length" : 5
+        },
+        {
+          "activity" : "scanExamplesForR5",
+          "start" : 62,
+          "length" : 1
+        }
+      ]
+    },
+    {
+      "name" : "fsh-generated/resources/StructureDefinition-ViewDefinition.json",
+      "size" : 20443,
+      "processes" : [
+        {
+          "activity" : "loadResources",
+          "start" : 33,
+          "length" : 10
+        },
+        {
+          "activity" : "load",
+          "start" : 33,
+          "length" : 8
+        },
+        {
+          "activity" : "generateNarratives",
+          "start" : 34,
+          "length" : 194
+        },
+        {
+          "activity" : "validate",
+          "start" : 35,
+          "length" : 142
+        },
+        {
+          "activity" : "generate1",
+          "start" : 36,
+          "length" : 284
+        },
+        {
+          "activity" : "generate2",
+          "start" : 44,
+          "length" : 379
+        },
+        {
+          "activity" : "generateValidationPack",
+          "start" : 56,
+          "length" : 16
+        }
+      ]
+    },
+    {
+      "name" : "/fsh-generated/resources/binary-PatientAddresses.json",
+      "size" : 763,
+      "processes" : [
+        {
+          "activity" : "validate",
+          "start" : 36,
+          "length" : 4
+        },
+        {
+          "activity" : "generate1",
+          "start" : 37,
+          "length" : 17
+        },
+        {
+          "activity" : "generate2",
+          "start" : 44,
+          "length" : 19
+        }
+      ]
+    },
+    {
+      "name" : "/fsh-generated/resources/binary-PatientAndContactAddressUnion.json",
+      "size" : 1283,
+      "processes" : [
+        {
+          "activity" : "validate",
+          "start" : 36,
+          "length" : 4
+        },
+        {
+          "activity" : "generate1",
+          "start" : 37,
+          "length" : 14
+        },
+        {
+          "activity" : "generate2",
+          "start" : 44,
+          "length" : 16
+        }
+      ]
+    },
+    {
+      "name" : "/fsh-generated/resources/binary-PatientDemographics.json",
+      "size" : 731,
+      "processes" : [
+        {
+          "activity" : "validate",
+          "start" : 36,
+          "length" : 2
+        },
+        {
+          "activity" : "generate1",
+          "start" : 37,
+          "length" : 15
+        },
+        {
+          "activity" : "generate2",
+          "start" : 44,
+          "length" : 14
+        }
+      ]
+    },
+    {
+      "name" : "/fsh-generated/resources/binary-ShareablePatientDemographics.json",
+      "size" : 1143,
+      "processes" : [
+        {
+          "activity" : "validate",
+          "start" : 36,
+          "length" : 9
+        },
+        {
+          "activity" : "generate1",
+          "start" : 37,
+          "length" : 14
+        },
+        {
+          "activity" : "generate2",
+          "start" : 44,
+          "length" : 14
+        }
+      ]
+    },
+    {
+      "name" : "/fsh-generated/resources/binary-UsCoreBloodPressures.json",
+      "size" : 2133,
+      "processes" : [
+        {
+          "activity" : "load-configure",
+          "start" : 33,
+          "length" : 1
+        },
+        {
+          "activity" : "validate",
+          "start" : 36,
+          "length" : 4
+        },
+        {
+          "activity" : "generate1",
+          "start" : 37,
+          "length" : 15
+        },
+        {
+          "activity" : "generate2",
+          "start" : 44,
+          "length" : 12
+        }
+      ]
+    }
+  ]
+}

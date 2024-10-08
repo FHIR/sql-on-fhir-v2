@@ -1,0 +1,40 @@
+{
+  "codeSystems" : [
+    {
+      "url" : "http://hl7.org/fhir/FHIR-version",
+      "version" : "5.0.0",
+      "status" : "active",
+      "name" : "FHIRVersion",
+      "title" : "FHIRVersion",
+      "description" : "All published FHIR Versions.",
+      "oids" : ["2.16.840.1.113883.4.642.4.1310"],
+      "uses" : {
+      },
+      "http://hl7.org/fhir/R5/valueset-FHIR-version.html" : "FHIRVersion"
+    },
+    {
+      "url" : "http://hl7.org/fhir/fhir-types",
+      "version" : "5.0.0",
+      "status" : "active",
+      "name" : "FHIRTypes",
+      "title" : "All FHIR Types",
+      "description" : "One of the types defined as part of this version of FHIR.",
+      "oids" : ["2.16.840.1.113883.4.642.4.1802"],
+      "uses" : {
+      },
+      "http://hl7.org/fhir/R5/valueset-resource-types.html" : "Resource Types"
+    },
+    {
+      "url" : "http://hl7.org/fhir/publication-status",
+      "version" : "5.0.0",
+      "status" : "active",
+      "name" : "PublicationStatus",
+      "title" : "PublicationStatus",
+      "description" : "The lifecycle status of an artifact.",
+      "oids" : ["2.16.840.1.113883.4.642.4.4"],
+      "uses" : {
+      },
+      "http://hl7.org/fhir/R5/valueset-publication-status.html" : "PublicationStatus"
+    }
+  ]
+}

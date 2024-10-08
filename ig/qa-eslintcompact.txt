@@ -1,0 +1,27 @@
+SQLonFHIR
+=========================================
+
+Generic: line 0, col 0, Error - The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved (NOTFOUND)
+Generic: line 0, col 0, Error - The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved (NOTFOUND)
+Generic: line 0, col 0, Error - The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved (NOTFOUND)
+Generic: line 0, col 0, Error - The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved (NOTFOUND)
+Generic: line 0, col 0, Error - The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved (NOTFOUND)
+Generic: line 0, col 0, Error - The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved (NOTFOUND)
+Generic: line 0, col 0, Error - The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved (NOTFOUND)
+Generic: line 0, col 0, Error - The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved (NOTFOUND)
+Generic: line 0, col 0, Error - The link '#supported-fhirpath-functionality' for "supported FHIRPath functions" cannot be resolved (valid targets: 475 targets) (NOTFOUND)
+Generic: line 0, col 0, Warning - The HTML fragment 'ip-statements.xhtml' is not included anywhere in the produced implementation guide (NOTFOUND)
+Generic: line 0, col 0, Warning - An HTML fragment from the set [dependency-table.xhtml, dependency-table-short.xhtml] is not included anywhere in the produced implementation guide (NOTFOUND)
+Generic: line 0, col 0, Warning - The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide (NOTFOUND)
+/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/resources/ImplementationGuide-org.sql-on-fhir.ig.json: line 1, col 1228, Info - Reference to deprecated ValueSet http://hl7.org/fhir/ValueSet/jurisdiction|5.0.0 (BUSINESSRULE)
+/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/resources/StructureDefinition-ShareableViewDefinition.json: line 1, col 19440, Info - Reference to deprecated ValueSet http://hl7.org/fhir/ValueSet/jurisdiction|5.0.0 (BUSINESSRULE)
+/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/resources/StructureDefinition-ShareableViewDefinition.json: line 0, col 0, Warning - The definition for the element 'ViewDefinition.resource' binds to the value set 'http://hl7.org/fhir/ValueSet/resource-types' which is experimental, but this structure is not labeled as experimental (BUSINESSRULE)
+/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/resources/StructureDefinition-TabularViewDefinition.json: line 1, col 13326, Info - Reference to deprecated ValueSet http://hl7.org/fhir/ValueSet/jurisdiction|5.0.0 (BUSINESSRULE)
+/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/resources/StructureDefinition-TabularViewDefinition.json: line 0, col 0, Warning - The definition for the element 'ViewDefinition.resource' binds to the value set 'http://hl7.org/fhir/ValueSet/resource-types' which is experimental, but this structure is not labeled as experimental (BUSINESSRULE)
+/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/resources/StructureDefinition-ViewDefinition.json: line 1, col 103636, Warning - Hyperlink '#ViewDefinition.select' at 'div/table/tr/td/a' for 'select' resolves to multiple targets ($/differential/element/id, $/snapshot/element/id, $/text/div/table/tr/td/a/@name) (INVALID)
+/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/resources/StructureDefinition-ViewDefinition.json: line 1, col 104265, Info - Reference to deprecated ValueSet http://hl7.org/fhir/ValueSet/jurisdiction|5.0.0 (BUSINESSRULE)
+/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/resources/StructureDefinition-ViewDefinition.json: line 0, col 0, Warning - The definition for the element 'ViewDefinition.resource' binds to the value set 'http://hl7.org/fhir/ValueSet/resource-types' which is experimental, but this structure is not labeled as experimental (BUSINESSRULE)
+/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/resources/StructureDefinition-ViewDefinition.json: line 0, col 0, Warning - The definition for the element 'ViewDefinition.resource' binds to the value set 'http://hl7.org/fhir/ValueSet/resource-types' which is experimental, but this structure is not labeled as experimental (BUSINESSRULE)
+
+err = 0, warn = 8, info = 4
+IG Publisher Version: 1.6.25

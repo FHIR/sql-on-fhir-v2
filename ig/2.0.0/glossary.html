@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <title>Glossary - SQL on FHIR v2.0.0</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content="http://hl7.org/fhir"/>
+
+    <link href="fhir.css" rel="stylesheet"/>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap-fhir.css" rel="stylesheet"/>
+
+    <!-- Project extras -->
+    <link href="assets/css/project.css" rel="stylesheet"/>
+    <link href="assets/css/pygments-manni.css" rel="stylesheet"/>
+    <link href="assets/css/jquery-ui.css" rel="stylesheet"/>
+  	<link href="assets/css/prism.css" rel="stylesheet" />
+    <!-- Placeholder for child template CSS declarations -->
+<link href="assets/css/sof.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="fhir-table-scripts.js"> </script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Favicons -->
+    <link rel="fhir-logo" sizes="144x144" href="assets/ico/icon-fhir-144.png"/>
+    <link rel="fhir-logo" sizes="114x114" href="assets/ico/icon-fhir-114.png"/>
+    <link rel="fhir-logo" sizes="72x72" href="assets/ico/icon-fhir-72.png"/>
+    <link rel="fhir-logo" href="assets/ico/icon-fhir-57.png"/>
+    <link rel="shortcut icon" href="assets/ico/favicon.png"/>
+  </head>
+  <body onload="document.body.style.opacity='1'">
+
+	  <script src="assets/js/prism.js"></script>
+    <script type="text/javascript" src="assets/js/mermaid.js"></script>
+    <script type="text/javascript" src="assets/js/mermaid-init.js"></script>
+    <style type="text/css">h2{--heading-prefix:"4"}
+    h3,h4,h5,h6{--heading-prefix:"4"}</style>
+    <div id="segment-header" class="segment">  <!-- segment-header -->
+      <div class="container">  <!-- container -->
+        <div id="project-nav">
+  <a id="project-logo" no-external="true" href="index.html">
+    <img height="50" alt="SQL on FHIR" src="assets/images/sof-logo.svg"/>
+  </a>
+</div>
+
+<div id="family-nav">
+  <a id="family-logo" no-external="true" href="http://hl7.org/fhir">
+    <img height="50" alt="FHIR website" src="assets/images/fhir-logo-www.png"/>
+  </a>
+</div>
+
+        <div id="ig-status">
+          <p><span style="font-size:12pt;font-weight:bold">SQL on FHIR</span>
+            <br/>
+            <span style="display:inline-block;">2.0.0 - release
+
+
+
+  <img alt="International flag" src="assets/images/001.svg" height="16" title="International"/>
+
+
+            </span>
+          </p>
+        </div>
+      </div> <!-- /container -->
+    </div>  <!-- /segment-header -->
+
+    <div id="segment-navbar" class="segment">  <!-- segment-navbar -->
+      <div id="stripe"> </div>
+      <div class="container">  <!-- container -->
+        <!-- HEADER CONTENT -->
+
+        <nav class="navbar navbar-inverse">
+          <!--status-bar-->
+          <div class="container">
+            <button data-target=".navbar-inverse-collapse" class="navbar-toggle" data-toggle="collapse" type="button">
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+            </button>
+            <a class="navbar-brand hidden" href="http://hl7.org/fhir/R5/index.html">FHIR</a>
+            <div class="nav-collapse collapse navbar-inverse-collapse">
+              <!-- menu.xml  -->
+
+<ul xmlns="http://www.w3.org/1999/xhtml" class="nav navbar-nav">
+  <li>
+    <a href="index.html">Overview</a>
+  </li>
+  <li>
+    <a href="StructureDefinition-ViewDefinition.html">View Definition</a>
+  </li>
+  <li>
+    <a href="artifacts.html">Artifacts</a>
+  </li>
+  <li>
+    <a href="contributing.html">Contributing</a>
+  </li>
+  <li>
+    <a href="http://sql-on-fhir.org/extra/playground.html">Playground</a>
+  </li>
+  <li>
+    <a href="http://sql-on-fhir.org/extra/tests.html">Tests</a>
+  </li>
+  <li>
+    <a href="http://sql-on-fhir.org/extra/impls.html">Implementations</a>
+  </li>
+</ul>
+            </div>  <!-- /.nav-collapse -->
+          </div>  <!-- /.container -->
+        </nav>  <!-- /.navbar -->
+      <!-- /HEADER CONTENT -->
+      </div>  <!-- /container -->
+    </div>  <!-- /segment-navbar -->
+    <!--status-bar-->
+
+    <div id="segment-breadcrumb" class="segment">  <!-- segment-breadcrumb -->
+      <div class="container">  <!-- container -->
+        <ul class="breadcrumb">
+          <li><a href='toc.html'><b>Table of Contents</b></a></li><li><b>Glossary</b></li>
+
+        </ul>
+      </div>  <!-- /container -->
+    </div>  <!-- /segment-breadcrumb -->
+
+    <a name="top"> </a>
+    <div id="segment-content" class="segment">  <!-- segment-content -->
+      <div class="container">  <!-- container -->
+        <div class="row">
+          <div class="inner-wrapper">
+
+<style type="text/css">
+h2:before{color:silver;counter-increment:section;content:var(--heading-prefix) " ";}
+h3:before{color:silver;counter-increment:sub-section;content:var(--heading-prefix) "." counter(sub-section) " ";}
+h4:before{color:silver;counter-increment:composite;content:var(--heading-prefix) "." counter(sub-section) "." counter(composite) " ";}
+h5:before{color:silver;counter-increment:detail;content:var(--heading-prefix) "." counter(sub-section) "." counter(composite) "." counter(detail) " ";}
+h6:before{color:silver;counter-increment:more-detail;content:var(--heading-prefix) "." counter(sub-section) "." counter(composite) "." counter(detail) "." counter(more-detail)" ";}
+</style>
+<div class="col-12">
+  <!--ReleaseHeader--><p id="publish-box">This page is part of the SQL on FHIR (v2.0.0: Release) based on <a no-external="true" href="http://hl7.org/fhir/R5">FHIR (HL7® FHIR® Standard) v5.0.0</a>. This is the current published version in its permanent home (it will always be available at this URL).  For a full list of available versions, see the <a no-external="true" href="https://sql-on-fhir.org/ig/history.html">Directory of published versions</a></p><!--EndReleaseHeader-->
+  <h2>Glossary</h2>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+    <p><!-- white space is critical inside of capture --></p>
+<div class="markdown-toc">
+<ul id="markdown-toc">
+  <li><a href="#glossary" id="markdown-toc-glossary">Glossary</a>    <ul>
+      <li><a href="#analytic-tools" id="markdown-toc-analytic-tools">analytic tools</a></li>
+      <li><a href="#analytic-layer" id="markdown-toc-analytic-layer">analytic layer</a></li>
+      <li><a href="#data-layer" id="markdown-toc-data-layer">data layer</a></li>
+      <li><a href="#flattened" id="markdown-toc-flattened">flattened</a></li>
+      <li><a href="#tabular" id="markdown-toc-tabular">tabular</a></li>
+      <li><a href="#tabular-views" id="markdown-toc-tabular-views">tabular views</a></li>
+      <li><a href="#unrolling-or-unnesting" id="markdown-toc-unrolling-or-unnesting">unrolling or unnesting</a></li>
+      <li><a href="#view-definition" id="markdown-toc-view-definition">view definition</a></li>
+      <li><a href="#view-layer" id="markdown-toc-view-layer">view layer</a></li>
+      <li><a href="#view-runner" id="markdown-toc-view-runner">view runner</a></li>
+    </ul>
+  </li>
+</ul>
+
+</div>
+<h2 id="glossary">Glossary</h2>
+
+<h3 id="analytic-tools">analytic tools</h3>
+
+<p>The broad ecosystem of tools used for data analysis, not specific to any
+technology stack, programming language, or use case. Applies equally to such
+diverse systems as Microsoft Excel, a PostgreSQL database, Tableau or Python
+code in a Juypter notebook.</p>
+
+<h3 id="analytic-layer">analytic layer</h3>
+
+<p>The third conceptual "layer" in this specification. This layer is where
+analytic tools are applied to the now tabular representations of the source
+FHIR data. This specification is agnostic to the tooling used and the specific
+queries performed in this layer.</p>
+
+<h3 id="data-layer">data layer</h3>
+
+<p>The optional first conceptual layer described by this specification. The
+purpose of this layer is to provide access to a lossless representation of the
+FHIR data for onward data transformation.</p>
+
+<p>Examples of this layer include FHIR NDJSON files, FHIR resources held within a
+JSON-typed column within a relational database, or Parquet files containing full
+representations of FHIR resources.</p>
+
+<p>The data may optionally be "annotated" to improve the ease of use or performance
+of these transformation queries.</p>
+
+<p>Examples of possible annotations include:</p>
+<ul>
+  <li>The lossless extraction of resource ids in references to improve join
+performance</li>
+  <li>The normalization of FHIR dates (e.g. "1986") to ANSI SQL TIMESTAMPs to
+simplify queries</li>
+  <li>The creation of hash-based resource ids to avoid conflicts when data from
+multiple sources are combined</li>
+</ul>
+
+<h3 id="flattened">flattened</h3>
+
+<p>Informal synonym for "tabular". Not recommended.</p>
+
+<h3 id="tabular">tabular</h3>
+
+<p>The abstract concept of a collection of related data organized in rows and
+columns. Does not imply a physical table within a database system since it can
+also refer to R or Pandas "dataframe" and similar abstractions.</p>
+
+<h3 id="tabular-views">tabular views</h3>
+
+<p>FHIR data projected into a tabular form. Note there is no requirement that the
+data be persisted or materialized, i.e. the table may be dynamic and/or
+ephemeral.</p>
+
+<h3 id="unrolling-or-unnesting">unrolling or unnesting</h3>
+
+<p>The process of extracting repeating elements of a resource into a row for each
+item.</p>
+
+<h3 id="view-definition">view definition</h3>
+
+<p>View Definitions are portable, self-documenting, datastore-independent
+artifacts that embody a particular choice of tabular projection of single FHIR
+resource type's elements, possibly from multiple levels of its hierarchy. They
+are the primary artifacts of this specification.</p>
+
+<p>A naive tabular representation of FHIR resources would create a
+difficult-to-comprehend, and poorly performing database and world require an
+impractical number of  joins for even simple queries. Therefore, to support
+both performant access and simplified query creation, View Definitions are a
+satisfying solution.</p>
+
+<p>These artifacts are read by system-specific "view runners" but are intended to
+be portable across many systems and "data layers". Each FHIR resource type
+intended to be exposed in the "analytic layer" will have at least one
+corresponding view definition for a given use case. Since analytic use cases
+vary widely, it is expected that many sets of view definitions will exist.</p>
+
+<p>For example, given the same patient population, the use case of creating
+tables for billing reports versus the use case of identifying sexual
+orientation and gender identity inequities would require different data
+elements to be exposed to the analytic layer and would be best served by
+different view definitions.</p>
+
+<h3 id="view-layer">view layer</h3>
+
+<p>The second "layer" in the conceptual architecture and the central focus of
+this specification. The purpose of the "view layer" is to define and transform
+FHIR data into the desired tabular form.</p>
+
+<p>The "view layer" is composed of sets of two main components: "view definitions"
+and "view runners".</p>
+
+<h3 id="view-runner">view runner</h3>
+
+<p>System-specific tools or libraries that apply view definitions to the "data
+layer" creating the tabular views of the "analytics layer".</p>
+
+<p>Example view runners may include:</p>
+<ul>
+  <li>A runner that creates a virtual, tabular view in an analytic database</li>
+  <li>A runner that queries FHIR JSON directly and creates a table in a web application</li>
+  <li>A runner that loads data directly into a notebook or other data analysis tool</li>
+</ul>
+
+
+
+
+</div>
+        </div>  <!-- /inner-wrapper -->
+      </div>  <!-- /row -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-content -->
+
+  <script type="text/javascript" src="assets/js/jquery.js"> </script>     <!-- note keep space here, otherwise it will be transformed to empty tag -> fails -->
+  <script type="text/javascript" src="assets/js/jquery-ui.min.js"> </script>
+
+  <script type="text/javascript" src="assets/js/window-hash.js"> </script>
+  <a name="bottom"> </a>
+  <div id="segment-footer" igtool="footer" class="segment">  <!-- segment-footer -->
+    <div class="container">  <!-- container -->
+
+      <div class="inner-wrapper">
+        <p>
+          IG &#169; 2023+ <a style="color:var(--footer-hyperlink-text-color)" href="https://sql-on-fhir.org">SQL on FHIR Working Group</a>.  Package org.sql-on-fhir.ig#2.0.0 based on <a style="color: var(--footer-hyperlink-text-color)" href="http://hl7.org/fhir/R5/">FHIR 5.0.0</a>. Generated <span title="Tue, Oct 8, 2024 20:11+1000">2024-10-08</span>
+          <br/>
+          <span style="color: var(--footer-highlight-text-color)">
+                      Links: <a style="color: var(--footer-hyperlink-text-color)" href="toc.html">Table of Contents</a> |
+                 <a style="color: var(--footer-hyperlink-text-color)" href="qa.html">QA Report</a>
+                 
+                
+          </span>
+        </p>
+      </div>  <!-- /inner-wrapper -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-footer -->
+  
+  <div id="segment-post-footer" class="segment hidden">  <!-- segment-post-footer -->
+    <div class="container">  <!-- container -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-post-footer -->
+
+  <!-- JS and analytics only. -->
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script type="text/javascript" src="assets/js/bootstrap.min.js"> </script>
+  <script type="text/javascript" src="assets/js/respond.min.js"> </script>
+  <script type="text/javascript" src="assets/js/anchor.min.js"> </script>
+  <script type="text/javascript" src="assets/js/clipboard.min.js"> </script>
+  <script type="text/javascript" src="assets/js/clipboard-btn.js"> </script>
+  <script type="text/javascript" src="assets/js/anchor-hover.js"> </script>
+  <!-- Analytics Below
+  ================================================== -->
+  </body>
+</html>
+

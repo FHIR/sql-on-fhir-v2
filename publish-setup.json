@@ -1,0 +1,15 @@
+{
+  "website": {
+    "style": "fhir.layout",
+    "url": "https://sql-on-fhir.org/ig",
+    "server": "apache",
+    "org": "SQL on FHIR Working Group"
+  },
+  "layout-rules": [
+    {
+      "npm": "org.sql-on-fhir.ig",
+      "canonical": "https://sql-on-fhir.org/ig",
+      "destination": "/ig"
+    }
+  ]
+}

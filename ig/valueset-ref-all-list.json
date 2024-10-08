@@ -1,0 +1,52 @@
+{
+  "codeSystems" : [
+    {
+      "url" : "http://hl7.org/fhir/ValueSet/FHIR-version",
+      "version" : "5.0.0",
+      "status" : "active",
+      "name" : "FHIRVersion",
+      "title" : "FHIRVersion",
+      "description" : "All published FHIR Versions.",
+      "systems" : ["http://hl7.org/fhir/FHIR-version"],
+      "oids" : ["2.16.840.1.113883.4.642.3.1309"],
+      "sources" : ["2.16.840.1.113883.4.642.3.1309"],
+      "uses" : {
+      },
+      "StructureDefinition-ShareableViewDefinition.html" : "Shareable View Definition",
+      "StructureDefinition-TabularViewDefinition.html" : "Tabular View Definition",
+      "StructureDefinition-ViewDefinition.html" : "View Definition"
+    },
+    {
+      "url" : "http://hl7.org/fhir/ValueSet/publication-status",
+      "version" : "5.0.0",
+      "status" : "active",
+      "name" : "PublicationStatus",
+      "title" : "PublicationStatus",
+      "description" : "The lifecycle status of an artifact.",
+      "systems" : ["http://hl7.org/fhir/publication-status"],
+      "oids" : ["2.16.840.1.113883.4.642.3.3"],
+      "sources" : ["2.16.840.1.113883.4.642.3.3"],
+      "uses" : {
+      },
+      "StructureDefinition-ShareableViewDefinition.html" : "Shareable View Definition",
+      "StructureDefinition-TabularViewDefinition.html" : "Tabular View Definition",
+      "StructureDefinition-ViewDefinition.html" : "View Definition"
+    },
+    {
+      "url" : "http://hl7.org/fhir/ValueSet/resource-types",
+      "version" : "5.0.0",
+      "status" : "active",
+      "name" : "ResourceType",
+      "title" : "Resource Types",
+      "description" : "Concrete FHIR Resource Types",
+      "systems" : ["http://hl7.org/fhir/fhir-types"],
+      "oids" : ["2.16.840.1.113883.4.642.3.27"],
+      "sources" : ["2.16.840.1.113883.4.642.3.27"],
+      "uses" : {
+      },
+      "StructureDefinition-ShareableViewDefinition.html" : "Shareable View Definition",
+      "StructureDefinition-TabularViewDefinition.html" : "Tabular View Definition",
+      "StructureDefinition-ViewDefinition.html" : "View Definition"
+    }
+  ]
+}

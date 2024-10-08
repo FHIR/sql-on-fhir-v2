@@ -1,0 +1,48 @@
+SQLonFHIR : Validation Results
+=========================================
+
+err = 0, warn = 8, info = 4
+$--
+Generated $--. FHIR version $-- for org.sql-on-fhir.ig#$-- (canonical = https://sql-on-fhir.org/ig)
+ Build Errors : 9 / 3 / 0
+ /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/resources/ImplementationGuide-org.sql-on-fhir.ig : 0 / 0 / 2
+ /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/resources/StructureDefinition-ShareableViewDefinition : 0 / 1 / 2
+ /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/resources/StructureDefinition-TabularViewDefinition : 0 / 1 / 2
+ /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/resources/StructureDefinition-ViewDefinition : 0 / 3 / 2
+ /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/resources/binary-PatientAddresses : 0 / 0 / 1
+ /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/resources/binary-PatientAndContactAddressUnion : 0 / 0 / 1
+ /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/resources/binary-PatientDemographics : 0 / 0 / 1
+ /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/resources/binary-ShareablePatientDemographics : 0 / 0 / 3
+ /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/resources/binary-UsCoreBloodPressures : 0 / 0 / 1
+</table>
+== n/a ==
+ERROR: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output/StructureDefinition-ShareableViewDefinition.html#/html/body/div/div/div/div/div/div/div/div/div/table/tr/td/a at Line 893, column 155: The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved
+ERROR: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output/StructureDefinition-ShareableViewDefinition.html#/html/body/div/div/div/div/div/div/div/div/div/table/tr/td/a at Line 922, column 155: The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved
+ERROR: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output/StructureDefinition-ShareableViewDefinition.html#/html/body/div/div/div/div/div/div/div/div/div/table/tr/td/a at Line 1804, column 155: The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved
+ERROR: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output/StructureDefinition-ShareableViewDefinition.html#/html/body/div/div/div/div/div/div/div/div/div/table/tr/td/a at Line 1833, column 155: The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved
+ERROR: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output/StructureDefinition-TabularViewDefinition.html#/html/body/div/div/div/div/div/div/div/div/div/table/tr/td/a at Line 879, column 155: The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved
+ERROR: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output/StructureDefinition-TabularViewDefinition.html#/html/body/div/div/div/div/div/div/div/div/div/table/tr/td/a at Line 908, column 155: The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved
+ERROR: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output/StructureDefinition-TabularViewDefinition.html#/html/body/div/div/div/div/div/div/div/div/div/table/tr/td/a at Line 1789, column 155: The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved
+ERROR: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output/StructureDefinition-TabularViewDefinition.html#/html/body/div/div/div/div/div/div/div/div/div/table/tr/td/a at Line 1818, column 155: The link 'http://hl7.org/fhir/R5/StructureDefinition-ViewDefinition.html#ViewDefinition.select' for "select (ViewDefinition)" cannot be resolved
+ERROR: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output/StructureDefinition-ViewDefinition.html#/html/body/div/div/div/div/div/div/ol/li/a at Line 4000, column 6: The link '#supported-fhirpath-functionality' for "supported FHIRPath functions" cannot be resolved (valid targets: 475 targets)
+WARNING: 1: The HTML fragment 'ip-statements.xhtml' is not included anywhere in the produced implementation guide
+WARNING: 3: An HTML fragment from the set [dependency-table.xhtml, dependency-table-short.xhtml] is not included anywhere in the produced implementation guide
+WARNING: 4: The HTML fragment 'globals-table.xhtml' is not included anywhere in the produced implementation guide
+== fsh-generated/resources/ImplementationGuide-org.sql-on-fhir.ig.json ==
+INFORMATION: ImplementationGuide/org.sql-on-fhir.ig: ImplementationGuide.jurisdiction[0]: Reference to deprecated ValueSet http://hl7.org/fhir/ValueSet/jurisdiction|5.0.0
+== fsh-generated/resources/StructureDefinition-ShareableViewDefinition.json ==
+INFORMATION: StructureDefinition/ShareableViewDefinition: StructureDefinition.jurisdiction[0]: Reference to deprecated ValueSet http://hl7.org/fhir/ValueSet/jurisdiction|5.0.0
+WARNING: StructureDefinition/ShareableViewDefinition: StructureDefinition.snapshot.element[13].binding: The definition for the element 'ViewDefinition.resource' binds to the value set 'http://hl7.org/fhir/ValueSet/resource-types' which is experimental, but this structure is not labeled as experimental
+== fsh-generated/resources/StructureDefinition-TabularViewDefinition.json ==
+INFORMATION: StructureDefinition/TabularViewDefinition: StructureDefinition.jurisdiction[0]: Reference to deprecated ValueSet http://hl7.org/fhir/ValueSet/jurisdiction|5.0.0
+WARNING: StructureDefinition/TabularViewDefinition: StructureDefinition.snapshot.element[13].binding: The definition for the element 'ViewDefinition.resource' binds to the value set 'http://hl7.org/fhir/ValueSet/resource-types' which is experimental, but this structure is not labeled as experimental
+== fsh-generated/resources/StructureDefinition-ViewDefinition.json ==
+WARNING: StructureDefinition/ViewDefinition: StructureDefinition.text.div: Hyperlink '#ViewDefinition.select' at 'div/table/tr/td/a' for 'select' resolves to multiple targets ($/differential/element/id, $/snapshot/element/id, $/text/div/table/tr/td/a/@name)
+INFORMATION: StructureDefinition/ViewDefinition: StructureDefinition.jurisdiction[0]: Reference to deprecated ValueSet http://hl7.org/fhir/ValueSet/jurisdiction|5.0.0
+WARNING: StructureDefinition/ViewDefinition: StructureDefinition.differential.element[13].binding: The definition for the element 'ViewDefinition.resource' binds to the value set 'http://hl7.org/fhir/ValueSet/resource-types' which is experimental, but this structure is not labeled as experimental
+WARNING: StructureDefinition/ViewDefinition: StructureDefinition.snapshot.element[13].binding: The definition for the element 'ViewDefinition.resource' binds to the value set 'http://hl7.org/fhir/ValueSet/resource-types' which is experimental, but this structure is not labeled as experimental
+== fsh-generated/resources/Binary-PatientAddresses.json ==
+== fsh-generated/resources/Binary-PatientAndContactAddressUnion.json ==
+== fsh-generated/resources/Binary-PatientDemographics.json ==
+== fsh-generated/resources/Binary-ShareablePatientDemographics.json ==
+== fsh-generated/resources/Binary-UsCoreBloodPressures.json ==

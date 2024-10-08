@@ -1,0 +1,15 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# - resource -------------------------------------------------------------------
+
+<https://sql-on-fhir.org/ig/Binary/PatientAddresses> a fhir:Binary ;
+  fhir:nodeRole fhir:treeRoot ;
+  fhir:id [ fhir:v "PatientAddresses"] ; # 
+  fhir:contentType [ fhir:v "application/fhir+json"] ; # 
+  fhir:data [ fhir:v "ewogICJyZXNvdXJjZVR5cGUiOiAiaHR0cHM6Ly9zcWwtb24tZmhpci5vcmcvaWcvU3RydWN0dXJlRGVmaW5pdGlvbi9WaWV3RGVmaW5pdGlvbiIsCiAgInNlbGVjdCI6IFsKICAgIHsKICAgICAgImNvbHVtbiI6IFsKICAgICAgICB7CiAgICAgICAgICAicGF0aCI6ICJnZXRSZXNvdXJjZUtleSgpIiwKICAgICAgICAgICJuYW1lIjogInBhdGllbnRfaWQiCiAgICAgICAgfQogICAgICBdCiAgICB9LAogICAgewogICAgICAiY29sdW1uIjogWwogICAgICAgIHsKICAgICAgICAgICJwYXRoIjogImxpbmUuam9pbignXG4nKSIsCiAgICAgICAgICAibmFtZSI6ICJzdHJlZXQiLAogICAgICAgICAgImRlc2NyaXB0aW9uIjogIlRoZSBmdWxsIHN0cmVldCBhZGRyZXNzLCBpbmNsdWRpbmcgbmV3bGluZXMgaWYgcHJlc2VudC4iCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICAicGF0aCI6ICJ1c2UiLAogICAgICAgICAgIm5hbWUiOiAidXNlIgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgInBhdGgiOiAiY2l0eSIsCiAgICAgICAgICAibmFtZSI6ICJjaXR5IgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgInBhdGgiOiAicG9zdGFsQ29kZSIsCiAgICAgICAgICAibmFtZSI6ICJ6aXAiCiAgICAgICAgfQogICAgICBdLAogICAgICAiZm9yRWFjaCI6ICJhZGRyZXNzIgogICAgfQogIF0sCiAgIm5hbWUiOiAicGF0aWVudF9hZGRyZXNzZXMiLAogICJzdGF0dXMiOiAiZHJhZnQiLAogICJyZXNvdXJjZSI6ICJQYXRpZW50Igp9Cg=="^^xsd:base64Binary] . # 
+
+# -------------------------------------------------------------------------------------
+

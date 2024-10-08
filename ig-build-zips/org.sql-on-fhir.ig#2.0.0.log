@@ -1,0 +1,448 @@
+FHIR IG Publisher Version 1.6.25 (Git# 8e5fa8d553fc). Built 2024-09-17T22:14:23.860Z (20 days old)
+Detected Java version: 17.0.5 from /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home on aarch64 (64bit). 8192MB available
+dir = /Users/gri306/Desktop/publication, path = /opt/homebrew/Caskroom/miniconda/base/bin:/opt/homebrew/Caskroom/miniconda/base/condabin:/Users/gri306/perl5/bin:/Users/gri306/.pyenv/shims:/Users/gri306/.cargo/bin:/Users/gri306/.rvm/gems/ruby-3.1.0-preview1/bin:/Users/gri306/.rvm/gems/ruby-3.1.0-preview1@global/bin:/Users/gri306/.rvm/rubies/ruby-3.1.0-preview1/bin:/opt/homebrew/opt/python/libexec/bin:/Users/gri306/.nvm/versions/node/v18.14.1/bin:/opt/homebrew/bin:/Users/gri306/.bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/usr/local/MacGPG2/bin:/Applications/Computer Admin.app/Contents/Resources:/Library/TeX/texbin:/Applications/Little Snitch.app/Contents/Components:/usr/local/laps:/usr/local/munki:/Applications/quarto/bin:/Applications/Postgres.app/Contents/Versions/latest/bin:/Users/gri306/.local/bin:~/bin:/Users/gri306/.rvm/bin
+Parameters: -go-publish -source sql-on-fhir -web webroot -history ig-history -registry ig-registry/fhir-ig-list.json -templates templates -temp /Users/gri306/Desktop/publication/temp
+---------------
+Publication Run: publish sql-on-fhir to webroot
+Run Number: 1
+Relative directory for IG is '/ig'
+===== Web Publication Run Details ===============================
+ Source IG: org.sql-on-fhir.ig#2.0.0 : https://sql-on-fhir.org/ig (R5) from sql-on-fhir
+All checks passed. Do the publication build from /Users/gri306/Desktop/publication/sql-on-fhir and publish to /Users/gri306/Desktop/publication/temp/web-root/run-20241008/ig
+Prepare Build space in /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0
+Build IG at /Users/gri306/Desktop/publication/sql-on-fhir: final copy suitable for publication (in /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0)
+FHIR IG Publisher Version 1.6.25 (Git# 8e5fa8d553fc). Built 2024-09-17T22:14:23.860Z (20 days old)  
+Detected Java version: 17.0.5 from /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home on Mac OS X/aarch64 (64bit). 8192MB available
+dir = /Users/gri306/Desktop/publication, path = /opt/homebrew/Caskroom/miniconda/base/bin:/opt/homebrew/Caskroom/miniconda/base/condabin:/Users/gri306/perl5/bin:/Users/gri306/.pyenv/shims:/Users/gri306/.cargo/bin:/Users/gri306/.rvm/gems/ruby-3.1.0-preview1/bin:/Users/gri306/.rvm/gems/ruby-3.1.0-preview1@global/bin:/Users/gri306/.rvm/rubies/ruby-3.1.0-preview1/bin:/opt/homebrew/opt/python/libexec/bin:/Users/gri306/.nvm/versions/node/v18.14.1/bin:/opt/homebrew/bin:/Users/gri306/.bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/usr/local/MacGPG2/bin:/Applications/Computer Admin.app/Contents/Resources:/Library/TeX/texbin:/Applications/Little Snitch.app/Contents/Components:/usr/local/laps:/usr/local/munki:/Applications/quarto/bin:/Applications/Postgres.app/Contents/Versions/latest/bin:/Users/gri306/.local/bin:~/bin:/Users/gri306/.rvm/bin
+Parameters: -ig /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0 -resetTx -publish https://sql-on-fhir.org/ig/2.0.0 -no-exit
+Start Clock @ Tuesday, 8 October 2024 at 8:11:24 pm Australian Eastern Standard Time (2024-10-08T20:11:24+10:00)
+                                                                                                    
+Build FHIR IG from /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0                   (00:00.051 / 00:00.052, 60Mb)
+Build Formal Publication package, intended for https://sql-on-fhir.org/ig/2.0.0                      (00:00.002 / 00:00.054, 62Mb)
+API keys loaded from /Users/gri306/.fhir/fhir-settings.json                                          (00:00.000 / 00:00.054, 62Mb)
+Package Cache: /Users/gri306/.fhir/packages                                                          (00:00.002 / 00:00.057, 62Mb)
+Run Sushi on /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0                         (00:00.001 / 00:00.058, 62Mb)
+Sushi: info  Running SUSHI v3.11.1 (implements FHIR Shorthand specification v3.0.0-ballot)           (00:01.292 / 00:01.351, 63Mb)
+Sushi: info  Arguments:                                                                              (00:00.000 / 00:01.351, 63Mb)
+Sushi: info    --require-latest                                                                      (00:00.000 / 00:01.352, 63Mb)
+Sushi: info    --out /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0                 (00:00.000 / 00:01.353, 63Mb)
+Sushi: info    /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0                       (00:00.000 / 00:01.353, 63Mb)
+Sushi: info  Using configuration file: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/sushi-config.yaml (00:01.119 / 00:02.473, 63Mb)
+Sushi: info  Importing FSH text...                                                                   (00:00.049 / 00:02.522, 63Mb)
+Sushi: info  Preprocessed 3 documents with 0 aliases.                                                (00:00.038 / 00:02.561, 63Mb)
+Sushi: info  Imported 3 definitions and 5 instances.                                                 (00:00.005 / 00:02.567, 63Mb)
+Sushi: info  Checking /Users/gri306/.fhir/packages for hl7.fhir.uv.tools#current...                  (00:00.000 / 00:02.568, 63Mb)
+Sushi: info  Found hl7.fhir.uv.tools#current in /Users/gri306/.fhir/packages.                        (00:00.048 / 00:02.616, 63Mb)
+Sushi: info  Loaded package hl7.fhir.uv.tools#current                                                (00:02.612 / 00:05.229, 63Mb)
+Sushi: info  Checking /Users/gri306/.fhir/packages for hl7.terminology.r5#6.0.2...                   (00:01.411 / 00:06.640, 63Mb)
+Sushi: info  Found hl7.terminology.r5#6.0.2 in /Users/gri306/.fhir/packages.                         (00:01.782 / 00:08.422, 63Mb)
+Sushi: info  Loaded package hl7.terminology.r5#6.0.2                                                 (00:00.001 / 00:08.423, 63Mb)
+Sushi: info  Checking /Users/gri306/.fhir/packages for hl7.fhir.uv.extensions.r5#5.1.0...            (00:01.556 / 00:09.980, 63Mb)
+Sushi: info  Found hl7.fhir.uv.extensions.r5#5.1.0 in /Users/gri306/.fhir/packages.                  (00:00.781 / 00:10.761, 63Mb)
+Sushi: info  Loaded package hl7.fhir.uv.extensions.r5#5.1.0                                          (00:00.000 / 00:10.761, 63Mb)
+Sushi: info  Checking /Users/gri306/.fhir/packages for hl7.fhir.r5.core#5.0.0...                     (00:00.000 / 00:10.762, 63Mb)
+Sushi: info  Found hl7.fhir.r5.core#5.0.0 in /Users/gri306/.fhir/packages.                           (00:01.702 / 00:12.464, 63Mb)
+Sushi: info  Loaded package hl7.fhir.r5.core#5.0.0                                                   (00:00.000 / 00:12.465, 63Mb)
+Sushi: info  Converting FSH to FHIR resources...                                                     (00:00.046 / 00:12.511, 63Mb)
+Sushi: info  Converted 3 FHIR StructureDefinitions.                                                  (00:00.114 / 00:12.626, 63Mb)
+Sushi: info  Converted 5 FHIR instances.                                                             (00:00.057 / 00:12.684, 63Mb)
+Sushi: info  Exporting FHIR resources as JSON...                                                     (00:00.000 / 00:12.685, 63Mb)
+Sushi: info  Exported 8 FHIR resources as JSON.                                                      (00:00.009 / 00:12.694, 63Mb)
+Sushi: info  Assembling Implementation Guide sources...                                              (00:00.004 / 00:12.698, 63Mb)
+Sushi: info  Generated ImplementationGuide-org.sql-on-fhir.ig.json                                   (00:00.022 / 00:12.721, 63Mb)
+Sushi: info  Assembled Implementation Guide sources; ready for IG Publisher.                         (00:00.000 / 00:12.722, 63Mb)
+Sushi: info  The sample-ig located at https://github.com/FHIR/sample-ig contains scripts useful for downloading and running the IG Publisher. (00:00.000 / 00:12.722, 63Mb)
+Sushi: ========================= SUSHI RESULTS ===========================                           (00:00.000 / 00:12.723, 63Mb)
+Sushi: |  -------------------------------------------------------------  |                           (00:00.000 / 00:12.724, 63Mb)
+Sushi: | |    Profiles   |  Extensions  |   Logicals   |   Resources   | |                           (00:00.000 / 00:12.724, 63Mb)
+Sushi: | |-------------------------------------------------------------| |                           (00:00.000 / 00:12.725, 63Mb)
+Sushi: | |       2       |      0       |      1       |       0       | |                           (00:00.000 / 00:12.725, 63Mb)
+Sushi: |  -------------------------------------------------------------  |                           (00:00.000 / 00:12.726, 63Mb)
+Sushi: |  -------------------------------------------------------------  |                           (00:00.000 / 00:12.726, 63Mb)
+Sushi: | |      ValueSets     |    CodeSystems    |     Instances      | |                           (00:00.000 / 00:12.727, 63Mb)
+Sushi: | |-------------------------------------------------------------| |                           (00:00.000 / 00:12.728, 63Mb)
+Sushi: | |         0          |         0         |         5          | |                           (00:00.000 / 00:12.728, 63Mb)
+Sushi: |  -------------------------------------------------------------  |                           (00:00.000 / 00:12.729, 63Mb)
+Sushi: |                                                                 |                           (00:00.000 / 00:12.729, 63Mb)
+Sushi: ===================================================================                           (00:00.000 / 00:12.730, 63Mb)
+Sushi: | Tank you very much!                    0 Errors      0 Warnings |                           (00:00.000 / 00:12.730, 63Mb)
+Sushi: ===================================================================                           (00:00.000 / 00:12.731, 63Mb)
+Load Template from #custom-template                                                                  (00:00.413 / 00:13.144, 55Mb)
+ Load Template from fhir.base.template#current                                                       (00:00.354 / 00:13.498, 58Mb)
+
+onLoad.findSpreadsheets:
+
+onLoad.updateIg:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onLoad-ig-working.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onLoad-ig-updated.xml
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/scripts/onLoad.xslt
+
+onLoad.extend:
+
+onLoad:
+Root directory: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0                      (00:05.346 / 00:18.845, 101Mb)
+Terminology Cache is at /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/input-cache/txcache. Clearing now (00:01.884 / 00:20.729, 121Mb)
+Core Package hl7.fhir.r5.core#5.0.0
+Running Terminology Log: /var/folders/pd/531bf2jj5kq3n6z0j398078h0000gp/T/ohfu-fhir-ig-3222576109093818747.log
+Connect to Terminology Server at http://tx.fhir.org                                                  (00:03.158 / 00:23.887, 436Mb)
+Load Package hl7.fhir.pubpack#0.1.8
+Load Package hl7.fhir.xver-extensions#0.1.0
+Load Package hl7.terminology.r5#6.0.2
+Load Package hl7.fhir.uv.extensions.r5#5.1.0
+Load Package hl7.fhir.uv.tools#0.2.0
+Initialization complete                                                                              (00:09.475 / 00:33.363, 650Mb)
+Load Content                                                                                         (00:00.000 / 00:33.364, 650Mb)
+Using en-US as the default narrative language. (no language information in Implementation Guide or command line (00:00.018 / 00:33.382, 652Mb)
+loadPrePages from FetchedFile[/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/includes] as /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/fsh-generated/includes
+loadPrePages from FetchedFile[/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/input/pagecontent] as /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/input/pagecontent
+Fetch https://sql-on-fhir.org/ig/package-list.json for version check                                 (00:00.159 / 00:33.542, 670Mb)
+Processing Conformance Resources                                                                     (00:00.302 / 00:33.844, 670Mb)
+Load Dependency Info                                                                                 (00:00.001 / 00:33.846, 670Mb)
+Load Info                                                                                            (00:00.001 / 00:33.847, 670Mb)
+Load Resources                                                                                       (00:00.000 / 00:33.848, 672Mb)
+Load Paths                                                                                           (00:00.041 / 00:33.890, 402Mb)
+Generating Snapshots                                                                                 (00:00.000 / 00:33.891, 402Mb)
+Check R4 / R4B                                                                                       (00:00.040 / 00:33.932, 432Mb)
+Assign Comparison Ids                                                                                (00:00.002 / 00:33.934, 432Mb)
+Propagating status                                                                                   (00:00.000 / 00:33.934, 432Mb)
+Generating Narratives                                                                                (00:00.000 / 00:33.935, 432Mb)
+Validating Conformance Resources                                                                     (00:00.316 / 00:34.252, 512Mb)
+Check profiles & code systems                                                                        (00:02.188 / 00:36.440, 472Mb)
+Check realm rules                                                                                    (00:00.001 / 00:36.442, 472Mb)
+Previous Version Comparison                                                                          (00:00.000 / 00:36.442, 472Mb)
+Validating Resources                                                                                 (00:00.006 / 00:36.449, 474Mb)
+Processing Provenance Records                                                                        (00:00.023 / 00:36.472, 480Mb)
+Generating Outputs in /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output         (00:00.000 / 00:36.473, 480Mb)
+Generate Native Outputs                                                                              (00:00.046 / 00:36.520, 484Mb)
+Run Template                                                                                         (00:00.641 / 00:37.161, 580Mb)
+
+onGenerate.checkVersions:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-working.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/versions.txt
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/scripts/onGenerate.getVersions.xslt
+
+onGenerate.r5-schemas:
+      [get] Getting: http://build.fhir.org/fhir-single.xsd
+      [get] To: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/input-cache/schemas/R5/fhir-single.xsd
+      [get] Getting: http://build.fhir.org/fhir-xhtml.xsd
+      [get] To: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/input-cache/schemas/R5/fhir-xhtml.xsd
+      [get] Getting: http://build.fhir.org/xml.xsd
+      [get] To: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/input-cache/schemas/R5/xml.xsd
+      [get] Getting: http://build.fhir.org/xmldsig-core-schema.xsd
+      [get] To: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/input-cache/schemas/R5/xmldsig-core-schema.xsd
+
+onGenerate.r4-schemas:
+
+onGenerate.r3-schemas:
+
+onGenerate.r2b-schemas:
+
+onGenerate.r2-schemas:
+
+onGenerate.schemas:
+
+onGenerate.data:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-working.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/temp/pages/_data/artifacts.json
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/scripts/onGenerate.data.xslt
+
+onGenerate.setup:
+
+onGenerate.infoFile:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-working.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/temp/pages/_data/info.json
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/scripts/onGenerate.genJson.xslt
+
+onGenerate.processIncludes:
+     [copy] Copying 17 files to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/temp/pages/_includes
+
+onGenerate.processIg:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-working.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-working.1.xml
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/scripts/onGenerate.group.xslt
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-working.1.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-working.2.xml
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/scripts/onGenerate.groupSort.xslt
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-working.2.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-updated.xml
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/scripts/onGenerate.final.xslt
+
+onGenerate.igQa:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-updated.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/ongenerate-validation-igqa.json
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/scripts/onGenerate.qa.xslt
+
+onGenerate.artifactList:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/onGenerate-ig-updated.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/temp/pages/_includes/artifacts.xml
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/template/scripts/createArtifactSummary.xslt
+
+check-plantumlfiles:
+
+onGenerate.plantUml.ig:
+
+onGenerate.plantUml.template:
+
+onGenerate.plantUml:
+
+onGenerate.copyDataFiles:
+
+onGenerate.extend:
+
+onGenerate:
+Template Done                                                                                        (00:04.101 / 00:41.263, 622Mb)
+Generate HTML Outputs                                                                                (00:00.000 / 00:41.264, 622Mb)
+ERROR StatusLogger Log4j2 could not find a logging implementation. Please add log4j-core to the classpath. Using SimpleLogger to log to the console...
+Generate Summaries                                                                                   (00:03.857 / 00:45.122, 704Mb)
+Generating Summary Outputs                                                                           (00:00.000 / 00:45.122, 704Mb)
+DB Cumulative Time invested: 00:00:00.40
+Sending Usage Stats to Server                                                                        (00:09.401 / 00:54.523, 962Mb)
+## Memory (MB): Use = 962, Free = 325, Total = 1288, Max = 8192                                      (00:00.002 / 00:54.526, 964Mb)
+Reclaiming memory...                                                                                 (00:00.000 / 00:54.527, 964Mb)
+## Memory (MB): Use = 567, Free = 720, Total = 1288, Max = 8192                                      (00:00.090 / 00:54.617, 570Mb)
+Run jekyll: jekyll build --destination "/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output" (in folder /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/temp/pages) (00:00.002 / 00:54.620, 570Mb)
+Troubleshooting Note: usual cases for Jekyll to fail are:                                            (00:00.001 / 00:54.621, 570Mb)
+* A failure to produce a fragment that is already logged in the output above                         (00:00.000 / 00:54.621, 570Mb)
+* A reference to a manually edited file that hasn't been provided                                    (00:00.000 / 00:54.622, 570Mb)
+Jekyll: Source: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/temp/pages           (00:00.532 / 00:55.154, 575Mb)
+Jekyll: Generating...                                                                                (00:00.000 / 00:55.155, 575Mb)
+Jekyll: done in 1.69 seconds.                                                                        (00:01.689 / 00:56.845, 575Mb)
+
+Installing org.sql-on-fhir.ig#2.0.0
+Checking Output HTML                                                                                 (00:00.234 / 00:57.079, 671Mb)
+found 719 files                                                                                      (00:00.005 / 00:57.085, 671Mb)
+..........................................
+..........................................
+  ... 719 html files, 0 pages invalid xhtml (0%)                                                     (00:01.704 / 00:58.789, 993Mb)
+  ... 23737 links, 9 broken links (0%)                                                               (00:00.000 / 00:58.790, 993Mb)
+Generate fragment-usage-analysis.csv                                                                 (00:00.000 / 00:58.791, 993Mb)
+Build final .zip                                                                                     (00:00.004 / 00:58.795, 993Mb)
+Final .zip built                                                                                     (00:00.497 / 00:59.293, 999Mb)
+Built. Times: loading: 00:00.479, generate: 00:28.753, narrative generation: 00:00.315, realm-rules: 00:00.000, previous-version: 00:00.000, jekyll: 00:02.238, validation: 00:02.210 (#9), template: 00:04.101 (#3) (00:03.311 / 01:02.604, 800Mb)
+Generating QA                                                                                        (00:00.001 / 01:02.606, 800Mb)
+Validation output in /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0/output/qa.html
+Errors: 0, Warnings: 8, Info: 4, Broken Links: 9 (00:00.111 / 01:02.717, 890Mb)
+Finished. Max Memory Used = 999Mb. Log file saved in /var/folders/pd/531bf2jj5kq3n6z0j398078h0000gp/T/fhir-ig-publisher-tmp.log (00:00.003 / 01:02.721, 890Mb)
+Prepare Build space in /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone
+Build IG at /Users/gri306/Desktop/publication/sql-on-fhir: final copy suitable for publication (in /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone) (milestone build)
+FHIR IG Publisher Version 1.6.25 (Git# 8e5fa8d553fc). Built 2024-09-17T22:14:23.860Z (20 days old)  
+Detected Java version: 17.0.5 from /Library/Java/JavaVirtualMachines/zulu-17.jdk/Contents/Home on Mac OS X/aarch64 (64bit). 8192MB available
+dir = /Users/gri306/Desktop/publication, path = /opt/homebrew/Caskroom/miniconda/base/bin:/opt/homebrew/Caskroom/miniconda/base/condabin:/Users/gri306/perl5/bin:/Users/gri306/.pyenv/shims:/Users/gri306/.cargo/bin:/Users/gri306/.rvm/gems/ruby-3.1.0-preview1/bin:/Users/gri306/.rvm/gems/ruby-3.1.0-preview1@global/bin:/Users/gri306/.rvm/rubies/ruby-3.1.0-preview1/bin:/opt/homebrew/opt/python/libexec/bin:/Users/gri306/.nvm/versions/node/v18.14.1/bin:/opt/homebrew/bin:/Users/gri306/.bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/usr/local/MacGPG2/bin:/Applications/Computer Admin.app/Contents/Resources:/Library/TeX/texbin:/Applications/Little Snitch.app/Contents/Components:/usr/local/laps:/usr/local/munki:/Applications/quarto/bin:/Applications/Postgres.app/Contents/Versions/latest/bin:/Users/gri306/.local/bin:~/bin:/Users/gri306/.rvm/bin
+Parameters: -ig /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone -publish https://sql-on-fhir.org/ig/2.0.0 -milestone -no-exit
+Start Clock @ Tuesday, 8 October 2024 at 8:12:40 pm Australian Eastern Standard Time (2024-10-08T20:12:40+10:00)
+                                                                                                    
+Build FHIR IG from /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone         (00:00.007 / 00:00.007, 954Mb)
+Build Formal Publication package, intended for https://sql-on-fhir.org/ig/2.0.0                      (00:00.000 / 00:00.008, 954Mb)
+API keys loaded from /Users/gri306/.fhir/fhir-settings.json                                          (00:00.000 / 00:00.008, 954Mb)
+Package Cache: /Users/gri306/.fhir/packages                                                          (00:00.000 / 00:00.009, 954Mb)
+Run Sushi on /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone               (00:00.000 / 00:00.009, 954Mb)
+Sushi: info  Running SUSHI v3.11.1 (implements FHIR Shorthand specification v3.0.0-ballot)           (00:00.624 / 00:00.634, 958Mb)
+Sushi: info  Arguments:                                                                              (00:00.000 / 00:00.635, 958Mb)
+Sushi: info    --require-latest                                                                      (00:00.000 / 00:00.635, 958Mb)
+Sushi: info    --out /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone       (00:00.000 / 00:00.636, 958Mb)
+Sushi: info    /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone             (00:00.000 / 00:00.636, 958Mb)
+Sushi: info  Using configuration file: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/sushi-config.yaml (00:00.687 / 00:01.324, 958Mb)
+Sushi: info  Importing FSH text...                                                                   (00:00.048 / 00:01.373, 958Mb)
+Sushi: info  Preprocessed 3 documents with 0 aliases.                                                (00:00.038 / 00:01.411, 958Mb)
+Sushi: info  Imported 3 definitions and 5 instances.                                                 (00:00.006 / 00:01.418, 958Mb)
+Sushi: info  Checking /Users/gri306/.fhir/packages for hl7.fhir.uv.tools#current...                  (00:00.000 / 00:01.418, 958Mb)
+Sushi: info  Found hl7.fhir.uv.tools#current in /Users/gri306/.fhir/packages.                        (00:00.046 / 00:01.465, 958Mb)
+Sushi: info  Loaded package hl7.fhir.uv.tools#current                                                (00:02.571 / 00:04.036, 960Mb)
+Sushi: info  Checking /Users/gri306/.fhir/packages for hl7.terminology.r5#6.0.2...                   (00:01.589 / 00:05.626, 960Mb)
+Sushi: info  Found hl7.terminology.r5#6.0.2 in /Users/gri306/.fhir/packages.                         (00:01.489 / 00:07.116, 960Mb)
+Sushi: info  Loaded package hl7.terminology.r5#6.0.2                                                 (00:00.000 / 00:07.117, 960Mb)
+Sushi: info  Checking /Users/gri306/.fhir/packages for hl7.fhir.uv.extensions.r5#5.1.0...            (00:01.359 / 00:08.477, 960Mb)
+Sushi: info  Found hl7.fhir.uv.extensions.r5#5.1.0 in /Users/gri306/.fhir/packages.                  (00:00.754 / 00:09.232, 960Mb)
+Sushi: info  Loaded package hl7.fhir.uv.extensions.r5#5.1.0                                          (00:00.000 / 00:09.233, 960Mb)
+Sushi: info  Checking /Users/gri306/.fhir/packages for hl7.fhir.r5.core#5.0.0...                     (00:00.000 / 00:09.233, 960Mb)
+Sushi: info  Found hl7.fhir.r5.core#5.0.0 in /Users/gri306/.fhir/packages.                           (00:01.490 / 00:10.724, 960Mb)
+Sushi: info  Loaded package hl7.fhir.r5.core#5.0.0                                                   (00:00.000 / 00:10.725, 960Mb)
+Sushi: info  Converting FSH to FHIR resources...                                                     (00:00.023 / 00:10.748, 960Mb)
+Sushi: info  Converted 3 FHIR StructureDefinitions.                                                  (00:00.119 / 00:10.868, 960Mb)
+Sushi: info  Converted 5 FHIR instances.                                                             (00:00.057 / 00:10.925, 960Mb)
+Sushi: info  Exporting FHIR resources as JSON...                                                     (00:00.000 / 00:10.925, 960Mb)
+Sushi: info  Exported 8 FHIR resources as JSON.                                                      (00:00.006 / 00:10.932, 960Mb)
+Sushi: info  Assembling Implementation Guide sources...                                              (00:00.010 / 00:10.942, 960Mb)
+Sushi: info  Generated ImplementationGuide-org.sql-on-fhir.ig.json                                   (00:00.018 / 00:10.961, 960Mb)
+Sushi: info  Assembled Implementation Guide sources; ready for IG Publisher.                         (00:00.000 / 00:10.962, 960Mb)
+Sushi: info  The sample-ig located at https://github.com/FHIR/sample-ig contains scripts useful for downloading and running the IG Publisher. (00:00.000 / 00:10.962, 960Mb)
+Sushi: ========================= SUSHI RESULTS ===========================                           (00:00.000 / 00:10.963, 960Mb)
+Sushi: |  -------------------------------------------------------------  |                           (00:00.000 / 00:10.964, 960Mb)
+Sushi: | |    Profiles   |  Extensions  |   Logicals   |   Resources   | |                           (00:00.000 / 00:10.964, 960Mb)
+Sushi: | |-------------------------------------------------------------| |                           (00:00.000 / 00:10.965, 960Mb)
+Sushi: | |       2       |      0       |      1       |       0       | |                           (00:00.000 / 00:10.965, 960Mb)
+Sushi: |  -------------------------------------------------------------  |                           (00:00.000 / 00:10.966, 960Mb)
+Sushi: |  -------------------------------------------------------------  |                           (00:00.000 / 00:10.966, 960Mb)
+Sushi: | |      ValueSets     |    CodeSystems    |     Instances      | |                           (00:00.000 / 00:10.967, 960Mb)
+Sushi: | |-------------------------------------------------------------| |                           (00:00.000 / 00:10.968, 960Mb)
+Sushi: | |         0          |         0         |         5          | |                           (00:00.000 / 00:10.968, 960Mb)
+Sushi: |  -------------------------------------------------------------  |                           (00:00.000 / 00:10.969, 960Mb)
+Sushi: |                                                                 |                           (00:00.000 / 00:10.969, 960Mb)
+Sushi: ===================================================================                           (00:00.000 / 00:10.970, 960Mb)
+Sushi: | Valedictorian of the School of FSH!    0 Errors      0 Warnings |                           (00:00.000 / 00:10.970, 960Mb)
+Sushi: ===================================================================                           (00:00.000 / 00:10.971, 960Mb)
+Load Template from #custom-template                                                                  (00:00.066 / 00:11.038, 962Mb)
+ Load Template from fhir.base.template#current                                                       (00:00.005 / 00:11.043, 962Mb)
+
+onLoad.findSpreadsheets:
+
+onLoad.updateIg:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onLoad-ig-working.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onLoad-ig-updated.xml
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/scripts/onLoad.xslt
+
+onLoad.extend:
+
+onLoad:
+Root directory: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone            (00:03.975 / 00:15.018, 637Mb)
+Terminology Cache is at /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/input-cache/txcache. 5 files in cache (00:01.970 / 00:16.989, 659Mb)
+Core Package hl7.fhir.r5.core#5.0.0
+Running Terminology Log: /var/folders/pd/531bf2jj5kq3n6z0j398078h0000gp/T/ohfu-fhir-ig-10396658471455214977.log
+Connect to Terminology Server at http://tx.fhir.org                                                  (00:02.102 / 00:19.092, 1Gb)
+Load Package hl7.fhir.pubpack#0.1.8
+Load Package hl7.fhir.xver-extensions#0.1.0
+Load Package hl7.terminology.r5#6.0.2
+Load Package hl7.fhir.uv.extensions.r5#5.1.0
+Load Package hl7.fhir.uv.tools#0.2.0
+Initialization complete                                                                              (00:05.076 / 00:24.168, 1Gb)
+Load Content                                                                                         (00:00.000 / 00:24.169, 1Gb)
+Using en-US as the default narrative language. (no language information in Implementation Guide or command line (00:00.004 / 00:24.174, 1Gb)
+loadPrePages from FetchedFile[/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/includes] as /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/fsh-generated/includes
+loadPrePages from FetchedFile[/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/input/pagecontent] as /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/input/pagecontent
+Fetch https://sql-on-fhir.org/ig/package-list.json for version check                                 (00:00.058 / 00:24.232, 1Gb)
+Processing Conformance Resources                                                                     (00:00.098 / 00:24.331, 1Gb)
+Load Dependency Info                                                                                 (00:00.000 / 00:24.332, 1Gb)
+Load Info                                                                                            (00:00.000 / 00:24.333, 1Gb)
+Load Resources                                                                                       (00:00.000 / 00:24.334, 1Gb)
+Load Paths                                                                                           (00:00.010 / 00:24.344, 1Gb)
+Generating Snapshots                                                                                 (00:00.000 / 00:24.345, 1Gb)
+Check R4 / R4B                                                                                       (00:00.017 / 00:24.362, 1Gb)
+Assign Comparison Ids                                                                                (00:00.001 / 00:24.364, 1Gb)
+Propagating status                                                                                   (00:00.000 / 00:24.364, 1Gb)
+Generating Narratives                                                                                (00:00.000 / 00:24.365, 1Gb)
+Validating Conformance Resources                                                                     (00:00.056 / 00:24.421, 1000Mb)
+Check profiles & code systems                                                                        (00:00.992 / 00:25.414, 1Gb)
+Check realm rules                                                                                    (00:00.000 / 00:25.415, 1Gb)
+Previous Version Comparison                                                                          (00:00.000 / 00:25.416, 1Gb)
+Validating Resources                                                                                 (00:00.002 / 00:25.418, 1Gb)
+Processing Provenance Records                                                                        (00:00.022 / 00:25.441, 1Gb)
+Generating Outputs in /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/output (00:00.000 / 00:25.442, 1Gb)
+Generate Native Outputs                                                                              (00:00.049 / 00:25.491, 1Gb)
+Run Template                                                                                         (00:00.635 / 00:26.127, 1Gb)
+
+onGenerate.checkVersions:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-working.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/versions.txt
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/scripts/onGenerate.getVersions.xslt
+
+onGenerate.r5-schemas:
+      [get] Getting: http://build.fhir.org/fhir-single.xsd
+      [get] To: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/input-cache/schemas/R5/fhir-single.xsd
+      [get] Not modified - so not downloaded
+      [get] Getting: http://build.fhir.org/fhir-xhtml.xsd
+      [get] To: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/input-cache/schemas/R5/fhir-xhtml.xsd
+      [get] Not modified - so not downloaded
+      [get] Getting: http://build.fhir.org/xml.xsd
+      [get] To: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/input-cache/schemas/R5/xml.xsd
+      [get] Not modified - so not downloaded
+      [get] Getting: http://build.fhir.org/xmldsig-core-schema.xsd
+      [get] To: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/input-cache/schemas/R5/xmldsig-core-schema.xsd
+      [get] Not modified - so not downloaded
+
+onGenerate.r4-schemas:
+
+onGenerate.r3-schemas:
+
+onGenerate.r2b-schemas:
+
+onGenerate.r2-schemas:
+
+onGenerate.schemas:
+
+onGenerate.data:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-working.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/temp/pages/_data/artifacts.json
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/scripts/onGenerate.data.xslt
+
+onGenerate.setup:
+
+onGenerate.infoFile:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-working.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/temp/pages/_data/info.json
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/scripts/onGenerate.genJson.xslt
+
+onGenerate.processIncludes:
+     [copy] Copying 17 files to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/temp/pages/_includes
+
+onGenerate.processIg:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-working.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-working.1.xml
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/scripts/onGenerate.group.xslt
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-working.1.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-working.2.xml
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/scripts/onGenerate.groupSort.xslt
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-working.2.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-updated.xml
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/scripts/onGenerate.final.xslt
+
+onGenerate.igQa:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-updated.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/ongenerate-validation-igqa.json
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/scripts/onGenerate.qa.xslt
+
+onGenerate.artifactList:
+     [xslt] Processing /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/onGenerate-ig-updated.xml to /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/temp/pages/_includes/artifacts.xml
+     [xslt] Loading stylesheet /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/template/scripts/createArtifactSummary.xslt
+
+check-plantumlfiles:
+
+onGenerate.plantUml.ig:
+
+onGenerate.plantUml.template:
+
+onGenerate.plantUml:
+
+onGenerate.copyDataFiles:
+
+onGenerate.extend:
+
+onGenerate:
+Template Done                                                                                        (00:01.759 / 00:27.886, 1Gb)
+Generate HTML Outputs                                                                                (00:00.000 / 00:27.887, 1Gb)
+Generate Summaries                                                                                   (00:01.207 / 00:29.095, 1Gb)
+Generating Summary Outputs                                                                           (00:00.001 / 00:29.096, 1Gb)
+DB Cumulative Time invested: 00:00:00.41
+Sending Usage Stats to Server                                                                        (00:08.127 / 00:37.224, 1Gb)
+## Memory (MB): Use = 1528, Free = 627, Total = 2156, Max = 8192                                     (00:00.000 / 00:37.225, 1Gb)
+Reclaiming memory...                                                                                 (00:00.000 / 00:37.225, 1Gb)
+## Memory (MB): Use = 613, Free = 1506, Total = 2120, Max = 8192                                     (00:00.142 / 00:37.368, 615Mb)
+Run jekyll: jekyll build --destination "/Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/output" (in folder /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/temp/pages) (00:00.002 / 00:37.370, 615Mb)
+Troubleshooting Note: usual cases for Jekyll to fail are:                                            (00:00.001 / 00:37.372, 615Mb)
+* A failure to produce a fragment that is already logged in the output above                         (00:00.000 / 00:37.373, 615Mb)
+* A reference to a manually edited file that hasn't been provided                                    (00:00.000 / 00:37.373, 615Mb)
+Jekyll: Source: /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/temp/pages (00:00.423 / 00:37.797, 617Mb)
+Jekyll: Generating...                                                                                (00:00.000 / 00:37.798, 617Mb)
+Jekyll: done in 1.047 seconds.                                                                       (00:01.046 / 00:38.845, 617Mb)
+
+Installing org.sql-on-fhir.ig#2.0.0
+Checking Output HTML                                                                                 (00:00.170 / 00:39.015, 711Mb)
+found 719 files                                                                                      (00:00.007 / 00:39.022, 711Mb)
+..........................................
+..........................................
+  ... 719 html files, 0 pages invalid xhtml (0%)                                                     (00:01.549 / 00:40.572, 884Mb)
+  ... 23737 links, 9 broken links (0%)                                                               (00:00.000 / 00:40.573, 884Mb)
+Generate fragment-usage-analysis.csv                                                                 (00:00.000 / 00:40.574, 884Mb)
+Build final .zip                                                                                     (00:00.003 / 00:40.578, 886Mb)
+Final .zip built                                                                                     (00:00.522 / 00:41.100, 894Mb)
+Built. Times: loading: 00:00.161, generate: 00:20.055, narrative generation: 00:00.055, realm-rules: 00:00.000, previous-version: 00:00.000, jekyll: 00:01.477, validation: 00:01.014 (#9), template: 00:01.759 (#3) (00:03.288 / 00:44.388, 1Gb)
+Generating QA                                                                                        (00:00.001 / 00:44.390, 1Gb)
+Validation output in /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/output/qa.html
+Errors: 0, Warnings: 8, Info: 4, Broken Links: 9 (00:00.070 / 00:44.460, 1Gb)
+Finished. Max Memory Used = 1Gb. Log file saved in /var/folders/pd/531bf2jj5kq3n6z0j398078h0000gp/T/fhir-ig-publisher-tmp.log (00:00.003 / 00:44.463, 1Gb)
+Keep a copy of the build directory at /Users/gri306/Desktop/publication/temp/web-root/run-20241008/ig-build-zips/org.sql-on-fhir.ig#2.0.0.zip
+
+ok. All checks passed. Publish v2.0.0 to /Users/gri306/Desktop/publication/temp/web-root/run-20241008/ig/2.0.0
+Copy the IG to /Users/gri306/Desktop/publication/temp/web-root/run-20241008/ig/2.0.0
+Update /Users/gri306/Desktop/publication/temp/web-root/run-20241008/ig/package-list.json
+Publish Box Statement: This page is part of the SQL on FHIR (v2.0.0: Release) based on <a no-external="true" href="http://hl7.org/fhir/R5">FHIR (HL7® FHIR® Standard) v5.0.0</a>. This is the current published version in its permanent home (it will always be available at this URL).  For a full list of available versions, see the <a no-external="true" href="https://sql-on-fhir.org/ig/history.html">Directory of published versions</a>
+no html insert in /Users/gri306/Desktop/publication/temp/web-root/run-20241008/ig/2.0.0/qa-txservers.html
+  .. 58 files checked, 58 updated
+  .. 21 clones checked, 42 updated
+  .. 9 redirections (9 created/updated)
+This is a milestone release - publish v2.0.0 to /Users/gri306/Desktop/publication/temp/web-root/run-20241008/ig
+Publish Box Statement: This page is part of the SQL on FHIR (v2.0.0: Release) based on <a no-external="true" href="http://hl7.org/fhir/R5">FHIR (HL7® FHIR® Standard) v5.0.0</a>. This is the current published version.  For a full list of available versions, see the <a no-external="true" href="https://sql-on-fhir.org/ig/history.html">Directory of published versions</a>
+no html insert in /Users/gri306/Desktop/publication/temp/org.sql-on-fhir.ig#2.0.0-milestone/output/qa-txservers.html
+  .. 58 files checked, 58 updated
+  .. 21 clones checked, 42 updated
+  .. 9 redirections (9 created/updated)
+Check for Files to delete
+  ... 0 files
+Copy to new IG to /Users/gri306/Desktop/publication/temp/web-root/run-20241008/ig
+Update history page at /Users/gri306/Desktop/publication/temp/web-root/run-20241008/ig from /Users/gri306/Desktop/publication/ig-history and templates
+Build is complete. Copy from /Users/gri306/Desktop/publication/temp/web-root/run-20241008
+Error in package-list.json:path to build.fhir.org should not use https://
+org.sql-on-fhir.ig (https://sql-on-fhir.org/ig): SQL on FHIR @ http://build.fhir.org/ig/FHIR/sql-on-fhir-v2
+  release: R2 2.0.0/5.0.0 @ https://sql-on-fhir.org/ig/2.0.0

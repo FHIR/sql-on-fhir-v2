@@ -1,0 +1,15 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# - resource -------------------------------------------------------------------
+
+<https://sql-on-fhir.org/ig/Binary/PatientDemographics> a fhir:Binary ;
+  fhir:nodeRole fhir:treeRoot ;
+  fhir:id [ fhir:v "PatientDemographics"] ; # 
+  fhir:contentType [ fhir:v "application/fhir+json"] ; # 
+  fhir:data [ fhir:v "ewogICJyZXNvdXJjZVR5cGUiOiAiaHR0cHM6Ly9zcWwtb24tZmhpci5vcmcvaWcvU3RydWN0dXJlRGVmaW5pdGlvbi9WaWV3RGVmaW5pdGlvbiIsCiAgInNlbGVjdCI6IFsKICAgIHsKICAgICAgImNvbHVtbiI6IFsKICAgICAgICB7CiAgICAgICAgICAicGF0aCI6ICJnZXRSZXNvdXJjZUtleSgpIiwKICAgICAgICAgICJuYW1lIjogImlkIgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgInBhdGgiOiAiZ2VuZGVyIiwKICAgICAgICAgICJuYW1lIjogImdlbmRlciIKICAgICAgICB9CiAgICAgIF0KICAgIH0sCiAgICB7CiAgICAgICJjb2x1bW4iOiBbCiAgICAgICAgewogICAgICAgICAgInBhdGgiOiAiZ2l2ZW4uam9pbignICcpIiwKICAgICAgICAgICJuYW1lIjogImdpdmVuX25hbWUiLAogICAgICAgICAgImRlc2NyaXB0aW9uIjogIkEgc2luZ2xlIGdpdmVuIG5hbWUgZmllbGQgd2l0aCBhbGwgbmFtZXMgam9pbmVkIHRvZ2V0aGVyLiIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJwYXRoIjogImZhbWlseSIsCiAgICAgICAgICAibmFtZSI6ICJmYW1pbHlfbmFtZSIKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJmb3JFYWNoIjogIm5hbWUud2hlcmUodXNlID0gJ29mZmljaWFsJykuZmlyc3QoKSIKICAgIH0KICBdLAogICJuYW1lIjogInBhdGllbnRfZGVtb2dyYXBoaWNzIiwKICAic3RhdHVzIjogImRyYWZ0IiwKICAicmVzb3VyY2UiOiAiUGF0aWVudCIKfQo="^^xsd:base64Binary] . # 
+
+# -------------------------------------------------------------------------------------
+

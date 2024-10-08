@@ -1,0 +1,30 @@
+[
+  {
+    "id" : "org.sql-on-fhir.ig",
+    "type" : "ImplementationGuide",
+    "url" : "https://sql-on-fhir.org/ig/ImplementationGuide/org.sql-on-fhir.ig",
+    "version" : "2.0.0",
+    "name" : "SQLonFHIR"
+  },
+  {
+    "id" : "ShareableViewDefinition",
+    "type" : "StructureDefinition",
+    "url" : "https://sql-on-fhir.org/ig/StructureDefinition/ShareableViewDefinition",
+    "version" : "2.0.0",
+    "name" : "ShareableViewDefinition"
+  },
+  {
+    "id" : "TabularViewDefinition",
+    "type" : "StructureDefinition",
+    "url" : "https://sql-on-fhir.org/ig/StructureDefinition/TabularViewDefinition",
+    "version" : "2.0.0",
+    "name" : "TabularViewDefinition"
+  },
+  {
+    "id" : "ViewDefinition",
+    "type" : "StructureDefinition",
+    "url" : "https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition",
+    "version" : "2.0.0",
+    "name" : "ViewDefinition"
+  }
+]

@@ -1,0 +1,10 @@
+Source File	Size	loadResources	load-configure	scan	loadDepInfo	loadInfo	load	generateSnapshots	checkR4R4B	generateNarratives	validate	loadLists	checkConformanceResources	checkConformanceResources2	checkConformanceResources3	generateLogicalMaps	validateExpressions	scanForUsageStats	checkURLsUnique	processProvenanceDetails	generate1	generate2	generateLogicals	makeDependencies	generateExampleZip	generateValidationPack	scanProfilesForR5	scanExamplesForR5
+/fsh-generated/resources/ImplementationGuide-org.sql-on-fhir.ig.json	7246	-	0	0	0	0	0	0	1	91	0	0	0	0	0	0	0	0	0	0	40	52	0	0	0	1	0	0
+fsh-generated/resources/StructureDefinition-ShareableViewDefinition.json	1445	11	0	0	0	0	0	30	0	20	0	0	0	0	0	0	0	1	0	0	127	2699	0	0	0	4	1	0
+fsh-generated/resources/StructureDefinition-TabularViewDefinition.json	1800	9	0	0	0	0	0	9	0	11	0	0	0	0	0	0	0	0	0	0	115	373	0	0	0	5	0	1
+fsh-generated/resources/StructureDefinition-ViewDefinition.json	20443	10	0	0	0	0	0	0	0	194	0	0	0	0	0	0	0	0	0	0	284	379	0	0	0	16	0	0
+/fsh-generated/resources/binary-PatientAddresses.json	763	-	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	17	19	0	0	0	0	0	0
+/fsh-generated/resources/binary-PatientAndContactAddressUnion.json	1283	-	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14	16	0	0	0	0	0	0
+/fsh-generated/resources/binary-PatientDemographics.json	731	-	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	15	14	0	0	0	0	0	0
+/fsh-generated/resources/binary-ShareablePatientDemographics.json	1143	-	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	14	14	0	0	0	0	0	0
+/fsh-generated/resources/binary-UsCoreBloodPressures.json	2133	-	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	15	12	0	0	0	0	0	0

@@ -1,0 +1,194 @@
+"Id","Path","Slice Name","Alias(s)","Label","Min","Max","Must Support?","Is Modifier?","Is Summary?","Type(s)","Short","Definition","Comments","Requirements","Default Value","Meaning When Missing","Fixed Value","Pattern","Example","Minimum Value","Maximum Value","Maximum Length","Binding Strength","Binding Description","Binding Value Set","Code","Slicing Discriminator","Slicing Description","Slicing Ordered","Slicing Rules","Base Path","Base Min","Base Max","Condition(s)","Constraint(s)","Mapping: RIM Mapping"
+"ViewDefinition","ViewDefinition","","","",0,*,"","","","null {[]} {[]}
+","View Definition","A ViewDefinition represents a tabular projection of a FHIR resource, where the columns and inclusion 
+criteria are defined by FHIRPath expressions. ","","","","","","","","","",,,,,"",,,,"Base",0,*,"","","n/a"
+"ViewDefinition.url","ViewDefinition.url","","","",0,1,"","","","uri {[]} {[]}
+","Canonical identifier for this view definition, represented as a URI (globally unique)","Canonical identifier for this view definition, represented as a URI (globally unique)","","","","","","","","","",,,,,"",,,,"ViewDefinition.url",0,1,"",""
+"ViewDefinition.identifier","ViewDefinition.identifier","","","",0,1,"","","","Identifier {[]} {[]}
+","Additional identifier for the view definition","Additional identifier for the view definition","","","","","","","","","",,,,,"",,,,"ViewDefinition.identifier",0,1,"",""
+"ViewDefinition.name","ViewDefinition.name","","","",0,1,"","","","string {[]} {[]}
+","Name of view definition (computer and database friendly)","Name of the view definition, must be in a database-friendly format.","","","","","","","","","",,,,,"",,,,"ViewDefinition.name",0,1,"","sql-name:Name is limited to letters, numbers, or underscores and cannot start with an
+underscore -- i.e. with a regular expression of: ^[A-Za-z][A-Za-z0-9_]*$ 
+
+
+This makes it usable as table names in a wide variety of databases. {empty() or matches('^[A-Za-z][A-Za-z0-9_]*$')}
+"
+"ViewDefinition.title","ViewDefinition.title","","","",0,1,"","","","string {[]} {[]}
+","Name for this view definition (human friendly)","A optional human-readable description of the view.","","","","","","","","","",,,,,"",,,,"ViewDefinition.title",0,1,"",""
+"ViewDefinition.meta","ViewDefinition.meta","","","",0,1,"","","","Meta {[]} {[]}
+","Metadata about the view definition","Metadata about the view definition","","","","","","","","","",,,,,"",,,,"ViewDefinition.meta",0,1,"",""
+"ViewDefinition.status","ViewDefinition.status","","","",1,1,"","","","code {[]} {[]}
+","draft | active | retired | unknown","draft | active | retired | unknown","","","","","","","","","",,"required","","http://hl7.org/fhir/ValueSet/publication-status","",,,,"ViewDefinition.status",1,1,"",""
+"ViewDefinition.experimental","ViewDefinition.experimental","","","",0,1,"","","","boolean {[]} {[]}
+","For testing purposes, not real usage","For testing purposes, not real usage","","","","","","","","","",,,,,"",,,,"ViewDefinition.experimental",0,1,"",""
+"ViewDefinition.publisher","ViewDefinition.publisher","","","",0,1,"","","","string {[]} {[]}
+","Name of the publisher/steward (organization or individual)","Name of the publisher/steward (organization or individual)","","","","","","","","","",,,,,"",,,,"ViewDefinition.publisher",0,1,"",""
+"ViewDefinition.contact","ViewDefinition.contact","","","",0,*,"","","","ContactDetail {[]} {[]}
+","Contact details for the publisher","Contact details for the publisher","","","","","","","","","",,,,,"",,,,"ViewDefinition.contact",0,*,"",""
+"ViewDefinition.description","ViewDefinition.description","","","",0,1,"","","","markdown {[]} {[]}
+","Natural language description of the view definition","Natural language description of the view definition","","","","","","","","","",,,,,"",,,,"ViewDefinition.description",0,1,"",""
+"ViewDefinition.useContext","ViewDefinition.useContext","","","",0,*,"","","","UsageContext {[]} {[]}
+","The context that the content is intended to support","The context that the content is intended to support","","","","","","","","","",,,,,"",,,,"ViewDefinition.useContext",0,*,"",""
+"ViewDefinition.copyright","ViewDefinition.copyright","","","",0,1,"","","","markdown {[]} {[]}
+","Use and/or publishing restrictions","Use and/or publishing restrictions","","","","","","","","","",,,,,"",,,,"ViewDefinition.copyright",0,1,"",""
+"ViewDefinition.resource","ViewDefinition.resource","","","",1,1,"","","","code {[]} {[]}
+","FHIR resource for the ViewDefinition","The FHIR resource that the view is based upon, e.g. 'Patient' or 'Observation'.","","","","","","","","","",,"required","","http://hl7.org/fhir/ValueSet/resource-types","",,,,"ViewDefinition.resource",1,1,"",""
+"ViewDefinition.fhirVersion","ViewDefinition.fhirVersion","","","",0,*,"","","","code {[]} {[]}
+","FHIR version(s) of the resource for the ViewDefinition","The FHIR version(s) for the FHIR resource. The value of this element is the
+formal version of the specification, without the revision number, e.g.
+[publication].[major].[minor].","","","","","","","","","",,"required","","http://hl7.org/fhir/ValueSet/FHIR-version","",,,,"ViewDefinition.fhirVersion",0,*,"",""
+"ViewDefinition.constant","ViewDefinition.constant","","","",0,*,"","","","BackboneElement {[]} {[]}
+","Constant that can be used in FHIRPath expressions","A constant is a value that is injected into a FHIRPath expression through the use of a FHIRPath
+external constant with the same name.","","","","","","","","","",,,,,"",,,,"ViewDefinition.constant",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+"
+"ViewDefinition.constant.id","ViewDefinition.constant.id","","","",0,1,"","","","id {[]} {[]}
+","Unique id for inter-element referencing","Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.","","","","","","","","","",,,,,"",,,,"Element.id",0,1,"ele-1
+","","n/a"
+"ViewDefinition.constant.extension","ViewDefinition.constant.extension","","extensions
+user content","",0,*,"","","","Extension {[]} {[]}
+","Additional content defined by implementations","May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.","There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.","","","","","","","","",,,,,"","value:url}
+","Extensions are always sliced by (at least) url",,"open","Element.extension",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+ext-1:Must have either extensions or value[x], not both {extension.exists() != value.exists()}","n/a"
+"ViewDefinition.constant.modifierExtension","ViewDefinition.constant.modifierExtension","","extensions
+user contentmodifiers","",0,*,"","Y","Y","Extension {[]} {[]}
+","Extensions that cannot be ignored even if unrecognized","May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.
+
+Modifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).","There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.","Modifier extensions allow for extensions that *cannot* be safely ignored to be clearly distinguished from the vast majority of extensions which can be safely ignored.  This promotes interoperability by eliminating the need for implementers to prohibit the presence of extensions. For further information, see the [definition of modifier extensions](http://hl7.org/fhir/R5/extensibility.html#modifierExtension).","","","","","","","",,,,,"",,,,"BackboneElement.modifierExtension",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+ext-1:Must have either extensions or value[x], not both {extension.exists() != value.exists()}","N/A"
+"ViewDefinition.constant.name","ViewDefinition.constant.name","","","",1,1,"","","","string {[]} {[]}
+","Name of constant (referred to in FHIRPath as %[name])","Name of constant (referred to in FHIRPath as %[name])","","","","","","","","","",,,,,"",,,,"ViewDefinition.constant.name",1,1,"","sql-name:Name is limited to letters, numbers, or underscores and cannot start with an
+underscore -- i.e. with a regular expression of: ^[A-Za-z][A-Za-z0-9_]*$ 
+
+
+This makes it usable as table names in a wide variety of databases. {empty() or matches('^[A-Za-z][A-Za-z0-9_]*$')}
+"
+"ViewDefinition.constant.value[x]","ViewDefinition.constant.value[x]","","","",1,1,"","","","base64Binary {[]} {[]}
+boolean {[]} {[]}canonical {[]} {[]}code {[]} {[]}date {[]} {[]}dateTime {[]} {[]}decimal {[]} {[]}id {[]} {[]}instant {[]} {[]}integer {[]} {[]}integer64 {[]} {[]}oid {[]} {[]}string {[]} {[]}positiveInt {[]} {[]}time {[]} {[]}unsignedInt {[]} {[]}uri {[]} {[]}url {[]} {[]}uuid {[]} {[]}","Value of constant","The value that will be substituted in place of the constant reference. This
+is done by including `%your_constant_name` in a FHIRPath expression, which effectively converts
+the FHIR literal defined here to a FHIRPath literal used in the path expression.
+
+Support for additional types may be added in the future.","","","","","","","","","",,,,,"",,,,"ViewDefinition.constant.value[x]",1,1,"",""
+"ViewDefinition.select","ViewDefinition.select","","","",1,*,"","","","BackboneElement {[]} {[]}
+","A collection of columns and nested selects to include in the view.","The select structure defines the columns to be used in the resulting view. These are expressed
+in the `column` structure below, or in nested `select`s for nested resources.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select",1,*,"","sql-expressions:Can only have at most one of `forEach` or `forEachOrNull`. {(forEach | forEachOrNull).count() <= 1}
+ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}"
+"ViewDefinition.select.id","ViewDefinition.select.id","","","",0,1,"","","","id {[]} {[]}
+","Unique id for inter-element referencing","Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.","","","","","","","","","",,,,,"",,,,"Element.id",0,1,"ele-1
+","","n/a"
+"ViewDefinition.select.extension","ViewDefinition.select.extension","","extensions
+user content","",0,*,"","","","Extension {[]} {[]}
+","Additional content defined by implementations","May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.","There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.","","","","","","","","",,,,,"","value:url}
+","Extensions are always sliced by (at least) url",,"open","Element.extension",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+ext-1:Must have either extensions or value[x], not both {extension.exists() != value.exists()}","n/a"
+"ViewDefinition.select.modifierExtension","ViewDefinition.select.modifierExtension","","extensions
+user contentmodifiers","",0,*,"","Y","Y","Extension {[]} {[]}
+","Extensions that cannot be ignored even if unrecognized","May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.
+
+Modifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).","There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.","Modifier extensions allow for extensions that *cannot* be safely ignored to be clearly distinguished from the vast majority of extensions which can be safely ignored.  This promotes interoperability by eliminating the need for implementers to prohibit the presence of extensions. For further information, see the [definition of modifier extensions](http://hl7.org/fhir/R5/extensibility.html#modifierExtension).","","","","","","","",,,,,"",,,,"BackboneElement.modifierExtension",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+ext-1:Must have either extensions or value[x], not both {extension.exists() != value.exists()}","N/A"
+"ViewDefinition.select.column","ViewDefinition.select.column","","","",0,*,"","","","BackboneElement {[]} {[]}
+","A column to be produced in the resulting table.","A column to be produced in the resulting table. The column is relative to the select structure
+that contains it.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.column",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+"
+"ViewDefinition.select.column.id","ViewDefinition.select.column.id","","","",0,1,"","","","id {[]} {[]}
+","Unique id for inter-element referencing","Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.","","","","","","","","","",,,,,"",,,,"Element.id",0,1,"ele-1
+","","n/a"
+"ViewDefinition.select.column.extension","ViewDefinition.select.column.extension","","extensions
+user content","",0,*,"","","","Extension {[]} {[]}
+","Additional content defined by implementations","May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.","There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.","","","","","","","","",,,,,"","value:url}
+","Extensions are always sliced by (at least) url",,"open","Element.extension",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+ext-1:Must have either extensions or value[x], not both {extension.exists() != value.exists()}","n/a"
+"ViewDefinition.select.column.modifierExtension","ViewDefinition.select.column.modifierExtension","","extensions
+user contentmodifiers","",0,*,"","Y","Y","Extension {[]} {[]}
+","Extensions that cannot be ignored even if unrecognized","May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.
+
+Modifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).","There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.","Modifier extensions allow for extensions that *cannot* be safely ignored to be clearly distinguished from the vast majority of extensions which can be safely ignored.  This promotes interoperability by eliminating the need for implementers to prohibit the presence of extensions. For further information, see the [definition of modifier extensions](http://hl7.org/fhir/R5/extensibility.html#modifierExtension).","","","","","","","",,,,,"",,,,"BackboneElement.modifierExtension",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+ext-1:Must have either extensions or value[x], not both {extension.exists() != value.exists()}","N/A"
+"ViewDefinition.select.column.path","ViewDefinition.select.column.path","","","",1,1,"","","","string {[]} {[]}
+","FHIRPath expression that creates a column and defines its content","A FHIRPath expression that evaluates to the value that will be output in the column for each 
+resource. The input context is the collection of resources of the type specified in the resource 
+element. Constants defined in Reference({constant}) can be referenced as %[name].","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.column.path",1,1,"",""
+"ViewDefinition.select.column.name","ViewDefinition.select.column.name","","","",1,1,"","","","string {[]} {[]}
+","Column name produced in the output","Name of the column produced in the output, must be in a database-friendly format. The column 
+names in the output must not have any duplicates.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.column.name",1,1,"","sql-name:Name is limited to letters, numbers, or underscores and cannot start with an
+underscore -- i.e. with a regular expression of: ^[A-Za-z][A-Za-z0-9_]*$ 
+
+
+This makes it usable as table names in a wide variety of databases. {empty() or matches('^[A-Za-z][A-Za-z0-9_]*$')}
+"
+"ViewDefinition.select.column.description","ViewDefinition.select.column.description","","","",0,1,"","","","markdown {[]} {[]}
+","Description of the column","A human-readable description of the column.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.column.description",0,1,"",""
+"ViewDefinition.select.column.collection","ViewDefinition.select.column.collection","","","",0,1,"","","","boolean {[]} {[]}
+","Indicates whether the column may have multiple values.","Indicates whether the column may have multiple values. Defaults to `false` if unset.
+
+ViewDefinitions must have this set to `true` if multiple values may be returned. Implementations SHALL
+report an error if multiple values are produced when that is not the case.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.column.collection",0,1,"",""
+"ViewDefinition.select.column.type","ViewDefinition.select.column.type","","","",0,1,"","","","uri {[]} {[]}
+","A FHIR StructureDefinition URI for the column's type.","A FHIR StructureDefinition URI for the column's type. Relative URIs are implicitly given
+the 'http://hl7.org/fhir/StructureDefinition/' prefix. The URI may also use FHIR element ID notation to indicate
+a backbone element within a structure. For instance, `Observation.referenceRange` may be specified to indicate
+the returned type is that backbone element.
+
+This field *must* be provided if a ViewDefinition returns a non-primitive type. Implementations should report an error
+if the returned type does not match the type set here, or if a non-primitive type is returned but this field is unset.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.column.type",0,1,"",""
+"ViewDefinition.select.column.tag","ViewDefinition.select.column.tag","","","",0,*,"","","","BackboneElement {[]} {[]}
+","Additional metadata describing the column","Tags can be used to attach additional metadata to columns, such as implementation-specific 
+directives or database-specific type hints.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.column.tag",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+"
+"ViewDefinition.select.column.tag.id","ViewDefinition.select.column.tag.id","","","",0,1,"","","","id {[]} {[]}
+","Unique id for inter-element referencing","Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.","","","","","","","","","",,,,,"",,,,"Element.id",0,1,"ele-1
+","","n/a"
+"ViewDefinition.select.column.tag.extension","ViewDefinition.select.column.tag.extension","","extensions
+user content","",0,*,"","","","Extension {[]} {[]}
+","Additional content defined by implementations","May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.","There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.","","","","","","","","",,,,,"","value:url}
+","Extensions are always sliced by (at least) url",,"open","Element.extension",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+ext-1:Must have either extensions or value[x], not both {extension.exists() != value.exists()}","n/a"
+"ViewDefinition.select.column.tag.modifierExtension","ViewDefinition.select.column.tag.modifierExtension","","extensions
+user contentmodifiers","",0,*,"","Y","Y","Extension {[]} {[]}
+","Extensions that cannot be ignored even if unrecognized","May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.
+
+Modifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).","There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.","Modifier extensions allow for extensions that *cannot* be safely ignored to be clearly distinguished from the vast majority of extensions which can be safely ignored.  This promotes interoperability by eliminating the need for implementers to prohibit the presence of extensions. For further information, see the [definition of modifier extensions](http://hl7.org/fhir/R5/extensibility.html#modifierExtension).","","","","","","","",,,,,"",,,,"BackboneElement.modifierExtension",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+ext-1:Must have either extensions or value[x], not both {extension.exists() != value.exists()}","N/A"
+"ViewDefinition.select.column.tag.name","ViewDefinition.select.column.tag.name","","","",1,1,"","","","string {[]} {[]}
+","Name of tag","A name that identifies the meaning of the tag. A namespace should be used to scope the tag to 
+a particular context. For example, 'ansi/type' could be used to indicate the type that should 
+be used to represent the value within an ANSI SQL database.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.column.tag.name",1,1,"",""
+"ViewDefinition.select.column.tag.value","ViewDefinition.select.column.tag.value","","","",1,1,"","","","string {[]} {[]}
+","Value of tag","Value of tag","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.column.tag.value",1,1,"",""
+"ViewDefinition.select.select","ViewDefinition.select.select","","","",0,*,"","","","null {[]} {[]}
+","Nested select relative to a parent expression.","Nested select relative to a parent expression. If the parent `select` has a `forEach` or `forEachOrNull`, this child select will apply for each item in that expression.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.select",0,*,"",""
+"ViewDefinition.select.forEach","ViewDefinition.select.forEach","","","",0,1,"","","","string {[]} {[]}
+","A FHIRPath expression to retrieve the parent element(s) used in the containing select. The default is effectively `$this`.","A FHIRPath expression to retrieve the parent element(s) used in the containing select, relative to the root resource or parent `select`,
+if applicable. `forEach` will produce a row for each element selected in the expression. For example, using forEach on `address` in Patient will
+generate a new row for each address, with columns defined in the corresponding `column` structure.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.forEach",0,1,"",""
+"ViewDefinition.select.forEachOrNull","ViewDefinition.select.forEachOrNull","","","",0,1,"","","","string {[]} {[]}
+","Same as forEach, but will produce a row with null values if the collection is empty.","Same as forEach, but produces a single row with null values in the nested expression if the collection is empty. For example,
+with a Patient resource, a `forEachOrNull` on address will produce a row for each patient even if there are no addresses; it will
+simply set the address columns to `null`.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.forEachOrNull",0,1,"",""
+"ViewDefinition.select.unionAll","ViewDefinition.select.unionAll","","","",0,*,"","","","null {[]} {[]}
+","Creates a union of all rows in the given selection structures.","A `unionAll` combines the results of multiple selection structures. Each structure under the `unionAll` must produce the same column names
+and types. The results from each nested selection will then have their own row.","","","","","","","","","",,,,,"",,,,"ViewDefinition.select.unionAll",0,*,"",""
+"ViewDefinition.where","ViewDefinition.where","","","",0,*,"","","","BackboneElement {[]} {[]}
+","A series of zero or more FHIRPath constraints to filter resources for the view.","A series of zero or more FHIRPath constraints to filter resources for the view. Every constraint
+must evaluate to true for the resource to be included in the view.","","","","","","","","","",,,,,"",,,,"ViewDefinition.where",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+"
+"ViewDefinition.where.id","ViewDefinition.where.id","","","",0,1,"","","","id {[]} {[]}
+","Unique id for inter-element referencing","Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces.","","","","","","","","","",,,,,"",,,,"Element.id",0,1,"ele-1
+","","n/a"
+"ViewDefinition.where.extension","ViewDefinition.where.extension","","extensions
+user content","",0,*,"","","","Extension {[]} {[]}
+","Additional content defined by implementations","May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension.","There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.","","","","","","","","",,,,,"","value:url}
+","Extensions are always sliced by (at least) url",,"open","Element.extension",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+ext-1:Must have either extensions or value[x], not both {extension.exists() != value.exists()}","n/a"
+"ViewDefinition.where.modifierExtension","ViewDefinition.where.modifierExtension","","extensions
+user contentmodifiers","",0,*,"","Y","Y","Extension {[]} {[]}
+","Extensions that cannot be ignored even if unrecognized","May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and managable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.
+
+Modifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself).","There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.","Modifier extensions allow for extensions that *cannot* be safely ignored to be clearly distinguished from the vast majority of extensions which can be safely ignored.  This promotes interoperability by eliminating the need for implementers to prohibit the presence of extensions. For further information, see the [definition of modifier extensions](http://hl7.org/fhir/R5/extensibility.html#modifierExtension).","","","","","","","",,,,,"",,,,"BackboneElement.modifierExtension",0,*,"","ele-1:All FHIR elements must have a @value or children {hasValue() or (children().count() > id.count())}
+ext-1:Must have either extensions or value[x], not both {extension.exists() != value.exists()}","N/A"
+"ViewDefinition.where.path","ViewDefinition.where.path","","","",1,1,"","","","string {[]} {[]}
+","A FHIRPath expression defining a filter condition","A FHIRPath expression that defines a filter that must evaluate to true for a resource to be
+included in the output. The input context is the collection of resources of the type specified in
+the resource element. Constants defined in Reference({constant}) can be referenced as %[name].","","","","","","","","","",,,,,"",,,,"ViewDefinition.where.path",1,1,"",""
+"ViewDefinition.where.description","ViewDefinition.where.description","","","",0,1,"","","","string {[]} {[]}
+","A human-readable description of the above where constraint.","A human-readable description of the above where constraint.","","","","","","","","","",,,,,"",,,,"ViewDefinition.where.description",0,1,"",""

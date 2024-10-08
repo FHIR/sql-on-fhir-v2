@@ -1,0 +1,15 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# - resource -------------------------------------------------------------------
+
+<https://sql-on-fhir.org/ig/Binary/ShareablePatientDemographics> a fhir:Binary ;
+  fhir:nodeRole fhir:treeRoot ;
+  fhir:id [ fhir:v "ShareablePatientDemographics"] ; # 
+  fhir:contentType [ fhir:v "application/fhir+json"] ; # 
+  fhir:data [ fhir:v "ewogICJyZXNvdXJjZVR5cGUiOiAiaHR0cHM6Ly9zcWwtb24tZmhpci5vcmcvaWcvU3RydWN0dXJlRGVmaW5pdGlvbi9WaWV3RGVmaW5pdGlvbiIsCiAgIm1ldGEiOiB7CiAgICAicHJvZmlsZSI6IFsKICAgICAgImh0dHBzOi8vc3FsLW9uLWZoaXIub3JnL2lnL1N0cnVjdHVyZURlZmluaXRpb24vU2hhcmVhYmxlVmlld0RlZmluaXRpb24iLAogICAgICAiaHR0cHM6Ly9zcWwtb24tZmhpci5vcmcvaWcvU3RydWN0dXJlRGVmaW5pdGlvbi9UYWJ1bGFyVmlld0RlZmluaXRpb24iCiAgICBdCiAgfSwKICAiZmhpclZlcnNpb24iOiBbCiAgICAiNC4wIiwKICAgICI1LjAiCiAgXSwKICAic2VsZWN0IjogWwogICAgewogICAgICAiY29sdW1uIjogWwogICAgICAgIHsKICAgICAgICAgICJwYXRoIjogImdldFJlc291cmNlS2V5KCkiLAogICAgICAgICAgIm5hbWUiOiAiaWQiLAogICAgICAgICAgInR5cGUiOiAic3RyaW5nIgogICAgICAgIH0sCiAgICAgICAgewogICAgICAgICAgInBhdGgiOiAiZ2VuZGVyIiwKICAgICAgICAgICJuYW1lIjogImdlbmRlciIsCiAgICAgICAgICAidHlwZSI6ICJjb2RlIgogICAgICAgIH0KICAgICAgXQogICAgfSwKICAgIHsKICAgICAgImNvbHVtbiI6IFsKICAgICAgICB7CiAgICAgICAgICAicGF0aCI6ICJnaXZlbi5qb2luKCcgJykiLAogICAgICAgICAgIm5hbWUiOiAiZ2l2ZW5fbmFtZSIsCiAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiQSBzaW5nbGUgZ2l2ZW4gbmFtZSBmaWVsZCB3aXRoIGFsbCBuYW1lcyBqb2luZWQgdG9nZXRoZXIuIiwKICAgICAgICAgICJ0eXBlIjogInN0cmluZyIKICAgICAgICB9LAogICAgICAgIHsKICAgICAgICAgICJwYXRoIjogImZhbWlseSIsCiAgICAgICAgICAibmFtZSI6ICJmYW1pbHlfbmFtZSIsCiAgICAgICAgICAidHlwZSI6ICJzdHJpbmciCiAgICAgICAgfQogICAgICBdLAogICAgICAiZm9yRWFjaCI6ICJuYW1lLndoZXJlKHVzZSA9ICdvZmZpY2lhbCcpLmZpcnN0KCkiCiAgICB9CiAgXSwKICAidXJsIjogImh0dHA6Ly9leGFtcGxlLmNvbS9TaGFyZWFibGVQYXRpZW50RGVtb2dyYXBoaWNzIiwKICAibmFtZSI6ICJwYXRpZW50X2RlbW9ncmFwaGljcyIsCiAgInN0YXR1cyI6ICJkcmFmdCIsCiAgInJlc291cmNlIjogIlBhdGllbnQiCn0K"^^xsd:base64Binary] . # 
+
+# -------------------------------------------------------------------------------------
+

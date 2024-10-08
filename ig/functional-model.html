@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <title>Functional Model - SQL on FHIR v2.0.0</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content="http://hl7.org/fhir"/>
+
+    <link href="fhir.css" rel="stylesheet"/>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap-fhir.css" rel="stylesheet"/>
+
+    <!-- Project extras -->
+    <link href="assets/css/project.css" rel="stylesheet"/>
+    <link href="assets/css/pygments-manni.css" rel="stylesheet"/>
+    <link href="assets/css/jquery-ui.css" rel="stylesheet"/>
+  	<link href="assets/css/prism.css" rel="stylesheet" />
+    <!-- Placeholder for child template CSS declarations -->
+<link href="assets/css/sof.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="fhir-table-scripts.js"> </script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Favicons -->
+    <link rel="fhir-logo" sizes="144x144" href="assets/ico/icon-fhir-144.png"/>
+    <link rel="fhir-logo" sizes="114x114" href="assets/ico/icon-fhir-114.png"/>
+    <link rel="fhir-logo" sizes="72x72" href="assets/ico/icon-fhir-72.png"/>
+    <link rel="fhir-logo" href="assets/ico/icon-fhir-57.png"/>
+    <link rel="shortcut icon" href="assets/ico/favicon.png"/>
+  </head>
+  <body onload="document.body.style.opacity='1'">
+
+	  <script src="assets/js/prism.js"></script>
+    <script type="text/javascript" src="assets/js/mermaid.js"></script>
+    <script type="text/javascript" src="assets/js/mermaid-init.js"></script>
+    <style type="text/css">h2{--heading-prefix:"3"}
+    h3,h4,h5,h6{--heading-prefix:"3"}</style>
+    <div id="segment-header" class="segment">  <!-- segment-header -->
+      <div class="container">  <!-- container -->
+        <div id="project-nav">
+  <a id="project-logo" no-external="true" href="index.html">
+    <img height="50" alt="SQL on FHIR" src="assets/images/sof-logo.svg"/>
+  </a>
+</div>
+
+<div id="family-nav">
+  <a id="family-logo" no-external="true" href="http://hl7.org/fhir">
+    <img height="50" alt="FHIR website" src="assets/images/fhir-logo-www.png"/>
+  </a>
+</div>
+
+        <div id="ig-status">
+          <p><span style="font-size:12pt;font-weight:bold">SQL on FHIR</span>
+            <br/>
+            <span style="display:inline-block;">2.0.0 - release
+
+
+
+  <img alt="International flag" src="assets/images/001.svg" height="16" title="International"/>
+
+
+            </span>
+          </p>
+        </div>
+      </div> <!-- /container -->
+    </div>  <!-- /segment-header -->
+
+    <div id="segment-navbar" class="segment">  <!-- segment-navbar -->
+      <div id="stripe"> </div>
+      <div class="container">  <!-- container -->
+        <!-- HEADER CONTENT -->
+
+        <nav class="navbar navbar-inverse">
+          <!--status-bar-->
+          <div class="container">
+            <button data-target=".navbar-inverse-collapse" class="navbar-toggle" data-toggle="collapse" type="button">
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+            </button>
+            <a class="navbar-brand hidden" href="http://hl7.org/fhir/R5/index.html">FHIR</a>
+            <div class="nav-collapse collapse navbar-inverse-collapse">
+              <!-- menu.xml  -->
+
+<ul xmlns="http://www.w3.org/1999/xhtml" class="nav navbar-nav">
+  <li>
+    <a href="index.html">Overview</a>
+  </li>
+  <li>
+    <a href="StructureDefinition-ViewDefinition.html">View Definition</a>
+  </li>
+  <li>
+    <a href="artifacts.html">Artifacts</a>
+  </li>
+  <li>
+    <a href="contributing.html">Contributing</a>
+  </li>
+  <li>
+    <a href="http://sql-on-fhir.org/extra/playground.html">Playground</a>
+  </li>
+  <li>
+    <a href="http://sql-on-fhir.org/extra/tests.html">Tests</a>
+  </li>
+  <li>
+    <a href="http://sql-on-fhir.org/extra/impls.html">Implementations</a>
+  </li>
+</ul>
+            </div>  <!-- /.nav-collapse -->
+          </div>  <!-- /.container -->
+        </nav>  <!-- /.navbar -->
+      <!-- /HEADER CONTENT -->
+      </div>  <!-- /container -->
+    </div>  <!-- /segment-navbar -->
+    <!--status-bar-->
+
+    <div id="segment-breadcrumb" class="segment">  <!-- segment-breadcrumb -->
+      <div class="container">  <!-- container -->
+        <ul class="breadcrumb">
+          <li><a href='toc.html'><b>Table of Contents</b></a></li><li><b>Functional Model</b></li>
+
+        </ul>
+      </div>  <!-- /container -->
+    </div>  <!-- /segment-breadcrumb -->
+
+    <a name="top"> </a>
+    <div id="segment-content" class="segment">  <!-- segment-content -->
+      <div class="container">  <!-- container -->
+        <div class="row">
+          <div class="inner-wrapper">
+
+<style type="text/css">
+h2:before{color:silver;counter-increment:section;content:var(--heading-prefix) " ";}
+h3:before{color:silver;counter-increment:sub-section;content:var(--heading-prefix) "." counter(sub-section) " ";}
+h4:before{color:silver;counter-increment:composite;content:var(--heading-prefix) "." counter(sub-section) "." counter(composite) " ";}
+h5:before{color:silver;counter-increment:detail;content:var(--heading-prefix) "." counter(sub-section) "." counter(composite) "." counter(detail) " ";}
+h6:before{color:silver;counter-increment:more-detail;content:var(--heading-prefix) "." counter(sub-section) "." counter(composite) "." counter(detail) "." counter(more-detail)" ";}
+</style>
+<div class="col-12">
+  <!--ReleaseHeader--><p id="publish-box">This page is part of the SQL on FHIR (v2.0.0: Release) based on <a no-external="true" href="http://hl7.org/fhir/R5">FHIR (HL7® FHIR® Standard) v5.0.0</a>. This is the current published version.  For a full list of available versions, see the <a no-external="true" href="https://sql-on-fhir.org/ig/history.html">Directory of published versions</a></p><!--EndReleaseHeader-->
+  <h2>Functional Model</h2>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+    <p><!-- white space is critical inside of capture --></p>
+<div class="markdown-toc">
+<ul id="markdown-toc">
+  <li><a href="#an-example-viewdefinition" id="markdown-toc-an-example-viewdefinition">An Example ViewDefinition</a></li>
+  <li><a href="#applying-the-viewdefinition" id="markdown-toc-applying-the-viewdefinition">Applying the ViewDefinition</a></li>
+  <li><a href="#the-fhirpath-subset" id="markdown-toc-the-fhirpath-subset">The FHIRPath Subset</a></li>
+  <li><a href="#the-functions-in-detail" id="markdown-toc-the-functions-in-detail">The Functions in Detail</a>    <ul>
+      <li><a href="#the-column-function" id="markdown-toc-the-column-function">The <code class="language-plaintext highlighter-rouge">column</code> Function</a></li>
+      <li><a href="#the-where-function" id="markdown-toc-the-where-function">The <code class="language-plaintext highlighter-rouge">where</code> Function</a></li>
+      <li><a href="#the-foreach--foreachornull-functions" id="markdown-toc-the-foreach--foreachornull-functions">The <code class="language-plaintext highlighter-rouge">forEach</code> &amp; <code class="language-plaintext highlighter-rouge">forEachOrNull</code> Functions</a></li>
+      <li><a href="#the-select-function" id="markdown-toc-the-select-function">The <code class="language-plaintext highlighter-rouge">select</code> Function</a></li>
+      <li><a href="#the-unionall-function" id="markdown-toc-the-unionall-function">The <code class="language-plaintext highlighter-rouge">unionAll</code> Function</a></li>
+      <li><a href="#function-precedence" id="markdown-toc-function-precedence">Function Precedence</a></li>
+      <li><a href="#reference-implementation" id="markdown-toc-reference-implementation">Reference Implementation</a></li>
+    </ul>
+  </li>
+</ul>
+
+</div>
+<p>This document will help you understand how ViewDefinitions work "under the hood"
+using a functional paradigm.</p>
+
+<p>The application of a ViewDefinition is an algorithm that describes the
+transformation of FHIR resources and is composed of combinations of a small set
+of functions:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">column({name:column_name,path: fhirpath},...)</code> - The main workhorse of
+transformation. This function will extract elements by FHIRPath expressions
+and put the result into columns</li>
+  <li><code class="language-plaintext highlighter-rouge">where(fhirpath)</code> - This function filters resources by FHIRPath expression.
+For example, you may want to transform only specific profiles like blood
+pressure into a simple table</li>
+  <li><code class="language-plaintext highlighter-rouge">forEach(expr, transform)</code> - This function unnests collection elements into
+separate rows</li>
+  <li><code class="language-plaintext highlighter-rouge">select(rows1, rows2)</code> - This function cross-joins <code class="language-plaintext highlighter-rouge">rows1</code> and <code class="language-plaintext highlighter-rouge">rows2</code>, and is
+mostly used to join results of <code class="language-plaintext highlighter-rouge">forEach</code> with top-level columns</li>
+  <li><code class="language-plaintext highlighter-rouge">union(rows, rows)</code> - This function concatenates sets of rows. It's main use
+case is combining rows from different branches of a resource (for example,
+<code class="language-plaintext highlighter-rouge">telecom</code> and <code class="language-plaintext highlighter-rouge">contact.telecom</code>)</li>
+</ul>
+
+<p>A ViewDefinition is represented as a FHIR logical model (in this case as a JSON
+document) where the keywords of the ViewDefinition correspond to the functions
+described above.</p>
+
+<h3 id="an-example-viewdefinition">An Example ViewDefinition</h3>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+    <span class="dl">"</span><span class="s2">resourceType</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ViewDefinition</span><span class="dl">"</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">resource</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Patient</span><span class="dl">"</span><span class="p">,</span>
+    <span class="c1">// Step 1</span>
+    <span class="dl">"</span><span class="s2">where</span><span class="dl">"</span><span class="p">:</span> <span class="p">[{</span><span class="dl">"</span><span class="s2">path</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">active = true</span><span class="dl">"</span><span class="p">}],</span>
+    <span class="c1">// Step 6</span>
+    <span class="dl">"</span><span class="s2">select</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="c1">// Step 5</span>
+          <span class="dl">"</span><span class="s2">column</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span>
+             <span class="p">{</span><span class="dl">"</span><span class="s2">path</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">getResourceKey()</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">name</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">id</span><span class="dl">"</span><span class="p">},</span>
+             <span class="p">{</span><span class="dl">"</span><span class="s2">path</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">identifier.where(system='ssn')</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">name</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">ssn</span><span class="dl">"</span><span class="p">},</span>
+          <span class="p">]</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="c1">// Step 4</span>
+          <span class="dl">"</span><span class="s2">unionAll</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="c1">// Step 2</span>
+              <span class="dl">"</span><span class="s2">forEach</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">telecom.where(system='phone')</span><span class="dl">"</span><span class="p">,</span>
+              <span class="dl">"</span><span class="s2">column</span><span class="dl">"</span><span class="p">:</span> <span class="p">[{</span><span class="dl">"</span><span class="s2">path</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">value</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">name</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">phone</span><span class="dl">"</span><span class="p">}]</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="c1">// Step 3</span>
+              <span class="dl">"</span><span class="s2">forEach</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">contact.telecom.where(system='phone')</span><span class="dl">"</span><span class="p">,</span>
+              <span class="dl">"</span><span class="s2">column</span><span class="dl">"</span><span class="p">:</span> <span class="p">[{</span><span class="dl">"</span><span class="s2">path</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">value</span><span class="dl">"</span><span class="p">,</span>  <span class="dl">"</span><span class="s2">name</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">phone</span><span class="dl">"</span><span class="p">}]</span>
+            <span class="p">}</span>
+       <span class="p">]}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="applying-the-viewdefinition">Applying the ViewDefinition</h3>
+
+<p>The application of this ViewDefinition produces a table of contacts with one row
+per telecom from two different locations in a FHIR Patient resource.</p>
+
+<p>Algorithmically the application can be though of in the following steps:</p>
+
+<ol>
+  <li>"where": filter data to only the active patients</li>
+  <li>"forEach": unnest <code class="language-plaintext highlighter-rouge">Patient.telecom</code> and select "phone"</li>
+  <li>"forEach": unnest <code class="language-plaintext highlighter-rouge">Patient.contact.telecom</code> and select "phone"</li>
+  <li>"unionAll": concatenate the results of 2 and 3</li>
+  <li>"column": extracts "id" and "ssn"</li>
+  <li>"select": cross-join "id" and "ssn" with telecom phones from step 4</li>
+</ol>
+
+<p>Here is example input and output for this ViewDefinition:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Patient"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pt1"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"identifier"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ssn"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"s1"</span><span class="w"> </span><span class="p">}],</span><span class="w">
+        </span><span class="nl">"telecom"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phone"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tt1"</span><span class="w"> </span><span class="p">}],</span><span class="w">
+        </span><span class="nl">"contact"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w"> </span><span class="nl">"telecom"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phone"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"t12"</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w"> </span><span class="nl">"telecom"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phone"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"t13"</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Patient"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pt2"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"identifier"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ssn"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"s2"</span><span class="w"> </span><span class="p">}],</span><span class="w">
+        </span><span class="nl">"telecom"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phone"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"t21"</span><span class="w"> </span><span class="p">}],</span><span class="w">
+        </span><span class="nl">"contact"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w"> </span><span class="nl">"telecom"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phone"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"t22"</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w"> </span><span class="nl">"telecom"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"system"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phone"</span><span class="p">,</span><span class="w"> </span><span class="nl">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"t23"</span><span class="w"> </span><span class="p">}]</span><span class="w"> </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The resulting output:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>ssn</th>
+      <th>phone</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>pt1</td>
+      <td>s1</td>
+      <td>t11</td>
+    </tr>
+    <tr>
+      <td>pt1</td>
+      <td>s1</td>
+      <td>t12</td>
+    </tr>
+    <tr>
+      <td>pt1</td>
+      <td>s1</td>
+      <td>t13</td>
+    </tr>
+    <tr>
+      <td>pt2</td>
+      <td>s1</td>
+      <td>t21</td>
+    </tr>
+    <tr>
+      <td>pt2</td>
+      <td>s1</td>
+      <td>t22</td>
+    </tr>
+    <tr>
+      <td>pt2</td>
+      <td>s1</td>
+      <td>t23</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="the-fhirpath-subset">The FHIRPath Subset</h2>
+
+<p>ViewDefinitions
+use <a href="https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition.html#fhirpath-functionality">minimal subset of FHIRPath</a>
+to make implementation as simple as possible.</p>
+
+<p>The specification also introduces two special functions:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">getResourceKey</code> - Indirectly get a resource's id. Since it my not be
+straightforward to access a resource's id, this layer of indirection is
+useful</li>
+  <li><code class="language-plaintext highlighter-rouge">getReferenceKey(resourceType)</code> - A similar function to get an id from a
+reference</li>
+</ul>
+
+<h2 id="the-functions-in-detail">The Functions in Detail</h2>
+
+<p>Let’s walk through every function in detail with examples:</p>
+
+<h3 id="the-column-function">The <code class="language-plaintext highlighter-rouge">column</code> Function</h3>
+
+<p><code class="language-plaintext highlighter-rouge">column</code> extracts elements into tabular columns using FHIRPath expressions. The
+algorithm for this function begins by receiving a list of {name, path} pairs.
+For each record in the given context, it evaluates the path expression to
+extract the desired elements. The resulting values are then added as columns to
+the output row.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"column"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"id"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"getResourceKey()"</span><span class="w"> </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bod"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"birthDate"</span><span class="w"> </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"first_name"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name.first().given.join(' ')"</span><span class="w"> </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"last_name"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name.first().family"</span><span class="w"> </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ssn"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"identifier.where(system='ssn').value.first()"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phone"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"telecom.where(system='phone').value.first()"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Here is the naive JavaScript implementation:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">column</span><span class="p">(</span><span class="nx">cols</span><span class="p">,</span> <span class="nx">rows</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">rows</span><span class="p">.</span><span class="nf">map</span><span class="p">((</span><span class="nx">row</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">cols</span><span class="p">.</span><span class="nf">reduce</span><span class="p">((</span><span class="nx">res</span><span class="p">,</span> <span class="nx">col</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="nx">res</span><span class="p">[</span><span class="nx">col</span><span class="p">.</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nf">fhirpath</span><span class="p">(</span><span class="nx">col</span><span class="p">.</span><span class="nx">path</span><span class="p">,</span> <span class="nx">row</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nx">res</span><span class="p">;</span>
+        <span class="p">},</span> <span class="p">{});</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="the-where-function">The <code class="language-plaintext highlighter-rouge">where</code> Function</h3>
+
+<p><code class="language-plaintext highlighter-rouge">where</code> retains only those records for which it FHIRPath expression returns
+true.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ViewDefinition"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Patient"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"where"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"meta.profile.where($this = 'myprofile').exists()"</span><span class="w"> </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"active = 'true'"</span><span class="w"> </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Basic JavaScript implementation:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">where</span><span class="p">(</span><span class="nx">exprs</span><span class="p">,</span> <span class="nx">rows</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">rows</span><span class="p">.</span><span class="nf">filter</span><span class="p">((</span><span class="nx">row</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">exprs</span><span class="p">.</span><span class="nf">every</span><span class="p">((</span><span class="nx">expr</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nf">fhirpath</span><span class="p">(</span><span class="nx">expr</span><span class="p">,</span> <span class="nx">row</span><span class="p">)</span> <span class="o">==</span> <span class="kc">true</span><span class="p">;</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="the-foreach--foreachornull-functions">The <code class="language-plaintext highlighter-rouge">forEach</code> &amp; <code class="language-plaintext highlighter-rouge">forEachOrNull</code> Functions</h3>
+
+<p><code class="language-plaintext highlighter-rouge">forEach</code> and <code class="language-plaintext highlighter-rouge">forEachOrNull</code> are intended for flattening nested collections by
+applying a transformation to each element. It consists of FHIRPath expression
+for collection to iterate and transformation to apply to each item. This
+function is akin to <code class="language-plaintext highlighter-rouge">flatMap</code> or <code class="language-plaintext highlighter-rouge">mapcat</code> in other programming languages.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ViewDefinition"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Patient"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"select"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"forEach"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"column"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="p">{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"given.join(' ')"</span><span class="p">,</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"first_name"</span><span class="w"> </span><span class="p">},</span><span class="w">
+                </span><span class="p">{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"family"</span><span class="p">,</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"last_name"</span><span class="w"> </span><span class="p">}</span><span class="w">
+            </span><span class="p">]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>There are two versions of this function: <code class="language-plaintext highlighter-rouge">forEach</code> and <code class="language-plaintext highlighter-rouge">forEachOrNull</code>. The
+primary difference is that <code class="language-plaintext highlighter-rouge">forEach</code> removes records where the FHIRPath
+expression returns no results, whereas <code class="language-plaintext highlighter-rouge">forEachOrNull</code> keeps an empty record in
+such cases.</p>
+
+<p>Basic JavaScript implementation:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">forEach</span><span class="p">(</span><span class="nx">path</span><span class="p">,</span> <span class="nx">expr</span><span class="p">,</span> <span class="nx">rows</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">rows</span><span class="p">.</span><span class="nf">flatMap</span><span class="p">((</span><span class="nx">row</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nf">fhirpath</span><span class="p">(</span><span class="nx">expr</span><span class="p">,</span> <span class="nx">row</span><span class="p">).</span><span class="nf">map</span><span class="p">((</span><span class="nx">item</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="c1">// evalKeyword will call column, select or other functions</span>
+            <span class="k">return</span> <span class="nf">evalKeyword</span><span class="p">(</span><span class="nx">expr</span><span class="p">,</span> <span class="nx">item</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="the-select-function">The <code class="language-plaintext highlighter-rouge">select</code> Function</h3>
+
+<p><code class="language-plaintext highlighter-rouge">select</code> is used in combination with <code class="language-plaintext highlighter-rouge">forEach</code> or <code class="language-plaintext highlighter-rouge">forEachOrNull</code> to cross-join
+parent elements with unnested collection elements. For example, <code class="language-plaintext highlighter-rouge">Patient.id</code>
+with an unnested collection such as <code class="language-plaintext highlighter-rouge">Patient.name</code>.</p>
+
+<p>Put another way, this function merges columns from each row set, resulting in a
+comprehensive combination of data from the input collections.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ViewDefinition"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Patient"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"select"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"column"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"getResourceKey()"</span><span class="p">,</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"id"</span><span class="w"> </span><span class="p">}]</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"forEach"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name"</span><span class="p">,</span><span class="w">
+            </span><span class="nl">"column"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="p">{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"given.join(' ')"</span><span class="p">,</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"first_name"</span><span class="w"> </span><span class="p">},</span><span class="w">
+                </span><span class="p">{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"family"</span><span class="p">,</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"last_name"</span><span class="w"> </span><span class="p">}</span><span class="w">
+            </span><span class="p">]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The naive JavaScript implementation:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">select</span><span class="p">(</span><span class="nx">rows1</span><span class="p">,</span> <span class="nx">rows2</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">rows1</span><span class="p">.</span><span class="nf">flatMap</span><span class="p">((</span><span class="nx">r1</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">rows2</span><span class="p">.</span><span class="nf">map</span><span class="p">((</span><span class="nx">r2</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+            <span class="c1">// merge r1 and r2</span>
+            <span class="k">return</span> <span class="p">{</span> <span class="p">...</span><span class="nx">r1</span><span class="p">,</span> <span class="p">...</span><span class="nx">r2</span> <span class="p">};</span>
+        <span class="p">});</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nf">select</span><span class="p">([{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">1</span> <span class="p">},</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}],</span> <span class="p">[{</span> <span class="na">b</span><span class="p">:</span> <span class="mi">1</span> <span class="p">},</span> <span class="p">{</span> <span class="na">b</span><span class="p">:</span> <span class="mi">2</span> <span class="p">}])[</span>
+    <span class="c1">//=&gt;</span>
+    <span class="p">({</span> <span class="na">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">b</span><span class="p">:</span> <span class="mi">1</span> <span class="p">},</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">b</span><span class="p">:</span> <span class="mi">2</span> <span class="p">},</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">b</span><span class="p">:</span> <span class="mi">1</span> <span class="p">},</span> <span class="p">{</span> <span class="na">a</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">b</span><span class="p">:</span> <span class="mi">2</span> <span class="p">})</span>
+<span class="p">];</span>
+</code></pre></div></div>
+
+<h3 id="the-unionall-function">The <code class="language-plaintext highlighter-rouge">unionAll</code> Function</h3>
+
+<p><code class="language-plaintext highlighter-rouge">unionAll</code> combines rows from different branches of a resource tree by
+concatenating multiple record sets. Essentially a concatenation of several
+collections of records into a single, unified collection while preserving all
+rows from the input sets.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ViewDefinition"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Patient"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"select"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"column"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"getResourceKey()"</span><span class="p">,</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"id"</span><span class="w"> </span><span class="p">}]</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+            </span><span class="nl">"unionAll"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+                </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"forEach"</span><span class="p">:</span><span class="w"> </span><span class="s2">"telecom.where(system='phone')"</span><span class="p">,</span><span class="w">
+                    </span><span class="nl">"column"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"value"</span><span class="p">,</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phone"</span><span class="w"> </span><span class="p">}]</span><span class="w">
+                </span><span class="p">},</span><span class="w">
+                </span><span class="p">{</span><span class="w">
+                    </span><span class="nl">"forEach"</span><span class="p">:</span><span class="w"> </span><span class="s2">"contact.telecom.where(system='phone')"</span><span class="p">,</span><span class="w">
+                    </span><span class="nl">"column"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"value"</span><span class="p">,</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"phone"</span><span class="w"> </span><span class="p">}]</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">]</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>In JavaScript this is just a simple concatenation:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">function</span> <span class="nf">unionAll</span><span class="p">(</span><span class="nx">rowSets</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">rowSet</span><span class="p">.</span><span class="nf">flatMap</span><span class="p">((</span><span class="nx">rows</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">rows</span><span class="p">;</span>
+    <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="nf">unionAll</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])[</span>
+    <span class="c1">//=&gt;</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">];</span>
+</code></pre></div></div>
+
+<h3 id="function-precedence">Function Precedence</h3>
+
+<p>To interpret such nodes, you have to re-order keywords (functions) according to
+precedence (higher bubble up):</p>
+
+<p>In a ViewDefinition, different keywords/functions can appear at the same level.
+To interpret such node in a ViewDefinition, an implementation must reorder the
+keywords/functions according to the following precedence rule.</p>
+
+<p>Keyword/function reordering rule (highest to lowest precedence):</p>
+
+<ul>
+  <li>forEach or forEachOrNull</li>
+  <li>select</li>
+  <li>unionAll</li>
+  <li>column</li>
+</ul>
+
+<p>For example given the following ViewDefinition snippet with all
+keywords/functions at the top level, the keywords/functions should be reordered
+as shown in the output.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+    <span class="dl">"</span><span class="s2">forEach</span><span class="dl">"</span><span class="p">:</span>   <span class="nx">FOREACH</span><span class="p">,</span>
+    <span class="dl">"</span><span class="s2">column</span><span class="dl">"</span><span class="p">:</span>    <span class="p">[</span><span class="nx">COLUMNS</span><span class="p">],</span> <span class="c1">// reorder to be nested under select</span>
+    <span class="dl">"</span><span class="s2">unionALL</span><span class="dl">"</span><span class="p">:</span>  <span class="p">[</span><span class="nx">UNIONS</span><span class="p">],</span>  <span class="c1">// reorder to be nested under select</span>
+    <span class="dl">"</span><span class="s2">select</span><span class="dl">"</span><span class="p">:</span>    <span class="p">[</span><span class="nx">SELECTS</span><span class="p">]</span>
+<span class="p">}</span>
+<span class="c1">//=&gt;</span>
+<span class="p">{</span>
+    <span class="dl">"</span><span class="s2">forEach</span><span class="dl">"</span><span class="p">:</span> <span class="nx">FOREACH</span>
+    <span class="dl">"</span><span class="s2">select</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span>
+       <span class="p">{</span><span class="dl">"</span><span class="s2">column</span><span class="dl">"</span><span class="p">:</span>   <span class="p">[</span><span class="nx">COLUMNS</span><span class="p">]},</span>
+       <span class="p">{</span><span class="dl">"</span><span class="s2">unionAll</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span><span class="nx">UNIONS</span><span class="p">]},</span>
+       <span class="nx">SELECTS</span><span class="p">...</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="reference-implementation">Reference Implementation</h3>
+
+<p>The <a href="https://github.com/FHIR/sql-on-fhir-v2/tree/master/sof-js">JavaScript reference implementation</a>
+implements the functional model described here. It is very concise at roughly
+400 lines of code and reading it is a good way to understand the model in
+detail.</p>
+
+
+
+
+</div>
+        </div>  <!-- /inner-wrapper -->
+      </div>  <!-- /row -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-content -->
+
+  <script type="text/javascript" src="assets/js/jquery.js"> </script>     <!-- note keep space here, otherwise it will be transformed to empty tag -> fails -->
+  <script type="text/javascript" src="assets/js/jquery-ui.min.js"> </script>
+
+  <script type="text/javascript" src="assets/js/window-hash.js"> </script>
+  <a name="bottom"> </a>
+  <div id="segment-footer" igtool="footer" class="segment">  <!-- segment-footer -->
+    <div class="container">  <!-- container -->
+
+      <div class="inner-wrapper">
+        <p>
+          IG &#169; 2023+ <a style="color:var(--footer-hyperlink-text-color)" href="https://sql-on-fhir.org">SQL on FHIR Working Group</a>.  Package org.sql-on-fhir.ig#2.0.0 based on <a style="color: var(--footer-hyperlink-text-color)" href="http://hl7.org/fhir/R5/">FHIR 5.0.0</a>. Generated <span title="Tue, Oct 8, 2024 20:13+1000">2024-10-08</span>
+          <br/>
+          <span style="color: var(--footer-highlight-text-color)">
+                      Links: <a style="color: var(--footer-hyperlink-text-color)" href="toc.html">Table of Contents</a> |
+                 <a style="color: var(--footer-hyperlink-text-color)" href="qa.html">QA Report</a>
+                 
+                
+          </span>
+        </p>
+      </div>  <!-- /inner-wrapper -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-footer -->
+  
+  <div id="segment-post-footer" class="segment hidden">  <!-- segment-post-footer -->
+    <div class="container">  <!-- container -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-post-footer -->
+
+  <!-- JS and analytics only. -->
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script type="text/javascript" src="assets/js/bootstrap.min.js"> </script>
+  <script type="text/javascript" src="assets/js/respond.min.js"> </script>
+  <script type="text/javascript" src="assets/js/anchor.min.js"> </script>
+  <script type="text/javascript" src="assets/js/clipboard.min.js"> </script>
+  <script type="text/javascript" src="assets/js/clipboard-btn.js"> </script>
+  <script type="text/javascript" src="assets/js/anchor-hover.js"> </script>
+  <!-- Analytics Below
+  ================================================== -->
+  </body>
+</html>
+

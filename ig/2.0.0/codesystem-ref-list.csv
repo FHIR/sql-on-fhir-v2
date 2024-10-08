@@ -1,0 +1,4 @@
+URL,Version,Status,OIDs,Name,Title,Descriptino,Used
+http://hl7.org/fhir/FHIR-version,5.0.0,active,"2.16.840.1.113883.4.642.4.1310",FHIRVersion,FHIRVersion,"All published FHIR Versions.","ValueSet/FHIR-version"
+http://hl7.org/fhir/fhir-types,5.0.0,active,"2.16.840.1.113883.4.642.4.1802",FHIRTypes,All FHIR Types,"One of the types defined as part of this version of FHIR.","ValueSet/resource-types"
+http://hl7.org/fhir/publication-status,5.0.0,active,"2.16.840.1.113883.4.642.4.4",PublicationStatus,PublicationStatus,"The lifecycle status of an artifact.","ValueSet/publication-status"

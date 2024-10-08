@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <title>Home - SQL on FHIR v2.0.0</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content="http://hl7.org/fhir"/>
+
+    <link href="fhir.css" rel="stylesheet"/>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap-fhir.css" rel="stylesheet"/>
+
+    <!-- Project extras -->
+    <link href="assets/css/project.css" rel="stylesheet"/>
+    <link href="assets/css/pygments-manni.css" rel="stylesheet"/>
+    <link href="assets/css/jquery-ui.css" rel="stylesheet"/>
+  	<link href="assets/css/prism.css" rel="stylesheet" />
+    <!-- Placeholder for child template CSS declarations -->
+<link href="assets/css/sof.css" rel="stylesheet"/>
+
+    <script type="text/javascript" src="fhir-table-scripts.js"> </script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Favicons -->
+    <link rel="fhir-logo" sizes="144x144" href="assets/ico/icon-fhir-144.png"/>
+    <link rel="fhir-logo" sizes="114x114" href="assets/ico/icon-fhir-114.png"/>
+    <link rel="fhir-logo" sizes="72x72" href="assets/ico/icon-fhir-72.png"/>
+    <link rel="fhir-logo" href="assets/ico/icon-fhir-57.png"/>
+    <link rel="shortcut icon" href="assets/ico/favicon.png"/>
+  </head>
+  <body onload="document.body.style.opacity='1'">
+
+	  <script src="assets/js/prism.js"></script>
+    <script type="text/javascript" src="assets/js/mermaid.js"></script>
+    <script type="text/javascript" src="assets/js/mermaid-init.js"></script>
+    <style type="text/css">h2{--heading-prefix:"1"}
+    h3,h4,h5,h6{--heading-prefix:"1"}</style>
+    <div id="segment-header" class="segment">  <!-- segment-header -->
+      <div class="container">  <!-- container -->
+        <div id="project-nav">
+  <a id="project-logo" no-external="true" href="index.html">
+    <img height="50" alt="SQL on FHIR" src="assets/images/sof-logo.svg"/>
+  </a>
+</div>
+
+<div id="family-nav">
+  <a id="family-logo" no-external="true" href="http://hl7.org/fhir">
+    <img height="50" alt="FHIR website" src="assets/images/fhir-logo-www.png"/>
+  </a>
+</div>
+
+        <div id="ig-status">
+          <p><span style="font-size:12pt;font-weight:bold">SQL on FHIR</span>
+            <br/>
+            <span style="display:inline-block;">2.0.0 - release
+
+
+
+  <img alt="International flag" src="assets/images/001.svg" height="16" title="International"/>
+
+
+            </span>
+          </p>
+        </div>
+      </div> <!-- /container -->
+    </div>  <!-- /segment-header -->
+
+    <div id="segment-navbar" class="segment">  <!-- segment-navbar -->
+      <div id="stripe"> </div>
+      <div class="container">  <!-- container -->
+        <!-- HEADER CONTENT -->
+
+        <nav class="navbar navbar-inverse">
+          <!--status-bar-->
+          <div class="container">
+            <button data-target=".navbar-inverse-collapse" class="navbar-toggle" data-toggle="collapse" type="button">
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+            </button>
+            <a class="navbar-brand hidden" href="http://hl7.org/fhir/R5/index.html">FHIR</a>
+            <div class="nav-collapse collapse navbar-inverse-collapse">
+              <!-- menu.xml  -->
+
+<ul xmlns="http://www.w3.org/1999/xhtml" class="nav navbar-nav">
+  <li>
+    <a href="index.html">Overview</a>
+  </li>
+  <li>
+    <a href="StructureDefinition-ViewDefinition.html">View Definition</a>
+  </li>
+  <li>
+    <a href="artifacts.html">Artifacts</a>
+  </li>
+  <li>
+    <a href="contributing.html">Contributing</a>
+  </li>
+  <li>
+    <a href="http://sql-on-fhir.org/extra/playground.html">Playground</a>
+  </li>
+  <li>
+    <a href="http://sql-on-fhir.org/extra/tests.html">Tests</a>
+  </li>
+  <li>
+    <a href="http://sql-on-fhir.org/extra/impls.html">Implementations</a>
+  </li>
+</ul>
+            </div>  <!-- /.nav-collapse -->
+          </div>  <!-- /.container -->
+        </nav>  <!-- /.navbar -->
+      <!-- /HEADER CONTENT -->
+      </div>  <!-- /container -->
+    </div>  <!-- /segment-navbar -->
+    <!--status-bar-->
+
+    <div id="segment-breadcrumb" class="segment">  <!-- segment-breadcrumb -->
+      <div class="container">  <!-- container -->
+        <ul class="breadcrumb">
+          <li><a href='toc.html'><b>Table of Contents</b></a></li><li><b>Home</b></li>
+
+        </ul>
+      </div>  <!-- /container -->
+    </div>  <!-- /segment-breadcrumb -->
+
+    <a name="top"> </a>
+    <div id="segment-content" class="segment">  <!-- segment-content -->
+      <div class="container">  <!-- container -->
+        <div class="row">
+          <div class="inner-wrapper">
+
+<style type="text/css">
+h2:before{color:silver;counter-increment:section;content:var(--heading-prefix) " ";}
+h3:before{color:silver;counter-increment:sub-section;content:var(--heading-prefix) "." counter(sub-section) " ";}
+h4:before{color:silver;counter-increment:composite;content:var(--heading-prefix) "." counter(sub-section) "." counter(composite) " ";}
+h5:before{color:silver;counter-increment:detail;content:var(--heading-prefix) "." counter(sub-section) "." counter(composite) "." counter(detail) " ";}
+h6:before{color:silver;counter-increment:more-detail;content:var(--heading-prefix) "." counter(sub-section) "." counter(composite) "." counter(detail) "." counter(more-detail)" ";}
+</style>
+<div class="col-12">
+  <!--ReleaseHeader--><p id="publish-box">This page is part of the SQL on FHIR (v2.0.0: Release) based on <a no-external="true" href="http://hl7.org/fhir/R5">FHIR (HL7® FHIR® Standard) v5.0.0</a>. This is the current published version.  For a full list of available versions, see the <a no-external="true" href="https://sql-on-fhir.org/ig/history.html">Directory of published versions</a></p><!--EndReleaseHeader-->
+  <h2>Home</h2>
+  
+
+
+
+
+
+
+  <table class="colsd">
+
+    <tr>
+      <td colspan="4"><i>Official URL</i>: <span class="copy-text">https://sql-on-fhir.org/ig/ImplementationGuide/org.sql-on-fhir.ig<button title="Click to copy URL" class="btn-copy" data-clipboard-text="https://sql-on-fhir.org/ig/ImplementationGuide/org.sql-on-fhir.ig"/></span>
+      </td>
+      <td><i>Version</i>:
+      <span class="copy-text">2.0.0<button title="Click to copy versioned URL" class="btn-copy" data-clipboard-text="https://sql-on-fhir.org/ig/ImplementationGuide/org.sql-on-fhir.ig|2.0.0"/></span>
+      </td>
+    </tr>
+
+    <tr>
+
+
+
+
+
+
+
+      <td colspan="4">
+        
+          Draft
+          
+            as of 2024-10-08
+          
+        
+      </td>
+
+
+
+      <td><i>Computable Name</i>: <span style="font-family: monospace;">SQLonFHIR</span></td>
+    </tr>
+
+
+
+
+  </table>
+
+
+
+
+
+
+
+
+
+    <p><!-- white space is critical inside of capture --></p>
+<div class="markdown-toc">
+<ul id="markdown-toc">
+  <li><a href="#problem" id="markdown-toc-problem">Problem</a></li>
+  <li><a href="#solution" id="markdown-toc-solution">Solution</a></li>
+  <li><a href="#non-goals" id="markdown-toc-non-goals">Non-goals</a></li>
+  <li><a href="#system-layers" id="markdown-toc-system-layers">System Layers</a></li>
+  <li><a href="#glossary" id="markdown-toc-glossary">Glossary</a></li>
+  <li><a href="#license" id="markdown-toc-license">License</a></li>
+</ul>
+
+</div>
+<p><em>This is an evolution of the original "SQL on FHIR" draft, which
+can <a href="https://github.com/FHIR/sql-on-fhir-archived">still be found here</a>.</em></p>
+
+<p>This specification proposes an approach to make large-scale analysis of FHIR
+data accessible to a larger audience and portable between systems. The central
+goal of this project is to make FHIR data work well with the best available
+analytic tools, regardless of the technology stack.</p>
+
+<h3 id="problem">Problem</h3>
+
+<p>As the availability of FHIR data increases, there is a growing interest in
+using it for analytic purposes. However, to use FHIR effectively analysts
+require a thorough understanding of the specification, including its
+conventions, semantics, and data types.</p>
+
+<p>FHIR is represented as a graph of resources, each of which includes nested data
+elements. There are semantics defined for references between resources, data
+types, terminology, extensions, and many other aspects of the specification.</p>
+
+<p>Most analytic and machine learning use cases require the preparation of FHIR
+data using transformations and tabular projections from its original form.
+The task of authoring these transformations and projections is not trivial
+and there is currently no standard mechanism to support reuse.</p>
+
+<h3 id="solution">Solution</h3>
+
+<p>A standard format can be provided for defining tabular, use case-specific views
+of FHIR data. Tools can be developed that use these views in queries capable of
+being executed on a wide variety of different query engines.</p>
+
+<p>These views can be made available to users as an easier way to consume FHIR
+data which is simpler to understand and easier to process with generic analytic
+query tools.</p>
+
+<p>FHIR implementation guides could include definitions of simple, flattened views
+that comprise essential data elements. The availability of these view
+definitions will greatly reduce the need for analysts to perform repetitive and
+redundant transformation tasks for common use cases.</p>
+
+<p>Let's start with a simple example, defining a "patient_demographics" and "diagnoses" views with
+the following <a href="StructureDefinition-ViewDefinition.html">ViewDefinition</a>
+structure:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ViewDefinition"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Patient"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"patient_demographics"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"select"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"column"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"patient_id"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"getResourceKey()"</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gender"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gender"</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"dob"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"birthDate"</span><span class="p">}</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"forEach"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name.where(use = 'official').first()"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"column"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"given.join(' ')"</span><span class="p">,</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"given_name"</span><span class="p">,},</span><span class="w">
+          </span><span class="p">{</span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"family"</span><span class="p">,</span><span class="w"> </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"family_name"</span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]}</span><span class="w">
+</span></code></pre></div></div>
+
+<table class="table-data">
+  <thead>
+    <tr>
+      <th>id</th>
+      <th>gender</th>
+      <th>dob</th>
+      <th>given_name</th>
+      <th>family_name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5e23837b-….</td>
+      <td>female</td>
+      <td>1952-03-08</td>
+      <td>Malvina Gerda</td>
+      <td>Vicario</td>
+    </tr>
+    <tr>
+      <td>93f09189-….</td>
+      <td>male</td>
+      <td>1981-08-08</td>
+      <td>Yolotzin Adel</td>
+      <td>Bristow</td>
+    </tr>
+    <tr>
+      <td>44d86263-….</td>
+      <td>other</td>
+      <td>2015-01-28</td>
+      <td>Jin Gomer</td>
+      <td>Aarens</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"resourceType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ViewDefinition"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"resource"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Condition"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"diagnoses_view"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"select"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nl">"column"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"condition_id"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"id"</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"onset"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"onset.dateTime"</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"abatement"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"abatement.dateTime"</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"status"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"clinicalStatus.coding.code.first()"</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"code"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"code.coding.where(system='http://snomed.info/sct').code.first()"</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"display"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"code.text"</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"patient_id"</span><span class="p">,</span><span class="w"> </span><span class="nl">"path"</span><span class="p">:</span><span class="w"> </span><span class="s2">"subject.id"</span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+
+</span></code></pre></div></div>
+
+<table class="table-data">
+  <thead>
+    <tr>
+      <th>condition_id</th>
+      <th>onset</th>
+      <th>status</th>
+      <th>code</th>
+      <th>display</th>
+      <th>patient_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>011b6e34-…</td>
+      <td>2016-08-06T02:13:33+03:00</td>
+      <td>resolved</td>
+      <td>444814009</td>
+      <td>Viral sinusitis (disorder)</td>
+      <td>5e23837b-….</td>
+    </tr>
+    <tr>
+      <td>014774ea-…</td>
+      <td>2016-05-27T13:44:17+03:00</td>
+      <td>resolved</td>
+      <td>195662009</td>
+      <td>Acute viral pharyngitis (disorder)</td>
+      <td>93f09189-….</td>
+    </tr>
+    <tr>
+      <td>02116b05-…</td>
+      <td>2003-02-14T18:25:00+03:00</td>
+      <td>resolved</td>
+      <td>195662009</td>
+      <td>Acute viral pharyngitis (disorder)</td>
+      <td>44d86263-….</td>
+    </tr>
+    <tr>
+      <td>0287a9bc-…</td>
+      <td>2019-03-30T08:53:34+03:00</td>
+      <td>resolved</td>
+      <td>10509002</td>
+      <td>Acute bronchitis (disorder)</td>
+      <td>41907da4-….</td>
+    </tr>
+    <tr>
+      <td>02a79009-…</td>
+      <td>2013-07-04T14:17:52+04:00</td>
+      <td>resolved</td>
+      <td>43878008</td>
+      <td>Streptococcal sore throat (disorder)</td>
+      <td>5bad6369-….</td>
+    </tr>
+    <tr>
+      <td>02bfc9af-…</td>
+      <td>2016-10-06T05:24:13+03:00</td>
+      <td>resolved</td>
+      <td>195662009</td>
+      <td>Acute viral pharyngitis (disorder)</td>
+      <td>8742d4ba-….</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Such tabular views can be created for any FHIR resource,
+with <a href="artifacts.html#example-example-instances">more examples here</a>. See
+the <a href="StructureDefinition-ViewDefinition.html">View Definition page</a> for the full
+definition of the above structure.</p>
+
+<p>The views can be persisted and queried in your database of choice, using the view
+name as the table name:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="k">SELECT</span>  <span class="n">DATE_PART</span><span class="p">(</span><span class="s1">'year'</span><span class="p">,</span> <span class="n">AGE</span><span class="p">(</span><span class="n">pt</span><span class="p">.</span><span class="n">dob</span><span class="p">::</span><span class="nb">timestamp</span><span class="p">))</span> <span class="k">AS</span> <span class="n">age</span><span class="p">,</span>
+         <span class="n">gender</span><span class="p">,</span>
+         <span class="n">dg</span><span class="p">.</span><span class="n">code</span><span class="p">,</span>
+         <span class="n">dg</span><span class="p">.</span><span class="n">display</span><span class="p">,</span>
+         <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+    <span class="k">FROM</span> <span class="n">patient_demographics</span> <span class="n">pt</span>
+    <span class="k">JOIN</span> <span class="n">diagnoses</span> <span class="n">dg</span> <span class="k">using</span> <span class="p">(</span><span class="n">patient_id</span><span class="p">)</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span> <span class="k">desc</span>
+</code></pre></div></div>
+
+<p>Example output:</p>
+
+<table class="table-data">
+  <thead>
+    <tr>
+      <th>age</th>
+      <th>gender</th>
+      <th>code</th>
+      <th>display	countr</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>7</td>
+      <td>female</td>
+      <td>444814009</td>
+      <td>Viral sinusitis (disorder)</td>
+      <td>1340</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>female</td>
+      <td>65363002</td>
+      <td>Otitis media</td>
+      <td>2345</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>female</td>
+      <td>43878008</td>
+      <td>Streptococcal sore throat (disorder)</td>
+      <td>42</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="non-goals">Non-goals</h3>
+
+<p>View Definitions are intentionally constrained to a narrow set of functionality
+to make them easily and broadly implementable, while deferring higher-level
+capabilities to database engines or processing pipelines that solve those
+problems well. Therefore it's important to know what View Definitions do <em>not</em>
+do, by design:</p>
+
+<h4 id="a-single-view-definition-will-not-join-different-resources-in-any-way">A single View Definition will not join different resources in any way</h4>
+
+<p>A single View Definition defines a tabular view of exactly one resource type,
+like a view of <code class="language-plaintext highlighter-rouge">Patient</code> or a view of <code class="language-plaintext highlighter-rouge">Condition</code> resources. Any joins between
+resources are exclusively in downstream systems, like between database tables
+computed by view definitions. This makes it possible for a wide set of FHIR
+infrastructure to implement this spec, and lets database engines or processing
+pipelines join as needed.</p>
+
+<h4 id="view-definitions-do-not-have-sorting-aggregation-or-limit-capabilities">View Definitions do not have sorting, aggregation, or limit capabilities</h4>
+
+<p>View Definitions define only the logical schema of views, and therefore defer
+sorting, aggregation or limit operations to engines, along with cross-view
+joins. <em>View Runners</em> (described below) or future FHIR server operations may
+accept limits or sort columns as part of their operations, so users at runtime
+can specify what they need dynamically and independently of the definition of
+the view itself.</p>
+
+<h4 id="view-definitions-are-not-aware-of-output-formats">View Definitions are not aware of output formats</h4>
+
+<p>View Definitions themselves are independent of any tech stack and therefore
+unaware of the output format. <em>View Runners</em> are the component that applies
+definitions to a particular stack, producing output like a database table,
+Parquet file, CSV, or another format specific to the runner.</p>
+
+<h3 id="system-layers">System Layers</h3>
+
+<p>The <a href="StructureDefinition-ViewDefinition.html">View Definition</a> is the central
+element of this spec, but in practice it is only one layer within a larger
+system. A broader view of the system includes three layers:</p>
+
+<ul>
+  <li>The <em>Data Layer</em>;</li>
+  <li>The <em>View Layer</em>, and;</li>
+  <li>The <em>Analytics Layer</em>.</li>
+</ul>
+
+<p><img src="layers.jpg" alt="High-level diagram of layers" style="float: none; width: 700px" /></p>
+
+<p><strong>Figure 1: High-level diagram of layers</strong></p>
+
+<h4 id="data-layer">Data Layer</h4>
+
+<p>The Data Layer is a set of lossless representations that collectively enable
+FHIR to be used with a wide variety of different query technologies.</p>
+
+<p>The Data Layer may optionally be persisted and annotated to make implementations
+of the View Layer more efficient, but no specific Data Layer structure will be
+required by this specification.</p>
+
+<h4 id="view-layer">View Layer</h4>
+
+<p>The View Layer defines portable, tabular views of FHIR data that can be easily
+consumed by a wide variety of analytic tools. The use of these tools is
+described in the Analytics Layer section. Our goal here is to get the
+required FHIR data into a form that matches user needs and common analytic
+patterns.</p>
+
+<p>The View Layer has two key components:</p>
+
+<ul>
+  <li><em>View Definitions</em>, allowing users to define flattened views of FHIR data that
+are portable between systems.</li>
+  <li><em>View Runners</em>, system-specific tools or libraries that apply view definitions
+to the underlying data layer, optionally making use of annotations to optimize
+performance.</li>
+</ul>
+
+<p>See <a href="StructureDefinition-ViewDefinition.html">View Definition</a> for more details
+and examples.</p>
+
+<p>View Runners will be specific to the data layer they use. Each data layer may
+have one or more corresponding view runners, but a given View Definition can be
+run by many runners over many data layers.</p>
+
+<p>There are two popular categories of runners:</p>
+<ul>
+  <li><strong>In-memory runner</strong> consume resources, flatten, and output results into a stream, a file or a table.
+You can imagine the ETL pipeline from FHIR Bulk export ndjson files transformed into parquet files.</li>
+  <li><strong>In-database runner</strong> translate ViewDefinition into SQL query over an FHIR-native database.
+In that case the view can be a real database view or table. In-database runner could be way more efficient than in-memory
+,speed and storage resources but much more complex for implementers.</li>
+</ul>
+
+<p><img src="viewdef-runners.jpeg" alt="Diagram comparing in-memory and in-database runners" style="float: none; width: 100%" /></p>
+
+<h4 id="the-analytics-layer">The Analytics Layer</h4>
+
+<p>Users must be able to easily leverage the above views with the analytic tools of
+their choice. This specification purposefully does not define what these are,
+but common use cases may be SQL queries by consuming applications,
+dataframe-based data science tools in Python or R, or integration with business
+intelligence tools.</p>
+
+<h3 id="glossary">Glossary</h3>
+
+<p>See the <a href="glossary.html">Glossary</a> for the definitions of terms used in this specification.</p>
+
+<h3 id="license">License</h3>
+
+<p>FHIR® is the registered trademark of HL7 and is used with the permission of HL7.
+Use of the FHIR trademark does not constitute endorsement of the contents of
+this repository by HL7, nor affirmation that this data is conformant to the
+various applicable standards.</p>
+
+
+
+
+</div>
+        </div>  <!-- /inner-wrapper -->
+      </div>  <!-- /row -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-content -->
+
+  <script type="text/javascript" src="assets/js/jquery.js"> </script>     <!-- note keep space here, otherwise it will be transformed to empty tag -> fails -->
+  <script type="text/javascript" src="assets/js/jquery-ui.min.js"> </script>
+
+  <script type="text/javascript" src="assets/js/window-hash.js"> </script>
+  <a name="bottom"> </a>
+  <div id="segment-footer" igtool="footer" class="segment">  <!-- segment-footer -->
+    <div class="container">  <!-- container -->
+
+      <div class="inner-wrapper">
+        <p>
+          IG &#169; 2023+ <a style="color:var(--footer-hyperlink-text-color)" href="https://sql-on-fhir.org">SQL on FHIR Working Group</a>.  Package org.sql-on-fhir.ig#2.0.0 based on <a style="color: var(--footer-hyperlink-text-color)" href="http://hl7.org/fhir/R5/">FHIR 5.0.0</a>. Generated <span title="Tue, Oct 8, 2024 20:13+1000">2024-10-08</span>
+          <br/>
+          <span style="color: var(--footer-highlight-text-color)">
+                      Links: <a style="color: var(--footer-hyperlink-text-color)" href="toc.html">Table of Contents</a> |
+                 <a style="color: var(--footer-hyperlink-text-color)" href="qa.html">QA Report</a>
+                 
+                
+          </span>
+        </p>
+      </div>  <!-- /inner-wrapper -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-footer -->
+  
+  <div id="segment-post-footer" class="segment hidden">  <!-- segment-post-footer -->
+    <div class="container">  <!-- container -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-post-footer -->
+
+  <!-- JS and analytics only. -->
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script type="text/javascript" src="assets/js/bootstrap.min.js"> </script>
+  <script type="text/javascript" src="assets/js/respond.min.js"> </script>
+  <script type="text/javascript" src="assets/js/anchor.min.js"> </script>
+  <script type="text/javascript" src="assets/js/clipboard.min.js"> </script>
+  <script type="text/javascript" src="assets/js/clipboard-btn.js"> </script>
+  <script type="text/javascript" src="assets/js/anchor-hover.js"> </script>
+  <!-- Analytics Below
+  ================================================== -->
+  </body>
+</html>
+
