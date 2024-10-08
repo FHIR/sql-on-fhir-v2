@@ -96,7 +96,7 @@ jobs:
         # Copy IG output to the ig/latest directory in the base content
       - run: |
           mkdir -p base_content/ig/latest
-          cp -R output/* base_content/ig/latest/
+          cp -R current_branch/output/* base_content/ig/latest/
 
       # Set up Pages for deployment
       - name: Setup Pages
