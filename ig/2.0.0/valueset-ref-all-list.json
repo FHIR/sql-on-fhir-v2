@@ -12,8 +12,8 @@
       "sources" : ["2.16.840.1.113883.4.642.3.1309"],
       "uses" : {
       },
-      "StructureDefinition-ShareableViewDefinition.html" : "Shareable View Definition",
       "StructureDefinition-ViewDefinition.html" : "View Definition",
+      "StructureDefinition-ShareableViewDefinition.html" : "Shareable View Definition",
       "StructureDefinition-TabularViewDefinition.html" : "Tabular View Definition"
     },
     {
@@ -28,8 +28,8 @@
       "sources" : ["2.16.840.1.113883.4.642.3.3"],
       "uses" : {
       },
-      "StructureDefinition-ShareableViewDefinition.html" : "Shareable View Definition",
       "StructureDefinition-ViewDefinition.html" : "View Definition",
+      "StructureDefinition-ShareableViewDefinition.html" : "Shareable View Definition",
       "StructureDefinition-TabularViewDefinition.html" : "Tabular View Definition"
     },
     {
@@ -44,8 +44,8 @@
       "sources" : ["2.16.840.1.113883.4.642.3.27"],
       "uses" : {
       },
-      "StructureDefinition-ShareableViewDefinition.html" : "Shareable View Definition",
       "StructureDefinition-ViewDefinition.html" : "View Definition",
+      "StructureDefinition-ShareableViewDefinition.html" : "Shareable View Definition",
       "StructureDefinition-TabularViewDefinition.html" : "Tabular View Definition"
     }
   ]

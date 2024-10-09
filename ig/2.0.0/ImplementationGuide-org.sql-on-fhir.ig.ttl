@@ -17,7 +17,7 @@
   fhir:name [ fhir:v "SQLonFHIR"] ; # 
   fhir:title [ fhir:v "SQL on FHIR"] ; # 
   fhir:status [ fhir:v "draft"] ; # 
-  fhir:date [ fhir:v "2024-10-08T20:11:57+10:00"^^xsd:dateTime] ; # 
+  fhir:date [ fhir:v "2024-10-09T15:18:18+10:00"^^xsd:dateTime] ; # 
   fhir:publisher [ fhir:v "SQL on FHIR Working Group"] ; # 
   fhir:contact ( [
      fhir:name [ fhir:v "SQL on FHIR Working Group" ] ;

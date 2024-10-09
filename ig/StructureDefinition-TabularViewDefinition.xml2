@@ -18,7 +18,7 @@ must evaluate to true for the resource to be included in the view.">where</a><br
   <name value="TabularViewDefinition"/>
   <title value="Tabular View Definition"/>
   <status value="draft"/>
-  <date value="2024-10-08T20:13:04+10:00"/>
+  <date value="2024-10-09T15:19:21+10:00"/>
   <publisher value="SQL on FHIR Working Group"/>
   <contact>
     <name value="SQL on FHIR Working Group"/>

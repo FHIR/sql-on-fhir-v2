@@ -6,16 +6,16 @@
       "title" : "SQL on FHIR",
       "canonical" : "https://sql-on-fhir.org/ig",
       "category" : "Infrastructure",
-      "ci-build" : "https://build.fhir.org/ig/FHIR/sql-on-fhir-v2",
+      "ci-build" : "https://sql-on-fhir.org/ig/latest",
       "version-count" : 1,
       "latest" : {
         "version" : "2.0.0",
-        "date" : "2024-10-08",
+        "date" : "2024-10-09",
         "path" : "https://sql-on-fhir.org/ig/2.0.0"
       },
       "milestone" : {
         "version" : "2.0.0",
-        "date" : "2024-10-08",
+        "date" : "2024-10-09",
         "path" : "https://sql-on-fhir.org/ig/2.0.0"
       }
     }

@@ -110,7 +110,7 @@ the resource element. Constants defined in Reference({constant}) can be referenc
   <name value="ViewDefinition"/>
   <title value="View Definition"/>
   <status value="draft"/>
-  <date value="2024-10-08T20:13:04+10:00"/>
+  <date value="2024-10-09T15:19:21+10:00"/>
   <publisher value="SQL on FHIR Working Group"/>
   <contact>
     <name value="SQL on FHIR Working Group"/>

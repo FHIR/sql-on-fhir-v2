@@ -6,8 +6,8 @@
   "status" : "draft",
   "package-id" : "org.sql-on-fhir.ig",
   "ig-ver" : "2.0.0",
-  "date" : "Tue, 08 Oct, 2024 20:11:57 +1000",
-  "dateISO8601" : "2024-10-08T20:11:57+10:00",
+  "date" : "Wed, 09 Oct, 2024 15:18:18 +1000",
+  "dateISO8601" : "2024-10-09T15:18:18+10:00",
   "errs" : 0,
   "warnings" : 8,
   "hints" : 4,
@@ -15,5 +15,5 @@
   "suppressed-warnings" : 0,
   "version" : "5.0.0",
   "tool" : "5.0.0 (3)",
-  "maxMemory" : 1047918456
+  "maxMemory" : 994954240
 }

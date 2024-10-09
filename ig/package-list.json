@@ -8,7 +8,7 @@
     {
       "version" : "current",
       "desc" : "Continuous Integration Build (latest in version control)",
-      "path" : "https://build.fhir.org/ig/FHIR/sql-on-fhir-v2",
+      "path" : "https://sql-on-fhir.org/ig/latest",
       "status" : "ci-build",
       "fhirversion" : "5.0.0",
       "sequence" : "R2",
@@ -20,7 +20,7 @@
       "status" : "release",
       "sequence" : "R2",
       "fhirversion" : "5.0.0",
-      "date" : "2024-10-08",
+      "date" : "2024-10-09",
       "current" : true,
       "desc" : "A specification for defining portable views of FHIR data that can be easily queried using tools such as SQL."
     }
