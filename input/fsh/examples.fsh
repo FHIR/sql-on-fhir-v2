@@ -192,3 +192,103 @@ Usage: #example
     * path = "value.ofType(Quantity).value"
 * where[+]
   * path = "code.coding.exists(system='http://loinc.org' and code=%bp_code)"
+
+Instance: ConditionFlat
+InstanceOf: ViewDefinition
+Description: """A simple view for flattening a Condition resource. Some of the
+more commonly used fields are included in this flat view. A notable point
+is flattening of `category.coding` fields with one `forEach` construct as
+FHIRPath will take care of handling of nested arrays."""
+Usage: #example
+* name = "condition_flat"
+* status = #draft
+* resource = #Condition
+* select[+]
+  * column[+]
+    * path = "getResourceKey()"
+    * name = "id"
+  * column[+]
+    * path = "subject.getReferenceKey(Patient)"
+    * name = "patient_id"
+  * column[+]
+    * path = "encounter.getReferenceKey(Encounter)"
+    * name = "encounter_id"
+  * column[+]
+    * path = "onset.ofType(dateTime)"
+    * name = "onset_datetime"
+    * type = "dateTime"
+* select[+]
+  * forEachOrNull = "code.coding"
+  * column[+]
+    * name = "system"
+    * path = "system"
+    * type = "uri"
+  * column[+]
+    * path = "code"
+    * name = "code"
+* select[+]
+  * forEachOrNull = "category.coding"
+  * column[+]
+    * path = "code"
+    * name = "category"
+* select[+]
+  * forEachOrNull = "clinicalStatus.coding"
+  * column[+]
+    * path = "code"
+    * name = "clinical_status"
+* select[+]
+  * forEachOrNull = "verificationStatus.coding"
+  * column[+]
+    * path = "code"
+    * name = "verification_status"
+
+Instance: EncounterFlat
+InstanceOf: ViewDefinition
+Description: """A simple view for flattening an Encounter resource. Some of the
+more commonly used fields are included in this flat view. Note this is valid
+for an R4 Encounter resource but not R5 (hence the `fhirVersion`)."""
+Usage: #example
+* name = "encounter_flat"
+* status = #draft
+* resource = #Encounter
+* fhirVersion[+] = #4.0
+* select[+]
+  * column[+]
+    * path = "getResourceKey()"
+    * name = "id"
+  * column[+]
+    * path = "status"
+    * name = "status"
+  * column[+]
+    * path = "subject.getReferenceKey(Patient)"
+    * name = "patient_id"
+  * column[+]
+    * path = "serviceProvider.getReferenceKey(Organization)"
+    * name = "service_org_id"
+  * column[+]
+    * path = "period.start"
+    * name = "period_start"
+  * column[+]
+    * path = "period.end"
+    * name = "period_end"
+  * column[+]
+    * path = "episodeOfCare.getReferenceKey(EpisodeOfCare)"
+    * name = "EpisodeOfCareId"
+* select[+]
+  * forEachOrNull = "type.coding"
+  * column[+]
+    * path = "system"
+    * name = "type_sys"
+  * column[+]
+    * path = "code"
+    * name = "type_code"
+* select[+]
+  * forEachOrNull = "participant"
+  * column[+]
+    * path = "individual.getReferenceKey(Practitioner)"
+    * name = "practitioner_id"
+* select[+]
+  * forEachOrNull = "location"
+  * column[+]
+    * path = "location.getReferenceKey(Location)"
+    * name = "location_id"
