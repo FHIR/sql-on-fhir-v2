@@ -46,7 +46,7 @@
 
 <div class="flex my-1 mx-6 space-x-8">
     <a no-external="true" id="project-logo" href="index.html">
-        <img style="height: 50px;" src="http://sql-on-fhir.org/assets/images/sof-logo.svg" alt="SQL on FHIR">
+        <img style="height: 50px;" src="http://sql-on-fhir.org/ig/latest/assets/images/sof-logo.svg" alt="SQL on FHIR">
     </a>
 
     <div class="flex-1">
@@ -55,14 +55,14 @@
                 <span style="font-size:12pt;font-weight:bold">SQL on FHIR</span>
                 <br>
                 <span style="display:inline-block;">2.0.0-pre - ci-build
-                    <img style="height: 16px; display: inline;" src="http://sql-on-fhir.org/assets/images/001.svg" alt="International flag" title="International">
+                    <img style="height: 16px; display: inline;" src="http://sql-on-fhir.org/ig/latest/assets/images/001.svg" alt="International flag" title="International">
                 </span>
             </p>
         </center>
     </div>
 
     <a no-external="true" id="family-logo" href="http://hl7.org/fhir">
-        <img style="height: 50px;" src="http://sql-on-fhir.org/assets/images/fhir-logo-www.png" alt="FHIR website">
+        <img style="height: 50px;" src="http://sql-on-fhir.org/ig/latest/assets/images/fhir-logo-www.png" alt="FHIR website">
     </a>
 </div>
 
