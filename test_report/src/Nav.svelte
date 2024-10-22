@@ -45,7 +45,7 @@
 </style>
 
 <div class="flex my-1 mx-6 space-x-8">
-    <a no-external="true" id="project-logo" href="index.html">
+    <a no-external="true" id="project-logo" href="http://sql-on-fhir.org">
         <img style="height: 50px;" src="http://sql-on-fhir.org/ig/latest/assets/images/sof-logo.svg" alt="SQL on FHIR">
     </a>
 
