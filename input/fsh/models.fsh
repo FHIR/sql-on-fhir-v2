@@ -46,8 +46,8 @@ criteria are defined by FHIRPath expressions.
   The FHIR resource that the view is based upon, e.g. 'Patient' or 'Observation'.
 """
 * resource from http://hl7.org/fhir/ValueSet/resource-types
-* resourceProfile 0..* Canonical(StructureDefinition) "FHIR profiles that this view definition was intended to be executed against" """
-  Indicates that this view definition was intended to be executed against any of the specified FHIR profiles.
+* profile 0..* Canonical(StructureDefinition) "FHIR profiles that this view definition was intended to be executed against" """
+  Indicates that this definition was intended to create a view over a set of resources conforming to the specified FHIR profiles. Each of these profiles SHALL be based upon the resource type specified in `resource`.
 """
 * fhirVersion 0..* code "FHIR version(s) of the resource for the ViewDefinition" """
   The FHIR version(s) for the FHIR resource. The value of this element is the
