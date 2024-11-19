@@ -20,28 +20,12 @@ Expression: "(forEach | forEachOrNull).count() <= 1"
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 Logical: ViewDefinition
 Title: "View Definition"
+Parent: CanonicalResource
 Description: """
 A ViewDefinition represents a tabular projection of a FHIR resource, where the columns and inclusion 
 criteria are defined by FHIRPath expressions. 
 """
-* url 0..1 uri "Canonical identifier for this view definition, represented as a URI (globally unique)"
-* identifier 0..1 Identifier "Additional identifier for the view definition"
-* name 0..1 string "Name of view definition (computer and database friendly)" """
-  Name of the view definition, must be in a database-friendly format.
-"""
 * name obeys sql-name
-* title 0..1 string "Name for this view definition (human friendly)" """
-  A optional human-readable description of the view.
-"""
-* meta 0..1 Meta "Metadata about the view definition"
-* status 1..1 code "draft | active | retired | unknown"
-* status from http://hl7.org/fhir/ValueSet/publication-status
-* experimental 0..1 boolean "For testing purposes, not real usage"
-* publisher 0..1 string "Name of the publisher/steward (organization or individual)"
-* contact 0..* ContactDetail "Contact details for the publisher"
-* description 0..1 markdown "Natural language description of the view definition"
-* useContext 0..* UsageContext "The context that the content is intended to support"
-* copyright 0..1 markdown "Use and/or publishing restrictions"
 * resource 1..1 code "FHIR resource for the ViewDefinition" """
   The FHIR resource that the view is based upon, e.g. 'Patient' or 'Observation'.
 """
