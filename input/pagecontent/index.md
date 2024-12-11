@@ -53,16 +53,17 @@ structure:
         {"name": "gender", "path": "gender"},
         {"name": "dob", "path": "birthDate"}
       ],
-      {
-        "forEach": "name.where(use = 'official').first()",
-        "column": [
-          {"path": "given.join(' ')", "name": "given_name",},
-          {"path": "family", "name": "family_name"}
-        ]
-      }
 
+    },
+    {
+      "forEach": "name.where(use = 'official').first()",
+      "column": [
+        {"path": "given.join(' ')", "name": "given_name",},
+        {"path": "family", "name": "family_name"}
+      ]
     }
-  ]}
+  ]
+}
 ```
 
 
