@@ -58,7 +58,7 @@ structure:
     {
       "forEach": "name.where(use = 'official').first()",
       "column": [
-        {"path": "given.join(' ')", "name": "given_name",},
+        {"path": "given.join(' ')", "name": "given_name"},
         {"path": "family", "name": "family_name"}
       ]
     }
