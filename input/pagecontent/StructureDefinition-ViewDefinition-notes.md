@@ -401,11 +401,10 @@ inferred under the following conditions:
    known data type, either from the root resource or a child of an `ofType`
    function, then the data type for each column is determined by the structure
    definition it comes from.
-3. If the terminal expression is one of
-   the [supported FHIRPath functions](#supported-fhirpath-functionality) with a
-   defined return type, then the column will be of that data type. For instance,
-   if the `path` ends in `exists()` or `lowBoundary()`, the data type for the
-   column would be boolean or an instant type, respectively.
+3. If the terminal expression is a FHIRPath function with a defined return type,
+   then the column will be of that data type. For instance, if the `path` ends
+   in `exists()` or `lowBoundary()`, the data type for the column would be
+   boolean or an instant type, respectively.
 4. A path that ends in `ofType()` will be of the type given to that function.
 
 Note that type inference is an optional feature and some implementations may not
