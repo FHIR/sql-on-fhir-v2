@@ -106,9 +106,9 @@ The resulting output:
 | pt1 | s1  | t11   |
 | pt1 | s1  | t12   |
 | pt1 | s1  | t13   |
-| pt2 | s1  | t21   |
-| pt2 | s1  | t22   |
-| pt2 | s1  | t23   |
+| pt2 | s2  | t21   |
+| pt2 | s2  | t22   |
+| pt2 | s2  | t23   |
 
 ## The FHIRPath Subset
 
