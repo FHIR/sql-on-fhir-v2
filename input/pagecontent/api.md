@@ -3,36 +3,101 @@
 
 ## Overview
 
-Specification describes the standard HTTP API for ViewDefinition runners and FHIR servers to work with ViewDefinitions.
+This document defines a standard HTTP API for interacting with SQL on FHIR systems, 
+including FHIR servers and ViewDefinition runners.
+
+This is a normative specification that defines conformance 
+requirements for implementing ViewDefinition functionality in compliant systems.
+
+The following list of API endpoints are defined:
+
+- CapabilityStatement API
+- Bulk Export API
+- ViewDefinition discovery API
+- ViewDefinition management API
+- ViewDefinition runner API
+
 
 ## Use Cases
 
-### FHIR Servers and Bulk Export API
 
-It is recommended for FHIR servers (CDR) to provide Bulk Export API to export data described in ViewDefinitions.
-This could be much more efficient than exporting all data in FHIR format.
+### Use Case 1: Discovery
 
-- User initiates an async bulk export with list of ViewDefinitions. 
-- Server export results of ViewDefinitions in csv and parquet formats to file storage and respond with urls to access this files.
-- User load exported files into database or use tools like Spark or AWS Athena to analyze them.
+Clients can discover supported capabilities of the server by requesting the CapabilityStatement resource
+on standard FHIR server endpoint - `/metadata`.
 
-Server may support fixed set of ViewDefinitions or allow to specify list of ViewDefinitions dynamically.
+* Discover supported operations
+* Discover supported ViewDefinitions
+* Discover supported output formats
 
-Specification is heavily inspired by [HL7 FHIR Bulk Data Access](https://www.hl7.org/fhir/bulkdata.html)
+[See CapabilityStatement](#capabilitystatement)
 
-### Authoring ViewDefinition
+### Use Case 2: Bulk Export for Reporting and Analysis
 
-Providing endpoints to test ViewDefinitions will make them easier to develop and test.
-Applications like ViewDefinition builder need a way to test ViewDefinitions while developing them.
+Clients can efficiently transform and export FHIR data in flattened format (csv, parquet, ndjson) 
+described in ViewDefinitions into file storage (like S3, GCS, Azure Blob Storage, etc).
+And use standard tools like Apache Spark, AWS Athena or other tools to analyze data or load data into data warehouses.
 
-### Running Queries on ViewDefinition
+**Flow:**
 
-- User request asynchronous build of views and run queries on them.
-- VD runner build views and run queries on them.
-- User can request status of the build process.
-- User can request cancel of the build process.
-- User get results of the query accessible by urls.
+1. The client initiates an asynchronous bulk export operation by submitting 
+   a list of ViewDefinitions to the server or SQL on FHIR facade on top of existing FHIR servers.
+2. The server:
+   - Processes the ViewDefinitions
+   - Exports results in CSV and/or Parquet formats to file storage 
+   - Responds with URLs for accessing the exported files
+3. The client can then:
+   - Load the exported files into a data warehouse
+   - Analyze them using tools like Apache Spark or Amazon Athena
 
+
+[See Bulk Export](#bulk-export)
+
+### Use Case 3: Real-time Evaluation of ViewDefinition
+
+Client can request real-time evaluation of ViewDefinition and process streamed results. For example, 
+AI applications can use this to process patient data in real-time by requesting flat conditions, 
+observations and medications as they are recorded.
+
+**Flow:**
+
+1. The client initiates a real-time evaluation of a ViewDefinition by submitting it to the server.
+2. The server:
+   - Processes the ViewDefinition
+   - Responds with the results of the evaluation
+3. The client can process streamed results on fly.
+
+[See Run ViewDefinition](#run-viewdefinition)
+
+### Use Case 4: Authoring & Debugging ViewDefinition
+
+Developers or developer tools can test and refine ViewDefinitions interactively by evaluating them in real-time.
+
+**Flow:**
+
+1. The client initiates a real-time evaluation of a ViewDefinition by submitting it to the server.
+2. The server:
+   - Processes the ViewDefinition
+   - Responds with the results of the evaluation
+
+[See Run ViewDefinition](#run-viewdefinition)
+
+### Use Case 5: Bulk Reports and Analytics
+
+Client can submit an asynchronous job to the server to build views and run queries to 
+produce reports, quality dashboards and analytics. What's going on server is abstracted from the client.
+Administrative bodies can request bulk reports for different populations and metrics from hospital systems.
+
+**Flow:**
+
+1. The client initiates an asynchronous request to run queries on specific views.
+2. The server:
+   - Processes the request
+   - Builds views and runs queries
+   - Responds with the results
+3. The client can poll results
+
+[See Run Bulk Queries](#run-bulk-queries)
 
 ## API
 
