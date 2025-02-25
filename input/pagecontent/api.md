@@ -7,7 +7,7 @@ Specification describes the standard HTTP API for ViewDefinition runners and FHI
 
 ## Use Cases
 
-### FHIR Servers
+### FHIR Servers and Bulk Export API
 
 It is recommended for FHIR servers (CDR) to provide Bulk Export API to export data described in ViewDefinitions.
 This could be much more efficient than exporting all data in FHIR format.
@@ -17,6 +17,8 @@ This could be much more efficient than exporting all data in FHIR format.
 - User load exported files into database or use tools like Spark or AWS Athena to analyze them.
 
 Server may support fixed set of ViewDefinitions or allow to specify list of ViewDefinitions dynamically.
+
+Specification is heavily inspired by [HL7 FHIR Bulk Data Access](https://www.hl7.org/fhir/bulkdata.html)
 
 ### Authoring ViewDefinition
 
@@ -38,7 +40,15 @@ Applications like ViewDefinition builder need a way to test ViewDefinitions whil
 
 CapabilityStatement for Bulk Export API.
 
-```json
+```http
+GET /CapabilityStatement HTTP/1.1
+Accept: application/fhir+json
+```
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/fhir+json
+
 {
   "resourceType": "CapabilityStatement",
   "name": "BulkExport",
@@ -63,7 +73,7 @@ CapabilityStatement for Bulk Export API.
 }
 ```
 
-### Bulk Export
+### Async Bulk Export
 
 Bulk export endpoint accepts list of ViewDefinitions to export 
 and returns list of export tasks.
@@ -93,7 +103,7 @@ Start export of views.
 - **identifier** - (optional) Unique identifier of the export
 - **patient** - (optional) reference to Patient to export
 - **group** - (optional) reference to Group to export
-- **dataset** - (optional) Name of dataset to export, interpreted by server
+- **source** - (optional) Name of source to export, interpreted by server
 - **destination** - (optional) Name of destination to export, interpreted by server
 
 **response:**
@@ -172,47 +182,140 @@ Get status of the export. Server may report status - ready, in-progress, failed,
 **endpoint:** `GET {Location}`
 **responses:**
 
-- `202` - **in-progress** - true if export is in progress
+- `202 Accepted` - **in-progress** - true if export is in progress
+    
+    Respond with JSON object with the following fields: 
+
+    | Field | Type | Description |
+    |-------|------|-------------|
+    | status | string | Status of the export ("in-progress") |
+    | progress | number | Progress of the export (0-100) |
+    | time | object | Timing information |
+    | time.start | datetime | Start time of export |
+    | time.end | datetime | Estimated end time of export | 
+    | time.duration | number | Duration in seconds |
+    | message | string | Human readable status message |
+
     ```json
     {
         "status": "in-progress",
+        "message": "Processing large source (65% complete)",
         "progress": 65,
-        "estimated_completion_time": "2025-02-25T15:30:00Z",
-        "message": "Processing large dataset (65% complete)"
+        "time": {
+            "start": "2025-02-25T15:10:23Z",
+            "end": "2025-02-25T15:12:23Z",
+            "duration": 120
+        }
     }
     ```
 
-- `200` - **ready** - if export is ready
+- `200 OK` - **ready** - if export is ready
+
+    Respond with JSON object with the following fields:
+
+    | Field | Type | Description |
+    |-------|------|-------------|
+    | status | string | Status of the export ("ready") |
+    | message | string | Human readable status message |
+    | parameters | object | Parameters used for the export |
+    | parameters.patient | string[] | Reference to Patient resource |
+    | parameters.group | string[] | Reference to Group resource |
+    | parameters.source | string | Name of source system |
+    | parameters.destination | string | Name of destination system |
+    | time | object | Timing information |
+    | time.start | datetime | Start time of export |
+    | time.end | datetime | End time of export | 
+    | time.duration | number | Duration in seconds |
+    | output | array | Array of output files |
+    | output[].name | string | Name of the view |
+    | output[].view | string | Reference to ViewDefinition resource |
+    | output[].url | string | URL to download the output file |
+    | output[].page | number | Page number for paginated results |
+    | output[].size | number | Size of output in bytes |
+
+    Example:
 
     ```json
     {
         "status": "ready",
-        "message": "Export completed successfully"
+        "message": "Export completed successfully",
+        "parameters": {
+            "patient": ["Patient/123", "Patient/456"],
+            "group": ["Group/789", "Group/101"],
+            "source": "source1",
+            "destination": "destination1"
+        },
+        "time": {
+            "start": "2025-02-25T15:10:23Z",
+            "end": "2025-02-25T15:12:23Z",
+            "duration": 120
+        },
+        "output": [
+            {
+                "name": "conditions",
+                "view": "ViewDefinition/conditions",
+                "url": "https://example.com/conditions.csv",
+                "size": 10000,
+            },
+            {
+                "name": "observations",
+                "view": "ViewDefinition/observations",
+                "url": "https://example.com/observations.page-1.csv",
+                "page": 1,
+                "size": 10000
+            },
+            {
+                "name": "observations",
+                "view": "ViewDefinition/observations",
+                "url": "https://example.com/observations.page-2.csv",
+                "page": 2,
+                "size": 98000
+            }
+        ]
     }
     ```
-- `422` - **failed** - if export failed
+- `422 Unprocessable Entity` - **failed** - if export failed
     ```json
     {
       "status": "failed",
-      "error": "Database connection timeout",
-      "error_code": "DB_CONN_ERR_001",
-      "message": "Job processing failed due to database connectivity issues",
-      "timestamp": "2025-02-25T15:10:23Z",
-      "retry_recommended": true
+      "message": "Database connection timeout",
+      "code": "DB_CONN_ERR_001",
+      "parameters": {
+        "patient": ["Patient/123", "Patient/456"],
+        "group": ["Group/789", "Group/101"],
+        "source": "source1",
+        "destination": "destination1"
+      },
+      "time": {
+        "start": "2025-02-25T15:10:23Z",
+        "end": "2025-02-25T15:12:23Z",
+        "duration": 120
+      }
     }
     ```
-- `410` - **cancelled** - true if export is cancelled
+- `410 Gone` - **cancelled** - true if export is cancelled
     ```json
     {
         "status": "canceled",
         "message": "Job was canceled by user at 2025-02-25T14:22:30Z",
-        "reason": "User requested cancellation"
+        "time": {
+            "start": "2025-02-25T15:10:23Z",
+            "end": "2025-02-25T15:12:23Z",
+            "duration": 120
+        },
+        "parameters": {
+            "patient": ["Patient/123", "Patient/456"],
+            "group": ["Group/789", "Group/101"],
+            "source": "source1",
+            "destination": "destination1"
+        }
     }
     ```
 
 
 #### Cancel export
 
+**Endpoint:** `DELETE {Location}`
 
 
 #### Get export results
@@ -227,12 +330,32 @@ There are two endpoints with ViewDefinition in body and ViewDefinition in URL pa
 
 #### POST ViewDefinition/$run
 
-**endpoint:** `POST ViewDefinition/$run`
-**accept:** `text/csv`
+Evaluates ViewDefinition resource in body and returns results immediately.
 
-**parameters:**
+**Endpoint:** `POST ViewDefinition/$run`
 
-- **viewDefinition** - Canonical URL of ViewDefinition to run
+**Headers:**
+- Accept: 
+  - `text/csv`
+  - `text/csv;header=present`
+  - `application/json`
+  - `application/ndjson`
+  - `application/parquet`
+
+**Query parameters:**
+
+| Name | Type | Description |
+|------|------|-------------|
+| patient | reference | Patient to run the view for |
+| group | reference | Group to run the view for |
+| source | string | Name of source to run the view for |
+| _header | boolean | (optional) by default is true, return headers in the response |
+| _format | string | (optional) can be specified as parameter or header see `Accept` header |
+| _count | number | (optional) limit the number of results, equivalent to FHIR search _count parameter |
+| _page | number | (optional) page number for paginated results, equivalent to FHIR search _page parameter |
+
+
+**Body:**  ViewDefinition resource
 
 ##### Example
 
@@ -251,23 +374,41 @@ Content-Type: application/json
 
 #### GET /ViewDefinition/{id}/$run
 
-**headers:**:
- - **accept:** `text/csv`
+**Endpoint:** `GET /ViewDefinition/{id}/$run`
 
-**parameters:**
+**Headers:**
 
-- **patient** - Patient to run the view for
-- **group** - Group to run the view for
-- **dataset** - Name of dataset to run the view for
-- **headers** - (optional) if true, return headers in the response
+- Accept: 
+  - `text/csv`
+  - `text/csv;header=present`
+  - `application/json`
+  - `application/ndjson`
+  - `application/parquet`
+
+
+**Query parameters:**
+
+| Name | Type | Description |
+|------|------|-------------|
+| patient | reference | Patient to run the view for |
+| group | reference | Group to run the view for |
+| source | string | Name of source to run the view for |
+| _header | boolean | (optional) by default is true, return headers in the response |
+| _format | string | (optional) can be specified as parameter or header see `Accept` header |
+| _count | number | (optional) limit the number of results, equivalent to FHIR search _count parameter |
+| _page | number | (optional) page number for paginated results, equivalent to FHIR search _page parameter |
+
+
+
 
 ##### Example
 
+Request:
 ```http
 GET /ViewDefinition/conditions/$run?patient=Patient/123&headers=true
 Accept: text/csv
 ```
-
+Response:
 ```http
 HTTP/1.1 200 OK
 Content-Type: text/csv

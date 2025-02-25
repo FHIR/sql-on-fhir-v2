@@ -80,7 +80,7 @@
         <main id="content" class="flex-1 min-w-0 overflow-auto px-8 py-4">
             <h1 class="text-3xl border-b mt-3 mb-1">{current?.title}</h1>
             <p class="my-2 text-gray-600">{current?.description || ''}</p>
-            <h2 class="mt-4 mb-2 text-sm font-bold text-gray-500">Dataset</h2>
+            <h2 class="mt-4 mb-2 text-sm font-bold text-gray-500">source</h2>
             <div class="border divide-y">
                 {#each current?.resources || [] as resource}
                     <details>
