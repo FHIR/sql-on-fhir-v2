@@ -73,6 +73,7 @@ menu:
   Overview: index.html
   View Definition: StructureDefinition-ViewDefinition.html
   Artifacts: artifacts.html
+  API: api.html
   Contributing: contributing.html
   # extra/playground.html does not work - TODO: use relative ulrs
   Playground: http://sql-on-fhir.org/extra/playground.html
