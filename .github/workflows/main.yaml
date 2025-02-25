@@ -106,12 +106,12 @@ jobs:
 
       # Set up Pages for deployment
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v4
         if: ${{ github.ref == 'refs/heads/master' }}
 
       # Upload the artifact (base_content) for deployment
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         if: ${{ github.ref == 'refs/heads/master' }}
         with:
           path: 'base_content'
@@ -119,5 +119,5 @@ jobs:
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v3
         if: ${{ github.ref == 'refs/heads/master' }}
