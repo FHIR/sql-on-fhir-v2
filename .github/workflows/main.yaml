@@ -99,7 +99,7 @@ jobs:
           cp -R current_branch/output/* base_content/ig/latest/
           
       # Save current_branch/output/qa.html as a build artifact
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: qa.html
           path: current_branch/output/qa.html
