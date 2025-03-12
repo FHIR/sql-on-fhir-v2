@@ -248,6 +248,9 @@ Get status of the export. Server may report status - ready, in-progress, failed,
 **responses:**
 
 - `202 Accepted` - **in-progress** - true if export is in progress
+
+SM - For the in-progress state, we should harmonize with the response headers that Bulk Data
+$export uses, notably X-Progress, and Retry-After.  See [here](https://build.fhir.org/ig/HL7/bulk-data/export.html#endpoint-1)
     
     Respond with JSON object with the following fields: 
 
@@ -278,6 +281,14 @@ Get status of the export. Server may report status - ready, in-progress, failed,
 
     Respond with JSON object with the following fields:
 
+SM - Bulk Data $export has fewer values on the Complete status, but that's probably ok.
+One we are missing here is resourceType, which is handy when we want to quickly 
+show the results in a table for download.  Including it will save a trip to the server by clients.
+
+$export also has the concept of "deleted", and "error" return values that are not expressed here.
+[see here](https://build.fhir.org/ig/HL7/bulk-data/export.html#response---complete-status)
+
+
     | Field | Type | Description |
     |-------|------|-------------|
     | status | string | Status of the export ("ready") |
@@ -295,6 +306,7 @@ Get status of the export. Server may report status - ready, in-progress, failed,
     | output[].name | string | Name of the view |
     | output[].view | string | Reference to ViewDefinition resource |
     | output[].url | string | URL to download the output file |
+    | output[].type | string | FHIR Resource type contained in the output file.   |
     | output[].page | number | Page number for paginated results |
     | output[].size | number | Size of output in bytes |
 
@@ -382,6 +394,11 @@ Get status of the export. Server may report status - ready, in-progress, failed,
 
 **Endpoint:** `DELETE {Location}`
 
+#### Pause and restart export
+
+**Endpoint** `PUT {Location]/disable` - pauses the export
+
+**Endpoint** `PUT {Location]/enable` - (re)-enables the export.
 
 #### Get export results
 
@@ -409,15 +426,16 @@ Evaluates ViewDefinition resource in body and returns results immediately.
 
 **Query parameters:**
 
-| Name | Type | Description |
-|------|------|-------------|
-| patient | reference | Patient to run the view for |
-| group | reference | Group to run the view for |
-| source | string | Name of source to run the view for |
-| _header | boolean | (optional) by default is true, return headers in the response |
-| _format | string | (optional) can be specified as parameter or header see `Accept` header |
-| _count | number | (optional) limit the number of results, equivalent to FHIR search _count parameter |
-| _page | number | (optional) page number for paginated results, equivalent to FHIR search _page parameter |
+| Name    | Type         | Description                                                                             |
+|---------|--------------|-----------------------------------------------------------------------------------------|
+| patient | reference    | Patient to run the view for                                                             |
+| group   | reference    | Group to run the view for                                                               |
+| source  | string       | Name of source to run the view for                                                      |
+| _header | boolean      | (optional) by default is true, return headers in the response                           |
+| _format | string       | (optional) can be specified as parameter or header see `Accept` header                  |
+| _count  | number       | (optional) limit the number of results, equivalent to FHIR search _count parameter      |
+| _page   | number       | (optional) page number for paginated results, equivalent to FHIR search _page parameter |
+| _since  | FHIR Instant | (optional) Resources will be included in the response if their state has changed after the supplied time (e.g., if Resource.meta.lastUpdated is later than the supplied _since time). In the case of a Group level export, the server MAY return additional resources modified prior to the supplied time if the resources belong to the patient compartment of a patient added to the Group after the supplied time (this behavior SHOULD be clearly documented by the server). For Patient- and Group-level requests, the server MAY return resources that are referenced by the resources being returned regardless of when the referenced resources were last updated. For resources where the server does not maintain a last updated time, the server MAY include these resources in a response irrespective of the _since value supplied by a client. |
 
 
 **Body:**  ViewDefinition resource
