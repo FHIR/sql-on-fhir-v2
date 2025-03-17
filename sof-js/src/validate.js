@@ -1,5 +1,5 @@
 import Ajv from 'ajv'
-import { fhirpath_validate } from './path'
+import { fhirpath_validate } from './path.js'
 
 let array = 'array'
 let string = { type: 'string' }
