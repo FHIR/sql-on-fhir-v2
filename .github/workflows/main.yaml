@@ -119,5 +119,5 @@ jobs:
       # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v3
+        uses: actions/deploy-pages@v4
         if: ${{ github.ref == 'refs/heads/master' }}
