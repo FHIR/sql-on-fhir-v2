@@ -1,0 +1,85 @@
+{
+  "resourceType": "OperationDefinition",
+  "url": "http://sql-on-fhir.org/OperationDefinition/$run",
+  "version": "0.0.1",
+  "versionAlgorithmString": "semver",
+  "id": "$run",
+  "name": "$run",
+  "code": "$run",
+  "status": "active",
+  "kind": "operation",
+  "system": false,
+  "type": true,
+  "instance": true,
+  "resource": [ "ViewDefinition" ],
+  "parameter": 
+  [
+    {
+      "name": "view",
+      "type": "uri",
+      "use": "in",
+      "scope": ["type"],
+      "min": "1",
+      "max": "1",
+      "documentation": "ViewDefinition resource URL"
+    },
+    {
+      "name": "format",
+      "type": "code",
+      "use": "in",
+      "scope": ["type","instance"],
+      "documentation": "Output format - json, ndjson, csv, parquet",
+      "max": "1",
+      "binding": {
+        "strength": "extensible",
+        "valueSet": "http://sql-on-fhir.org/ValueSet/output-format"
+      }
+    },
+    {
+      "name": "header",
+      "type": "boolean",
+      "use": "in",
+      "scope": ["type","instance"],
+      "max": "1",
+      "documentation": "Include header row in the output (for csv)"
+    },
+    {
+      "name": "patient",
+      "type": "reference",
+      "use": "in",
+      "scope": ["type","instance"],
+      "max": "1"
+    },
+    {
+      "name": "group",
+      "type": "reference",
+      "use": "in",
+      "scope": ["type","instance"],
+      "max": "1"
+    },
+    {
+      "name": "source",
+      "type": "string",
+      "use": "in",
+      "scope": ["type","instance"],
+      "documentation": "Opaque string identifying the source of the data. Interpreted by the server.",
+      "max": "1"
+    },
+    {
+      "name": "count",
+      "type": "integer",
+      "use": "in",
+      "scope": ["type","instance"],
+      "documentation": "Number of results to return",
+      "max": "1"
+    },
+    {
+      "name": "since",
+      "type": "instant",
+      "use": "in",
+      "scope": ["type","instance"],
+      "documentation": "Only include resources modified after the given instant",
+      "max": "1"
+    }
+  ]
+}

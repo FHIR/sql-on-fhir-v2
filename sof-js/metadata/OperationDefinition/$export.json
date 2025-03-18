@@ -1,0 +1,22 @@
+{
+    "resourceType": "OperationDefinition",
+    "url": "http://sql-on-fhir.org/OperationDefinition/$export",
+    "version": "0.0.1",
+    "id": "$export",
+    "name": "$export",
+    "status": "active",
+    "kind": "operation",
+    "code": "export",
+    "system": false,
+    "type": true,
+    "instance": true,
+    "resource": [
+      "ViewDefinition"
+    ],
+    "parameter": [
+        {
+            "name": "view",
+            "type": "ViewDefinition"
+        }
+    ]
+}

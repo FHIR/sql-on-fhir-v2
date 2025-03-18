@@ -71,10 +71,17 @@ app.get('/metadata', (req, res) => {
           { code: "delete" },
           { code: "create" },
         ],
-        operation: [{
-          name: "$export",
-          definition: "http://sql-on-fhir.org/OperationDefinition/$export"
-        }]
+        operation:
+          [
+            {
+              name: "$export",
+              definition: "http://sql-on-fhir.org/OperationDefinition/$export"
+            },
+            {
+              name: "$run",
+              definition: "http://sql-on-fhir.org/OperationDefinition/$run"
+            }
+          ]
       }]
     }]
   };
@@ -82,60 +89,6 @@ app.get('/metadata', (req, res) => {
   res.setHeader('Content-Type', 'application/fhir+json');
   res.json(capabilityStatement);
 });
-
-// Function to read resources from a directory
-function readResourcesFromDirectory(directoryPath, resourceType) {
-  // Create a Bundle to hold the resources
-  const bundle = {
-    resourceType: "Bundle",
-    type: "searchset",
-    total: 0,
-    entry: []
-  };
-  
-  try {
-    // Check if directory exists
-    if (fs.existsSync(directoryPath)) {
-      // Read all files in the directory
-      const files = fs.readdirSync(directoryPath);
-      
-      // Filter for JSON files and add their contents to the bundle
-      const jsonFiles = files.filter(file => file.endsWith('.json'));
-      
-      jsonFiles.forEach(file => {
-        try {
-          const filePath = path.join(directoryPath, file);
-          const fileContent = fs.readFileSync(filePath, 'utf8');
-          const resource = JSON.parse(fileContent);
-          resource.id = file.replace('.json', '');
-          
-          bundle.entry.push({
-            resource: resource,
-            fullUrl: `/${resourceType}/${resource.id || file.replace('.json', '')}`
-          });
-        } catch (fileError) {
-          console.error(`Error reading file ${file}:`, fileError);
-        }
-      });
-      
-      bundle.total = bundle.entry.length;
-    } else {
-      console.warn(`${resourceType} directory not found:`, directoryPath);
-    }
-  } catch (error) {
-    console.error(`Error reading ${resourceType} directory:`, error);
-  }
-  
-  return bundle;
-}
-
-app.get('/ViewDefinition', (req, res) => {
-  const viewDefinitionDir = path.join(__dirname, '../metadata/ViewDefinition');
-  const bundle = readResourcesFromDirectory(viewDefinitionDir, 'ViewDefinition');
-  res.setHeader('Content-Type', 'application/fhir+json');
-  res.json(bundle);
-});
-
 
 function readResource(resourceType, id) {
   const viewDefinitionDir = path.join(__dirname, '../metadata/ViewDefinition');
@@ -163,7 +116,7 @@ async function getFHIRData(resourceType) {
       else resolve(result.toString('utf8'));
     });
   });
-  
+
   // Convert ndjson to JSON array
   const jsonArray = text
     .split('\n')
@@ -172,6 +125,70 @@ async function getFHIRData(resourceType) {
   return jsonArray;
 }
 
+
+app.get('/ViewDefinition/\\$export', async (req, res) => {
+  res.setHeader('Content-Type', 'application/fhir+json');
+  res.json({});
+
+});
+
+function readResourcesFromDirectory(directoryPath, resourceType) {
+  // Create a FHIR Bundle to hold the resources
+  const bundle = {
+    resourceType: "Bundle",
+    type: "searchset",
+    entry: []
+  };
+  
+  // Check if the directory exists
+  if (!fs.existsSync(directoryPath) || !fs.statSync(directoryPath).isDirectory()) {
+    return bundle;
+  }
+  
+  try {
+    // Read all files from the directory
+    const files = fs.readdirSync(directoryPath);
+    bundle.total = files.length;
+    
+    // Process each file and add to bundle
+    files.forEach(file => {
+      const filePath = path.join(directoryPath, file);
+      if (fs.statSync(filePath).isFile()) {
+        try {
+          const fileContent = fs.readFileSync(filePath, 'utf8');
+          const resource = JSON.parse(fileContent);
+          resource.id = file.replace('.json', '');
+          bundle.entry.push({
+            resource: resource
+          });
+        } catch (error) {
+          console.error(`Error processing file ${file}:`, error);
+        }
+      }
+    });
+    
+    return bundle;
+  } catch (error) {
+    console.error(`Error reading directory ${directoryPath}:`, error);
+    return bundle;
+  }
+}
+
+app.get('/:resourceType', async (req, res) => {
+  const resourceType = req.params.resourceType;
+  const metadataPath = path.join(__dirname, '..', 'metadata', resourceType);
+  
+  // Check if the directory exists for this resourceType
+  if (fs.existsSync(metadataPath) && fs.statSync(metadataPath).isDirectory()) {
+    const bundle = readResourcesFromDirectory(metadataPath, resourceType);
+    res.setHeader('Content-Type', 'application/fhir+json');
+    res.json(bundle);
+  } else {
+    // If directory doesn't exist, pass to next handler
+    res.status(404);
+  }
+});
+
 app.get('/ViewDefinition/:id/\\$run', async (req, res) => {
   const id = req.params.id;
   const resource = readResource('ViewDefinition', id);
@@ -179,13 +196,25 @@ app.get('/ViewDefinition/:id/\\$run', async (req, res) => {
   const data = await getFHIRData(resource.resource);
   const result = await evaluate(resource, data);
 
-  res.setHeader('Content-Type', 'application/fhir+json');
-  res.json(result);
-
+  // Check for query parameters
+  const format = req.query.format || 'json';
+  if (format === 'json') {
+    res.setHeader('Content-Type', 'application/fhir+json');
+    res.json(result);
+  } else if (format === 'ndjson') {
+    res.setHeader('Content-Type', 'application/ndjson');
+    result.forEach(item => {
+      res.write(JSON.stringify(item) + '\n');
+    });
+    res.end();
+  } else if (format === 'csv') {
+    res.setHeader('Content-Type', 'text/csv');
+    res.send(result.map(item => Object.values(item).join(',')).join('\n'));
+  }
 });
 
 
-export function startServer(port) {  
+export function startServer(port) {
   const PORT = port || 3000;
 
   app.listen(PORT, () => {
