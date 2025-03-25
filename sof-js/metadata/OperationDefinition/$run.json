@@ -80,6 +80,11 @@
       "scope": ["type","instance"],
       "documentation": "Only include resources modified after the given instant",
       "max": "1"
+    },
+    {
+      "name": "return",
+      "type": "Binary",
+      "use": "out"
     }
   ]
 }

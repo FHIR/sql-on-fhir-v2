@@ -426,6 +426,7 @@ Example:
           "part": [
             { "name": "view", "valueReference": { "reference": "ViewDefinition/conditions" } },
             { "name": "url",  "valueUrl": "https://example.com/conditions.csv" },
+            { "name": "format", "valueString": "csv" },
             { "name": "size", "valueInteger": 10000 }
           ]
         }

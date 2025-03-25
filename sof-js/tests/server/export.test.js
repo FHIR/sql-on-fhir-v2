@@ -26,9 +26,16 @@ describe('Server', () => {
         resourceType: 'Parameters',
         parameter: [
           {
-            name: 'view',
+            name: 'viewCanonical',
             valueUrl: 'http://myig.org/ViewDefinition/patient_demographics',
             part: [ { name: 'format', valueCode: 'csv' } ]
+          },
+          {
+            name: 'viewUrl',
+            valueReference: {
+              reference: '/ViewDefinition/patient_demographics'
+            },
+
           }
         ]
       })
