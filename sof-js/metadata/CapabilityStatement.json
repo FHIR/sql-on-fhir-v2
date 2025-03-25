@@ -1,0 +1,33 @@
+{
+  "resourceType": "CapabilityStatement",
+  "status": "active",
+  "date": "2023-07-13T10:00:00Z",
+  "publisher": "SQL on FHIR",
+  "kind": "instance",
+  "fhirVersion": "4.0.1",
+  "format": ["application/fhir+json"],
+  "rest": [{
+    "mode": "server",
+    "resource": [{
+      "type": "ViewDefinition",
+      "interaction": [
+        { "code": "read" },
+        { "code": "search-type" },
+        { "code": "write" },
+        { "code": "patch" },
+        { "code": "delete" },
+        { "code": "create" }
+      ],
+      "operation": [
+        {
+          "name": "$export",
+          "definition": "http://sql-on-fhir.org/OperationDefinition/$export"
+        },
+        {
+          "name": "$run",
+          "definition": "http://sql-on-fhir.org/OperationDefinition/$run"
+        }
+      ]
+    }]
+  }]
+}

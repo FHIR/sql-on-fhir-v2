@@ -9,17 +9,6 @@ import { gunzip } from 'zlib';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
-
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Basic health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'healthy' });
-});
-
 const DATABASE_URL = "https://storage.googleapis.com/aidbox-public/synthea/v2/100/fhir/";
 
 const resourceTypes = [
@@ -49,63 +38,10 @@ const resourceTypes = [
   "SupplyDelivery"
 ];
 
-// FHIR metadata endpoint
-app.get('/metadata', (req, res) => {
-  const capabilityStatement = {
-    resourceType: "CapabilityStatement",
-    status: "active",
-    date: new Date().toISOString(),
-    publisher: "SQL on FHIR",
-    kind: "instance",
-    fhirVersion: "4.0.1",
-    format: ["application/fhir+json"],
-    rest: [{
-      mode: "server",
-      resource: [{
-        type: "ViewDefinition",
-        interaction: [
-          { code: "read" },
-          { code: "search-type" },
-          { code: "write" },
-          { code: "patch" },
-          { code: "delete" },
-          { code: "create" },
-        ],
-        operation:
-          [
-            {
-              name: "$export",
-              definition: "http://sql-on-fhir.org/OperationDefinition/$export"
-            },
-            {
-              name: "$run",
-              definition: "http://sql-on-fhir.org/OperationDefinition/$run"
-            }
-          ]
-      }]
-    }]
-  };
-
-  res.setHeader('Content-Type', 'application/fhir+json');
-  res.json(capabilityStatement);
-});
-
-function readResource(resourceType, id) {
-  const viewDefinitionDir = path.join(__dirname, '../metadata/ViewDefinition');
-  const filePath = path.join(viewDefinitionDir, `${id}.json`);
-  const fileContent = fs.readFileSync(filePath, 'utf8');
-  const resource = JSON.parse(fileContent);
-  return resource;
-}
-
-app.get('/ViewDefinition/:id', (req, res) => {
-  const id = req.params.id;
-  const resource = readResource('ViewDefinition', id);
-  res.setHeader('Content-Type', 'application/fhir+json');
-  res.json(resource);
-});
-
-async function getFHIRData(resourceType) {
+export async function getFHIRData(resourceType) {
+  if( !resourceTypes.includes(resourceType) ) {
+    return null;
+  }
   const datapath = DATABASE_URL + resourceType + '.ndjson.gz';
   const response = await fetch(datapath);
   const buffer = await response.arrayBuffer();
@@ -117,7 +53,6 @@ async function getFHIRData(resourceType) {
     });
   });
 
-  // Convert ndjson to JSON array
   const jsonArray = text
     .split('\n')
     .filter(line => line.trim() !== '')
@@ -125,32 +60,15 @@ async function getFHIRData(resourceType) {
   return jsonArray;
 }
 
-
-app.get('/ViewDefinition/\\$export', async (req, res) => {
-  res.setHeader('Content-Type', 'application/fhir+json');
-  res.json({});
-
-});
-
-function readResourcesFromDirectory(directoryPath, resourceType) {
-  // Create a FHIR Bundle to hold the resources
-  const bundle = {
-    resourceType: "Bundle",
-    type: "searchset",
-    entry: []
-  };
-  
-  // Check if the directory exists
+function readResourcesFromDirectory(resourceType) {
+  const directoryPath = path.join(__dirname, '../metadata', resourceType);
   if (!fs.existsSync(directoryPath) || !fs.statSync(directoryPath).isDirectory()) {
-    return bundle;
+    return null;
   }
   
+  const resources = [];
   try {
-    // Read all files from the directory
     const files = fs.readdirSync(directoryPath);
-    bundle.total = files.length;
-    
-    // Process each file and add to bundle
     files.forEach(file => {
       const filePath = path.join(directoryPath, file);
       if (fs.statSync(filePath).isFile()) {
@@ -158,38 +76,126 @@ function readResourcesFromDirectory(directoryPath, resourceType) {
           const fileContent = fs.readFileSync(filePath, 'utf8');
           const resource = JSON.parse(fileContent);
           resource.id = file.replace('.json', '');
-          bundle.entry.push({
-            resource: resource
-          });
+          resources.push(resource);
         } catch (error) {
           console.error(`Error processing file ${file}:`, error);
         }
       }
     });
-    
-    return bundle;
+    return resources;
   } catch (error) {
     console.error(`Error reading directory ${directoryPath}:`, error);
-    return bundle;
+    return null;
   }
 }
 
-app.get('/:resourceType', async (req, res) => {
-  const resourceType = req.params.resourceType;
-  const metadataPath = path.join(__dirname, '..', 'metadata', resourceType);
-  
-  // Check if the directory exists for this resourceType
-  if (fs.existsSync(metadataPath) && fs.statSync(metadataPath).isDirectory()) {
-    const bundle = readResourcesFromDirectory(metadataPath, resourceType);
-    res.setHeader('Content-Type', 'application/fhir+json');
-    res.json(bundle);
-  } else {
-    // If directory doesn't exist, pass to next handler
-    res.status(404);
-  }
-});
+function readResource(resourceType, id) {
+  const resourceDir = path.join(__dirname, '../metadata', resourceType);
+  const filePath = path.join(resourceDir, `${id}.json`);
+  const fileContent = fs.readFileSync(filePath, 'utf8');
+  const resource = JSON.parse(fileContent);
+  return resource;
+}
 
-app.get('/ViewDefinition/:id/\\$run', async (req, res) => {
+export async function getCapabilityStatementEndpoint(req, res) {
+  const capabilityStatement = JSON.parse(fs.readFileSync(path.join(__dirname, '../metadata/CapabilityStatement.json'), 'utf8'));
+  res.setHeader('Content-Type', 'application/fhir+json');
+  res.json(capabilityStatement);
+}
+
+function wrapBundle(resources) {
+  return {
+    resourceType: 'Bundle',
+    type: 'searchset',
+    total: resources.length,
+    entry: resources.map(resource => ({
+      resource: resource
+    }))
+  };
+}
+
+export async function getResourceTypeEndpoint(req, res) {
+  const resourceType = req.params.resourceType;
+  const resources = await readResourcesFromDirectory(resourceType) || await getFHIRData(resourceType);
+  if(resources == null) {
+    res.status(404);
+    res.json({
+      resourceType: 'OperationOutcome',
+      issue: [{
+        code: 'not-found',
+        message: 'Resource type not found'
+      }]
+    });
+  } else {
+    res.setHeader('Content-Type', 'application/fhir+json');
+    res.json(wrapBundle(resources));
+  }
+};
+
+export async function getResourceEndpoint(req, res) {
+  const resourceType = req.params.resourceType;
+  const id = req.params.id;
+  const resource = readResource(resourceType, id);
+  res.setHeader('Content-Type', 'application/fhir+json');
+  res.json(resource);
+};
+
+
+function getBaseUrl(req) {
+  const protocol = req.protocol;
+  const host = req.get('host');
+  return `${protocol}://${host}`;
+} 
+
+export async function getExportEndpoint(req, res) {
+  // Get the current server URL from the request
+  const baseUrl = getBaseUrl(req);
+  var exportId = new Date().getTime();
+  console.log('Export ID: ' + exportId);
+  fs.writeFileSync('/tmp/export.json', JSON.stringify({id: exportId}));
+
+  // Parse the request body to get export parameters
+  const exportParams = req.body;
+  if (!exportParams || !exportParams.resourceType || exportParams.resourceType !== 'Parameters') {
+    res.status(400).json({
+      resourceType: 'OperationOutcome',
+      issue: [{
+        severity: 'error',
+        code: 'invalid',
+        diagnostics: 'Request body must be a FHIR Parameters resource'
+      }]
+    });
+    return;
+  }
+  
+  console.log('Export parameters:', JSON.stringify(exportParams, null, 2));
+  
+  fs.writeFileSync('/tmp/export-' + exportId + '.json', JSON.stringify(exportParams));
+
+  const statusUrl = baseUrl + '/ViewDefinition/$export/status/' + exportId;
+  res.setHeader('Location', statusUrl);
+  res.status(202).json({
+    resourceType: "Parameters",
+    parameter: [
+      {
+        name: "exportId",
+        valueString: exportId
+      },
+      {
+        name: "parameters",
+        part: exportParams.parameter
+      },
+      {
+        name: "location",
+        valueUrl: statusUrl
+      }
+    ]
+  })
+};
+
+
+
+export async function getRunEndpoint(req, res) {
   const id = req.params.id;
   const resource = readResource('ViewDefinition', id);
 
@@ -211,16 +217,32 @@ app.get('/ViewDefinition/:id/\\$run', async (req, res) => {
     res.setHeader('Content-Type', 'text/csv');
     res.send(result.map(item => Object.values(item).join(',')).join('\n'));
   }
-});
+};
 
 
-export function startServer(port) {
-  const PORT = port || 3000;
 
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Health check: http://localhost:${PORT}/health`);
+export function startServer(config) {
+  const app = express();
+  // Middleware
+  app.use(cors());
+  app.use(express.json());
+  app.use((req, res, next) => {
+    req.config = config;
+    next();
+  });
+
+  // Basic health check endpoint
+  app.get('/health', (req, res) => {
+    res.json({ status: 'healthy' });
+  });
+
+  app.get('/metadata', getCapabilityStatementEndpoint);
+  app.get('/:resourceType', getResourceTypeEndpoint);
+  app.get('/:resourceType/:id', getResourceEndpoint);
+
+  app.post('/ViewDefinition/\\$export', getExportEndpoint);
+  app.get('/ViewDefinition/:id/\\$run', getRunEndpoint);
+  return app.listen(config.port, () => {
+    console.log(`Server running on port ${config.port}`);
   });
 }
-
-export default app;

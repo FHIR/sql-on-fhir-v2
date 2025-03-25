@@ -210,6 +210,13 @@ Content-Type: application/json
       "name": "viewDefinition",
       "valueReference": {
         "reference": "ViewDefinition/diagnoses"
+      },
+      "part": [ { "name": "format", "valueString": "csv" } ]
+    },
+    {
+      "name": "viewDefinition",
+      "valueReference": {
+        "reference": "ViewDefinition/medications"
       }
     },
     {
@@ -229,6 +236,8 @@ Content-Type: application/json
 
 * HTTP Status Code of `202 Accepted`
 * Content-Location header with the absolute URL of an endpoint for subsequent status requests (polling location)
+  TODO: Should it be absolute or relative?  it's easy for server to return relative URL.
+  Absolute url is more flexible and easier to use for client.
 * Optionally, a FHIR OperationOutcome resource in the body in JSON format
 
 ##### Response - Error (e.g., unsupported search parameter)
@@ -416,7 +425,7 @@ Example:
           "name": "conditions",
           "part": [
             { "name": "view", "valueReference": { "reference": "ViewDefinition/conditions" } },
-            { "name": "url", "valueUrl": "https://example.com/conditions.csv" },
+            { "name": "url",  "valueUrl": "https://example.com/conditions.csv" },
             { "name": "size", "valueInteger": 10000 }
           ]
         }

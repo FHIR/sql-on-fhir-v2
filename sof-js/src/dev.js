@@ -1,3 +1,7 @@
 import { startServer } from './server.js';
 
-startServer(3000);
+const config = {    
+  port: 3000,
+};
+
+startServer(config).catch(console.error);

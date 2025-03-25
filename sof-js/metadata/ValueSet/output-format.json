@@ -8,7 +8,7 @@
     "compose": {
         "include": [
             {
-                "system": "http://sql-on-fhir.org/CodeSystem/output-format",
+                "system": "http://sql-on-fhir.org/CodeSystem/output-format"
             }
         ]
     }
