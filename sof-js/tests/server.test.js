@@ -1,4 +1,4 @@
-import { startServer, getFHIRData } from '../src/server.js';
+import { startServer } from '../src/server.js';
 
 var server;
 
@@ -30,7 +30,6 @@ describe('Server', () => {
   });
 
   test('ResourceType endpoint returns a bundle of resources', async () => {
-    const resources = await getFHIRData('Patient');
     const response = await fetch('http://localhost:3001/Patient');
     const body = await response.json();
     expect(response.status).toBe(200);

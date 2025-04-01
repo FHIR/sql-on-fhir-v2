@@ -39,11 +39,14 @@ function viewdef_schema(for_tests = false) {
     required: ['resource', 'select'],
     additionalProperties: false,
     properties: {
+      id: string,
       title: string,
       status: string,
       description: string,
       resourceType: string,
       name: string,
+      url: string,
+      version: string,
       resource: identifier,
       constant: {
         type: array,

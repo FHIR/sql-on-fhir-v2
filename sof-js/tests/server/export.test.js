@@ -1,5 +1,5 @@
 import { startServer } from '../../src/server.js';
-
+import { getParameterValue } from '../../src/server/utils.js';
 var server;
 
 beforeAll(async () => {
@@ -25,18 +25,8 @@ describe('Server', () => {
       body: JSON.stringify({
         resourceType: 'Parameters',
         parameter: [
-          {
-            name: 'viewCanonical',
-            valueUrl: 'http://myig.org/ViewDefinition/patient_demographics',
-            part: [ { name: 'format', valueCode: 'csv' } ]
-          },
-          {
-            name: 'viewUrl',
-            valueReference: {
-              reference: '/ViewDefinition/patient_demographics'
-            },
-
-          }
+          {name: 'viewUrl', valueUrl: 'http://myig.org/ViewDefinition/patient_demographics' },
+          {name: 'format', valueCode: 'csv'},
         ]
       })
     });
@@ -51,10 +41,16 @@ describe('Server', () => {
     const statusUrl = response.headers.get('Location');
     console.log('Status URL: ' + statusUrl);
 
+    const location = getParameterValue(body, 'location', 'url');
+    expect(location).not.toBeNull();
+    const status = getParameterValue(body, 'status', 'code');
+    expect(status).toBe('accepted');
+
     const statusResponse = await fetch(statusUrl);
     console.log('Status Response: ' + statusResponse.status);
-
+    expect(statusResponse.status).toBe(200);
+    const statusBody = await statusResponse.json();
+    console.log('Status Body: ' + JSON.stringify(statusBody, null, 2));
+    
   });
 }); 
-
-

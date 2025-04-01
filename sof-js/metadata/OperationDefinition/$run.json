@@ -32,7 +32,12 @@
       "max": "1",
       "binding": {
         "strength": "extensible",
-        "valueSet": "http://sql-on-fhir.org/ValueSet/output-format"
+        "valueSet": "http://sql-on-fhir.org/ValueSet/output-format",
+        "additionalBinding": [
+          {
+            "valueSet": "http://sql-on-fhir.org/ValueSet/output-format"
+          }
+        ]
       }
     },
     {
@@ -84,7 +89,8 @@
     {
       "name": "return",
       "type": "Binary",
-      "use": "out"
+      "use": "out",
+      "documentation": "The output of the operation is in requested format, defined by the format parameter or accept header"
     }
   ]
 }

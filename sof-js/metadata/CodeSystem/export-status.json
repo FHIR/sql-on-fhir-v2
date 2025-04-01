@@ -1,0 +1,30 @@
+{
+    "resourceType": "CodeSystem",
+    "url": "http://sql-on-fhir.org/CodeSystem/export-status",
+    "version": "0.0.1",
+    "name": "ExportStatus",
+    "status": "active",
+    "id": "export-status",
+    "concept": [
+        {
+            "code": "accepted",
+            "display": "Accepted"
+        },
+        {
+            "code": "running",
+            "display": "Running"
+        },
+        {
+            "code": "completed",
+            "display": "Completed"
+        },
+        {
+            "code": "cancelled",
+            "display": "Cancelled"
+        },
+        {
+            "code": "failed",
+            "display": "Failed"
+        }
+    ]
+}

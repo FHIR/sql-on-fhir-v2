@@ -1,0 +1,39 @@
+{
+    "resourceType": "OperationDefinition",
+    "name": "$evaluate",
+    "url": "http://myig.org/OperationDefinition/$evaluate",
+    "description": "Evaluate a ViewDefinition",
+    "kind": "operation",
+    "code": "evaluate",
+    "system": false,
+    "type": true,
+    "resource": ["ViewDefinition"],
+    "parameter": [
+        {
+            "max": "1",
+            "min": 1,
+            "use": "in",
+            "name": "viewDefinition",
+            "type": "ViewDefinition",
+            "documentation": "The ViewDefinition to evaluate"
+        },
+        {
+            "name": "format",   
+            "type": "code",
+            "min": 1,
+            "max": "1",
+            "binding": {
+                "strength": "extensible",
+                "valueSet": "http://sql-on-fhir.org/ValueSet/output-format"
+            },
+            "documentation": "The format of the output, could be csv, parquet, json, etc."
+        },
+        {
+            "name": "data",
+            "type": "Binary",
+            "min": 1,
+            "max": "1",
+            "documentation": "output format is defined in the format parameter"
+        }
+    ]
+}
