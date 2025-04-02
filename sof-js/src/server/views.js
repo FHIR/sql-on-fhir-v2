@@ -88,7 +88,16 @@ export async function getVeiwEndpoint(req, res) {
     console.log('getVeiwEndpoint', req.params.id);
     const resource = await readResource('ViewDefinition', req.params.id);
     if(isHtml(req)) {   
-        renderViewDefinition(req, res, resource);
+        if(resource == null) { 
+            res.send(layout(`
+                <div class="container mx-auto p-4">
+                    <h1 class="text-2xl font-bold mb-4">View Definition</h1>
+                    <p>View Definition not found</p>
+                </div>
+            `));
+        } else {
+            renderViewDefinition(req, res, resource);
+        }
     } else {
         res.setHeader('Content-Type', 'application/fhir+json');
         res.json(resource);

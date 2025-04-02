@@ -97,22 +97,63 @@ export async function getRunEndpoint(req, res) {
 
 
 export async function getEvaluateFormEndpoint(req, res) {
+    const defaultResource = {
+        "resourceType": "ViewDefinition",
+        "name": "patient_demographics",
+        "description": "Patient demographics",
+        "resource": "Patient",
+        "select": [
+            {
+                "column":
+                    [
+                        { "path": "getResourceKey()", "name": "id", "type": "string" },
+                        { "path": "name.given.first()", "name": "given", "type": "string" },
+                        { "path": "name.family.first()", "name": "family", "type": "string" },
+                        { "path": "birthDate", "name": "birthDate", "type": "date" },
+                        { "path": "gender", "name": "gender", "type": "code" }
+                    ]
+            }
+        ]
+    };
     res.setHeader('Content-Type', 'text/html');
     res.send(layout(`
       <div class="container mx-auto p-4">
-        <h1 class="text-2xl font-bold mb-4">Evaluate ViewDefinition</h1>
-        <form 
-            hx-post="/ViewDefinition/$evaluate" 
-            hx-target="#result"
-            hx-swap="innerHTML"
-            hx-trigger="submit" >
-            <textarea name="resource" class="w-full h-48 border border-gray-300 rounded-md p-2"></textarea>
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Evaluate</button>
-        </form>
-        <pre id="result"></pre>
+        <div class="flex items-center gap-4">
+          <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/">ViewDefinition</a>
+          <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$evaluate">Evaluate</a>
+        </div>
+        <div class="flex items-top gap-4">
+            <div class="flex-1">
+                <form 
+                    hx-post="/ViewDefinition/$evaluate/form" 
+                    hx-target="#result"
+                    hx-swap="innerHTML"
+                    hx-trigger="submit" >
+                    <div class="mt-4 flex items-center space-x-4">
+                        <h1 class="mt-4 text-2xl font-bold mb-4">Evaluate ViewDefinition</h1>
+                        <select name="format" class="text-blue-500 hover:text-blue-700 border border-blue-500 rounded-md px-4 py-1 text-sm">
+                            <option value="csv">CSV</option>
+                            <option value="ndjson">NDJSON</option>
+                            <option value="json">JSON</option>
+                        </select>
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm">Evaluate</button>
+                    </div>
+                    <textarea name="resource"
+                    style="height: 600px;"
+                     class="w-full border border-gray-300 rounded-md p-4 text-xs"> ${JSON.stringify(defaultResource, null, 2) } </textarea>
+                </form>
+            </div>
+            <div class="flex-1" id="result"></div>
+        </div>
       </div>
     `));
 };
+
+async function evaluateViewDefinition(resource) {
+    const data = await getFHIRData(resource.resource);
+    const limitedData = data.slice(0, 100);
+    return await evaluate(resource, limitedData);
+}
 
 export async function postEvaluateEndpoint(req, res) {
     const resource = await req.body.json();
@@ -121,9 +162,44 @@ export async function postEvaluateEndpoint(req, res) {
     res.end();
 };
 
+function formatResult(result, format) {
+    if (format === 'csv') {
+        return result.map(item => Object.values(item).join(',')).join('\n');
+    } else if (format === 'ndjson') {
+        return result.map(item => JSON.stringify(item) + '\n').join('');
+    } else if (format === 'json') {
+        return JSON.stringify(result, null, 2);
+    }
+    return result;
+}
+
+export async function postEvaluateFormEndpoint(req, res) {
+    try {
+        const resource = JSON.parse(req.body.resource);
+        console.log('format',req.body.format);
+        const result = await evaluateViewDefinition(resource);
+        const formatedResult = formatResult(result, req.body.format);
+        res.setHeader('Content-Type', 'text/html');
+        res.send(layout(`
+            <div class="container mx-auto py-4">
+                <pre class="bg-gray-100 p-4 rounded-md text-xs">${formatedResult}</pre>
+            </div>
+        `));
+    } catch (error) {
+        res.setHeader('Content-Type', 'text/html');
+        res.send(layout(`
+            <div class="container mx-auto p-4 bg-red-100 border border-red-500 rounded-md">
+                <h1 class="text-2xl">Error</h1>
+                <p class="text-red-500">Invalid JSON: ${error.message}</p>  
+            </div>
+        `));
+    }
+    res.end();
+};
 
 export function mountRoutes(app) {
     app.get('/ViewDefinition/:id/\\$run', getRunEndpoint);
     app.get('/ViewDefinition/\\$evaluate', getEvaluateFormEndpoint);
+    app.post('/ViewDefinition/\\$evaluate/form', postEvaluateFormEndpoint);
     app.post('/ViewDefinition/\\$evaluate', postEvaluateEndpoint);
 }
