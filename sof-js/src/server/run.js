@@ -119,6 +119,7 @@ export async function getEvaluateFormEndpoint(req, res) {
     res.send(layout(`
       <div class="container mx-auto p-4">
         <div class="flex items-center gap-4">
+          <a class="text-blue-500 hover:text-blue-700" href="/">Home</a>
           <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/">ViewDefinition</a>
           <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$evaluate">Evaluate</a>
         </div>

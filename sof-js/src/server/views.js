@@ -4,22 +4,50 @@ import { isHtml } from './utils.js';
 
 function renderViewDefinitions(req, res, resources) {
     const viewsList = resources.map(resource => `
-        <li class="flex items-center space-x-4">
-         <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/${resource.id}">
-           ${resource.name}
-         </a>
-         </li>
+        <tr>
+            <td class="border border-gray-200 p-2">
+                <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/${resource.id}">
+                    ${resource.name}
+                </a>
+            </td>
+            <td class="border border-gray-200 p-2">
+               ${resource.resource}
+            </td>
+            <td class="border border-gray-200 p-2">
+               ${resource.url}
+            </td>
+            <td class="border border-gray-200 p-2">
+                <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/${resource.id}/$run">
+                    $run
+                </a>
+            </td>
+        </tr>
         `).join('');
     res.setHeader('Content-Type', 'text/html');
     res.send(layout(`
         <div class="container mx-auto p-4">
-            <h1 class="text-2xl font-bold mb-4">View Definitions</h1>
-            <div class="flex items-center space-x-4">  
-                <a href="/ViewDefinition/$evaluate" class="border border-blue-500 rounded-md px-2 py-1 text-sm text-blue-500 hover:text-blue-700">Evaluate ViewDefinition</a>
+            <div class="flex items-center space-x-4">
+                <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>
+                <span class="text-gray-500">/</span>
+            </div>
+            <div class="mt-4 flex items-center space-x-4 border-b border-gray-200 pb-2">  
+                <h1 class="flex-1 text-2xl font-bold">View Definitions</h1>
+                <a href="/ViewDefinition/$evaluate" class="border border-blue-500 rounded-md px-2 py-1 text-sm text-blue-500 hover:text-blue-700">$evaluate</a>
                 <a href="/ViewDefinition/new" class="border border-blue-500 rounded-md px-2 py-1 text-sm text-blue-500 hover:text-blue-700">New ViewDefinition</a>
             </div>
-            <ul class="mt-4 list-disc list-inside divide-y divide-gray-200">
-                ${viewsList}
+            <table class="mt-4 table-auto border-collapse border border-gray-200">
+                <thead>
+                    <tr>
+                        <th class="border border-gray-200 p-2">Name</th>
+                        <th class="border border-gray-200 p-2">Resource</th>
+                        <th class="border border-gray-200 p-2">URL</th>
+                        <th class="border border-gray-200 p-2">Evaluate</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${viewsList}
+                </tbody>
+            </table>
             </ul>
         </div>
     `));
@@ -52,6 +80,8 @@ function renderViewDefinition(req, res, resource) {
     res.send(layout(`
         <div class="container mx-auto p-4">
             <div class="flex items-center space-x-4">
+                <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>
+                <span class="text-gray-500">/</span>
                 <a href="/ViewDefinition" class="text-blue-500 hover:text-blue-700">View Definitions</a>
                 <span class="text-gray-500">/</span>
                 <a href="#" class="text-blue-500 hover:text-blue-700">${resource.name}</a>
