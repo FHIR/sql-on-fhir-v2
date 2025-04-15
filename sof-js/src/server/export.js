@@ -1,5 +1,29 @@
 import { getBaseUrl } from './utils.js';
 import fs from 'fs';
+import { layout } from './ui.js';
+import { read } from './db.js';
+import { renderOperationDefinition } from './utils.js';
+
+export async function getExportFormEndpoint(req, res) {
+  const operation = await read(req.config, 'OperationDefinition', '$export');
+  res.setHeader('Content-Type', 'text/html');
+  res.send(layout(`
+    <div class="container mx-auto p-4">
+      <div class="flex gap-4 space-x-2">
+        <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>    
+        <span class="text-gray-500">/</span>
+        <a href="/ViewDefinition">ViewDefinition</a>
+        <span class="text-gray-500">/</span>
+        <a href="/ViewDefinition/\\$export">Export</a>
+      </div>
+
+      <form action="/ViewDefinition/\\$export" method="post">
+        <h1 class="mt-4">Export</h1>
+        ${await renderOperationDefinition(req, operation, {})}
+       </form>
+    </div>
+  `));
+}
 
 export async function getExportEndpoint(req, res) {
   // Get the current server URL from the request
@@ -46,6 +70,7 @@ export async function getExportStatusEndpoint(req, res) {
 }
  
 export function mountRoutes(app) {
+    app.get('/ViewDefinition/\\$export', getExportFormEndpoint);
     app.post('/ViewDefinition/\\$export', getExportEndpoint);
     app.get('/ViewDefinition/\\$export/status/:id', getExportStatusEndpoint);
 }

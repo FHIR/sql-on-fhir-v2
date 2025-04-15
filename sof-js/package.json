@@ -9,7 +9,7 @@
     "check-fmt": "prettier -c ../tests",
     "validate": "ajv -s ../tests.schema.json -d \"../tests/*.json\"",
     "start": "node src/dev.js",
-    "dev": "nodemon src/dev.js",
+    "dev": "nodemon src/dev.js & tailwindcss -i ./public/app.css -o ./public/app.build.css --watch",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
   },
   "author": "niquola,jmandel",
@@ -17,10 +17,11 @@
   "dependencies": {
     "ajv": "^8.12.0",
     "ajv-cli": "^5.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
     "fhirpath": "3.9.0",
     "prettier": "^3.0.3",
-    "express": "^4.18.2",
-    "cors": "^2.8.5"
+    "sqlite3": "^5.1.7"
   },
   "prettier": {
     "printWidth": 110,

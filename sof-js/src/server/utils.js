@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { gunzip } from 'zlib';
+import { evaluate } from '../index.js';
+import { search, expandValueSet, select } from './db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,7 +38,7 @@ export const resourceTypes = [
 ];
 
 export async function getFHIRData(resourceType) {
-  if( !resourceTypes.includes(resourceType) ) {
+  if (!resourceTypes.includes(resourceType)) {
     return null;
   }
   const datapath = DATABASE_URL + resourceType + '.ndjson.gz';
@@ -62,7 +64,7 @@ export function readResourcesFromDirectory(resourceType) {
   if (!fs.existsSync(directoryPath) || !fs.statSync(directoryPath).isDirectory()) {
     return null;
   }
-  
+
   const resources = [];
   try {
     const files = fs.readdirSync(directoryPath);
@@ -89,7 +91,7 @@ export function readResourcesFromDirectory(resourceType) {
 export function readResource(resourceType, id) {
   const resourceDir = path.join(__dirname, '../../metadata', resourceType);
   const filePath = path.join(resourceDir, `${id}.json`);
-  if( !fs.existsSync(filePath) ) {
+  if (!fs.existsSync(filePath)) {
     return null;
   }
   const fileContent = fs.readFileSync(filePath, 'utf8');
@@ -113,10 +115,10 @@ export function getBaseUrl(req) {
   const protocol = req.protocol;
   const host = req.get('host');
   return `${protocol}://${host}`;
-} 
+}
 
 export function getParameters(params, name) {
-    return params.parameter.filter(p => p.name === name);
+  return params.parameter.filter(p => p.name === name);
 }
 
 export function capitalize(str) {
@@ -127,14 +129,136 @@ export function capitalize(str) {
 }
 
 export function getParameterValue(params, name, type) {
-    const parameter = getParameters(params, name)[0];
-    if( !parameter ) {
-        return null;
-    }
-    const attribute = `value${capitalize(type)}`;
-    return parameter[attribute];
+  const parameter = getParameters(params, name)[0];
+  if (!parameter) {
+    return null;
+  }
+  const attribute = `value${capitalize(type)}`;
+  return parameter[attribute];
 }
 
 export function isHtml(req) {
-    return req.query._format !== 'json' && req.headers.accept.indexOf('text/html') != -1;
+  return req.query._format !== 'json' && req.headers.accept.indexOf('text/html') != -1;
+}
+
+
+export function renderNotFound(req, res, message) {
+  if (isHtml(req)) {
+    res.setHeader('Content-Type', 'text/html');
+    res.send(layout(`
+            <div class="container mx-auto p-4">
+                <h1 class="text-2xl font-bold mb-4">Evaluate ViewDefinition</h1>
+                <p>${message}</p>
+            </div>
+        `));
+  } else {
+    res.status(404);
+    res.json({
+      resourceType: 'OperationOutcome',
+      issue: [{ code: 'not-found', message: message }]
+    });
+  }
+}
+
+export async function runOperation(req, resource, params) {
+  console.log('runOperation', resource, params);
+  let data = null;
+  if (params.patient) {
+    data = await select(req.config, `SELECT resource FROM ${resource.resource.toLowerCase()} WHERE resource ->> '$.subject.reference' = 'Patient/${params.patient}'`)
+    data = data.map(r => JSON.parse(r.resource));
+  } else {
+    data = await search(req.config, resource.resource, params.count || 100);
+  }
+  return await evaluate(resource, data);
+}
+
+
+async function renderOpDefParam(req, param, defaults) {
+  const binding = param.binding
+  const defaultValue = defaults[param.name];
+  let bindingHtm = '';
+  let valueSet = null;
+  if (binding) {
+    valueSet = await expandValueSet(req.config, binding.valueSet);
+    console.log('valueSet>>', JSON.stringify(valueSet.concept, null, 2));
+    if (valueSet) {
+      bindingHtm = `<a href="/ValueSet/${valueSet.id}">${valueSet.id}</a>`;
+    } else {
+      bindingHtm = `<a class= "text-red-500"">${binding.valueSet}</a>`;
+    }
+  }
+
+  let inputHtm = '';
+  if (param.use === 'in') {
+    if (param.type === 'string') {
+      inputHtm = `<input name="${param.name}" type="text"/>`;
+    } else if (param.type === 'code') {
+      if (valueSet?.concept) {
+        inputHtm = `<select name="${param.name}">${valueSet.concept.map(c => `<option value="${c.code}">${c.display}</option>`).join('')}</select>`;
+      } else {
+        inputHtm = `<input name="${param.name}" type="text"/>`;
+      }
+    } else if (param.type === 'reference') {
+      if (param.name === 'patient') {
+        const patients = await search(req.config, 'Patient', 100);
+        inputHtm = `<select name="${param.name}">${patients.map(p => `<option value="${p.id}">${p.name[0]?.family} ${p.name[0]?.given[0]}</option>`).join('')}</select>`;
+      } else {
+        inputHtm = `<span>TODO: ${param.name}</span>`;
+      }
+    } else if (param.name === 'resource') {
+      inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`;
+    } else if (param.type === 'token') {
+      inputHtm = `<input name="${param.name}" type="text"/>`;
+    } else if (param.type === 'number' || param.type === 'integer') {
+      inputHtm = `<input name="${param.name}" type="number"/>`;
+    } else if (param.type === 'boolean') {
+      inputHtm = `<input name="${param.name}" type="checkbox" value="true"/>`;
+    } else if (param.type === 'date') {
+      inputHtm = `<input name="${param.name}" type="date"/>`;
+    } else if (param.type === 'dateTime' || param.type === 'instant') {
+      inputHtm = `<input name="${param.name}" type="datetime-local"/>`;
+    } else if (param.type === 'time') {
+      inputHtm = `<input name="${param.name}" type="time"/>`;
+    }
+  }
+
+  return `
+    <tr>
+        <td>${param.name}</td>
+        <td>${inputHtm}</td>
+        <td>${param.use}</td>
+        <td>${param.scope?.join(',') || ''}</td>
+        <td>${param.type}</td>
+        <td>${param.min || 0}..${param.max || '*'}</td>
+        <td class="text-xs text-gray-500">${bindingHtm} ${param.documentation || ''}</td>
+    </tr>
+    `;
+}
+
+export async function renderOperationDefinition(req, operation, defaults = {}) {
+  const paramHtml = await Promise.all(operation.parameter.map(param => renderOpDefParam(req, param, defaults)));
+  return `
+    <div class="mt-4">
+        <details>
+            <summary class="text-sky-600 hover:text-sky-700 cursor-pointer">OperationDefinition</summary>
+            <pre>${JSON.stringify(operation, null, 2)}</pre>
+        </details>
+        <table class="mt-4">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Input</th>
+                    <th>Use</th>
+                    <th>Scope</th>
+                    <th>Type</th>
+                    <th>Min..Max</th>
+                    <th>Documentation</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${paramHtml.join('')}
+            </tbody>
+        </table>
+    </div>
+    `;
 }

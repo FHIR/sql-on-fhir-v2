@@ -1,6 +1,7 @@
-import { getFHIRData, readResourcesFromDirectory, wrapBundle, readResource } from './utils.js';
+import { wrapBundle } from './utils.js';
 import { layout } from './ui.js';
 import { isHtml } from './utils.js';
+import { search, read } from './db.js';
 
 function renderViewDefinitions(req, res, resources) {
     const viewsList = resources.map(resource => `
@@ -17,7 +18,7 @@ function renderViewDefinitions(req, res, resources) {
                ${resource.url}
             </td>
             <td class="border border-gray-200 p-2">
-                <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/${resource.id}/$run">
+                <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/${resource.id}/$run/form">
                     $run
                 </a>
             </td>
@@ -32,16 +33,17 @@ function renderViewDefinitions(req, res, resources) {
             </div>
             <div class="mt-4 flex items-center space-x-4 border-b border-gray-200 pb-2">  
                 <h1 class="flex-1 text-2xl font-bold">View Definitions</h1>
-                <a href="/ViewDefinition/$evaluate" class="border border-blue-500 rounded-md px-2 py-1 text-sm text-blue-500 hover:text-blue-700">$evaluate</a>
-                <a href="/ViewDefinition/new" class="border border-blue-500 rounded-md px-2 py-1 text-sm text-blue-500 hover:text-blue-700">New ViewDefinition</a>
+                <a href="/ViewDefinition/$export" class="btn">$export</a>
+                <a href="/ViewDefinition/$evaluate" class="btn">$evaluate</a>
+                <a href="/ViewDefinition/new" class="btn">New ViewDefinition</a>
             </div>
             <table class="mt-4 table-auto border-collapse border border-gray-200">
                 <thead>
                     <tr>
-                        <th class="border border-gray-200 p-2">Name</th>
-                        <th class="border border-gray-200 p-2">Resource</th>
-                        <th class="border border-gray-200 p-2">URL</th>
-                        <th class="border border-gray-200 p-2">Evaluate</th>
+                        <th class="bg-gray-100 border border-gray-200 p-2">Name</th>
+                        <th class="bg-gray-100 border border-gray-200 p-2">Resource</th>
+                        <th class="bg-gray-100 border border-gray-200 p-2">URL</th>
+                        <th class="bg-gray-100 border border-gray-200 p-2">Run</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,7 +56,7 @@ function renderViewDefinitions(req, res, resources) {
 }
 
 export async function getVeiwListEndpoint(req, res) {
-    const resources = await readResourcesFromDirectory('ViewDefinition') || await getFHIRData('ViewDefinition');
+    const resources = await search(req.config, 'ViewDefinition')
     if(isHtml(req)) {
         renderViewDefinitions(req, res, resources);
     } else {
@@ -86,37 +88,19 @@ function renderViewDefinition(req, res, resource) {
                 <span class="text-gray-500">/</span>
                 <a href="#" class="text-blue-500 hover:text-blue-700">${resource.name}</a>
             </div>
-            <h1 class="mt-4 text-2xl font-bold mb-4 border-b border-gray-200 pb-2">View Definition</h1>
-            <details>  
-                <summary class="text-blue-500 hover:text-blue-700 cursor-pointer">View Definition</summary>
-                <pre class="bg-gray-100 p-4 rounded-md text-xs">${resourceJson}</pre>
-            </details>
+            <div class="mt-4 flex items-center space-x-4 border-b border-gray-200 pb-2">  
+                <h1 class="flex-1 text-2xl font-bold">View Definition</h1>
+                <a href="/ViewDefinition/${resource.id}/$run/form" class="border border-blue-500 rounded-md px-2 py-1 text-sm text-blue-500 hover:text-blue-700">$run</a>
+            </div>
+            <pre class="bg-gray-100 p-4 rounded-md text-xs">${resourceJson}</pre>
 
-            <form class="mt-4" 
-            hx-get="/ViewDefinition/${resource.id}/$run"
-            hx-target="#run-results"
-            hx-swap="innerHTML"
-            method="get">  
-                <div class="flex items-center space-x-4">
-                <h2 class="text-lg font-bold mb-2">Run</h2>
-                    <select name="format" class="text-blue-500 hover:text-blue-700 border border-blue-500 rounded-md px-2 py-1 text-sm">
-                        <option value="csv">CSV</option>
-                        <option value="ndjson">NDJSON</option>
-                        <option value="json">JSON</option>
-                    </select>
-                    <button class="text-blue-500 hover:text-blue-700 border border-blue-500 rounded-md px-2 py-1 text-sm" type="submit">
-                        $Run
-                    </button>   
-                </div>
-            </form>
-            <pre id="run-results" class="mt-4 font-mono text-xs bg-gray-100 p-4 rounded-md"></pre>
         </div>
     `));
 }
 
 export async function getVeiwEndpoint(req, res) {
     console.log('getVeiwEndpoint', req.params.id);
-    const resource = await readResource('ViewDefinition', req.params.id);
+    const resource = await read(req.config, 'ViewDefinition', req.params.id);
     if(isHtml(req)) {   
         if(resource == null) { 
             res.send(layout(`

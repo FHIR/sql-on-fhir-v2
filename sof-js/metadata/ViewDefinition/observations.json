@@ -28,7 +28,7 @@
                     "type": "string"
                 },
                 {
-                    "path": "subject.reference.getResourceKey()",
+                    "path": "subject.getReferenceKey()",
                     "name": "subject",
                     "type": "string"
                 }

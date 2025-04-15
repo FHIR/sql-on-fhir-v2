@@ -1,30 +1,13 @@
-import { getFHIRData, readResource, isHtml } from './utils.js';
-import { evaluate } from '../index.js';
+import { read } from './db.js';
+import { isHtml, renderNotFound, runOperation, renderOperationDefinition } from './utils.js';
 import { layout } from './ui.js';
 
-function renderNotFound(req, res) {
-    if (isHtml(req)) {
-        res.setHeader('Content-Type', 'text/html');
-        res.send(layout(`
-            <div class="container mx-auto p-4">
-                <h1 class="text-2xl font-bold mb-4">Evaluate ViewDefinition</h1>
-                <p>Resource id = "${id}" not found</p>
-            </div>
-        `));
-    } else {
-        res.status(404);
-        res.json({  
-            resourceType: 'OperationOutcome',
-            issue: [{ code: 'not-found', message: `Resource id = "${id}" not found` }]
-        });
-    }
-}
 function renderError(req, res, error) {
     if (isHtml(req)) {
         res.setHeader('Content-Type', 'text/html');
         res.send(layout(`
             <div class="container mx-auto p-4">
-                <h1 class="text-2xl font-bold mb-4">Evaluate ViewDefinition</h1>
+                <h1>Evaluate ViewDefinition</h1>
                 <p>Error: ${error}</p>  
             </div>
         `));
@@ -33,7 +16,7 @@ function renderError(req, res, error) {
         res.setHeader('Content-Type', 'text/html');
         res.send(layout(`
             <div class="container mx-auto p-4 bg-red-100 border border-red-500 rounded-md">
-                <h1 class="text-2xl">Error</h1>
+                <h1>Error</h1>
                 <p class="text-red-500">${error}</p>  
             </div>
         `));
@@ -47,13 +30,52 @@ function renderError(req, res, error) {
     }
 }
 
+
+export async function getRunFormEndpoint(req, res) {
+    const id = req.params.id;
+    const resource = await read(req.config, 'ViewDefinition', id);
+    const operation = await read(req.config, 'OperationDefinition', '$run');
+    if (resource == null) {
+        renderNotFound(req, res, `Resource id = "${id}" not found`);
+        return;
+    }
+    res.setHeader('Content-Type', 'text/html');
+    res.send(layout(`
+      <div class="container mx-auto p-4">
+        <div class="flex items-center gap-4">
+          <a  href="/">Home</a>
+          <span class="text-gray-500">/</span>
+          <a href="/ViewDefinition/">ViewDefinition</a>
+          <span class="text-gray-500">/</span>
+          <a href="/ViewDefinition/${resource.id}">${resource.id}</a>
+          <span class="text-gray-500">/</span>
+          <a class="text-gray-700" href="#">$run</a>
+        </div>
+        <div class="mt-4">
+            <form class="mt-4" 
+                hx-get="/ViewDefinition/${resource.id}/$run/process"
+                hx-target="#run-results"
+                hx-swap="innerHTML"
+                method="get">  
+                ${await renderOperationDefinition(req, operation)}
+                <div class="mt-4">
+                    <button class="btn" type="submit"> $Run </button>   
+                </div>
+            </form>
+            <div id="run-results" class="mt-4"></div>
+        </div>
+      </div>
+    `));
+};
+
 function renderResult(req, res, result, format) {
     if (isHtml(req)) {
         res.setHeader('Content-Type', 'text/html');
         res.send(layout(`
             <div class="container mx-auto p-4">
-                <h1 class="text-2xl font-bold mb-4">Evaluate ViewDefinition</h1>
-                <pre>${JSON.stringify(result, null, 2)}</pre>
+                <h1>Evaluate ViewDefinition</h1>
+                <pre class="mt-4">${JSON.stringify(req.query, null, 2)}</pre>
+                <pre class="mt-4">${JSON.stringify(result, null, 2)}</pre>
             </div>
         `));
     } else if (format === 'json') {
@@ -72,135 +94,53 @@ function renderResult(req, res, result, format) {
     }
 }
 
-
-
 export async function getRunEndpoint(req, res) {
     const id = req.params.id;
-    const resource = readResource('ViewDefinition', id);
+    const resource = await read(req.config, 'ViewDefinition', id);
     if (resource == null) {
-        renderNotFound(req, res, id);
+        renderNotFound(req, res, `Resource id = "${id}" not found`);
         return;
     }
-    let result;
     try {
-        const data = await getFHIRData(resource.resource);
-        const limitedData = data.slice(0, 100);
-        result = await evaluate(resource, limitedData);
+        const result=  await runOperation(req, resource, req.query);
+        const format = req.query.format || 'json';
+        renderResult(req, res, result, format);
     } catch (error) {
+        console.error('$run-error', error);
         renderError(req, res, error);
-        return;
     }
-    // Check for query parameters
-    const format = req.query.format || 'json';
-    renderResult(req, res, result, format);
 }
 
+function renderRunResults(query, result) {
+    if (query.format === 'json') {
+        return `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+    } else if (query.format === 'ndjson') {
+        return `<pre>${result.map(item => JSON.stringify(item)).join('\n')}</pre>`;
+    } else if (query.format === 'csv') {
+        return `<pre>${result.map(item => Object.values(item).join(',')).join('\n')}</pre>`;
+    } else {
+        return `<pre>${JSON.stringify(result, null, 2)}</pre>`;
+    }
+}
 
-export async function getEvaluateFormEndpoint(req, res) {
-    const defaultResource = {
-        "resourceType": "ViewDefinition",
-        "name": "patient_demographics",
-        "description": "Patient demographics",
-        "resource": "Patient",
-        "select": [
-            {
-                "column":
-                    [
-                        { "path": "getResourceKey()", "name": "id", "type": "string" },
-                        { "path": "name.given.first()", "name": "given", "type": "string" },
-                        { "path": "name.family.first()", "name": "family", "type": "string" },
-                        { "path": "birthDate", "name": "birthDate", "type": "date" },
-                        { "path": "gender", "name": "gender", "type": "code" }
-                    ]
-            }
-        ]
-    };
+export async function getRunProcessEndpoint(req, res) {
+    const id = req.params.id;
+    const resource = await read(req.config, 'ViewDefinition', id);
+    const result=  await runOperation(req, resource, req.query);
     res.setHeader('Content-Type', 'text/html');
     res.send(layout(`
-      <div class="container mx-auto p-4">
-        <div class="flex items-center gap-4">
-          <a class="text-blue-500 hover:text-blue-700" href="/">Home</a>
-          <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/">ViewDefinition</a>
-          <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$evaluate">Evaluate</a>
-        </div>
-        <div class="flex items-top gap-4">
-            <div class="flex-1">
-                <form 
-                    hx-post="/ViewDefinition/$evaluate/form" 
-                    hx-target="#result"
-                    hx-swap="innerHTML"
-                    hx-trigger="submit" >
-                    <div class="mt-4 flex items-center space-x-4">
-                        <h1 class="mt-4 text-2xl font-bold mb-4">Evaluate ViewDefinition</h1>
-                        <select name="format" class="text-blue-500 hover:text-blue-700 border border-blue-500 rounded-md px-4 py-1 text-sm">
-                            <option value="csv">CSV</option>
-                            <option value="ndjson">NDJSON</option>
-                            <option value="json">JSON</option>
-                        </select>
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm">Evaluate</button>
-                    </div>
-                    <textarea name="resource"
-                    style="height: 600px;"
-                     class="w-full border border-gray-300 rounded-md p-4 text-xs"> ${JSON.stringify(defaultResource, null, 2) } </textarea>
-                </form>
+        <div>
+            <h1>Evaluate ViewDefinition</h1>
+            <pre>${JSON.stringify(req.query, null, 2)}</pre>
+            <div class="mt-4">
+                ${renderRunResults(req.query, result)}
             </div>
-            <div class="flex-1" id="result"></div>
         </div>
-      </div>
     `));
-};
-
-async function evaluateViewDefinition(resource) {
-    const data = await getFHIRData(resource.resource);
-    const limitedData = data.slice(0, 100);
-    return await evaluate(resource, limitedData);
 }
-
-export async function postEvaluateEndpoint(req, res) {
-    const resource = await req.body.json();
-    res.setHeader('Content-Type', 'application/fhir+json');
-    res.send(JSON.stringify(resource, null, 2));
-    res.end();
-};
-
-function formatResult(result, format) {
-    if (format === 'csv') {
-        return result.map(item => Object.values(item).join(',')).join('\n');
-    } else if (format === 'ndjson') {
-        return result.map(item => JSON.stringify(item) + '\n').join('');
-    } else if (format === 'json') {
-        return JSON.stringify(result, null, 2);
-    }
-    return result;
-}
-
-export async function postEvaluateFormEndpoint(req, res) {
-    try {
-        const resource = JSON.parse(req.body.resource);
-        console.log('format',req.body.format);
-        const result = await evaluateViewDefinition(resource);
-        const formatedResult = formatResult(result, req.body.format);
-        res.setHeader('Content-Type', 'text/html');
-        res.send(layout(`
-            <div class="container mx-auto py-4">
-                <pre class="bg-gray-100 p-4 rounded-md text-xs">${formatedResult}</pre>
-            </div>
-        `));
-    } catch (error) {
-        res.setHeader('Content-Type', 'text/html');
-        res.send(layout(`
-            <div class="container mx-auto p-4 bg-red-100 border border-red-500 rounded-md">
-                <h1 class="text-2xl">Error</h1>
-                <p class="text-red-500">Invalid JSON: ${error.message}</p>  
-            </div>
-        `));
-    }
-    res.end();
-};
 
 export function mountRoutes(app) {
+    app.get('/ViewDefinition/:id/\\$run/form', getRunFormEndpoint);
+    app.get('/ViewDefinition/:id/\\$run/process', getRunProcessEndpoint);
     app.get('/ViewDefinition/:id/\\$run', getRunEndpoint);
-    app.get('/ViewDefinition/\\$evaluate', getEvaluateFormEndpoint);
-    app.post('/ViewDefinition/\\$evaluate/form', postEvaluateFormEndpoint);
-    app.post('/ViewDefinition/\\$evaluate', postEvaluateEndpoint);
 }
