@@ -1,5 +1,13 @@
 {
+  "name": "htmx-demo",
+  "version": "1.0.0",
+  "description": "HTMX Demo Application",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test:verbose": "bun test --verbose"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
   }
 } 

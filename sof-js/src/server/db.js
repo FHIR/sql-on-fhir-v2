@@ -23,7 +23,7 @@ function loadCanonicalResources(config, resourceType) {
 }
 
 async function loadResources(config, resourceType) {
-  console.log(`Loading ${resourceType} resources`);
+  //console.log(`Loading ${resourceType} resources`);
   const migrate = `CREATE TABLE IF NOT EXISTS ${resourceType.toLowerCase()} ( id text PRIMARY KEY, resource JSON);`
 
   const db = config.db;
@@ -31,7 +31,7 @@ async function loadResources(config, resourceType) {
     db.run(migrate);
     const stmt = db.prepare(`INSERT OR REPLACE INTO ${resourceType.toLowerCase()} (id, resource) VALUES (?, ?)`);
     const count = await select(config, `SELECT COUNT(*) as count FROM ${resourceType.toLowerCase()}`);
-    console.log(resourceType, count);
+    //console.log(resourceType, count);
     if (count[0].count > 0) {
       return;
     }

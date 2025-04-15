@@ -180,7 +180,6 @@ async function renderOpDefParam(req, param, defaults) {
   let valueSet = null;
   if (binding) {
     valueSet = await expandValueSet(req.config, binding.valueSet);
-    console.log('valueSet>>', JSON.stringify(valueSet.concept, null, 2));
     if (valueSet) {
       bindingHtm = `<a href="/ValueSet/${valueSet.id}">${valueSet.id}</a>`;
     } else {
@@ -198,10 +197,13 @@ async function renderOpDefParam(req, param, defaults) {
       } else {
         inputHtm = `<input name="${param.name}" type="text"/>`;
       }
-    } else if (param.type === 'reference') {
+    } else if (param.type === 'Reference') {
       if (param.name === 'patient') {
         const patients = await search(req.config, 'Patient', 100);
         inputHtm = `<select name="${param.name}">${patients.map(p => `<option value="${p.id}">${p.name[0]?.family} ${p.name[0]?.given[0]}</option>`).join('')}</select>`;
+      } else if (param.name === 'viewReference') {
+        const views = await search(req.config, 'ViewDefinition', 100);
+        inputHtm = `<select name="${param.name}">${views.map(v => `<option value="ViewDefinition/${v.id}">${v.id}</option>`).join('')}</select>`;
       } else {
         inputHtm = `<span>TODO: ${param.name}</span>`;
       }
@@ -222,10 +224,14 @@ async function renderOpDefParam(req, param, defaults) {
     }
   }
 
+  if (param.max !== '1' && param.use === 'in') {
+    inputHtm = `<div class="multiply-row remove-row flex space-x-2 py-1">${inputHtm} <a class="btn" hx-ext="multiply">+</a> <a class="btn" hx-ext="remove">-</a></div>`
+  }
+
   return `
     <tr>
         <td>${param.name}</td>
-        <td>${inputHtm}</td>
+        <td class="min-w-80">${inputHtm}</td>
         <td>${param.use}</td>
         <td>${param.scope?.join(',') || ''}</td>
         <td>${param.type}</td>

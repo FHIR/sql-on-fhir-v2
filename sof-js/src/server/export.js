@@ -4,6 +4,7 @@ import { layout } from './ui.js';
 import { read } from './db.js';
 import { renderOperationDefinition } from './utils.js';
 
+
 export async function getExportFormEndpoint(req, res) {
   const operation = await read(req.config, 'OperationDefinition', '$export');
   res.setHeader('Content-Type', 'text/html');
@@ -14,15 +15,28 @@ export async function getExportFormEndpoint(req, res) {
         <span class="text-gray-500">/</span>
         <a href="/ViewDefinition">ViewDefinition</a>
         <span class="text-gray-500">/</span>
-        <a href="/ViewDefinition/\\$export">Export</a>
+        <a href="/ViewDefinition/$export">Export</a>
       </div>
-
-      <form action="/ViewDefinition/\\$export" method="post">
+      <form hx-post="/ViewDefinition/$export/form"
+            hx-target="#export-result"
+            hx-swap="innerHTML">
         <h1 class="mt-4">Export</h1>
         ${await renderOperationDefinition(req, operation, {})}
+        <div class="mt-4">
+          <button type="submit" class="btn">Export</button>
+        </div>
        </form>
+       <div id="export-result" class="mt-4"></div>
     </div>
   `));
+}
+export async function postExportFormEndpoint(req, res) {
+  const form = req.body;
+  res.setHeader('Content-Type', 'text/html');
+  res.send(`
+      <h1>Export</h1>
+      <pre>${JSON.stringify(form, null, 2)}</pre>
+  `);
 }
 
 export async function getExportEndpoint(req, res) {
@@ -71,6 +85,7 @@ export async function getExportStatusEndpoint(req, res) {
  
 export function mountRoutes(app) {
     app.get('/ViewDefinition/\\$export', getExportFormEndpoint);
+    app.post('/ViewDefinition/\\$export/form', postExportFormEndpoint);
     app.post('/ViewDefinition/\\$export', getExportEndpoint);
     app.get('/ViewDefinition/\\$export/status/:id', getExportStatusEndpoint);
 }
