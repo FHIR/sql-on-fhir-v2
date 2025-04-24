@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { wrapBundle, isHtml } from './utils.js';
-import { search, read } from './db.js';
+import { search, read, tableExists  } from './db.js';
 import { layout } from './ui.js';
 
 export async function getCapabilityStatementEndpoint(req, res) {
@@ -43,8 +43,17 @@ function renderResourceTypeEndpoint(req, res, resourceType, resources) {
         </div>
     `));
 }
+
 export async function getResourceTypeEndpoint(req, res) {
     const resourceType = req.params.resourceType;
+    if( ! await tableExists(req.config, resourceType) ) {
+        res.status(404);
+        res.json({
+            resourceType: 'OperationOutcome',
+            issue: [{ code: 'not-found', message: 'Resource type not found' }]
+        });
+        return;
+    }
     const resources = await search(req.config, resourceType);
     if(isHtml(req)) {
         renderResourceTypeEndpoint(req, res, resourceType, resources);

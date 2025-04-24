@@ -1,9 +1,10 @@
-import { getBaseUrl } from './utils.js';
+import { getBaseUrl, arrayify } from './utils.js';
 import fs from 'fs';
 import { layout } from './ui.js';
-import { read } from './db.js';
-import { renderOperationDefinition } from './utils.js';
-
+import { read, search } from './db.js';
+import { renderOperationDefinition, isHtml } from './utils.js';
+import { evaluate } from '../index.js';
+import path from 'path';
 
 export async function getExportFormEndpoint(req, res) {
   const operation = await read(req.config, 'OperationDefinition', '$export');
@@ -17,70 +18,210 @@ export async function getExportFormEndpoint(req, res) {
         <span class="text-gray-500">/</span>
         <a href="/ViewDefinition/$export">Export</a>
       </div>
-      <form hx-post="/ViewDefinition/$export/form"
-            hx-target="#export-result"
-            hx-swap="innerHTML">
-        <h1 class="mt-4">Export</h1>
-        ${await renderOperationDefinition(req, operation, {})}
-        <div class="mt-4">
-          <button type="submit" class="btn">Export</button>
-        </div>
-       </form>
-       <div id="export-result" class="mt-4"></div>
+      <h1 class="mt-4">Export</h1>
+      <div id="export-result" class="mt-4">
+        <form action="/ViewDefinition/$export/form" method="post" >
+          ${await renderOperationDefinition(req, operation, {})}
+          <div class="mt-4">
+            <button type="submit" class="btn">Export</button>
+          </div>
+        </form>
+       </div>
     </div>
   `));
 }
-export async function postExportFormEndpoint(req, res) {
-  const form = req.body;
-  res.setHeader('Content-Type', 'text/html');
-  res.send(`
-      <h1>Export</h1>
-      <pre>${JSON.stringify(form, null, 2)}</pre>
-  `);
-}
 
 export async function getExportEndpoint(req, res) {
-  // Get the current server URL from the request
-  const baseUrl = getBaseUrl(req);
-  var exportId = new Date().getTime();
-  console.log('Export ID: ' + exportId);
-  fs.writeFileSync('/tmp/export.json', JSON.stringify({ id: exportId }));
+  res.status(404).json({
+    resourceType: 'OperationOutcome',
+    issue: [{
+      severity: 'error',
+      code: 'not-found',
+      diagnostics: 'Export endpoint not found'
+    }]
+  });
+}
 
-  // Parse the request body to get export parameters
-  const exportParams = req.body;
-  if (!exportParams || !exportParams.resourceType || exportParams.resourceType !== 'Parameters') {
-    res.status(400).json({
-      resourceType: 'OperationOutcome',
-      issue: [{
+async function resolveViewDefinitions(config, references) {
+  let viewDefinitions = {};
+  for( let ref of references) {
+    const parts = ref.split('/');
+    const id = parts[parts.length - 1];
+    const viewDefinition = await read(config, 'ViewDefinition', id);
+    if (viewDefinition) { 
+      viewDefinitions[id] = {
+        view: viewDefinition, 
+        name: viewDefinition.name,
+        ref: ref, 
+        processed: false
+      };
+    } else {
+      console.log('View definition not found: ' + id);
+      viewDefinitions[id] = {
         severity: 'error',
-        code: 'invalid',
-        diagnostics: 'Request body must be a FHIR Parameters resource'
-      }]
+        code: 'not-found',
+        diagnostics: `View definition not found: ${ref}`
+      };
+    }
+  }
+  return viewDefinitions;
+}
+
+function ensureExportDir(exportId) {
+    const exportDir = path.join(process.cwd(), 'public', 'export', exportId);
+    if (!fs.existsSync(exportDir)) {
+        fs.mkdirSync(exportDir, { recursive: true });
+    }
+    return exportDir;
+}
+
+export async function postExportFormEndpoint(req, res) {
+  const form = req.body;
+  const viewDefinitions = await resolveViewDefinitions(req.config, arrayify(form.viewReference));
+  if (Object.values(viewDefinitions).some(v => v.severity === 'error')) {
+    res.status(422).json({
+      resourceType: 'OperationOutcome',
+      issue: Object.values(viewDefinitions).filter(v => v.severity === 'error')
     });
     return;
   }
+  const startTime = new Date().getTime();
+  const exportId = startTime.toString();
+  const location = '/ViewDefinition/$export/status/' + exportId;
+  const exportDir = ensureExportDir(exportId);
+  const exportStatusFile = exportDir + '/status.json';
 
-  console.log('Export parameters:', JSON.stringify(exportParams, null, 2));
+  const status = {
+    exportId: exportId,
+    exportStatusFile: exportStatusFile,
+    exportDir: exportDir,
+    startTime: startTime,
+    status: 'accepted',
+    format: form.format,
+    location: location,
+    form: form,
+    viewDefinitions: viewDefinitions
+  }
+  fs.writeFileSync(exportStatusFile, JSON.stringify(status, null, 2));
+  res.setHeader('Location', location);
+  res.status(301).end();
+}
 
-  fs.writeFileSync('/tmp/export-' + exportId + '.json', JSON.stringify(exportParams));
+function writeFormattedData(fileName, data, format) {
+  let outputFile = null;
+  if (format === 'ndjson') {
+    outputFile = fileName + '.ndjson';
+    fs.writeFileSync(outputFile, data.map(r => JSON.stringify(r)).join('\n'));
+  } else if (format === 'json') {
+    outputFile = fileName + '.json';
+    fs.writeFileSync(outputFile, JSON.stringify(data, null, 2));
+  } else if (format === 'csv') {
+    outputFile = fileName + '.csv';
+    fs.writeFileSync(outputFile, data.map(r => Object.values(r).join(',')).join('\n'));
+  } else {
+    throw new Error('Unsupported format: ' + format);
+  }
+  return outputFile;
+}
 
-  const statusUrl = baseUrl + '/ViewDefinition/$export/status/' + exportId;
-  res.setHeader('Location', statusUrl);
-  res.status(202).json({
-    resourceType: "Parameters",
-    parameter: [
-      { name: "exportId", valueString: exportId },
-      { name: "parameters", part: exportParams.parameter },
-      { name: "status", valueCode: "accepted" },
-      { name: "location", valueUrl: statusUrl }
-    ]
-  })
-};
+async function evaluateViewDefinition(config, resource, exportStatus) {
+    const data = await search(config, resource.resource, 1000);
+    const result = evaluate(resource, data);
+    const fileName = path.join(exportStatus.exportDir, resource.name);
+    return {
+      file: writeFormattedData(fileName, result, exportStatus.format), 
+      relativeFile: path.relative(exportStatus.exportDir, fileName),
+      count: result.length
+    };
+}
+
+async function makeProgress(config, exportStatus) {
+  if (exportStatus.status === 'completed' || exportStatus.status === 'failed' || exportStatus.status === 'aborted') {
+    return exportStatus;
+  }
+  if (exportStatus.status === 'accepted') {
+    exportStatus.status = 'in-progress';
+    fs.writeFileSync(exportStatus.exportStatusFile, JSON.stringify(exportStatus, null, 2));
+    return exportStatus;
+  }
+  const nonProcessed = Object.entries(exportStatus.viewDefinitions)
+    .filter(([key, value]) => !value.processed)
+    .map(([key, value]) => key)[0];
+
+  if (nonProcessed) {
+    const viewDefinition = exportStatus.viewDefinitions[nonProcessed];
+    const {file, count} = await evaluateViewDefinition(config, viewDefinition.view, exportStatus);
+    viewDefinition.processed = true;
+    viewDefinition.count = count;
+    viewDefinition.file = file;
+  } else {
+    exportStatus.status = 'completed';
+  }
+  fs.writeFileSync(exportStatus.exportStatusFile, JSON.stringify(exportStatus, null, 2));
+  return exportStatus;
+}
+
+function readExportStatus(exportId) {
+  const exportStatusFile = path.join(process.cwd(), 'public', 'export', exportId, 'status.json');
+  return JSON.parse(fs.readFileSync(exportStatusFile, 'utf8'));
+}
 
 export async function getExportStatusEndpoint(req, res) {
   const exportId = req.params.id;
-  const exportStatus = fs.readFileSync('/tmp/export-' + exportId + '.json', 'utf8');
-  res.json(JSON.parse(exportStatus));
+  let exportStatus = readExportStatus(exportId);
+  exportStatus = await makeProgress(req.config, exportStatus);
+  const response = {
+     resourceType: 'Parameters',
+     parameter: [
+      { name: 'exportId', valueString: exportId },
+      { name: 'status', valueString: exportStatus.status },
+      { name: 'format', valueString: exportStatus.format },
+      { name: 'location', valueString: exportStatus.location },
+      { name: 'startTime', valueString: exportStatus.startTime }
+     ].concat(Object.entries(exportStatus.viewDefinitions)
+      .filter(([key, value]) => value.processed)
+      .map(([key, value]) => ({
+      name: 'output',
+      part: [
+        { name: 'name', valueString: value.name },
+        { name: 'count', valueInteger: value.count },
+        { name: 'location', valueUri: `/export/${exportId}/${value.name}.${exportStatus.format}` }
+      ]
+     })))
+  }
+
+  const responseHtml = `
+      <div id="export-result">
+        <button hx-get="${req.originalUrl}" 
+                hx-trigger="click"
+                hx-target="#export-result"
+                hx-swap="outerHTML"
+                class="btn">
+          Refresh
+        </button>
+        <pre class="text-sm mt-4">${JSON.stringify(response, null, 2)}</pre>
+      </div>
+  ` 
+
+  res.setHeader('Content-Type', 'text/html');
+  if (req.headers['hx-request']) {
+    res.send(responseHtml);
+  } else {
+    res.send(layout(`
+      <div class="container mx-auto p-4"> 
+        <div class="flex gap-4 space-x-2 mb-4">
+        <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>    
+        <span class="text-gray-500">/</span>
+        <a href="/ViewDefinition">ViewDefinition</a>
+        <span class="text-gray-500">/</span>
+        <a href="/ViewDefinition/$export">Export</a>
+        <span class="text-gray-500">/</span>
+        <a href="#">${exportId}</a>
+      </div>
+      ${responseHtml}
+    </div>
+  `));
+  }
 }
  
 export function mountRoutes(app) {

@@ -268,3 +268,10 @@ export async function renderOperationDefinition(req, operation, defaults = {}) {
     </div>
     `;
 }
+
+export function arrayify(value) {
+  if (Array.isArray(value)) {
+    return value;
+  }
+  return [value];
+}

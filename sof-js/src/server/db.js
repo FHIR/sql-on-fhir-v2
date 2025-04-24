@@ -80,6 +80,19 @@ export async function search(config, resourceType, limit = 100) {
   });
 }
 
+export async function tableExists(config, resourceType) {
+  return new Promise((resolve, reject) => {
+    const query = `SELECT name FROM sqlite_master WHERE type='table' AND name='${resourceType.toLowerCase()}'`;
+    config.db.get(query, (err, row) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(row !== undefined);
+      }
+    });
+  });
+}   
+
 export async function read(config, resourceType, id) {
   return new Promise((resolve, reject) => {
     const query = `SELECT * FROM ${resourceType.toLowerCase()} WHERE id = ?`;
