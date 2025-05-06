@@ -24,8 +24,24 @@
           "definition": "http://sql-on-fhir.org/OperationDefinition/$export"
         },
         {
+          "name": "$evaluate",
+          "definition": "http://sql-on-fhir.org/OperationDefinition/$evaluate"
+        },
+        {
+          "name": "$validate",
+          "definition": "http://sql-on-fhir.org/OperationDefinition/$validate"
+        },
+        {
           "name": "$run",
           "definition": "http://sql-on-fhir.org/OperationDefinition/$run"
+        },
+        {
+          "name": "$materialize",
+          "definition": "http://sql-on-fhir.org/OperationDefinition/$materialize"
+        },
+        {
+          "name": "$refresh",
+          "definition": "http://sql-on-fhir.org/OperationDefinition/$refresh"
         }
       ]
     }]

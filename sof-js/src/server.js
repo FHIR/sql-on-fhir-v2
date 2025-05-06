@@ -5,6 +5,7 @@ import { mountRoutes as mountRunRoutes } from './server/run.js';
 import { mountRoutes as mountFhirRoutes } from './server/fhir.js';
 import { mountRoutes as mountViewsRoutes } from './server/views.js';
 import { mountRoutes as mountEvaluateRoutes } from './server/evaluate.js';
+import { mountRoutes as mountValidateRoutes } from './server/validate.js';
 import { migrate,getDb } from './server/db.js';
 import { resourceTypes } from './server/utils.js';
 import { layout } from './server/ui.js';
@@ -55,6 +56,7 @@ export async function startServer(config) {
   mountExportRoutes(app);
   mountRunRoutes(app);
   mountEvaluateRoutes(app);
+  mountValidateRoutes(app);
   mountViewsRoutes(app);
   mountFhirRoutes(app);
   app.get('/', getIndex);

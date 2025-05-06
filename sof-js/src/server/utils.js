@@ -172,10 +172,9 @@ export async function runOperation(req, resource, params) {
   return await evaluate(resource, data);
 }
 
-
-async function renderOpDefParam(req, param, defaults) {
-  const binding = param.binding
+async function renderOpInputDefParam(req, param, defaults, ident = '') {
   const defaultValue = defaults[param.name];
+  const binding = param.binding
   let bindingHtm = '';
   let valueSet = null;
   if (binding) {
@@ -207,6 +206,8 @@ async function renderOpDefParam(req, param, defaults) {
       } else {
         inputHtm = `<span>TODO: ${param.name}</span>`;
       }
+    } else if (param.type === 'ViewDefinition') {
+      inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`;
     } else if (param.name === 'resource') {
       inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`;
     } else if (param.type === 'token') {
@@ -228,33 +229,90 @@ async function renderOpDefParam(req, param, defaults) {
     inputHtm = `<div class="multiply-row remove-row flex space-x-2 py-1">${inputHtm} <a class="btn" hx-ext="multiply">+</a> <a class="btn" hx-ext="remove">-</a></div>`
   }
 
+  let nested = ''
+  if (param.part) {
+    const items = await Promise.all(param.part.map(p => renderOpInputDefParam(req, p, defaults, ident + param.name + '.')))
+    if (items.length > 0) {
+      nested = items.join('')
+    }
+  }
+
   return `
     <tr>
-        <td>${param.name}</td>
+        <td>${ident}${param.name}</td>
         <td class="min-w-80">${inputHtm}</td>
-        <td>${param.use}</td>
         <td>${param.scope?.join(',') || ''}</td>
         <td>${param.type}</td>
         <td>${param.min || 0}..${param.max || '*'}</td>
         <td class="text-xs text-gray-500">${bindingHtm} ${param.documentation || ''}</td>
     </tr>
+    ${nested}
+    `;
+}
+
+async function renderOpOutputDefParam(req, param, defaults, ident = '') {
+  let nested = ''
+  if (param.part) {
+    const items = await Promise.all(param.part.map(p => renderOpOutputDefParam(req, p, defaults, ident + param.name + '.')))
+    if (items.length > 0) {
+      nested = items.join('')
+    }
+  }
+  const binding = param.binding
+  let bindingHtm = '';
+  let valueSet = null;
+  if (binding) {
+    valueSet = await expandValueSet(req.config, binding.valueSet);
+    if (valueSet) {
+      bindingHtm = `<a href="/ValueSet/${valueSet.id}">${valueSet.id}</a>`;
+    } else {
+      bindingHtm = `<a class= "text-red-500"">${binding.valueSet}</a>`;
+    }
+  }
+  return `
+    <tr>
+        <td>${ident}${param.name}</td>
+        <td>${param.type}</td>
+        <td>${param.min || 0}..${param.max || '*'}</td>
+        <td class="text-xs text-gray-500">${bindingHtm} ${param.documentation || ''}</td>
+    </tr>
+    ${nested}
     `;
 }
 
 export async function renderOperationDefinition(req, operation, defaults = {}) {
-  const paramHtml = await Promise.all(operation.parameter.map(param => renderOpDefParam(req, param, defaults)));
+  const inputParams = operation.parameter.filter(p => p.use === 'in');
+  const outputParams = operation.parameter.filter(p => p.use === 'out');
+  const inputParamHtml = await Promise.all(inputParams.map(param => renderOpInputDefParam(req, param, defaults)));
+  const outputParamHtml = await Promise.all(outputParams.map(param => renderOpOutputDefParam(req, param, defaults)));
   return `
     <div class="mt-4">
-        <details>
+        <h2 class="text-2xl font-bold mt-4"> ${operation.name} </h2>
+        <p class="mt-4"> ${operation.description} </p>
+        <details class="mt-4">
             <summary class="text-sky-600 hover:text-sky-700 cursor-pointer">OperationDefinition</summary>
             <pre>${JSON.stringify(operation, null, 2)}</pre>
         </details>
+        <h3 class="text-lg font-bold mt-4 mb-2"> Output </h3>
+        <table class="mt-4">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Min..Max</th>
+                    <th>Documentation</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${outputParamHtml.join('')}
+            </tbody>
+        </table>
+        <h3 class="text-lg font-bold mt-4 mb-2"> Input </h3>
         <table class="mt-4">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th>Input</th>
-                    <th>Use</th>
                     <th>Scope</th>
                     <th>Type</th>
                     <th>Min..Max</th>
@@ -262,7 +320,7 @@ export async function renderOperationDefinition(req, operation, defaults = {}) {
                 </tr>
             </thead>
             <tbody>
-                ${paramHtml.join('')}
+                ${inputParamHtml.join('')}
             </tbody>
         </table>
     </div>
@@ -270,6 +328,9 @@ export async function renderOperationDefinition(req, operation, defaults = {}) {
 }
 
 export function arrayify(value) {
+  if (value === null || value === undefined) {
+    return [];
+  }
   if (Array.isArray(value)) {
     return value;
   }

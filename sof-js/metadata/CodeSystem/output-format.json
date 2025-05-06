@@ -21,6 +21,14 @@
         {
             "code": "parquet",
             "display": "Parquet"
+        },
+        {
+            "code": "table",
+            "display": "Table"
+        },
+        {
+            "code": "view",
+            "display": "View"
         }
     ]
 }

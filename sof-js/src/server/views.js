@@ -34,6 +34,7 @@ function renderViewDefinitions(req, res, resources) {
             <div class="mt-4 flex items-center space-x-4 border-b border-gray-200 pb-2">  
                 <h1 class="flex-1 text-2xl font-bold">View Definitions</h1>
                 <a href="/ViewDefinition/$export" class="btn">$export</a>
+                <a href="/ViewDefinition/$validate" class="btn">$validate?</a>
                 <a href="/ViewDefinition/$evaluate" class="btn">$evaluate</a>
                 <a href="/ViewDefinition/new" class="btn">New ViewDefinition</a>
             </div>

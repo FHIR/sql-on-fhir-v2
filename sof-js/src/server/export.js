@@ -8,6 +8,18 @@ import path from 'path';
 
 export async function getExportFormEndpoint(req, res) {
   const operation = await read(req.config, 'OperationDefinition', '$export');
+  const defaults = {
+    "viewResource" : JSON.stringify(
+      {
+        "resourceType": "ViewDefinition",
+        "resource": "Patient",
+        "name": "patient",
+        "select": [
+          {"column" : [ { "path": "id", "name": "id" } ]}
+        ]
+      }
+    ,null, 2),
+  }
   res.setHeader('Content-Type', 'text/html');
   res.send(layout(`
     <div class="container mx-auto p-4">
@@ -21,7 +33,7 @@ export async function getExportFormEndpoint(req, res) {
       <h1 class="mt-4">Export</h1>
       <div id="export-result" class="mt-4">
         <form action="/ViewDefinition/$export/form" method="post" >
-          ${await renderOperationDefinition(req, operation, {})}
+          ${await renderOperationDefinition(req, operation, defaults)}
           <div class="mt-4">
             <button type="submit" class="btn">Export</button>
           </div>
@@ -75,9 +87,20 @@ function ensureExportDir(exportId) {
     return exportDir;
 }
 
+function parseViewDefinitions(resources) {
+  return resources.reduce((acc, json) => {
+    const view = JSON.parse(json);
+    acc[view.name] = {view: view, name: view.name, processed: false};
+    return acc;
+  }, {});
+}
+
 export async function postExportFormEndpoint(req, res) {
   const form = req.body;
-  const viewDefinitions = await resolveViewDefinitions(req.config, arrayify(form.viewReference));
+  let viewDefinitions = {}
+  Object.assign(viewDefinitions, await resolveViewDefinitions(req.config, arrayify(form.viewReference)));
+  Object.assign(viewDefinitions, parseViewDefinitions(arrayify(form.viewResource)));
+
   if (Object.values(viewDefinitions).some(v => v.severity === 'error')) {
     res.status(422).json({
       resourceType: 'OperationOutcome',
@@ -102,6 +125,7 @@ export async function postExportFormEndpoint(req, res) {
     form: form,
     viewDefinitions: viewDefinitions
   }
+
   fs.writeFileSync(exportStatusFile, JSON.stringify(status, null, 2));
   res.setHeader('Location', location);
   res.status(301).end();
@@ -125,14 +149,23 @@ function writeFormattedData(fileName, data, format) {
 }
 
 async function evaluateViewDefinition(config, resource, exportStatus) {
+  try {
     const data = await search(config, resource.resource, 1000);
     const result = evaluate(resource, data);
     const fileName = path.join(exportStatus.exportDir, resource.name);
     return {
+      status: 'completed',
       file: writeFormattedData(fileName, result, exportStatus.format), 
       relativeFile: path.relative(exportStatus.exportDir, fileName),
+      location: `/export/${exportStatus.exportId}/${resource.name}.${exportStatus.format}`,
       count: result.length
     };
+  } catch (error) {
+    return {
+      status: 'failed',
+      error: error.message
+    };
+  }
 }
 
 async function makeProgress(config, exportStatus) {
@@ -150,10 +183,9 @@ async function makeProgress(config, exportStatus) {
 
   if (nonProcessed) {
     const viewDefinition = exportStatus.viewDefinitions[nonProcessed];
-    const {file, count} = await evaluateViewDefinition(config, viewDefinition.view, exportStatus);
+    const result = await evaluateViewDefinition(config, viewDefinition.view, exportStatus);
     viewDefinition.processed = true;
-    viewDefinition.count = count;
-    viewDefinition.file = file;
+    Object.assign(exportStatus.viewDefinitions[nonProcessed], result);
   } else {
     exportStatus.status = 'completed';
   }
@@ -166,28 +198,31 @@ function readExportStatus(exportId) {
   return JSON.parse(fs.readFileSync(exportStatusFile, 'utf8'));
 }
 
+const outputParams = ['name', 'status', 'error', 'count', 'location'];
+
 export async function getExportStatusEndpoint(req, res) {
   const exportId = req.params.id;
   let exportStatus = readExportStatus(exportId);
   exportStatus = await makeProgress(req.config, exportStatus);
   const response = {
-     resourceType: 'Parameters',
-     parameter: [
+    resourceType: 'Parameters',
+    parameter: [
       { name: 'exportId', valueString: exportId },
       { name: 'status', valueString: exportStatus.status },
       { name: 'format', valueString: exportStatus.format },
       { name: 'location', valueString: exportStatus.location },
       { name: 'startTime', valueString: exportStatus.startTime }
-     ].concat(Object.entries(exportStatus.viewDefinitions)
+    ].concat(Object.entries(exportStatus.viewDefinitions)
       .filter(([key, value]) => value.processed)
       .map(([key, value]) => ({
-      name: 'output',
-      part: [
-        { name: 'name', valueString: value.name },
-        { name: 'count', valueInteger: value.count },
-        { name: 'location', valueUri: `/export/${exportId}/${value.name}.${exportStatus.format}` }
-      ]
-     })))
+        name: 'output',
+        part: outputParams.reduce((acc, p) => {
+          if (value[p]) { 
+            acc.push({ name: p, valueString: value[p] });
+          }
+          return acc;
+        }, [])
+      })))
   }
 
   const responseHtml = `
@@ -223,7 +258,7 @@ export async function getExportStatusEndpoint(req, res) {
   `));
   }
 }
- 
+
 export function mountRoutes(app) {
     app.get('/ViewDefinition/\\$export', getExportFormEndpoint);
     app.post('/ViewDefinition/\\$export/form', postExportFormEndpoint);

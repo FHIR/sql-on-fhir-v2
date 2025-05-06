@@ -10,20 +10,26 @@
     "system": false,
     "type": true,
     "instance": true,
-    "resource": [
-      "ViewDefinition"
-    ],
-    "inputProfile":  "http://sql-on-fhir.org/Parameters/export-parameters",
-    "outputProfile": "http://sql-on-fhir.org/Parameters/export-status",
+    "resource": [ "ViewDefinition" ],
+    "description": "Export a view definition. User can provide viewdefintion references adn/or resources as part of the input parameters.",
     "parameter": [
         {
             "name": "viewReference",
             "use": "in",
-            "min": 1,
+            "min": 0,
             "max": "*",
             "scope": ["type"],
             "type": "Reference",
             "documentation": "The reference to the view definition on the server"
+        },
+        {
+            "name": "viewResource",
+            "use": "in",
+            "min": 0,
+            "max": "*",
+            "scope": ["type"],
+            "type": "ViewDefinition",
+            "documentation": "The view definition to export"
         },
         {
             "name": "format",
