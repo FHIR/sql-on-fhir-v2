@@ -201,20 +201,20 @@ Content-Type: application/json
       }
     },
     {
-      "name": "viewDefinition",
+      "name": "view",
       "valueReference": {
         "reference": "ViewDefinition/patient-demographics"
       }
     },
     {
-      "name": "viewDefinition",
+      "name": "view",
       "valueReference": {
         "reference": "ViewDefinition/diagnoses"
       },
       "part": [ { "name": "format", "valueString": "csv" } ]
     },
     {
-      "name": "viewDefinition",
+      "name": "view",
       "valueReference": {
         "reference": "ViewDefinition/medications"
       }
