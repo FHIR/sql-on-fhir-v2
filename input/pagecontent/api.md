@@ -51,7 +51,7 @@ And use standard tools like Apache Spark, AWS Athena or other tools to analyze d
    - Analyze them using tools like Apache Spark or Amazon Athena
 
 
-[See Bulk Export](#bulk-export)
+[See Async Bulk Export](#async-bulk-export)
 
 ### Use Case 3: Real-time Evaluation of ViewDefinition
 
