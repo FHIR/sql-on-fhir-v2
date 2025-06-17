@@ -544,9 +544,9 @@ Evaluates ViewDefinition resource in body and returns results immediately.
 
 | Name    | Type         | Description                                                                             |
 |---------|--------------|-----------------------------------------------------------------------------------------|
-| patient | reference    | Patient to run the view for                                                             |
-| group   | reference    | Group to run the view for                                                               |
-| source  | string       | Name of source to run the view for                                                      |
+| patient | reference    | (optional) Patient to run the view for                                                             |
+| group   | reference    | (optional) Group to run the view for                                                               |
+| source  | string       | (optional) If provided, the source of FHIR data to be transformed into a tabular projection.  'source' may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server.  If 'source' is absent, the transformation is performed on the data that resides in the FHIR server.   |
 | _header | boolean      | (optional) by default is true, return headers in the response                           |
 | _format | string       | (optional) can be specified as parameter or header see `Accept` header                  |
 | _count  | number       | (optional) limit the number of results, equivalent to FHIR search _count parameter      |
@@ -589,9 +589,9 @@ Content-Type: application/json
 
 | Name | Type | Description |
 |------|------|-------------|
-| patient | reference | Patient to run the view for |
-| group | reference | Group to run the view for |
-| source | string | Name of source to run the view for |
+| patient | reference | (optional) Patient to run the view for |
+| group | reference | (optional) Group to run the view for |
+| source  | string       | (optional) If provided, the source of FHIR data to be transformed into a tabular projection.  'source' may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server.  If 'source' is absent, the transformation is performed on the data that resides in the FHIR server.   |
 | _header | boolean | (optional) by default is true, return headers in the response |
 | _format | string | (optional) can be specified as parameter or header see `Accept` header |
 | _count | number | (optional) limit the number of results, equivalent to FHIR search _count parameter |
