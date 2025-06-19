@@ -51,7 +51,7 @@ And use standard tools like Apache Spark, AWS Athena or other tools to analyze d
    - Analyze them using tools like Apache Spark or Amazon Athena
 
 
-[See Bulk Export](#bulk-export)
+[See Async Bulk Export](#async-bulk-export)
 
 ### Use Case 3: Real-time Evaluation of ViewDefinition
 
@@ -522,13 +522,14 @@ Example:
 
 ### Run ViewDefinition
 
-Real-time API for running ViewDefinition - returns results immediately (may use chunking-encoding).
-There are two endpoints with ViewDefinition in body and ViewDefinition in URL path.
+Real-time (synchronous) API for running ViewDefinitions.  This operation returns results immediately (may use chunking-encoding).
+
+This operation may be invoked at the type level - e.g. `ViewDefinition/$run`, or at the instance level - e.g. `ViewDefinition/{id}/$run`  If `$run` is invoked at the type level, the ViewDefinition is to be supplied by the client in the request.  If `$run` is invoked at the instance level, the ViewDefinition identified in the path shall be used. 
 
 
 #### POST ViewDefinition/$run
 
-Evaluates ViewDefinition resource in body and returns results immediately.
+Evaluates one or more ViewDefinition resources in the request body as a FHIR `Parameter` and returns results immediately.
 
 **Endpoint:** `POST ViewDefinition/$run`
 
@@ -540,38 +541,68 @@ Evaluates ViewDefinition resource in body and returns results immediately.
   - `application/ndjson`
   - `application/parquet`
 
-**Query parameters:**
+**Query Parameters:**
 
-| Name    | Type         | Description                                                                             |
-|---------|--------------|-----------------------------------------------------------------------------------------|
-| patient | reference    | (optional) Patient to run the view for                                                             |
-| group   | reference    | (optional) Group to run the view for                                                               |
-| source  | string       | (optional) If provided, the source of FHIR data to be transformed into a tabular projection.  'source' may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server.  If 'source' is absent, the transformation is performed on the data that resides in the FHIR server.   |
-| _header | boolean      | (optional) by default is true, return headers in the response                           |
-| _format | string       | (optional) can be specified as parameter or header see `Accept` header                  |
-| _count  | number       | (optional) limit the number of results, equivalent to FHIR search _count parameter      |
-| _page   | number       | (optional) page number for paginated results, equivalent to FHIR search _page parameter |
-| _since  | FHIR Instant | (optional) Resources will be included in the response if their state has changed after the supplied time (e.g., if Resource.meta.lastUpdated is later than the supplied _since time). In the case of a Group level export, the server MAY return additional resources modified prior to the supplied time if the resources belong to the patient compartment of a patient added to the Group after the supplied time (this behavior SHOULD be clearly documented by the server). For Patient- and Group-level requests, the server MAY return resources that are referenced by the resources being returned regardless of when the referenced resources were last updated. For resources where the server does not maintain a last updated time, the server MAY include these resources in a response irrespective of the _since value supplied by a client. |
+| Name    | Type         | Cardinality | Description                                                               |
+|---------|--------------|-------------|---------------------------------------------------------------------------|
+| _format | string       | 0..1 | Specifies the response media type - see `Accept` header.                   |
+| _header | boolean      | 0..1 | This parameter only applies to `text/csv` requests.  `present` (default) - return headers in the response, `absent` - do not return headers.  |
+| viewReference | Reference | 0..* | Reference(s) to ViewDefinition(s) to be used for data transformation.  |
+| viewResource | ViewDefinition | 0..* | ViewDefinition(s) to be used for data transformation.              |
+| patient | Reference    | 0..* | When provided, the server SHALL NOT return resources in the patient compartments belonging to patients outside of this list. If a client requests patients who are not present on the server (or in the case of a group level `$run` operation, who are not members of the group), the server SHOULD return details via a FHIR `OperationOutcome` resource in an error response to the request.<br><br>A server that is unable to support `patient` SHOULD return an error and FHIR `OperationOutcome` resource so the client can re-submit a request omitting the patient parameter. | 
+| group   | Reference    | 0..* | When provided, the server SHALL NOT return resources that are not a member of the supplied `Group`. <br><br>A server that is unable to support `group` SHOULD return an error and FHIR `OperationOutcome` resource so the client can re-submit a request omitting the group parameter. |
+| source  | string       | 0..1 | If provided, the source of FHIR data to be transformed into a tabular projection.  `source` may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server.  If `source` is absent, the transformation is performed on the data that resides in the FHIR server.   |
+| _count  | number       | 0..1 | Limits the number of results, equivalent to FHIR search `_count` parameter.     |
+| _page   | number       | 0..1 | Page number for paginated results, equivalent to FHIR search `_page` parameter. |
+| _since  | FHIR Instant | 0..1 | Resources will be included in the response if their state has changed after the supplied time (e.g., if Resource.meta.lastUpdated is later than the supplied `_since` time). In the case of a Group level export, the server MAY return additional resources modified prior to the supplied time if the resources belong to the patient compartment of a patient added to the Group after the supplied time (this behavior SHOULD be clearly documented by the server). For Patient- and Group-level requests, the server MAY return resources that are referenced by the resources being returned regardless of when the referenced resources were last updated. For resources where the server does not maintain a last updated time, the server MAY include these resources in a response irrespective of the `_since` value supplied by a client. |
 
 
 **Body:**  ViewDefinition resource
 
 ##### Example
 
+Request:
 ```http
 POST ViewDefinition/$run HTTP/1.1
 Accept: text/csv
-Content-Type: application/json
-
+Content-Type: application/fhir+json
 {
-  "resourceType": "ViewDefinition",
-  // ...
+  "resourceType" : "Parameters",
+  "id" : "example",
+  "parameter" : [{
+    "name" : "viewReference",
+    "valueReference" : { reference: "ViewDefinition/123" }
+  },
+  {
+    "name" : "patient",
+    "resource" : {
+      "resourceType" : "Patient",
+      "id" : "269a6a02-37e2-bd1a-e079-fda944434a99",
+      "name" : [{
+        "use" : "official",
+        "family" : "Cole",
+        "given" : ["Joanie"]
+      }],
+      "birthDate" : "2012-03-30"
+    }
+  }]
 }
 
+```
+Response:
+```http
+HTTP/1.1 200 OK
+Content-Type: text/csv
+Transfer-Encoding: chunked
+
+id,birthDate,last_name, first_name
+269a6a02-37e2-bd1a-e079-fda944434a99, 2012-03-30, Cole, Joanie
 ```
 
 
 #### GET /ViewDefinition/{id}/$run
+
+Evaluates the ViewDefinition identified by `{id}` and returns results immediately.
 
 **Endpoint:** `GET /ViewDefinition/{id}/$run`
 
@@ -585,26 +616,25 @@ Content-Type: application/json
   - `application/parquet`
 
 
-**Query parameters:**
+**Query Parameters:**
 
-| Name | Type | Description |
-|------|------|-------------|
-| patient | reference | (optional) Patient to run the view for |
-| group | reference | (optional) Group to run the view for |
-| source  | string       | (optional) If provided, the source of FHIR data to be transformed into a tabular projection.  'source' may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server.  If 'source' is absent, the transformation is performed on the data that resides in the FHIR server.   |
-| _header | boolean | (optional) by default is true, return headers in the response |
-| _format | string | (optional) can be specified as parameter or header see `Accept` header |
-| _count | number | (optional) limit the number of results, equivalent to FHIR search _count parameter |
-| _page | number | (optional) page number for paginated results, equivalent to FHIR search _page parameter |
-
-
+| Name    | Type         | Cardinality | Description                                                               |
+|---------|--------------|-------------|---------------------------------------------------------------------------|
+| _format | string       | 0..1 | Specifies the response media type - see `Accept` header.                   |
+| _header | boolean      | 0..1 | This parameter only applies to `text/csv` requests.  `present` (default) - return headers in the response, `absent` - do not return headers.  |
+| patient | Reference    | 0..* | When provided, the server SHALL NOT return resources in the patient compartments belonging to patients outside of this list. If a client requests patients who are not present on the server (or in the case of a group level `$run` operation, who are not members of the group), the server SHOULD return details via a FHIR `OperationOutcome` resource in an error response to the request.<br><br>A server that is unable to support `patient` SHOULD return an error and FHIR `OperationOutcome` resource so the client can re-submit a request omitting the patient parameter. | 
+| group   | Reference    | 0..* | When provided, the server SHALL NOT return resources that are not a member of the supplied `Group`. <br><br>A server that is unable to support `group` SHOULD return an error and FHIR `OperationOutcome` resource so the client can re-submit a request omitting the group parameter. |
+| source  | string       | 0..1 | If provided, the source of FHIR data to be transformed into a tabular projection.  `source` may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server.  If `source` is absent, the transformation is performed on the data that resides in the FHIR server.   |
+| _count  | number       | 0..1 | Limits the number of results, equivalent to FHIR search `_count` parameter.     |
+| _page   | number       | 0..1 | Page number for paginated results, equivalent to FHIR search `_page` parameter. |
+| _since  | FHIR Instant | 0..1 | Resources will be included in the response if their state has changed after the supplied time (e.g., if Resource.meta.lastUpdated is later than the supplied `_since` time). In the case of a Group level export, the server MAY return additional resources modified prior to the supplied time if the resources belong to the patient compartment of a patient added to the Group after the supplied time (this behavior SHOULD be clearly documented by the server). For Patient- and Group-level requests, the server MAY return resources that are referenced by the resources being returned regardless of when the referenced resources were last updated. For resources where the server does not maintain a last updated time, the server MAY include these resources in a response irrespective of the `_since` value supplied by a client. |
 
 
 ##### Example
 
 Request:
 ```http
-GET /ViewDefinition/conditions/$run?patient=Patient/123&headers=true
+GET /ViewDefinition/conditions/$run?patient=Patient/123&_header=present
 Accept: text/csv
 ```
 Response:
