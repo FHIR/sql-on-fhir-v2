@@ -73,7 +73,11 @@ menu:
   Overview: index.html
   View Definition: StructureDefinition-ViewDefinition.html
   Artifacts: artifacts.html
-  API: api.html
+  API: 
+    Overview: api.html
+    CapabilityStatement: api/capability.html
+    Operation $export of ViewDefinition: api/export.html
+    Operation $run of ViewDefinition: api/run.html
   Contributing: contributing.html
   # extra/playground.html does not work - TODO: use relative ulrs
   Playground: http://sql-on-fhir.org/extra/playground.html
