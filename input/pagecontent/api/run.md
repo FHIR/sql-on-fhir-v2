@@ -98,7 +98,7 @@ When provided, the server SHALL NOT return resources that are not a member of th
 If a client requests groups who are not present on the server, 
 the server SHOULD return details via a FHIR `OperationOutcome` resource in an error response to the request. 
 
-### _since Parameter Clarification
+### Since Parameter Clarification
 
 Resources will be included in the response if their state has changed after the supplied time 
 (e.g., if Resource.meta.lastUpdated is later than the supplied `_since` time). 
@@ -116,20 +116,22 @@ the server MAY include these resources in a response irrespective of the `_since
 
 **Requests:**
 
-```http
+```
 GET ViewDefinition/123/$run HTTP/1.1
 Accept: text/csv
 ```
 
-```http
+```
 GET ViewDefinition/$run?viewReference=ViewDefinition/123 HTTP/1.1
 Accept: text/csv
 ```
 
-```http
+```
 POST ViewDefinition/$run HTTP/1.1
 Accept: text/csv
 Content-Type: application/fhir+json
+
+
 {
   "resourceType" : "Parameters",
   "id" : "example",
@@ -183,7 +185,7 @@ Content-Type: application/fhir+json
 
 **Response:**
 
-```http
+```
 HTTP/1.1 200 OK
 Content-Type: text/csv
 Transfer-Encoding: chunked
