@@ -1,7 +1,7 @@
 # Operation $run on ViewDefinition
 
-The `$run` operation on a ViewDefinition resource applies the view definition to
-transform FHIR resources into a tabular format and returns the results synchronously.
+The `$run` operation on a ViewDefinition resource applies the view definition to 
+transform FHIR resources into a tabular format and returns the results synchronously. 
 
 The canonical URL for this operation is `http://sql-on-fhir.org/OperationDefinition/$run`.
 
@@ -29,7 +29,7 @@ it should use a `POST` request.
 
 The response format is determined by either:
 
-* The `Accept` header, OR
+* The `Accept` header, OR  
 * The `_format` parameter
 
 The operation MAY use chunked transfer encoding to stream large result sets.
@@ -70,10 +70,10 @@ When invoking this operation at the instance level (e.g. ViewDefinition/{id}/$ru
 
 The `viewReference` parameter MAY be specified using any of the following formats:
 * A relative URL on the server (e.g. "ViewDefinition/123")
-* A canonical URL (e.g. "http://specification.org/fhir/ViewDefinition/123|1.0.0")
+* A canonical URL (e.g. "http://specification.org/fhir/ViewDefinition/123|1.0.0") 
 * An absolute URL (e.g. "http://example.org/fhir/ViewDefinition/123")
 
-Servers MAY choose which reference formats they support.
+Servers MAY choose which reference formats they support. 
 Servers SHALL document which reference formats they support in their CapabilityStatement.
 
 For servers that want to support all types of references, it is recommended to follow the following algorithm:
@@ -85,29 +85,29 @@ For servers that want to support all types of references, it is recommended to f
 
 ### Patient Parameter Clarification
 
-When provided, the server SHALL NOT return resources
-in the patient compartments belonging to patients outside of this list.
+When provided, the server SHALL NOT return resources 
+in the patient compartments belonging to patients outside of this list. 
 
 If a client requests patients who are not present on the server,
 the server SHOULD return details via a FHIR `OperationOutcome` resource in an error response to the request.
 
 ### Group Parameter Clarification
 
-When provided, the server SHALL NOT return resources that are not a member of the supplied `Group`.
+When provided, the server SHALL NOT return resources that are not a member of the supplied `Group`. 
 
 If a client requests groups that are not present on the server,
 the server SHOULD return details via a FHIR `OperationOutcome` resource in an error response to the request.
 
 ### Since Parameter Clarification
 
-Resources will be included in the response if their state has changed after the supplied time
-(e.g., if Resource.meta.lastUpdated is later than the supplied `_since` time).
-In the case of a Group level export, the server MAY return additional resources modified prior to the supplied time
+Resources will be included in the response if their state has changed after the supplied time 
+(e.g., if Resource.meta.lastUpdated is later than the supplied `_since` time). 
+In the case of a Group level export, the server MAY return additional resources modified prior to the supplied time 
 if the resources belong to the patient compartment of a patient added to the Group after the supplied time (this behavior SHOULD be clearly documented by the server).
-For Patient- and Group-level requests, the server MAY return resources that are referenced by the resources being returned
-regardless of when the referenced resources were last updated.
-For resources where the server does not maintain a last updated time,
-the server MAY include these resources in a response irrespective of the `_since` value supplied by a client.
+For Patient- and Group-level requests, the server MAY return resources that are referenced by the resources being returned 
+regardless of when the referenced resources were last updated. 
+For resources where the server does not maintain a last updated time, 
+the server MAY include these resources in a response irrespective of the `_since` value supplied by a client. 
 
 >TODO: may be fail on this?
 
