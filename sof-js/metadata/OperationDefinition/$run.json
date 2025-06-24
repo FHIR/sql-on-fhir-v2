@@ -89,6 +89,15 @@
       "documentation": "If provided, the source of FHIR data to be transformed into a tabular projection.  `source` may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server.  If `source` is absent, the transformation is performed on the data that resides in the FHIR server.", 
     },
     {
+      "name": "source",
+      "type": "Resource",
+      "use": "in",
+      "scope": ["type", "instance"],
+      "min": "0",
+      "max": "*",
+      "documentation": "Collection of FHIR resources to be transformed into a tabular projection.",
+    },
+    {
       "name": "_count",
       "type": "integer",
       "use": "in",
