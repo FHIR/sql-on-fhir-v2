@@ -153,7 +153,7 @@ Content-Type: application/fhir+json
     }
   },
   {
-    "name" : "patient",
+    "name" : "resource",
     "resource" : {
       "resourceType" : "Patient",
       "id" : "pt-1",
@@ -166,7 +166,7 @@ Content-Type: application/fhir+json
     }
   },
   {
-    "name" : "patient",
+    "name" : "resource",
     "resource" : {
       "resourceType" : "Patient",
       "id" : "pt-2",
