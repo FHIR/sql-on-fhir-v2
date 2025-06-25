@@ -137,16 +137,16 @@ Content-Type: application/fhir+json
   "id" : "example",
   "parameter" : [{
     "name" : "viewResource",
-    "valueResource" : {
+    "resource" : {
       "resourceType" : "ViewDefinition",
       "resource": "Patient",
       "select": [
         {
             "column": [
-                {name: "id", type: "string", path: "getResourceKey()"},
-                {name: "birthDate", type: "date", path: "birthDate"},
-                {name: "family", type: "string", path: "name.family"},
-                {name: "given", type: "string", path: "name.given"},
+                {"name": "id", "type": "id", "path": "getResourceKey()"},
+                {"name": "birthDate", "type": "date", "path": "birthDate"},
+                {"name": "family", "type": "string", "path": "name.family"},
+                {"name": "given", "type": "string", "path": "name.given"}
             ]
         }
       ]
@@ -154,7 +154,7 @@ Content-Type: application/fhir+json
   },
   {
     "name" : "resource",
-    "valueResource" : {
+    "resource" : {
       "resourceType" : "Patient",
       "id" : "pt-1",
       "name" : [{
@@ -167,7 +167,7 @@ Content-Type: application/fhir+json
   },
   {
     "name" : "resource",
-    "valueResource" : {
+    "resource" : {
       "resourceType" : "Patient",
       "id" : "pt-2",
       "name" : [{
@@ -190,7 +190,7 @@ HTTP/1.1 200 OK
 Content-Type: text/csv
 Transfer-Encoding: chunked
 
-id,birthDate,last_name, first_name
+id,birthDate,family,given
 pt-1,2012-03-30,Cole,Joanie
 pt-2,2012-03-30,Doe,John
 ```
