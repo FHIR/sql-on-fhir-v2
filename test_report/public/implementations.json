@@ -51,5 +51,11 @@
     "url": "https://flatquack.org",
     "description": "FHIR resources to SQL tables with DuckDB",
     "testResultsUrl": "https://raw.githubusercontent.com/gotdan/flatquack/master/flatquack_test_output.json"
+  },
+  {
+    "name": "FHIR4DS",
+    "url": "https://github.com/joelmontavon/fhir4ds",
+    "description": "FHIR for Data Science",
+    "testResultsUrl": "https://raw.githubusercontent.com/joelmontavon/fhir4ds/refs/heads/main/test_report.json?token=GHSAT0AAAAAADEB5U5OUK2N43HVVCIQF2JA2DCD3EQ"
   }
 ]
