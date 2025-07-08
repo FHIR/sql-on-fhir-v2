@@ -39,9 +39,8 @@ The server MAY support additional filtering parameters:
 * `patient` - filter resources by patient
 * `group` - filter resources by group
 * `_since` - filter resources by last updated time
-* `_count` - limit the number of results
-* `_page` - page number for paginated results
-
+* `_limit` - limit the number of rows produced by the ViewDefinition 
+ 
 If the server does not support some of the parameters, it should return an error and a FHIR `OperationOutcome` resource so the client can re-submit a request omitting the unsupported parameter.
 
 If there are validation or other errors, the server should return an `OperationOutcome` resource in the response.
@@ -53,13 +52,12 @@ If the `json` format is requested, the server should return an array of objects.
 |------|------|-----|-------|-----|-----|---------------|
 | _format | code | in | type, instance | 1 | 1 | Output format - json, ndjson, csv, parquet, table, view |
 | header | boolean | in | type, instance | 0 | 1 | This parameter only applies to `text/csv` requests. `true` (default) - return headers in the response, `false` - do not return headers. |
-| viewReference | Reference | in | type, instance | 0 | * | Reference(s) to ViewDefinition(s) to be used for data transformation. See [Clarification](#viewreference-clarification) for details. |
-| viewResource | ViewDefinition | in | type | 0 | * | ViewDefinition(s) to be used for data transformation. |
+| viewReference | Reference | in | type, instance | 0 | 1 | Reference(s) to ViewDefinition(s) to be used for data transformation. See [Clarification](#viewreference-clarification) for details. |
+| viewResource | ViewDefinition | in | type | 0 | 1 | ViewDefinition(s) to be used for data transformation. |
 | patient | Reference | in | type, instance | 0 | * | Filter resources by patient. See [Clarification](#patient-parameter-clarification) for details. |
 | group | Reference | in | type, instance | 0 | * | Filter resources by group. See [Clarification](#group-parameter-clarification) for details. |
 | source | string | in | type, instance | 0 | 1 | If provided, the source of FHIR data to be transformed into a tabular projection. `source` may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server. If `source` is absent, the transformation is performed on the data that resides on the server. |
-| _count | integer | in | type, instance | 0 | 1 | Limits the number of results, equivalent to the FHIR search `_count` parameter. |
-| _page | integer | in | type, instance | 0 | 1 | Page number for paginated results, equivalent to the FHIR search `_page` parameter. |
+| _limit | integer | in | type, instance | 0 | 1 | Limits the number of rows produced by the ViewDefinition data transformation. |
 | _since | instant | in | type, instance | 0 | 1 | Return resources that have been modified after the supplied time. See [Clarification](#since-parameter-clarification) for details. |
 | resource | Resource | in | type, instance | 0 | * | Collection of FHIR resources to be transformed into a tabular projection. |
 | return | Binary | out | - | - | - | The output of the operation is in the requested format, defined by the format parameter or accept header |
