@@ -11,8 +11,8 @@
             "display": "Accepted"
         },
         {
-            "code": "running",
-            "display": "Running"
+            "code": "in-progress",
+            "display": "In Progress"
         },
         {
             "code": "completed",

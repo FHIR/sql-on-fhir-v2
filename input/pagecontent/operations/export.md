@@ -8,9 +8,14 @@ The `$export` operation enables the bulk export of FHIR data that has been trans
 
 This operation is intended for large-scale data extraction use cases, allowing clients to export transformed FHIR data for purposes such as analytics, reporting, or loading into data warehouses.
 
-Operation is asynchronous - it accepts list of ViewDefinitions to export 
+Operation follows the FHIR Asynchronous Interaction Request Pattern - it accepts list of ViewDefinitions to export 
 and return location URL in header and in response body. Client can poll this URL for 
 status of the export. Server will respond with Parameters resource with status of the export.
+
+**Note**: This operation uses Parameters resource format instead of the standard Bundle format specified in the FHIR async pattern. This deviation is made to:
+- Provide a more structured approach to status reporting and metadata
+- Allow for extensible output metadata specific to export operations
+- Maintain consistency with other FHIR operations that use Parameters resources
 
 Whenever results are ready, server will respond with parameter `output`, which contains links to the exported files and other metadata.
 
@@ -20,6 +25,14 @@ The server MAY support additional filtering parameters:
 * `group` - export only resources for this group
 * `_since` - export only resources updated since this time
 
+## Required Headers
+
+### Kick-off Request
+* `Prefer: respond-async` (required) - Specifies that the response should be asynchronous
+* `Accept` (recommended) - Specifies the format of the optional OperationOutcome Resource response to the kick-off request
+
+### Status Request
+* `Accept` (recommended) - Specifies the format of the response
 
 ## Parameters
 
@@ -34,13 +47,9 @@ The server MAY support additional filtering parameters:
 | _since | instant | in | type, instance | 0 | 1 | Export only resources updated since this time |
 | view | complex | 0..* | The view definition to export |
 | view.name | string | 0..* | The name of the view definition in export |
-| view.reference | Reference | 0..* | The reference to the view definition on the server |
-| view.resource | ViewDefinition | 0..* | The view definition to export |
-| view.format | code | in | type, instance | 1 | 1 | Output format - json, ndjson, csv, parquet, table, view |
-| view.patient | Reference | in | type, instance | 0 | * | Filter resources by patient. See [Clarification](#patient-parameter-clarification) for details. |
-| view.group | Reference | in | type, instance | 0 | * | Filter resources by group. See [Clarification](#group-parameter-clarification) for details. |
-| view.source | string | in | type, instance | 0 | 1 | If provided, the source of FHIR data to be transformed into a tabular projection. `source` may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server. If `source` is absent, the transformation is performed on the data that resides on the server. |
-| view._since | instant | in | type, instance | 0 | 1 | Export only resources updated since this time |
+| view.viewReferencef | Reference | 0..* | The reference to the view definition on the server |
+| view.viewResource | ViewDefinition | 0..* | The view definition to export |
+| view.name | ViewDefinition | 0..* | The name of the view definition in export, will be used as a key in the output, if not provided - it is recomended ViewDefinition name will be used.name |
 
 
 If server does not support a parameter, request should be rejected with `400 Bad Request` 
@@ -79,7 +88,7 @@ For servers that want to support all types of references, it is recommended to f
 | time.duration | integer | 0..1 | The duration of the export in seconds |
 | time.estimated | integer | 0..1 | The estimated duration of the export in seconds |
 | time.actual | integer | 0..1 | The actual duration of the export in seconds |
-| status | code | 1..1 | The status of the export, could be accepted, running, completed, cancelled, failed (bound to export-status ValueSet) |
+| status | code | 1..1 | The status of the export, could be accepted, in-progress, completed, cancelled, failed (bound to export-status ValueSet) |
 | output | complex | 0..* | Output information for each exported view |
 | output.name | string | 1..1 | The name of ViewDefinition |
 | output.location | uri | 1..1 | The URL to poll the results of export |
@@ -88,29 +97,53 @@ For servers that want to support all types of references, it is recommended to f
 
 ## Operation flow
 
-1. Start export of views with `POST ViewDefinition/$export` operation.
-2. Server will respond with `202 Accepted` and `Content-Location` header with the absolute URL of an endpoint for subsequent status requests (polling location)
-   Polling endpoint also returned in response body as `location` parameter and MAY return `time.estimated` parameter.
-   If request is not valid or cannot be processed, server will respond with `400 Bad Request` and `OperationOutcome` resource in the body.
-2. Server MAY return `cancelUrl` parameter in the response body.
-   Client can use this URL to cancel the export by sending `DELETE` request to the URL.
-   If server does not support cancellation, `cancelUrl` parameter will not be returned.
-3. Client can poll the polling location to get status of the export. 
-   Response should be Parameters resource with status of the export. 
-   Server may report partial results using `output` parameter.
-   If export is in progress, `status` parameter will be `in-progress`.
-   If export is ready, `status` parameter will be `ready`.
-   If export is failed, `status` parameter will be `failed`.
-4. When export is ready, server will respond with `200 OK` and Parameters resource with `status` parameter set to `ready`.
-   Response body will contain `output` parameter with the output of the export.
-5. Client can download the output from the URL in the `output.location` parameter.
+1. **Kick-off Request**: Client sends `POST ViewDefinition/$export` with `Prefer: respond-async` header.
+2. **Kick-off Response**: Server responds with:
+   - `202 Accepted` status code
+   - `Content-Location` header with the absolute URL for subsequent status requests (polling location)
+   - Optional OperationOutcome resource in the body for validation warnings
+   - If request is not valid or cannot be processed, server responds with `400 Bad Request` and `OperationOutcome` resource in the body.
+3. **Status Polling**: Client polls the polling location to get status of the export:
+   - **In Progress**: `202 Accepted` with Parameters resource containing `status` parameter set to `in-progress`
+   - **Progress Updates**: Server MAY include `X-Progress` header to indicate completion percentage
+   - **Retry-After**: Server SHOULD include `Retry-After` header to indicate when to retry
+   - **Partial Results**: Server MAY report partial results using `output` parameter
+4. **Completion**: When export is ready, server responds with:
+   - `200 OK` status code
+   - Parameters resource with `status` parameter set to `completed`
+   - `output` parameter containing the results of the export
+5. **Error Handling**: If export fails, server responds with:
+   - `202 Accepted` status code (during polling)
+   - Parameters resource with `status` parameter set to `failed`
+   - Error details in additional parameters
+6. **Cancellation** (Optional): 
+   - Server MAY return `cancelUrl` parameter in kick-off response
+   - Client can send `DELETE` request to cancel the export
+   - After cancellation, subsequent status requests SHOULD return `404 Not Found`
+7. **File Download**: Client downloads the output from URLs in the `output.location` parameters.
+
+## Server Implementation Recommendations
+
+To ensure proper alignment with the FHIR Asynchronous Interaction Request Pattern, servers SHOULD:
+
+1. **Validate Headers**: Reject requests without `Prefer: respond-async` header with `400 Bad Request`
+2. **Provide Retry-After**: Include `Retry-After` header in polling responses to guide client retry timing
+3. **Progress Indication**: Use `X-Progress` header to indicate completion percentage during polling
+4. **Exponential Backoff**: Implement server-side rate limiting to encourage exponential backoff
+5. **Resource Cleanup**: Clean up export resources after completion or cancellation
+6. **Error Handling**: Provide detailed error information in Parameters format while maintaining HTTP status codes
+7. **Timeout Handling**: Implement reasonable timeouts for long-running exports
+8. **Security**: Ensure proper authentication and authorization for both kick-off and status endpoints
 
 
 ##### Example Request
 
+**Kick-off Request:**
 ```http
 POST ViewDefinition/$export HTTP/1.1
 Content-Type: application/json
+Prefer: respond-async
+Accept: application/json
 
 {
   "resourceType": "Parameters",
@@ -139,9 +172,22 @@ Content-Type: application/json
 }
 ```
 
+**Kick-off Response:**
 ```http
 HTTP/1.1 202 Accepted
 Content-Location: https://example.com/export/123/status
+```
+
+**Status Polling (In Progress):**
+```http
+GET https://example.com/export/123/status HTTP/1.1
+Accept: application/json
+```
+
+```http
+HTTP/1.1 202 Accepted
+Retry-After: 10
+X-Progress: 30%
 
 {
   "resourceType": "Parameters",
@@ -169,6 +215,53 @@ Content-Location: https://example.com/export/123/status
     {
       "name": "time",
       "part": [ { "name": "estimated", "valueInteger": 10000 } ]
+    }
+  ]
+}
+```
+
+**Completion Response:**
+```http
+HTTP/1.1 200 OK
+
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "exportId",
+      "valueString": "b7e2c1a4-3f6d-4e2a-9c8b-2e1f4d5a6b7c"
+    },
+    {
+      "name": "clientExportId",
+      "valueString": "my-export-123"
+    },
+    {
+      "name": "status",
+      "valueCode": "completed"
+    },
+    {
+      "name": "time",
+      "part": [
+        { "name": "start", "valueInstant": "2023-01-01T10:00:00Z" },
+        { "name": "end", "valueInstant": "2023-01-01T10:05:00Z" },
+        { "name": "duration", "valueInteger": 300 }
+      ]
+    },
+    {
+      "name": "output",
+      "part": [
+        { "name": "name", "valueString": "patient-demographics" },
+        { "name": "location", "valueUri": "https://example.com/export/123/patient-demographics.csv" },
+        { "name": "format", "valueCode": "csv" }
+      ]
+    },
+    {
+      "name": "output",
+      "part": [
+        { "name": "name", "valueString": "diagnoses" },
+        { "name": "location", "valueUri": "https://example.com/export/123/diagnoses.csv" },
+        { "name": "format", "valueCode": "csv" }
+      ]
     }
   ]
 }

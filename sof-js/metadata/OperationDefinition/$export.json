@@ -70,7 +70,7 @@
                 "strength": "required",
                 "valueSet": "http://sql-on-fhir.org/ValueSet/export-status"
             },
-            "documentation": "The status of the export, could be accepted, running, completed, cancelled, failed"
+            "documentation": "The status of the export, could be accepted, in-progress, completed, cancelled, failed"
         },
         {
             "name": "output",
