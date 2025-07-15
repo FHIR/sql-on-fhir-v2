@@ -15,11 +15,11 @@
     "parameter": 
     [
       {
-        "name": "format",
+        "name": "_format",
         "type": "code",
         "use": "in",
         "scope": ["type", "instance"],
-        "documentation": "Output format - json, ndjson, csv, parquet, table, view",
+        "documentation": "Output format - json, ndjson, csv, parquet",
         "min": "1",
         "max": "1",
         "binding": {
@@ -39,16 +39,16 @@
         "scope": ["type", "instance"],
         "min": "0",
         "max": "1",
-        "documentation": "This parameter only applies to `text/csv` requests.  `present' (default) - return headers in the response, 'absent' - do not return headers."
+        "documentation": "Include CSV headers (default: true). Only applies to csv format."
       },
       {
         "name": "viewReference",
         "type": "Reference",
         "use": "in",
         "min": 0,
-        "max": "*",
+        "max": "1",
         "scope": ["type", "instance"],
-        "documentation": "Reference(s) to ViewDefinition(s) to be used for data transformation."
+        "documentation": "Reference to ViewDefinition on the server."
       },
       {
         "name": "viewResource",
@@ -56,8 +56,8 @@
         "use": "in",
         "scope": ["type"],
         "min": 0,
-        "max": "*",
-        "documentation": "ViewDefinition(s) to be used for data transformation."
+        "max": "1",
+        "documentation": "Inline ViewDefinition resource."
       },
       {
         "name": "patient",
@@ -65,10 +65,8 @@
         "use": "in",
         "scope": ["type", "instance"],
         "min": "0",
-        "max": "*",
-        "documentation": "When provided, the server SHALL NOT return resources in the patient compartments belonging to patients outside of this list. If a client requests patients who are not present on the server (or in the case of a group level `$run` operation, who are not members of the group), the server SHOULD return details via a FHIR `OperationOutcome` resource in an error response to the request.
-  
-        A server that is unable to support `patient` SHOULD return an error and FHIR `OperationOutcome` resource so the client can re-submit a request omitting the patient parameter."
+        "max": "1",
+        "documentation": "Filter by patient reference."
       },
       {
         "name": "group",
@@ -76,8 +74,8 @@
         "use": "in",
         "scope": ["type", "instance"],
         "min": "0",
-        "max": "*"
-        "documentation": "When provided, the server SHALL NOT return resources that are not a member of the supplied `Group`. A server that is unable to support `group` SHOULD return an error and FHIR `OperationOutcome` resource so the client can re-submit a request omitting the group parameter."
+        "max": "*",
+        "documentation": "Filter by group membership."
       },
       {
         "name": "source",
@@ -86,32 +84,23 @@
         "scope": ["type", "instance"],
         "min": "0",
         "max": "1",
-        "documentation": "If provided, the source of FHIR data to be transformed into a tabular projection.  `source` may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server.  If `source` is absent, the transformation is performed on the data that resides in the FHIR server.", 
+        "documentation": "External data source (e.g., URI, bucket name).", 
       },
       {
-        "name": "source",
+        "name": "resource",
         "type": "Resource",
         "use": "in",
         "scope": ["type", "instance"],
         "min": "0",
         "max": "*",
-        "documentation": "Collection of FHIR resources to be transformed into a tabular projection.",
+        "documentation": "FHIR resources to transform (alternative to server data)."
       },
       {
-        "name": "_count",
+        "name": "_limit",
         "type": "integer",
         "use": "in",
         "scope": ["type", "instance"],
-        "documentation": "Limits the number of results, equivalent to FHIR search `_count` parameter.",
-        "min": "0",
-        "max": "1"
-      },
-      {
-        "name": "_page",
-        "type": "integer",
-        "use": "in",
-        "scope": ["type", "instance"],
-        "documentation": "Page number for paginated results, equivalent to FHIR search `_page` parameter.",
+        "documentation": "Maximum number of rows to return.",
         "min": "0",
         "max": "1"
       },
@@ -120,7 +109,7 @@
         "type": "instant",
         "use": "in",
         "scope": ["type", "instance"],
-        "documentation": "Resources will be included in the response if their state has changed after the supplied time (e.g., if Resource.meta.lastUpdated is later than the supplied `_since` time). In the case of a Group level export, the server MAY return additional resources modified prior to the supplied time if the resources belong to the patient compartment of a patient added to the Group after the supplied time (this behavior SHOULD be clearly documented by the server). For Patient- and Group-level requests, the server MAY return resources that are referenced by the resources being returned regardless of when the referenced resources were last updated. For resources where the server does not maintain a last updated time, the server MAY include these resources in a response irrespective of the `_since` value supplied by a client.",
+        "documentation": "Include only resources modified after this time.",
         "min": "0",
         "max": "1"
       },
@@ -128,7 +117,7 @@
         "name": "return",
         "type": "Binary",
         "use": "out",
-        "documentation": "The output of the operation is in requested format, defined by the format parameter or accept header"
+        "documentation": "The transformed data in the requested format."
       }
     ]
   }

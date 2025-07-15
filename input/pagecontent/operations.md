@@ -115,7 +115,7 @@ The export process consists of four main endpoints: start export, get export sta
 The operation is designed for large-scale data extraction scenarios where clients need to export transformed FHIR data for analysis, reporting, or loading into data warehouses.
 The server processes the ViewDefinitions asynchronously and provides progress updates through polling mechanisms, making it suitable for handling large datasets without blocking the client.
 
-See [Operation $export of ViewDefinition](./api/export.md)
+See [Operation $export of ViewDefinition](./operations-export.md)
 
 ### Operation $run of ViewDefinition
 
@@ -126,4 +126,4 @@ It can be invoked at either the type level (ViewDefinition/$run) or instance lev
 The operation supports multiple output formats including JSON, NDJSON, CSV, Parquet, and table formats, with the format determined by the Accept header or _format parameter. 
 It can process either resources provided directly in the request or resources available on the server, with optional filtering by patient, group, or time parameters. The operation may use chunked transfer encoding for large result sets and includes comprehensive error handling through FHIR OperationOutcome resources for validation and processing errors.
 
-See [Operation $run of ViewDefinition](./api/run.md)
+See [Operation $run of ViewDefinition](./operations-run.md)

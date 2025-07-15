@@ -75,9 +75,9 @@ menu:
   Artifacts: artifacts.html
   Operations: 
     Overview: operations.html
-    CapabilityStatement: operations/capability.html
-    Operation $export of ViewDefinition: operations/export.html
-    Operation $run of ViewDefinition: operations/run.html
+    CapabilityStatement: operations-capability.html
+    Operation $export of ViewDefinition: operations-export.html
+    Operation $run of ViewDefinition: operations-run.html
   Contributing: contributing.html
   # extra/playground.html does not work - TODO: use relative ulrs
   Playground: http://sql-on-fhir.org/extra/playground.html
