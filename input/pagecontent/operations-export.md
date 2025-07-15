@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `$export` operation enables the bulk export of FHIR data that has been transformed using ViewDefinitions. Exported data can be written in various formats (CSV, NDJSON, Parquet) and delivered to file storage systems such as Amazon S3, Azure Blob Storage, or a local file system.
+The `$export` operation is an asynchronous operation that enables the bulk export of FHIR data that has been transformed using ViewDefinitions. Multiple ViewDefinitions can be exported in a single operation, allowing efficient batch processing of related views. Exported data can be written in various formats (CSV, NDJSON, Parquet) and delivered to file storage systems such as Amazon S3, Azure Blob Storage, or a local file system.
 
 **Canonical URL:** `http://sql-on-fhir.org/OperationDefinition/$export`
 
@@ -27,10 +27,11 @@ The `$export` operation enables the bulk export of FHIR data that has been trans
 ### Asynchronous Pattern
 
 This operation follows the FHIR Asynchronous Interaction Request Pattern:
-1. Client sends request with `Prefer: respond-async` header
+1. Client sends request with `Prefer: respond-async` header and one or more `view` parameters
 2. Server returns location URL in header and response body
 3. Client polls the location URL for export status
 4. Server responds with Parameters resource containing export status
+5. Upon completion, each requested view has its own output entry with download URL(s)
 
 **Note**: This operation uses Parameters resource format instead of Bundle format to:
 - Provide structured status reporting and metadata
@@ -65,43 +66,43 @@ Optional filtering parameters:
 
 #### Core Parameters
 
-| Name | Type | Scope | Required | Min | Max | Description |
-|------|------|-------|----------|-----|-----|-------------|
-| view | complex | type | Yes | 1 | * | ViewDefinition(s) to export. See [ViewDefinition Parameter](#viewdefinition-parameter) |
+| Name | Type | Min | Max | Description |
+|------|------|-----|-----|-------------|
+| view | complex | 1 | * | ViewDefinition(s) to export. Can be repeated to export multiple views in a single operation. See [ViewDefinition Parameter](#viewdefinition-parameter) |
 
 #### ViewDefinition Parameter
 
-The `view` parameter is a complex type with the following parts:
+The `view` parameter is a complex type that can be repeated multiple times to export several ViewDefinitions in a single operation. Each `view` parameter has the following parts:
 
-| Name | Type | Required | Min | Max | Description |
-|------|------|----------|-----|-----|-------------|
-| view | complex | Yes | 1 | * | A ViewDefinition to export |
-| view.name | string | No | 0 | 1 | Name for the export output. If not provided, ViewDefinition name will be used |
-| view.viewReference | Reference | Conditional¹ | 0 | 1 | Reference to ViewDefinition on the server. [Details](#viewreference-clarification) |
-| view.viewResource | ViewDefinition | Conditional¹ | 0 | 1 | Inline ViewDefinition resource |
+| Name | Type | Min | Max | Description |
+|------|------|-----|-----|-------------|
+| view | complex | 1 | * | A ViewDefinition to export |
+| view.name | string | 0 | 1 | Name for the export output. If not provided, ViewDefinition name will be used |
+| view.viewReference | Reference | 0¹ | 1 | Reference to ViewDefinition on the server. [Details](#viewreference-clarification) |
+| view.viewResource | ViewDefinition | 0¹ | 1 | Inline ViewDefinition resource |
 
 ¹ Either view.viewReference or view.viewResource is required
 
 #### Export Control
 
-| Name | Type | Scope | Required | Min | Max | Description |
-|------|------|-------|----------|-----|-----|-------------|
-| clientTrackingId | string | type | No | 0 | 1 | Client-provided tracking ID for the export operation |
-| _format | code | type | No | 0 | 1 | Output format: `csv`, `ndjson`, `parquet`, `json`. [Details](#format-parameter-clarification) |
+| Name | Type | Min | Max | Description |
+|------|------|-----|-----|-------------|
+| clientTrackingId | string | 0 | 1 | Client-provided tracking ID for the export operation |
+| _format | code | 0 | 1 | Output format: `csv`, `ndjson`, `parquet`, `json`. [Details](#format-parameter-clarification) |
 
 #### Filtering
 
-| Name | Type | Scope | Required | Min | Max | Description |
-|------|------|-------|----------|-----|-----|-------------|
-| patient | Reference | type | No | 0 | * | Filter by patient reference. [Details](#patient-parameter-clarification) |
-| group | Reference | type | No | 0 | * | Filter by group membership. [Details](#group-parameter-clarification) |
-| _since | instant | type | No | 0 | 1 | Export only resources updated since this time. [Details](#since-parameter-clarification) |
+| Name | Type | Min | Max | Description |
+|------|------|-----|-----|-------------|
+| patient | Reference | 0 | * | Filter by patient reference. [Details](#patient-parameter-clarification) |
+| group | Reference | 0 | * | Filter by group membership. [Details](#group-parameter-clarification) |
+| _since | instant | 0 | 1 | Export only resources updated since this time. [Details](#since-parameter-clarification) |
 
 #### Data Source
 
-| Name | Type | Scope | Required | Min | Max | Description |
-|------|------|-------|----------|-----|-----|-------------|
-| source | string | type | No | 0 | 1 | External data source (e.g., URI, bucket name). If absent, uses server data |
+| Name | Type | Min | Max | Description |
+|------|------|-----|-----|-------------|
+| source | string | 0 | 1 | External data source (e.g., URI, bucket name). If absent, uses server data |
 
 If server does not support a parameter, request should be rejected with `400 Bad Request` 
 and `OperationOutcome` resource in the body with clarification that the parameter is not supported.
@@ -159,36 +160,36 @@ the server MAY include these resources in a response irrespective of the `_since
 
 #### Export Identifiers
 
-| Name | Type | Scope | Required | Min | Max | Description |
-|------|------|-------|----------|-----|-----|-------------|
-| exportId | string | type | Yes | 1 | 1 | Server-generated export ID |
-| clientTrackingId | string | type | No | 0 | 1 | Client-provided tracking ID (echoed from input if provided) |
+| Name | Type | Min | Max | Description |
+|------|------|-----|-----|-------------|
+| exportId | string | 1 | 1 | Server-generated export ID |
+| clientTrackingId | string | 0 | 1 | Client-provided tracking ID (echoed from input if provided) |
 
 #### Export Status
 
-| Name | Type | Scope | Required | Min | Max | Description |
-|------|------|-------|----------|-----|-----|-------------|
-| status | code | type | Yes | 1 | 1 | The status of the export: `accepted`, `in-progress`, `completed`, `cancelled`, `failed` |
-| location | uri | type | Yes | 1 | 1 | The URL to poll for the status of the export |
-| cancelUrl | uri | type | No | 0 | 1 | Dedicated URL to cancel the export (alternative to DELETE on location URL) |
+| Name | Type | Min | Max | Description |
+|------|------|-----|-----|-------------|
+| status | code | 1 | 1 | The status of the export: `accepted`, `in-progress`, `completed`, `cancelled`, `failed` |
+| location | uri | 1 | 1 | The URL to poll for the status of the export |
+| cancelUrl | uri | 0 | 1 | Dedicated URL to cancel the export (alternative to DELETE on location URL) |
 
 #### Export Metadata
 
-| Name | Type | Scope | Required | Min | Max | Description |
-|------|------|-------|----------|-----|-----|-------------|
-| _format | code | type | No | 0 | 1 | The format of the exported files (echoed from input if provided) |
-| exportStartTime | instant | type | No | 0 | 1 | When the export operation began |
-| exportEndTime | instant | type | No | 0 | 1 | When the export operation completed (only in completed status) |
-| exportDuration | integer | type | No | 0 | 1 | The actual duration of the export in seconds (only in completed status) |
-| estimatedTimeRemaining | integer | type | No | 0 | 1 | Estimated seconds until completion (only in in-progress status) |
+| Name | Type | Min | Max | Description |
+|------|------|-----|-----|-------------|
+| _format | code | 0 | 1 | The format of the exported files (echoed from input if provided) |
+| exportStartTime | instant | 0 | 1 | When the export operation began |
+| exportEndTime | instant | 0 | 1 | When the export operation completed (only in completed status) |
+| exportDuration | integer | 0 | 1 | The actual duration of the export in seconds (only in completed status) |
+| estimatedTimeRemaining | integer | 0 | 1 | Estimated seconds until completion (only in in-progress status) |
 
 #### Export Results
 
-| Name | Type | Scope | Required | Min | Max | Description |
-|------|------|-------|----------|-----|-----|-------------|
-| output | complex | type | No | 0 | * | Output information for each exported view (only in completed status) |
-| output.name | string | type | Yes | 1 | 1 | The name of the exported view. [Details](#output-name-clarification) |
-| output.location | uri | type | Yes | 1 | * | URL(s) to download the exported file(s). [Details](#output-partitioning) |
+| Name | Type | Min | Max | Description |
+|------|------|-----|-----|-------------|
+| output | complex | 0 | * | Output information for each exported view (only in completed status) |
+| output.name | string | 1 | 1 | The name of the exported view. [Details](#output-name-clarification) |
+| output.location | uri | 1 | * | URL(s) to download the exported file(s). [Details](#output-partitioning) |
 
 ### Output Name Clarification
 
