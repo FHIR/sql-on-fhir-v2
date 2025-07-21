@@ -599,9 +599,70 @@ Since these analytic views are often used as SQL tables, it can be useful to
 provide database type information to ensure the desired tables or views are
 created. This is done by tagging fields with database-specific type information.
 
-For instance, we tag a birth date as an ANSI date. This particular
-view relies on the birth dates being full dates, which is not guaranteed but is
-common and can simplify analysis in some systems.
+### Default Type Mappings
+
+To maximize consistency across different view runners, implementations SHOULD
+align their output types to the following default type mappings from FHIR and
+FHIRPath types to [ISO/IEC 9075](https://www.iso.org/standard/76583.html) SQL
+types. If implementations do not natively support SQL types, they SHOULD map
+each of these types to the closest equivalent in their output format.
+
+#### FHIR Type to SQL Type Mapping
+
+| FHIR type    | ISO/IEC 9075 SQL type    |
+|--------------|--------------------------|
+| base64Binary | BINARY                   |
+| boolean      | BOOLEAN                  |
+| canonical    | CHARACTER VARYING        |
+| code         | CHARACTER VARYING        |
+| date         | CHARACTER VARYING        |
+| dateTime     | CHARACTER VARYING        |
+| decimal      | CHARACTER VARYING        |
+| id           | CHARACTER VARYING        |
+| instant      | TIMESTAMP WITH TIME ZONE |
+| integer      | INT                      |
+| integer64    | BIGINT                   |
+| markdown     | CHARACTER VARYING        |
+| oid          | CHARACTER VARYING        |
+| positiveInt  | INT                      |
+| string       | CHARACTER VARYING        |
+| time         | CHARACTER VARYING        |
+| unsignedInt  | INT                      |
+| uri          | CHARACTER VARYING        |
+| url          | CHARACTER VARYING        |
+| uuid         | CHARACTER VARYING        |
+{:.table-data}
+
+#### FHIRPath Type to SQL Type Mapping
+
+| FHIRPath type | ISO/IEC 9075 SQL type |
+|---------------|-----------------------|
+| Boolean       | BOOLEAN               |
+| String        | CHARACTER VARYING     |
+| Integer       | INT                   |
+| Decimal       | CHARACTER VARYING     |
+| Date          | CHARACTER VARYING     |
+| Time          | CHARACTER VARYING     |
+| DateTime      | CHARACTER VARYING     |
+{:.table-data}
+
+Where the representation is `CHARACTER VARYING`, the format MUST comply with
+the string representation of that type within the 
+[FHIR spec](https://www.hl7.org/fhir/R4/datatypes.html#primitive).
+
+Where a path has both a FHIR type and a FHIRPath type, the FHIR type mapping
+will take precedence.
+
+### Overriding Default Type Mappings
+
+The default type hints can be overridden for individual columns within view
+definitions using tags. The tag name is `ansi/type`, and the value is the
+desired ISO/IEC 9075 SQL type.
+
+For instance, we tag a birth date column using the `DATE` type. This signals to
+the view runner that we would like this column represented using the native
+date type. This particular view relies on the birth dates being full dates,
+which is not guaranteed but is common and can simplify analysis in some systems.
 
 ```json
 {
@@ -631,10 +692,12 @@ common and can simplify analysis in some systems.
 }
 ```
 
-Another use case may be for users to select database-specific numeric types.
+Behavior is undefined and left to the runner if the type hint tag contains a
+value that is unknown or incompatible with the underlying database type.
 
-Behavior is undefined and left to the runner if the expression returns a value
-that is incompatible with the underlying database type.
+Another use case may be for users to select database-specific numeric types.
+Implementations can define a tag name and use it to enable users to specify
+the desired implementation-specific type for a column.
 
 ## Processing Algorithm
 
