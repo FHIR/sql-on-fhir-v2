@@ -26,6 +26,33 @@ The operation can be invoked at two levels:
 * **GET**: For simple invocations without request body
 * **POST**: Required when providing ViewDefinition resource or resources to transform
 
+### GET Method Limitations
+
+When using the GET method, the following limitations apply:
+
+1. **No Request Body Parameters**: GET requests cannot include parameters that require a request body:
+   - Cannot provide `viewResource` parameter (inline ViewDefinition)
+   - Cannot provide `resource` parameter (direct resources to transform)
+   
+2. **Available Parameters**: Only parameters that can be passed as query parameters are supported:
+   - `_format` - Output format specification
+   - `header` - Include CSV headers (for CSV format)
+   - `patient` - Filter by patient reference
+   - `group` - Filter by group membership
+   - `_since` - Filter by last updated time
+   - `_limit` - Limit number of result rows
+   - `source` - External data source
+
+3. **Use Cases**: GET is suitable for:
+   - Instance-level invocations where the ViewDefinition is identified by the URL path
+   - Simple filtering and formatting of server data
+   - Quick queries without complex configuration
+
+4. **When POST is Required**: Use POST instead of GET when you need to:
+   - Provide an inline ViewDefinition via `viewResource` parameter
+   - Supply resources directly via `resource` parameter for transformation
+   - Pass complex parameter values that cannot be represented as query strings
+
 ### Data Sources
 
 The operation can process data from:
@@ -38,10 +65,15 @@ The operation can process data from:
 ### Output Format
 
 The response format is determined by (in order of precedence):
-1. `_format` parameter
-2. `Accept` header
 
-Supported formats: `json`, `ndjson`, `csv`, `parquet`
+- **`_format` parameter**: Use shortened format names (`json`, `ndjson`, `csv`, `parquet`)
+- **`Accept` header**: Use standard MIME types (`application/json`, `application/x-ndjson`, `text/csv`, `application/octet-stream`)
+
+Examples:
+- `_format=json` or `Accept: application/json`
+- `_format=ndjson` or `Accept: application/x-ndjson`
+- `_format=csv` or `Accept: text/csv`
+- `_format=parquet` or `Accept: application/octet-stream`
 
 ### Filtering
 
