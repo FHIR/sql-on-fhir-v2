@@ -36,3 +36,31 @@ its views or tables to tabular data.
 """
 * select.column obeys no-collections
 * select.column obeys primitives-only
+
+
+Invariant: must-be-sql-expressions
+Description: "The content of the Library must be SQL expressions."
+Severity: #error
+Expression: "content.contentType.startsWith('application/sql')"
+
+Profile: QueryLibrary
+Title: "Query Library"
+Parent: Library
+Description: """
+A profile for FHIR Library used to represent SQL queries. 
+
+**Purpose**
+The FHIR Library wraps the SQL exression(s) as a FHIR Attachment datatype. The
+attachment data is base64 encoded per the FHIR specification. The Library may
+include relatedArtifacts to indicate ViewDefinitions or other resources that
+are used in the query. 
+
+**Conformance**
+The library type must be a code to indicate the library contains query logic
+(`SQLonFHIR#query-library`). And the content of the Library must be sql
+expressions based on the `contentType`.
+"""
+
+* obeys must-be-sql-expressions
+
+* type = SQLonFHIR#query-library

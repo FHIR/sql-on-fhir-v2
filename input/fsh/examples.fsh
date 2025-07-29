@@ -292,3 +292,22 @@ Usage: #example
   * column[+]
     * path = "location.getReferenceKey(Location)"
     * name = "location_id"
+
+
+Instance: UniquePatientAddressesQuery
+Description: "A logic library that defines a query to retrieve unique patient addresses."
+InstanceOf: QueryLibrary
+Usage: #example
+* status = #active
+* relatedArtifact[+]
+  * type = #depends-on
+  * resource = Canonical(PatientDemographics)
+* relatedArtifact[+]
+  * type = #depends-on
+  * resource = Canonical(PatientAddresses)
+* content[+]
+  * contentType = #application/sql
+  * data = "LS0gU3RhbmRhcmQgU1FMCldJVEggUmFua2VkQWRkcmVzc2VzIEFTICgKICAgIFNFTEVDVCAKICAgICAgICBwZC4qLAogICAgICAgIHBhLiosCiAgICAgICAgUk9XX05VTUJFUigpIE9WRVIgKFBBUlRJVElPTiBCWSBwZC5wYXRpZW50X2lkIE9SREVSIEJZIHBhLmFkZHJlc3NfaWQpIEFTIGFkZHJlc3NfcmFuawogICAgRlJPTSAKICAgICAgICBwYXRpZW50X2RlbW9ncmFwaGljcyBwZAogICAgSk9JTiAKICAgICAgICBwYXRpZW50X2FkZHJlc3NlcyBwYSBPTiBwZC5wYXRpZW50X2lkID0gcGEucGF0aWVudF9pZAogICAgV0hFUkUgCiAgICAgICAgcGQuYWdlID4gMTgKICAgICAgICBBTkQgcGEuY2l0eSA9IE5ldyBZb3JrCikKCg=="
+* content[+]
+  * contentType = #"application/sql;dialect=sql-2"
+  * data = "U0VMRUNUIHBkLiosIHBhLioKRlJPTSBwYXRpZW50X2RlbW9ncmFwaGljcyBwZApKT0lOIHBhdGllbnRfYWRkcmVzc2VzIHBhIE9OIHBkLnBhdGllbnRfaWQgPSBwYS5wYXRpZW50X2lkCldIRVJFIHBkLmFnZSA+IDE4CiAgQU5EIHBhLmNpdHkgPSBOZXcgWW9yawogIEFORCBwYS5hZGRyZXNzX2lkID0gKAogICAgICBTRUxFQ1QgTUlOKGFkZHJlc3NfaWQpCiAgICAgIEZST00gcGF0aWVudF9hZGRyZXNzZXMKICAgICAgV0hFUkUgcGF0aWVudF9pZCA9IHBkLnBhdGllbnRfaWQgQU5EIGNpdHkgPSBOZXcgWW9yawogICk7Cg=="
