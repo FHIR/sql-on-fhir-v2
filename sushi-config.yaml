@@ -57,7 +57,6 @@ publisher:
 parameters:
   excludettl: true
   path-test: tests
-  custom-resource: fsh-generated/resources/StructureDefinition-ViewDefinition.json
 
 #   validation: [allow-any-extensions, no-broken-links]
 #
