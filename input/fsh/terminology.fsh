@@ -1,11 +1,9 @@
-CodeSystem: SqlOnFhirLibraryTypesCS
-Id: sql-on-fhir-library-types-cs
+CodeSystem: LibraryTypesCodes
 Title: "SQL Library Types Code System"
 Description: "Library types for SQL on FHIR."
 * #sql-query "SQL Query Definition" "The resource is a definition for a SQL Query"
 
-CodeSystem: SqlOnFhirDialectsCS
-Id: sql-on-fhir-library-dialects-cs
+CodeSystem: SQLDialectCodes
 Title: "SQL Dialects Code System"
 Description: "SQL dialects"
 * #ansi-sql "ANSI SQL" "American National Standards Institute SQL standard"
@@ -31,8 +29,12 @@ Description: "SQL dialects"
 * #trino "Trino" "Trino distributed SQL query engine dialect"
 * #vertica "Vertica" "Vertica analytics database SQL dialect"
 
-CodeSystem: SqlOnFhirExportStatusCS
-Id: sql-on-fhir-export-status-cs
+ValueSet: AllSQLDialectCodes
+Title: "All SQL Dialect Codes"
+Description: "ValueSet of all codes from SQL Dialect Codes codesystem"
+* codes from system SQLDialectCodes
+
+CodeSystem: ExportStatusCodes
 Title: "Export Status Code System"
 Description: "Export status codes for SQL on FHIR."
 * #accepted "Accepted" "The export has been accepted and is awaiting processing"
@@ -40,4 +42,3 @@ Description: "Export status codes for SQL on FHIR."
 * #completed "Completed" "The export has been completed"
 * #failed "Failed" "The export has failed"
 * #in-progress "In progress" "The export is currently in progress"
-

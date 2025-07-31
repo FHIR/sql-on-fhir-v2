@@ -36,29 +36,3 @@ its views or tables to tabular data.
 """
 * select.column obeys no-collections
 * select.column obeys primitives-only
-
-
-Invariant: must-be-sql-expressions
-Description: "The content of the Library must be SQL expressions."
-Severity: #error
-Expression: "content.contentType.startsWith('application/sql')"
-
-
-// XXX: This needs to manually be kept in sync with the SqlOnFhirDialectsCS CodeSystem
-// as it is used to validate the dialect specified in the content attachment.
-// I don't know a way to build a fhirpath expression that can validate against a CodeSystem
-Invariant: dialect-must-be-in-dialect-code-system
-Description: """The dialect specified in the content attachment must match one of the codes in the SqlOnFhirDialectsCS CodeSystem."""
-Severity: #error
-Expression: "content.where(contentType.contains('dialect')).contentType.select(substring(indexOf('dialect=') + 8) in ('ansi-sql' | 'bigquery' | 'clickhouse' | 'db2' | 'duckdb' | 'h2' | 'hive' | 'hsqldb' | 'mariadb' | 'mysql' | 'oracle' | 'postgresql' | 'presto' | 'redshift' | 'snowflake' | 'spark-sql' | 'sql-2' | 'sql-server' | 'sqlite' | 'teradata' | 'trino' | 'vertica')).allTrue()"
-
-Profile: SQLQuery
-Title: "SQL Query Library"
-Parent: Library
-Description: "A profile for FHIR Library used to represent a single logical SQL query, possibly with multiple SQL dialects."
-
-
-* obeys must-be-sql-expressions
-* obeys dialect-must-be-in-dialect-code-system
-
-* type = SqlOnFhirLibraryTypesCS#sql-query
