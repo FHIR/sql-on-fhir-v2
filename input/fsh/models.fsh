@@ -12,10 +12,10 @@ Expression: "empty() or matches('^[A-Za-z][A-Za-z0-9_]*$')"
 
 Invariant: sql-expressions
 Description: """
-Can only have at most one of `forEach` or `forEachOrNull`.
+Can only have at most one of `forEach`, `forEachOrNull`, or `repeat`.
 """
 Severity: #error
-Expression: "(forEach | forEachOrNull).count() <= 1"
+Expression: "(forEach | forEachOrNull | repeat).count() <= 1"
 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 Logical: ViewDefinition
@@ -110,6 +110,11 @@ criteria are defined by FHIRPath expressions.
     Same as forEach, but produces a single row with null values in the nested expression if the collection is empty. For example,
     with a Patient resource, a `forEachOrNull` on address will produce a row for each patient even if there are no addresses; it will
     simply set the address columns to `null`.
+  """
+  * repeat 0..* string "FHIRPath expressions to recursively traverse and union results." """
+    A list of FHIRPath expressions that define paths to recursively traverse. The view runner will recursively
+    follow each path to any depth, collecting results from all levels. All results are combined using a union
+    operation.
   """
   * unionAll 0..* contentReference https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition#ViewDefinition.select  "Creates a union of all rows in the given selection structures." """
     A `unionAll` combines the results of multiple selection structures. Each structure under the `unionAll` must produce the same column names
