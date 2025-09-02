@@ -381,6 +381,144 @@
           "answerValue": null
         }
       ]
+    },
+    {
+      "title": "repeat: combined with unionAll",
+      "tags": [
+        "shareable"
+      ],
+      "view": {
+        "resource": "QuestionnaireResponse",
+        "status": "active",
+        "select": [
+          {
+            "column": [
+              {
+                "name": "id",
+                "path": "id",
+                "type": "id"
+              }
+            ]
+          },
+          {
+            "unionAll": [
+              {
+                "repeat": [
+                  "item"
+                ],
+                "column": [
+                  {
+                    "name": "type",
+                    "path": "'item'",
+                    "type": "string"
+                  },
+                  {
+                    "name": "linkId",
+                    "path": "linkId",
+                    "type": "string"
+                  },
+                  {
+                    "name": "text",
+                    "path": "text",
+                    "type": "string"
+                  }
+                ]
+              },
+              {
+                "repeat": [
+                  "item",
+                  "answer.item"
+                ],
+                "column": [
+                  {
+                    "name": "type",
+                    "path": "'answer-item'",
+                    "type": "string"
+                  },
+                  {
+                    "name": "linkId",
+                    "path": "linkId",
+                    "type": "string"
+                  },
+                  {
+                    "name": "text",
+                    "path": "text",
+                    "type": "string"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "expect": [
+        {
+          "id": "qr1",
+          "type": "item",
+          "linkId": "1",
+          "text": "Group 1"
+        },
+        {
+          "id": "qr1",
+          "type": "item",
+          "linkId": "1.1",
+          "text": "Question 1.1"
+        },
+        {
+          "id": "qr1",
+          "type": "item",
+          "linkId": "1.2",
+          "text": "Question 1.2"
+        },
+        {
+          "id": "qr1",
+          "type": "item",
+          "linkId": "1.2.1",
+          "text": "Question 1.2.1"
+        },
+        {
+          "id": "qr1",
+          "type": "item",
+          "linkId": "2",
+          "text": "Group 2"
+        },
+        {
+          "id": "qr1",
+          "type": "answer-item",
+          "linkId": "1",
+          "text": "Group 1"
+        },
+        {
+          "id": "qr1",
+          "type": "answer-item",
+          "linkId": "1.1",
+          "text": "Question 1.1"
+        },
+        {
+          "id": "qr1",
+          "type": "answer-item",
+          "linkId": "1.1.1",
+          "text": "Follow-up to 1.1"
+        },
+        {
+          "id": "qr1",
+          "type": "answer-item",
+          "linkId": "1.2",
+          "text": "Question 1.2"
+        },
+        {
+          "id": "qr1",
+          "type": "answer-item",
+          "linkId": "1.2.1",
+          "text": "Question 1.2.1"
+        },
+        {
+          "id": "qr1",
+          "type": "answer-item",
+          "linkId": "2",
+          "text": "Group 2"
+        }
+      ]
     }
   ]
 }
