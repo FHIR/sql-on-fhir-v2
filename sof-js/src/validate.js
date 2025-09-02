@@ -138,6 +138,11 @@ function viewdef_schema(for_tests = false) {
             unionAll: $ref('select'),
             forEach: fhirpath_string,
             forEachOrNull: fhirpath_string,
+            repeat: {
+              type: array,
+              minItems: 1,
+              items: fhirpath_string,
+            },
             select: $ref('select'),
           },
         },

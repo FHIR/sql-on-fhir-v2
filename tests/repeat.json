@@ -167,7 +167,7 @@
         {
           "id": "qr1",
           "linkId": "1.1.1",
-          "text": "Follow up to 1.1"
+          "text": "Follow-up to 1.1"
         },
         {
           "id": "qr1",
@@ -187,7 +187,7 @@
       ]
     },
     {
-      "title": "repeat: empty child element",
+      "title": "repeat: empty expression",
       "tags": [
         "shareable"
       ],
@@ -221,7 +221,7 @@
       "expect": []
     },
     {
-      "title": "repeat: empty expression",
+      "title": "repeat: empty child expression",
       "tags": [
         "shareable"
       ],
@@ -247,12 +247,43 @@
                 "name": "linkId",
                 "path": "linkId",
                 "type": "string"
+              },
+              {
+                "name": "definition",
+                "path": "definition",
+                "type": "uri"
               }
             ]
           }
         ]
       },
-      "expect": []
+      "expect": [
+        {
+          "id": "qr1",
+          "linkId": "1",
+          "definition": null
+        },
+        {
+          "id": "qr1",
+          "linkId": "1.1",
+          "definition": null
+        },
+        {
+          "id": "qr1",
+          "linkId": "1.2",
+          "definition": null
+        },
+        {
+          "id": "qr1",
+          "linkId": "1.2.1",
+          "definition": null
+        },
+        {
+          "id": "qr1",
+          "linkId": "2",
+          "definition": null
+        }
+      ]
     },
     {
       "title": "repeat: combined with forEach",
@@ -303,7 +334,7 @@
       "expect": [
         {
           "id": "qr1",
-          "linkId": "1",
+          "linkId": "1.1",
           "answerValue": "Answer 1.1"
         }
       ]
