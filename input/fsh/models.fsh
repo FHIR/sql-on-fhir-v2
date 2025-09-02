@@ -111,7 +111,7 @@ criteria are defined by FHIRPath expressions.
     with a Patient resource, a `forEachOrNull` on address will produce a row for each patient even if there are no addresses; it will
     simply set the address columns to `null`.
   """
-  * repeat 0..* string "FHIRPath expressions to recursively traverse and union results." """
+  * repeat 0..* string "FHIRPath expressions to recursively select from." """
     A list of FHIRPath expressions that define paths to recursively traverse. The view runner will recursively
     follow each path to any depth, collecting results from all levels. All results are combined using a union
     operation.
