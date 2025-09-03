@@ -15,7 +15,7 @@
     "name": "Pathling",
     "url": "https://pathling.csiro.au/docs",
     "description": "Pathling is an open-source SQL on FHIR view runner for Apache Spark, see: https://pathling.csiro.au/docs/libraries/running-queries",
-    "testResultsUrl": "pathling.csiro.au/test-reports/v8/sof-test-results.json"
+    "testResultsUrl": "https://pathling.csiro.au/test-reports/v8/sof-test-results.json"
   },
   {
     "name": "Google (Open Health Stack)",
