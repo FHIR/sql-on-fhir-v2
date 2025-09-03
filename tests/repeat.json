@@ -1,11 +1,7 @@
 {
   "title": "repeat",
   "description": "Recursive traversal with repeat directive",
-  "fhirVersion": [
-    "5.0.0",
-    "4.0.1",
-    "3.0.2"
-  ],
+  "fhirVersion": ["5.0.0", "4.0.1", "3.0.2"],
   "resources": [
     {
       "resourceType": "QuestionnaireResponse",
@@ -52,9 +48,7 @@
   "tests": [
     {
       "title": "repeat: basic",
-      "tags": [
-        "shareable"
-      ],
+      "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
         "status": "active",
@@ -69,9 +63,7 @@
             ]
           },
           {
-            "repeat": [
-              "item"
-            ],
+            "repeat": ["item"],
             "column": [
               {
                 "name": "linkId",
@@ -117,9 +109,7 @@
     },
     {
       "title": "repeat: item and answer.item",
-      "tags": [
-        "shareable"
-      ],
+      "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
         "status": "active",
@@ -134,10 +124,7 @@
             ]
           },
           {
-            "repeat": [
-              "item",
-              "answer.item"
-            ],
+            "repeat": ["item", "answer.item"],
             "column": [
               {
                 "name": "linkId",
@@ -188,9 +175,7 @@
     },
     {
       "title": "repeat: empty expression",
-      "tags": [
-        "shareable"
-      ],
+      "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
         "status": "active",
@@ -205,9 +190,7 @@
             ]
           },
           {
-            "repeat": [
-              "jurisdiction"
-            ],
+            "repeat": ["jurisdiction"],
             "column": [
               {
                 "name": "code",
@@ -222,9 +205,7 @@
     },
     {
       "title": "repeat: empty child expression",
-      "tags": [
-        "shareable"
-      ],
+      "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
         "status": "active",
@@ -239,9 +220,7 @@
             ]
           },
           {
-            "repeat": [
-              "item"
-            ],
+            "repeat": ["item"],
             "column": [
               {
                 "name": "linkId",
@@ -287,9 +266,7 @@
     },
     {
       "title": "repeat: combined with forEach",
-      "tags": [
-        "shareable"
-      ],
+      "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
         "status": "active",
@@ -304,9 +281,7 @@
             ]
           },
           {
-            "repeat": [
-              "item"
-            ],
+            "repeat": ["item"],
             "select": [
               {
                 "column": [
@@ -341,9 +316,7 @@
     },
     {
       "title": "repeat: combined with forEachOrNull",
-      "tags": [
-        "shareable"
-      ],
+      "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
         "status": "active",
@@ -358,9 +331,7 @@
             ]
           },
           {
-            "repeat": [
-              "item"
-            ],
+            "repeat": ["item"],
             "select": [
               {
                 "column": [
@@ -415,9 +386,7 @@
     },
     {
       "title": "repeat: combined with unionAll",
-      "tags": [
-        "shareable"
-      ],
+      "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
         "status": "active",
@@ -434,9 +403,7 @@
           {
             "unionAll": [
               {
-                "repeat": [
-                  "item"
-                ],
+                "repeat": ["item"],
                 "column": [
                   {
                     "name": "type",
@@ -456,10 +423,7 @@
                 ]
               },
               {
-                "repeat": [
-                  "item",
-                  "answer.item"
-                ],
+                "repeat": ["item", "answer.item"],
                 "column": [
                   {
                     "name": "type",
