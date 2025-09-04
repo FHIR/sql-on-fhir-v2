@@ -16,10 +16,11 @@ The `$run` operation applies a ViewDefinition to transform FHIR resources into a
 
 The operation can be invoked at two levels:
 
-| Level | Endpoint | ViewDefinition Source |
-|-------|----------|----------------------|
-| Type | `POST /ViewDefinition/$run` | Must provide `viewResource` or `viewReference` parameter |
-| Instance | `GET/POST /ViewDefinition/{id}/$run` | Uses ViewDefinition identified by {id} |
+| Level    | Endpoint                             | ViewDefinition Source                                    |
+|----------|--------------------------------------|----------------------------------------------------------|
+| Type     | `POST /ViewDefinition/$run`          | Must provide `viewResource` or `viewReference` parameter |
+| Instance | `GET/POST /ViewDefinition/{id}/$run` | Uses ViewDefinition identified by {id}                   |
+{:.table-data}
 
 ### HTTP Methods
 
@@ -95,37 +96,47 @@ Optional filtering parameters:
 ### Input Parameters
 
 #### Core Parameters
-| Name | Type | Scope | Required | Max | Description |
-|------|------|-------|----------|-----|-------------|
-| viewReference | Reference | type, instance | Conditional¹ | 1 | Reference to ViewDefinition on the server. [Details](#viewreference-clarification) |
-| viewResource | ViewDefinition | type | Conditional¹ | 1 | Inline ViewDefinition resource |
+
+| Name          | Type           | Scope          | Required     | Max | Description                                                                        |
+|---------------|----------------|----------------|--------------|-----|------------------------------------------------------------------------------------|
+| viewReference | Reference      | type, instance | Conditional¹ | 1   | Reference to ViewDefinition on the server. [Details](#viewreference-clarification) |
+| viewResource  | ViewDefinition | type           | Conditional¹ | 1   | Inline ViewDefinition resource                                                     |
+{:.table-data}
 
 ¹ Either viewReference or viewResource is required at type level; neither allowed at instance level
 
 #### Output Control
-| Name | Type | Scope | Required | Max | Description |
-|------|------|-------|----------|-----|-------------|
-| _format | code | type, instance | Yes | 1 | Output format: `json`, `ndjson`, `csv`, `parquet` |
-| header | boolean | type, instance | No | 1 | Include CSV headers (default: true). Only applies to `csv` format |
+
+| Name    | Type    | Scope          | Required | Max | Description                                                       |
+|---------|---------|----------------|----------|-----|-------------------------------------------------------------------|
+| _format | code    | type, instance | Yes      | 1   | Output format: `json`, `ndjson`, `csv`, `parquet`                 |
+| header  | boolean | type, instance | No       | 1   | Include CSV headers (default: true). Only applies to `csv` format |
+{:.table-data}
 
 #### Filtering
-| Name | Type | Scope | Required | Max | Description |
-|------|------|-------|----------|-----|-------------|
-| patient | Reference | type, instance | No | 1 | Filter by patient reference. [Details](#patient-parameter-clarification) |
-| group | Reference | type, instance | No | * | Filter by group membership. [Details](#group-parameter-clarification) |
-| _since | instant | type, instance | No | 1 | Include only resources modified after this time. [Details](#since-parameter-clarification) |
-| _limit | integer | type, instance | No | 1 | Maximum number of rows to return |
+
+| Name    | Type      | Scope          | Required | Max | Description                                                                                |
+|---------|-----------|----------------|----------|-----|--------------------------------------------------------------------------------------------|
+| patient | Reference | type, instance | No       | 1   | Filter by patient reference. [Details](#patient-parameter-clarification)                   |
+| group   | Reference | type, instance | No       | *   | Filter by group membership. [Details](#group-parameter-clarification)                      |
+| _since  | instant   | type, instance | No       | 1   | Include only resources modified after this time. [Details](#since-parameter-clarification) |
+| _limit  | integer   | type, instance | No       | 1   | Maximum number of rows to return                                                           |
+{:.table-data}
 
 #### Data Source
-| Name | Type | Scope | Required | Max | Description |
-|------|------|-------|----------|-----|-------------|
-| resource | Resource | type, instance | No | * | FHIR resources to transform (alternative to server data) |
-| source | string | type, instance | No | 1 | External data source (e.g., URI, bucket name) |
+
+| Name     | Type     | Scope          | Required | Max | Description                                              |
+|----------|----------|----------------|----------|-----|----------------------------------------------------------|
+| resource | Resource | type, instance | No       | *   | FHIR resources to transform (alternative to server data) |
+| source   | string   | type, instance | No       | 1   | External data source (e.g., URI, bucket name)            |
+{:.table-data}
 
 ### Output Parameter
-| Name | Type | Description |
-|------|------|-------------|
+
+| Name   | Type   | Description                                  |
+|--------|--------|----------------------------------------------|
 | return | Binary | The transformed data in the requested format |
+{:.table-data}
 
 ### View Reference/Resource Clarification
 
@@ -322,13 +333,14 @@ Transfer-Encoding: chunked
 
 The operation uses standard HTTP status codes to indicate the outcome:
 
-| Status Code | Description | When to Use |
-|-------------|-------------|-------------|
-| 200 OK | Success | Operation completed successfully, results returned |
-| 400 Bad Request | Client Error | Invalid parameters, unsupported parameters, or malformed request |
-| 404 Not Found | Not Found | ViewDefinition resource not found (instance-level invocation) |
-| 422 Unprocessable Entity | Business Logic Error | Valid request but ViewDefinition is invalid or cannot be processed |
-| 500 Internal Server Error | Server Error | Unexpected server error during processing |
+| Status Code               | Description          | When to Use                                                        |
+|---------------------------|----------------------|--------------------------------------------------------------------|
+| 200 OK                    | Success              | Operation completed successfully, results returned                 |
+| 400 Bad Request           | Client Error         | Invalid parameters, unsupported parameters, or malformed request   |
+| 404 Not Found             | Not Found            | ViewDefinition resource not found (instance-level invocation)      |
+| 422 Unprocessable Entity  | Business Logic Error | Valid request but ViewDefinition is invalid or cannot be processed |
+| 500 Internal Server Error | Server Error         | Unexpected server error during processing                          |
+{:.table-data}
 
 All error responses (4xx and 5xx) SHOULD include an `OperationOutcome` resource providing details about the error.
 

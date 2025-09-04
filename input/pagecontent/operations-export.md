@@ -16,9 +16,10 @@ The `$export` operation is an asynchronous operation that enables the bulk expor
 
 ### Endpoints
 
-| Level | Endpoint | Description |
-|-------|----------|-------------|
-| Type | `POST /ViewDefinition/$export` | Bulk export using ViewDefinitions provided in parameters |
+| Level | Endpoint                       | Description                                              |
+|-------|--------------------------------|----------------------------------------------------------|
+| Type  | `POST /ViewDefinition/$export` | Bulk export using ViewDefinitions provided in parameters |
+{:.table-data}
 
 ### HTTP Methods
 
@@ -66,43 +67,48 @@ Optional filtering parameters:
 
 #### Core Parameters
 
-| Name | Type | Min | Max | Description |
-|------|------|-----|-----|-------------|
-| view | complex | 1 | * | ViewDefinition(s) to export. Can be repeated to export multiple views in a single operation. See [ViewDefinition Parameter](#viewdefinition-parameter) |
+| Name | Type    | Min | Max | Description                                                                                                                                            |
+|------|---------|-----|-----|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| view | complex | 1   | *   | ViewDefinition(s) to export. Can be repeated to export multiple views in a single operation. See [ViewDefinition Parameter](#viewdefinition-parameter) |
+{:.table-data}
 
 #### ViewDefinition Parameter
 
 The `view` parameter is a complex type that can be repeated multiple times to export several ViewDefinitions in a single operation. Each `view` parameter has the following parts:
 
-| Name | Type | Min | Max | Description |
-|------|------|-----|-----|-------------|
-| view | complex | 1 | * | A ViewDefinition to export |
-| view.name | string | 0 | 1 | Name for the export output. If not provided, ViewDefinition name will be used |
-| view.viewReference | Reference | 0¹ | 1 | Reference to ViewDefinition on the server. [Details](#viewreference-clarification) |
-| view.viewResource | ViewDefinition | 0¹ | 1 | Inline ViewDefinition resource |
+| Name               | Type           | Min | Max | Description                                                                        |
+|--------------------|----------------|-----|-----|------------------------------------------------------------------------------------|
+| view               | complex        | 1   | *   | A ViewDefinition to export                                                         |
+| view.name          | string         | 0   | 1   | Name for the export output. If not provided, ViewDefinition name will be used      |
+| view.viewReference | Reference      | 0¹  | 1   | Reference to ViewDefinition on the server. [Details](#viewreference-clarification) |
+| view.viewResource  | ViewDefinition | 0¹  | 1   | Inline ViewDefinition resource                                                     |
+{:.table-data}
 
 ¹ Either view.viewReference or view.viewResource is required
 
 #### Export Control
 
-| Name | Type | Min | Max | Description |
-|------|------|-----|-----|-------------|
-| clientTrackingId | string | 0 | 1 | Client-provided tracking ID for the export operation |
-| _format | code | 0 | 1 | Output format: `csv`, `ndjson`, `parquet`, `json`. [Details](#format-parameter-clarification) |
+| Name             | Type   | Min | Max | Description                                                                                   |
+|------------------|--------|-----|-----|-----------------------------------------------------------------------------------------------|
+| clientTrackingId | string | 0   | 1   | Client-provided tracking ID for the export operation                                          |
+| _format          | code   | 0   | 1   | Output format: `csv`, `ndjson`, `parquet`, `json`. [Details](#format-parameter-clarification) |
+{:.table-data}
 
 #### Filtering
 
-| Name | Type | Min | Max | Description |
-|------|------|-----|-----|-------------|
-| patient | Reference | 0 | * | Filter by patient reference. [Details](#patient-parameter-clarification) |
-| group | Reference | 0 | * | Filter by group membership. [Details](#group-parameter-clarification) |
-| _since | instant | 0 | 1 | Export only resources updated since this time. [Details](#since-parameter-clarification) |
+| Name    | Type      | Min | Max | Description                                                                              |
+|---------|-----------|-----|-----|------------------------------------------------------------------------------------------|
+| patient | Reference | 0   | *   | Filter by patient reference. [Details](#patient-parameter-clarification)                 |
+| group   | Reference | 0   | *   | Filter by group membership. [Details](#group-parameter-clarification)                    |
+| _since  | instant   | 0   | 1   | Export only resources updated since this time. [Details](#since-parameter-clarification) |
+{:.table-data}
 
 #### Data Source
 
-| Name | Type | Min | Max | Description |
-|------|------|-----|-----|-------------|
-| source | string | 0 | 1 | External data source (e.g., URI, bucket name). If absent, uses server data |
+| Name   | Type   | Min | Max | Description                                                                |
+|--------|--------|-----|-----|----------------------------------------------------------------------------|
+| source | string | 0   | 1   | External data source (e.g., URI, bucket name). If absent, uses server data |
+{:.table-data}
 
 If server does not support a parameter, request should be rejected with `400 Bad Request` 
 and `OperationOutcome` resource in the body with clarification that the parameter is not supported.
@@ -160,36 +166,40 @@ the server MAY include these resources in a response irrespective of the `_since
 
 #### Export Identifiers
 
-| Name | Type | Min | Max | Description |
-|------|------|-----|-----|-------------|
-| exportId | string | 1 | 1 | Server-generated export ID |
-| clientTrackingId | string | 0 | 1 | Client-provided tracking ID (echoed from input if provided) |
+| Name             | Type   | Min | Max | Description                                                 |
+|------------------|--------|-----|-----|-------------------------------------------------------------|
+| exportId         | string | 1   | 1   | Server-generated export ID                                  |
+| clientTrackingId | string | 0   | 1   | Client-provided tracking ID (echoed from input if provided) |
+{:.table-data}
 
 #### Export Status
 
-| Name | Type | Min | Max | Description |
-|------|------|-----|-----|-------------|
-| status | code | 1 | 1 | The status of the export: `accepted`, `in-progress`, `completed`, `cancelled`, `failed` |
-| location | uri | 1 | 1 | The URL to poll for the status of the export |
-| cancelUrl | uri | 0 | 1 | Dedicated URL to cancel the export (alternative to DELETE on location URL) |
+| Name      | Type | Min | Max | Description                                                                             |
+|-----------|------|-----|-----|-----------------------------------------------------------------------------------------|
+| status    | code | 1   | 1   | The status of the export: `accepted`, `in-progress`, `completed`, `cancelled`, `failed` |
+| location  | uri  | 1   | 1   | The URL to poll for the status of the export                                            |
+| cancelUrl | uri  | 0   | 1   | Dedicated URL to cancel the export (alternative to DELETE on location URL)              |
+{:.table-data}
 
 #### Export Metadata
 
-| Name | Type | Min | Max | Description |
-|------|------|-----|-----|-------------|
-| _format | code | 0 | 1 | The format of the exported files (echoed from input if provided) |
-| exportStartTime | instant | 0 | 1 | When the export operation began |
-| exportEndTime | instant | 0 | 1 | When the export operation completed (only in completed status) |
-| exportDuration | integer | 0 | 1 | The actual duration of the export in seconds (only in completed status) |
-| estimatedTimeRemaining | integer | 0 | 1 | Estimated seconds until completion (only in in-progress status) |
+| Name                   | Type    | Min | Max | Description                                                             |
+|------------------------|---------|-----|-----|-------------------------------------------------------------------------|
+| _format                | code    | 0   | 1   | The format of the exported files (echoed from input if provided)        |
+| exportStartTime        | instant | 0   | 1   | When the export operation began                                         |
+| exportEndTime          | instant | 0   | 1   | When the export operation completed (only in completed status)          |
+| exportDuration         | integer | 0   | 1   | The actual duration of the export in seconds (only in completed status) |
+| estimatedTimeRemaining | integer | 0   | 1   | Estimated seconds until completion (only in in-progress status)         |
+{:.table-data}
 
 #### Export Results
 
-| Name | Type | Min | Max | Description |
-|------|------|-----|-----|-------------|
-| output | complex | 0 | * | Output information for each exported view (only in completed status) |
-| output.name | string | 1 | 1 | The name of the exported view. [Details](#output-name-clarification) |
-| output.location | uri | 1 | * | URL(s) to download the exported file(s). [Details](#output-partitioning) |
+| Name            | Type    | Min | Max | Description                                                              |
+|-----------------|---------|-----|-----|--------------------------------------------------------------------------|
+| output          | complex | 0   | *   | Output information for each exported view (only in completed status)     |
+| output.name     | string  | 1   | 1   | The name of the exported view. [Details](#output-name-clarification)     |
+| output.location | uri     | 1   | *   | URL(s) to download the exported file(s). [Details](#output-partitioning) |
+{:.table-data}
 
 ### Output Name Clarification
 
@@ -242,13 +252,14 @@ Clients MUST download all parts to obtain the complete dataset for a view.
 
 The $export operation uses standard HTTP status codes to indicate the outcome:
 
-| Status Code | Description | When to Use |
-|-------------|-------------|-------------|
-| 202 Accepted | Success | Export request accepted, poll for status |
-| 400 Bad Request | Client Error | Invalid parameters, unsupported parameters, missing required headers |
-| 404 Not Found | Not Found | ViewDefinition resource not found |
-| 422 Unprocessable Entity | Business Logic Error | Valid request but ViewDefinition is invalid or cannot be processed |
-| 500 Internal Server Error | Server Error | Unexpected server error |
+| Status Code               | Description          | When to Use                                                          |
+|---------------------------|----------------------|----------------------------------------------------------------------|
+| 202 Accepted              | Success              | Export request accepted, poll for status                             |
+| 400 Bad Request           | Client Error         | Invalid parameters, unsupported parameters, missing required headers |
+| 404 Not Found             | Not Found            | ViewDefinition resource not found                                    |
+| 422 Unprocessable Entity  | Business Logic Error | Valid request but ViewDefinition is invalid or cannot be processed   |
+| 500 Internal Server Error | Server Error         | Unexpected server error                                              |
+{:.table-data}
 
 All error responses (4xx and 5xx) SHOULD include an `OperationOutcome` resource providing details about the error.
 
