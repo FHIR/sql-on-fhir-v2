@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:fhir="http://hl7.org/fhir">
+  <channel>
+    <title>SQL on FHIR Packages</title>
+    <description>New packages published by SQL on FHIR</description>
+    <link>https://sql-on-fhir.org/ig/package-feed.xml</link>
+    <lastBuildDate>Mon, 09 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://sql-on-fhir.org/ig/package-feed.xml" rel="self"
+      type="application/rss+xml"/>
+    <pubDate>Mon, 09 Sep 2024 00:00:00 +0000</pubDate>
+    <language>en</language>
+    <ttl>600</ttl>
+    <item>
+      <title>org.sql-on-fhir.ig#2.0.0</title>
+      <description>A specification for defining portable views of FHIR data that can be easily queried using tools such as SQL.</description>
+      <link>https://sql-on-fhir.org/ig/2.0.0/package.tgz</link>
+      <guid isPermaLink="true">https://sql-on-fhir.org/ig/2.0.0/package.tgz</guid>
+      <dc:creator>SQL on FHIR</dc:creator>
+      <fhir:version>5.0.0</fhir:version>
+      <fhir:kind>IG</fhir:kind>
+      <pubDate>Wed, 09 Oct 2024 00:00:00 +0000</pubDate>
+    </item>
+  </channel>
+</rss>
