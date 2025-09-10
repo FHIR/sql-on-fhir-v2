@@ -57,5 +57,11 @@
     "url": "https://github.com/joelmontavon/fhir4ds",
     "description": "FHIR for Data Science",
     "testResultsUrl": "https://raw.githubusercontent.com/joelmontavon/fhir4ds/refs/heads/main/test_report.json"
+  },
+  {
+    "name": "SAS (Python Library)",
+    "url": "https://github.com/sassoftware/sqlonfhir/tree/main",
+    "description": "SQL on FHIR Library in Python",
+    "testResultsUrl": "https://raw.githubusercontent.com/sassoftware/sqlonfhir/refs/heads/main/test_report/test_report.json"
   }
 ]
