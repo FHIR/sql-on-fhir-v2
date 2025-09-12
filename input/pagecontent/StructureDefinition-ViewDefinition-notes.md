@@ -180,6 +180,115 @@ joined to others with the following rules:
 The [examples](StructureDefinition-ViewDefinition-examples.html) illustrate this
 behavior.
 
+## Recursive Traversal with Repeat
+
+The `repeat` directive enables recursive traversal of nested structures, automatically
+flattening hierarchical data to any depth. This is particularly useful for resources
+with recursive nesting patterns like QuestionnaireResponse items, where the depth of
+nesting is not known in advance.
+
+The `repeat` directive takes an array of [FHIRPath](https://hl7.org/fhirpath/) 
+expressions that define paths to recursively traverse. The view runner will:
+
+1. Start at the current context node
+2. Evaluate each path expression
+3. For each result, recursively apply the same path patterns
+4. Continue until no more matches are found at any depth
+5. Union all results from all levels and all paths together
+
+### Example: Flattening QuestionnaireResponse Items
+
+Consider a QuestionnaireResponse with nested groups and questions:
+
+```json
+{
+  "resourceType": "QuestionnaireResponse",
+  "item": [
+    {
+      "linkId": "1",
+      "text": "Demographics",
+      "item": [
+        {
+          "linkId": "1.1",
+          "text": "Age",
+          "answer": [
+            {
+              "valueInteger": 45
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "2",
+      "text": "Medical History",
+      "answer": [
+        {
+          "item": [
+            {
+              "linkId": "2.1",
+              "text": "Conditions",
+              "answer": [
+                {
+                  "item": [
+                    {
+                      "linkId": "2.1.1",
+                      "text": "Diabetes Type",
+                      "answer": [
+                        {
+                          "valueString": "Type 2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+Using the repeat directive:
+
+```json
+{
+  "resource": "QuestionnaireResponse",
+  "select": [
+    {
+      "repeat": [
+        "item",
+        "answer.item"
+      ],
+      "column": [
+        {
+          "path": "linkId",
+          "name": "item_id"
+        },
+        {
+          "path": "text",
+          "name": "question_text"
+        }
+      ]
+    }
+  ]
+}
+```
+
+This would produce a flat table with all items regardless of nesting depth:
+
+| item_id | question_text   |
+|---------|-----------------|
+| 1       | Demographics    |
+| 1.1     | Age             |
+| 2       | Medical History |
+| 2.1     | Conditions      |
+| 2.1.1   | Diabetes Type   |
+{:.table-data}
+
 ## Unions
 
 A `select` can have an optional `unionAll`, which contains a list of `select`s
@@ -817,7 +926,17 @@ Then the Cartesian product of these sets consists of four complete rows:
 
 1. Define a list of Nodes `foci` as
 
-    - If `S.forEach` is defined: `fhirpath(S.forEach, N)`
+    - If `S.repeat` is defined: 
+        1. Initialize an empty list `result`
+        2. Define a recursive function `traverse(node, isRoot)`:
+            - If not `isRoot`, add `node` to `result`
+            - For each path `p` in `S.repeat`:
+                - Evaluate `fhirpath(p, node)` to get child nodes
+                - For each child node `c` in the result:
+                    - Recursively call `traverse(c, false)`
+        3. Call `traverse(N, true)` to start the traversal
+        4. Use `result` as `foci`
+    - Else if `S.forEach` is defined: `fhirpath(S.forEach, N)`
     - Else if `S.forEachOrNull` is defined: `fhirpath(S.forEachOrNull, N)`
     - Otherwise: `[N]` (a list with just the input node)
 
