@@ -19,14 +19,14 @@ specify things like column names and unnested items.
 
 [**Read the specification &rarr;**](https://sql-on-fhir.org/ig/latest/)
 
-Check the existing [implementations page](https://fhir.github.io/sql-on-fhir-v2/#impls) or register [your own](#registering-your-implementation).
+Check the existing [implementations page][] or register [your own](#registering-your-implementation).
 
 Check out the [interactive playground][].
 
 [//]: # (Links used in this document)
 [ViewDefinition]: https://build.fhir.org/ig/FHIR/sql-on-fhir-v2/StructureDefinition-ViewDefinition.html "ViewDefinition"
-[interactive playground]: https://fhir.github.io/sql-on-fhir-v2/#pg
-[implementations page]: https://fhir.github.io/sql-on-fhir-v2/#impls
+[interactive playground]: https://sql-on-fhir.org/extra/playground.html
+[implementations page]: https://sql-on-fhir.org/extra/impls.html
 
 ## FHIR Foundation Project Statement
 
