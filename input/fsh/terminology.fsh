@@ -42,3 +42,21 @@ Description: "Export status codes for SQL on FHIR."
 * #completed "Completed" "The export has been completed"
 * #failed "Failed" "The export has failed"
 * #in-progress "In progress" "The export is currently in progress"
+
+
+ValueSet: ExportStatusCodes
+Title: "Export Status Codes"
+Description: "ValueSet of all codes from Export Status Codes codesystem"
+* codes from system ExportStatusCodes
+
+CodeSystem: OutputFormatCodes
+Title: "Output Format Codes"
+Description: "Output format codes for SQL on FHIR."
+* #csv "CSV" "Comma-separated values"
+* #parquet "Parquet" "Apache Parquet"
+* #json "JSON" "JavaScript Object Notation"
+
+ValueSet: OutputFormatCodes
+Title: "Output Format Codes"
+Description: "ValueSet of all codes from Output Format Codes codesystem"
+* codes from system OutputFormatCodes

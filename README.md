@@ -53,6 +53,23 @@ including configuration for the menu.
 
 This is a Sushi project and can use HL7 IG Publisher to build locally:
 
+### Using npm scripts (recommended)
+
+  1. Clone this repository
+  1. Install dependencies: `npm install`
+  1. Update the IG publisher: `npm run update:publisher`
+  1. Build the IG: `npm run build:ig`
+  1. View the IG: `npm run open:ig`
+
+**Available npm scripts:**
+- `npm run update:publisher` - Downloads the latest IG publisher
+- `npm run build:ig` - Generates the IG once
+- `npm run build:ig:continuous` - Generates the IG continuously (watches for changes)
+- `npm run serve:ig` - Serves the built IG using http-server
+- `npm run open:ig` - Opens the built IG in your browser
+
+### Manual build process
+
   1. Clone this respository
   1. Run `./scripts/_updatePublisher.sh` to get the latest IG publisher
   1. Install `sushi` if you don't have it already with: `npm i fsh-sushi`
