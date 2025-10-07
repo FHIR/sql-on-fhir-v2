@@ -52,6 +52,43 @@ function forEachOrNull(select_expr, node, def) {
   })
 }
 
+function recursiveTraverse(paths, node, def) {
+  const result = []
+  
+  const traverse = (currentNode, isRoot = false) => {
+    // Don't add the root node to results, only its children.
+    if (!isRoot) {
+      result.push(currentNode)
+    }
+    
+    // Recursively traverse using each path expression.
+    paths.forEach((path) => {
+      const childNodes = fhirpath_evaluate(currentNode, path, def.constant)
+      childNodes.forEach((childNode) => {
+        if (childNode && typeof childNode === 'object') {
+          traverse(childNode, false)
+        }
+      })
+    })
+  }
+  
+  traverse(node, true)
+  
+  return result
+}
+
+function repeat(select_expr, node, def) {
+  assert(select_expr.repeat, 'repeat required')
+  assert(Array.isArray(select_expr.repeat), 'repeat must be an array')
+  
+  // Use recursiveTraverse to get all nodes at all depths.
+  const nodes = recursiveTraverse(select_expr.repeat, node, def)
+  
+  return nodes.flatMap((node) => {
+    return select({ select: select_expr.select }, node, def)
+  })
+}
+
 function column(select_expr, node, def) {
   assert(select_expr.column, 'column required')
   let record = {}
@@ -138,6 +175,9 @@ function select(select_expr, node, def) {
 // * foreach    / column / [select(..)]   -> foreach select[column, ..]
 // * foreach    / union / [select(..)]     -> foreach select[union, ..]
 // * foreach    / select(..)               -> foreach select[..]
+// * repeat     / column / [select(..)]   -> repeat select[column, ..]
+// * repeat     / union / [select(..)]    -> repeat select[union, ..]
+// * repeat     / select(..)              -> repeat select[..]
 // * select[..] / union                    -> select [union, ..]
 // * select[..] / column                  -> select [column, ..]
 // * union      / column                  -> select [column, union]
@@ -161,6 +201,22 @@ function normalize(def) {
   } else if (def.forEachOrNull) {
     def.select ||= []
     def.type = 'forEachOrNull'
+
+    if (def.unionAll) {
+      def.select.unshift({ unionAll: def.unionAll })
+      delete def.unionAll
+    }
+
+    if (def.column) {
+      def.select.unshift({ column: def.column })
+      delete def.column
+    }
+
+    def.select = def.select.map((s) => normalize(s))
+    return def
+  } else if (def.repeat) {
+    def.select ||= []
+    def.type = 'repeat'
 
     if (def.unionAll) {
       def.select.unshift({ unionAll: def.unionAll })
@@ -221,6 +277,8 @@ function normalize(def) {
       def.type = 'forEach'
     } else if (def.forEachOrNull) {
       def.type = 'forEachOrNull'
+    } else if (def.repeat) {
+      def.type = 'repeat'
     } else if (def.select) {
       def.type = 'select'
     }
@@ -231,6 +289,7 @@ function normalize(def) {
 let fns = {
   forEach: forEach,
   forEachOrNull: forEachOrNull,
+  repeat: repeat,
   unionAll: unionAll,
   select: select,
   column: column,
@@ -249,6 +308,7 @@ function collect_columns(acc, def) {
     case 'select':
     case 'forEach':
     case 'forEachNull':
+    case 'repeat':
       return def.select.reduce((acc, s) => {
         return collect_columns(acc, s)
       }, acc)
