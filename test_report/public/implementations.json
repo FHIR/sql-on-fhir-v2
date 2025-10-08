@@ -63,5 +63,11 @@
     "url": "https://github.com/sassoftware/sqlonfhir/tree/main",
     "description": "SQL on FHIR Library in Python",
     "testResultsUrl": "https://raw.githubusercontent.com/sassoftware/sqlonfhir/refs/heads/main/test_report/test_report.json"
+  },
+  {
+    "name": "MSSQL on FHIR",
+    "url": "https://github.com/aehrc/sof-mssql",
+    "description": "A TypeScript library and CLI tool for loading FHIR into Microsoft SQL Server, and transpiling SQL on FHIR view definitions into T-SQL queries.",
+    "testResultsUrl": "https://aehrc.github.io/sof-mssql/main/test_report_2022-latest.json"
   }
 ]
