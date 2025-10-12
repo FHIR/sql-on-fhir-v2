@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { fileURLToPath } from 'url';
 import { mountRoutes as mountExportRoutes } from './server/export.js';
 import { mountRoutes as mountRunRoutes } from './server/run.js';
 import { mountRoutes as mountFhirRoutes } from './server/fhir.js';
@@ -67,4 +68,13 @@ export async function startServer(config) {
   });
 
 
+}
+
+// Run server if this file is executed directly
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  const config = {
+    port: 3000,
+  };
+
+  startServer(config);
 }

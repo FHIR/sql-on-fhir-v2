@@ -9,6 +9,7 @@
     "check-fmt": "prettier -c ../tests",
     "validate": "ajv -s ../tests.schema.json -d \"../tests/*.json\"",
     "start": "node src/dev.js",
+    "server": "node src/server.js",
     "dev": "nodemon src/dev.js & tailwindcss -i ./public/app.css -o ./public/app.build.css --watch",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
   },
