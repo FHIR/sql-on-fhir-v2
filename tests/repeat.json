@@ -47,7 +47,7 @@
   ],
   "tests": [
     {
-      "title": "repeat: basic",
+      "title": "basic",
       "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
@@ -108,7 +108,7 @@
       ]
     },
     {
-      "title": "repeat: item and answer.item",
+      "title": "item and answer.item",
       "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
@@ -174,7 +174,7 @@
       ]
     },
     {
-      "title": "repeat: empty expression",
+      "title": "empty expression",
       "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
@@ -204,7 +204,7 @@
       "expect": []
     },
     {
-      "title": "repeat: empty child expression",
+      "title": "empty child expression",
       "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
@@ -265,7 +265,7 @@
       ]
     },
     {
-      "title": "repeat: combined with forEach",
+      "title": "combined with forEach",
       "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
@@ -315,7 +315,7 @@
       ]
     },
     {
-      "title": "repeat: combined with forEachOrNull",
+      "title": "combined with forEachOrNull",
       "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
@@ -385,7 +385,7 @@
       ]
     },
     {
-      "title": "repeat: combined with unionAll",
+      "title": "combined with unionAll",
       "tags": ["shareable"],
       "view": {
         "resource": "QuestionnaireResponse",
