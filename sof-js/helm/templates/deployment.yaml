@@ -53,18 +53,19 @@ spec:
         resources:
           {{- toYaml .Values.sqlOnFhir.resources | nindent 10 }}
         {{- end }}
-        {{- if gt (len .Values.sqlOnFhir.config) 0 }}
         env:
-          {{- range $configKey, $configValue := .Values.sqlOnFhir.config }}
-          - name: {{ $configKey }}
-            value: {{ $configValue | quote }}
-          {{- end }}
+        {{- if .Values.sqlOnFhir.persistence.enabled }}
+        - name: DB_PATH
+          value: "/app/data/db.sqlite"
+        {{- end }}
+        {{- range $configKey, $configValue := .Values.sqlOnFhir.config }}
+        - name: {{ $configKey }}
+          value: {{ $configValue | quote }}
         {{- end }}
         {{- if .Values.sqlOnFhir.persistence.enabled }}
         volumeMounts:
         - name: data
-          mountPath: /app/db.sqlite
-          subPath: db.sqlite
+          mountPath: /app/data
         {{- end }}
       {{- if .Values.sqlOnFhir.persistence.enabled }}
       volumes:
