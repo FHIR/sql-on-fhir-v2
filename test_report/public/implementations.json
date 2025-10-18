@@ -69,5 +69,12 @@
     "url": "https://github.com/aehrc/sof-mssql",
     "description": "A TypeScript library and CLI tool for loading FHIR into Microsoft SQL Server, and transpiling SQL on FHIR view definitions into T-SQL queries.",
     "testResultsUrl": "https://aehrc.github.io/sof-mssql/main/test_report_2022-latest.json"
+  },
+  {
+    "name": "Helios Software",
+    "url": "https://github.com/HeliosSoftware/hfs?tab=readme-ov-file#4-helios-sof---sql-on-fhir-implementation",
+    "description": "An open source Rust implementation of SQL on FHIR that includes a simple CLI for batch transformations, a HTTP server ideal for microservices, and Python bindings for embedding SQL on FHIR directly into data science and analytics workflows.",
+    "testResultsUrl": "https://github.com/HeliosSoftware/hfs/releases/latest/download/test_report.json"
   }
+
 ]
