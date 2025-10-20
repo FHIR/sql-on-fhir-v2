@@ -1,3 +1,5 @@
+Alias: $allowedType = http://hl7.org/fhir/StructureDefinition/operationdefinition-allowed-type
+
 Instance: ViewDefinitionExport
 Usage: #definition
 InstanceOf: OperationDefinition
@@ -18,122 +20,174 @@ Description: "Export a view definition. User can provide view definition referen
 * resource[0] = #CanonicalResource
 
 // Input parameters
-* parameter[0].name = #clientId
+* parameter[0].name = #view
 * parameter[0].use = #in
-* parameter[0].min = 0
-* parameter[0].max = "1"
-* parameter[0].type = #string
-* parameter[0].documentation = "The client-supplied identifier for the export. Optional, but can be used for tracking if supported by the server."
+* parameter[0].min = 1
+* parameter[0].max = "*"
+* parameter[0].scope[0] = #type
+* parameter[0].documentation = "One or more ViewDefinitions to export. Each repetition identifies a single view."
+* parameter[0].part[0].name = #name
+* parameter[0].part[0].use = #in
+* parameter[0].part[0].min = 0
+* parameter[0].part[0].max = "1"
+* parameter[0].part[0].type = #string
+* parameter[0].part[0].documentation = "Optional friendly name for the exported view output."
+* parameter[0].part[1].name = #viewReference
+* parameter[0].part[1].use = #in
+* parameter[0].part[1].min = 0
+* parameter[0].part[1].max = "1"
+* parameter[0].part[1].type = #Reference
+* parameter[0].part[1].documentation = "Reference to a ViewDefinition stored on the server."
+* parameter[0].part[2].name = #viewResource
+* parameter[0].part[2].use = #in
+* parameter[0].part[2].min = 0
+* parameter[0].part[2].max = "1"
+* parameter[0].part[2].type = #Resource
+* parameter[0].part[2].documentation = "Inline ViewDefinition resource to export."
+* parameter[0].part[2].extension[$allowedType].valueUri = "https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition"
 
-* parameter[1].name = #viewReference
+* parameter[1].name = #clientTrackingId
 * parameter[1].use = #in
 * parameter[1].min = 0
-* parameter[1].max = "*"
+* parameter[1].max = "1"
 * parameter[1].scope[0] = #type
-* parameter[1].type = #Reference
-* parameter[1].documentation = "Reference to an existing view definition on the server."
+* parameter[1].type = #string
+* parameter[1].documentation = "Client-provided tracking identifier for the export operation."
 
-* parameter[2].name = #viewResource
+* parameter[2].name = #_format
 * parameter[2].use = #in
 * parameter[2].min = 0
-* parameter[2].max = "*"
+* parameter[2].max = "1"
 * parameter[2].scope[0] = #type
-* parameter[2].type = #Resource
-* parameter[2].documentation = "An inline view definition resource to export."
+* parameter[2].type = #code
+* parameter[2].binding.strength = #extensible
+* parameter[2].binding.valueSet = Canonical(OutputFormatCodes)
+* parameter[2].documentation = "Bulk export output format (for example csv, ndjson, parquet, json)."
 
-* parameter[3].name = #view
+* parameter[3].name = #patient
 * parameter[3].use = #in
 * parameter[3].min = 0
 * parameter[3].max = "*"
 * parameter[3].scope[0] = #type
-* parameter[3].documentation = "Convenience wrapper containing either a view reference, inline resource, or desired output format."
-* parameter[3].part[0].name = #reference
-* parameter[3].part[0].use = #in
-* parameter[3].part[0].min = 0
-* parameter[3].part[0].max = "1"
-* parameter[3].part[0].type = #Reference
-* parameter[3].part[0].documentation = "Reference to the view definition on the server."
-* parameter[3].part[1].name = #resource
-* parameter[3].part[1].use = #in
-* parameter[3].part[1].min = 0
-* parameter[3].part[1].max = "1"
-* parameter[3].part[1].type = #Resource
-* parameter[3].part[1].documentation = "The inline view definition resource."
-* parameter[3].part[2].name = #format
-* parameter[3].part[2].use = #in
-* parameter[3].part[2].min = 0
-* parameter[3].part[2].max = "1"
-* parameter[3].part[2].type = #code
-* parameter[3].part[2].binding.strength = #extensible
-* parameter[3].part[2].binding.valueSet = Canonical(OutputFormatCodes)
-* parameter[3].part[2].documentation = "Optional explicit output format for this specific view."
+* parameter[3].type = #Reference
+* parameter[3].documentation = "Filter exported data to the supplied patient(s)."
 
-* parameter[4].name = #_format
+* parameter[4].name = #group
 * parameter[4].use = #in
-* parameter[4].min = 1
-* parameter[4].max = "1"
+* parameter[4].min = 0
+* parameter[4].max = "*"
 * parameter[4].scope[0] = #type
-* parameter[4].type = #code
-* parameter[4].binding.strength = #extensible
-* parameter[4].binding.valueSet = Canonical(OutputFormatCodes)
-* parameter[4].documentation = "The requested bulk export format (for example csv, parquet, json)."
+* parameter[4].type = #Reference
+* parameter[4].documentation = "Filter exported data to members of the supplied group(s)."
 
-// Output parameters
-* parameter[5].name = #clientId
-* parameter[5].use = #out
+* parameter[5].name = #_since
+* parameter[5].use = #in
 * parameter[5].min = 0
 * parameter[5].max = "1"
-* parameter[5].type = #string
-* parameter[5].documentation = "Echoed clientId when supplied and supported by the server."
+* parameter[5].scope[0] = #type
+* parameter[5].type = #instant
+* parameter[5].documentation = "Export only resources updated since this instant."
 
-* parameter[6].name = #exportId
-* parameter[6].use = #out
+* parameter[6].name = #source
+* parameter[6].use = #in
 * parameter[6].min = 0
 * parameter[6].max = "1"
+* parameter[6].scope[0] = #type
 * parameter[6].type = #string
-* parameter[6].documentation = "Identifier assigned to the export request."
+* parameter[6].documentation = "External data source to use for the export (for example a URI or bucket name)."
 
-* parameter[7].name = #location
+// Output parameters
+* parameter[7].name = #exportId
 * parameter[7].use = #out
 * parameter[7].min = 1
 * parameter[7].max = "1"
-* parameter[7].type = #uri
-* parameter[7].documentation = "Polling URL for the export status."
+* parameter[7].type = #string
+* parameter[7].documentation = "Server-generated identifier assigned to the export request."
 
-* parameter[8].name = #status
+* parameter[8].name = #clientTrackingId
 * parameter[8].use = #out
-* parameter[8].min = 1
+* parameter[8].min = 0
 * parameter[8].max = "1"
-* parameter[8].type = #code
-* parameter[8].binding.strength = #required
-* parameter[8].binding.valueSet = Canonical(ExportStatusCodes)
-* parameter[8].documentation = "Status of the export (accepted, in-progress, completed, cancelled, failed)."
+* parameter[8].type = #string
+* parameter[8].documentation = "Echoed client tracking identifier when provided."
 
-* parameter[9].name = #output
+* parameter[9].name = #status
 * parameter[9].use = #out
-* parameter[9].min = 0
-* parameter[9].max = "*"
-* parameter[9].documentation = "Collection of exported artefacts."
-* parameter[9].part[0].name = #name
-* parameter[9].part[0].use = #out
-* parameter[9].part[0].min = 1
-* parameter[9].part[0].max = "1"
-* parameter[9].part[0].type = #string
-* parameter[9].part[0].documentation = "Human-friendly name of the exported view definition."
-* parameter[9].part[1].name = #location
-* parameter[9].part[1].use = #out
-* parameter[9].part[1].min = 1
-* parameter[9].part[1].max = "1"
-* parameter[9].part[1].type = #uri
-* parameter[9].part[1].documentation = "Location of the exported file."
-* parameter[9].part[2].name = #format
-* parameter[9].part[2].use = #out
-* parameter[9].part[2].min = 1
-* parameter[9].part[2].max = "1"
-* parameter[9].part[2].type = #code
-* parameter[9].part[2].binding.strength = #extensible
-* parameter[9].part[2].binding.valueSet = Canonical(OutputFormatCodes)
-* parameter[9].part[2].documentation = "Format of the exported file (for example csv, parquet, json)."
+* parameter[9].min = 1
+* parameter[9].max = "1"
+* parameter[9].type = #code
+* parameter[9].binding.strength = #required
+* parameter[9].binding.valueSet = Canonical(ExportStatusCodes)
+* parameter[9].documentation = "Status of the export (accepted, in-progress, completed, cancelled, failed)."
+
+* parameter[10].name = #location
+* parameter[10].use = #out
+* parameter[10].min = 1
+* parameter[10].max = "1"
+* parameter[10].type = #uri
+* parameter[10].documentation = "URL to poll for export status updates."
+
+* parameter[11].name = #cancelUrl
+* parameter[11].use = #out
+* parameter[11].min = 0
+* parameter[11].max = "1"
+* parameter[11].type = #uri
+* parameter[11].documentation = "Optional URL for cancelling the export."
+
+* parameter[12].name = #_format
+* parameter[12].use = #out
+* parameter[12].min = 0
+* parameter[12].max = "1"
+* parameter[12].type = #code
+* parameter[12].binding.strength = #extensible
+* parameter[12].binding.valueSet = Canonical(OutputFormatCodes)
+* parameter[12].documentation = "Format of the exported files (echoed from input if supplied)."
+
+* parameter[13].name = #exportStartTime
+* parameter[13].use = #out
+* parameter[13].min = 0
+* parameter[13].max = "1"
+* parameter[13].type = #instant
+* parameter[13].documentation = "Timestamp when the export operation began."
+
+* parameter[14].name = #exportEndTime
+* parameter[14].use = #out
+* parameter[14].min = 0
+* parameter[14].max = "1"
+* parameter[14].type = #instant
+* parameter[14].documentation = "Timestamp when the export operation completed."
+
+* parameter[15].name = #exportDuration
+* parameter[15].use = #out
+* parameter[15].min = 0
+* parameter[15].max = "1"
+* parameter[15].type = #integer
+* parameter[15].documentation = "Duration of the export in seconds."
+
+* parameter[16].name = #estimatedTimeRemaining
+* parameter[16].use = #out
+* parameter[16].min = 0
+* parameter[16].max = "1"
+* parameter[16].type = #integer
+* parameter[16].documentation = "Estimated seconds remaining until completion."
+
+* parameter[17].name = #output
+* parameter[17].use = #out
+* parameter[17].min = 0
+* parameter[17].max = "*"
+* parameter[17].documentation = "Output information for each exported view."
+* parameter[17].part[0].name = #name
+* parameter[17].part[0].use = #out
+* parameter[17].part[0].min = 1
+* parameter[17].part[0].max = "1"
+* parameter[17].part[0].type = #string
+* parameter[17].part[0].documentation = "Name assigned to the exported view output."
+* parameter[17].part[1].name = #location
+* parameter[17].part[1].use = #out
+* parameter[17].part[1].min = 1
+* parameter[17].part[1].max = "*"
+* parameter[17].part[1].type = #uri
+* parameter[17].part[1].documentation = "Download URL(s) for the exported file(s)."
 
 Instance: ViewDefinitionRun
 Usage: #definition
@@ -194,6 +248,7 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[3].type = #CanonicalResource
 * parameter[3].targetProfile = Canonical(ViewDefinition)
 * parameter[3].documentation = "Inline ViewDefinition resource to execute."
+* parameter[3].extension[$allowedType].valueUri = "https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition"
 
 * parameter[4].name = #patient
 * parameter[4].use = #in
