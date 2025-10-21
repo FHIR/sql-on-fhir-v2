@@ -7,13 +7,13 @@ Title: "ViewDefinition Export"
 Description: "Export a view definition. User can provide view definition references and/or resources as part of the input parameters."
 
 * id = "ViewDefinitionExport"
-* url = "http://sql-on-fhir.org/OperationDefinition/$viewdefinition-export"
+* url = "http://sql-on-fhir.org/OperationDefinition/$export"
 * version = "0.0.1"
 * name = "ViewDefinitionExport"
 * status = #active
 * kind = #operation
-* code = #viewdefinition-export
-* system = true
+* code = #export
+* system = false
 * type = true
 * instance = true
 // Hack: it should be #ViewDefinition, but we don't have that type yet

@@ -71,7 +71,7 @@ menu:
   Operations: 
     Overview: operations.html
     CapabilityStatement: operations-capability.html
-    $viewdefinition-export: OperationDefinition-ViewDefinitionExport.html
+    $export: OperationDefinition-ViewDefinitionExport.html
     $viewdefinition-run: OperationDefinition-ViewDefinitionRun.html
   Contributing: contributing.html
   # extra/playground.html does not work - TODO: use relative ulrs
