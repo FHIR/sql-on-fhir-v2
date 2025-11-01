@@ -66,9 +66,7 @@
       "scope": ["type", "instance"],
       "min": "0",
       "max": "*",
-      "documentation": "When provided, the server SHALL NOT return resources in the patient compartments belonging to patients outside of this list. If a client requests patients who are not present on the server (or in the case of a group level `$run` operation, who are not members of the group), the server SHOULD return details via a FHIR `OperationOutcome` resource in an error response to the request.
-
-      A server that is unable to support `patient` SHOULD return an error and FHIR `OperationOutcome` resource so the client can re-submit a request omitting the patient parameter."
+      "documentation": "When provided, the server SHALL NOT return resources in the patient compartments belonging to patients outside of this list. If a client requests patients who are not present on the server (or in the case of a group level `$run` operation, who are not members of the group), the server SHOULD return details via a FHIR `OperationOutcome` resource in an error response to the request.\n\nA server that is unable to support `patient` SHOULD return an error and FHIR `OperationOutcome` resource so the client can re-submit a request omitting the patient parameter."
     },
     {
       "name": "group",
@@ -76,7 +74,7 @@
       "use": "in",
       "scope": ["type", "instance"],
       "min": "0",
-      "max": "*"
+      "max": "*",
       "documentation": "When provided, the server SHALL NOT return resources that are not a member of the supplied `Group`. A server that is unable to support `group` SHOULD return an error and FHIR `OperationOutcome` resource so the client can re-submit a request omitting the group parameter."
     },
     {
@@ -86,7 +84,7 @@
       "scope": ["type", "instance"],
       "min": "0",
       "max": "1",
-      "documentation": "If provided, the source of FHIR data to be transformed into a tabular projection.  `source` may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server.  If `source` is absent, the transformation is performed on the data that resides in the FHIR server.", 
+      "documentation": "If provided, the source of FHIR data to be transformed into a tabular projection.  `source` may be interpreted as implementation specific and may be a Uri, a bucket name, or another method acceptable to the server.  If `source` is absent, the transformation is performed on the data that resides in the FHIR server."
     },
     {
       "name": "source",
@@ -95,7 +93,7 @@
       "scope": ["type", "instance"],
       "min": "0",
       "max": "*",
-      "documentation": "Collection of FHIR resources to be transformed into a tabular projection.",
+      "documentation": "Collection of FHIR resources to be transformed into a tabular projection."
     },
     {
       "name": "_count",

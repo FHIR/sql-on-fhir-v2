@@ -23,13 +23,8 @@ publisher:
 # package id and the value is the version (or dev/current). For advanced
 # use cases, the value can be an object with keys for id, uri, and version.
 #
-# dependencies:
-#   hl7.fhir.us.core: 3.1.0
-#   hl7.fhir.us.mcode:
-#     id: mcode
-#     uri: http://hl7.org/fhir/us/mcode/ImplementationGuide/hl7.fhir.us.mcode
-#     version: 1.0.0
-#
+dependencies:
+  hl7.fhir.uv.extensions.r5: 5.2.0
 #
 # The pages property corresponds to IG.definition.page. SUSHI can
 # auto-generate the page list, but if the author includes pages in
@@ -76,8 +71,8 @@ menu:
   Operations: 
     Overview: operations.html
     CapabilityStatement: operations-capability.html
-    $viewdefinition-export: operations-export.html
-    $viewdefinition-run: operations-run.html
+    $export: OperationDefinition-ViewDefinitionExport.html
+    $viewdefinition-run: OperationDefinition-ViewDefinitionRun.html
   Contributing: contributing.html
   # extra/playground.html does not work - TODO: use relative ulrs
   Playground: http://sql-on-fhir.org/extra/playground.html

@@ -1,8 +1,15 @@
 import sqlite3 from 'sqlite3';
 import { readResourcesFromDirectory, getFHIRData, resourceTypes } from './utils.js';
+import fs from 'fs';
+import path from 'path';
 
 export function getDb() {
-  const db = new sqlite3.Database('./db.sqlite');
+  const dbPath = process.env.DB_PATH || './db.sqlite';
+  const dbDir = path.dirname(dbPath);
+  if (!fs.existsSync(dbDir)) {
+    fs.mkdirSync(dbDir, { recursive: true });
+  }
+  const db = new sqlite3.Database(dbPath);
   return db;
 }
 
