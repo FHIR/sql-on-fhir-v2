@@ -1,10 +1,10 @@
 _This is an evolution of the original "SQL on FHIR" draft, which
 can [still be found here](https://github.com/FHIR/sql-on-fhir-archived)._
 
-This specification proposes an approach to make large-scale analysis of FHIR
-data accessible to a larger audience and portable between systems. The central
-goal of this project is to make FHIR data work well with the best available
-analytic tools, regardless of the technology stack.
+This specification proposes an interoperable approach to make large-scale
+analysis of FHIR data accessible to a larger audience and portable between
+systems. The central goal of this project is to make FHIR data work well with
+the best available analytic tools regardless of the technology stack.
 
 ### Problem
 
@@ -18,24 +18,47 @@ elements. There are semantics defined for references between resources, data
 types, terminology, extensions, and many other aspects of the specification.
 
 Most analytic and machine learning use cases require the preparation of FHIR
-data using transformations and tabular projections from its original form.
-The task of authoring these transformations and projections is not trivial
-and there is currently no standard mechanism to support reuse.
+data using transformations and tabular projections from its original form. The
+task of authoring and using these transformations and projections within the
+FHIR ecosystem is not trivial and there is currently no standard mechanism to
+support reuse.
 
 ### Solution
 
-A standard format can be provided for defining tabular, use case-specific views
-of FHIR data. Tools can be developed that use these views in queries capable of
-being executed on a wide variety of different query engines.
+This specification provides: 1. A standard format for defining tabular, use
+case-specific views of FHIR data called `ViewDefinition`. Tools can be developed
+that use these views in queries capable of being executed on a wide variety of
+different query engines.
 
-These views can be made available to users as an easier way to consume FHIR
-data which is simpler to understand and easier to process with generic analytic
-query tools.
+These views can be made available to users as an easier way to consume FHIR data
+which is simpler to understand and easier to process with generic analytic query
+tools.
 
 FHIR implementation guides could include definitions of simple, flattened views
 that comprise essential data elements. The availability of these view
 definitions will greatly reduce the need for analysts to perform repetitive and
 redundant transformation tasks for common use cases.
+
+2. A [profile](StructureDefinition-SQLQuery.html) for the FHIR Library resource
+type used to represent a single, logical SQL query consistent with the broader
+FHIR ecosystem e.g. the [Clinical
+Reasoning](https://hl7.org/fhir/clinicalreasoning-module.html) module.
+
+The profile supports query authors using native SQL workflows and implementers
+with the ability to represent multiple, dialect-specific versions of a single,
+logical SQL query enabling improved portability.
+
+3. An [HTTP API](operations.html) for interacting with SQL on FHIR systems
+defined as FHIR OperationDefinitions. We expect a broad range of systems to
+implement the API including both general-purpose FHIR servers and more
+purpose-specific ViewDefinition "runners".
+
+The API supports a range of use cases including asynchronous bulk export
+(inspired by the FHIR [Bulk Data Access
+API](https://build.fhir.org/ig/HL7/bulk-data/en/)), "real-time" evaluation of
+ViewDefinitions with streamed results, and ViewDefinition authoring and
+validation.
+
 
 Let's start with a simple example, defining a "patient_demographics" and "diagnoses" views with
 the following [ViewDefinition](StructureDefinition-ViewDefinition.html)
@@ -137,6 +160,8 @@ Example output:
 |7| female| 65363002| Otitis media| 2345
 |7| female| 43878008| Streptococcal sore throat (disorder)| 42
 {:.table-data}
+
+
 
 
 ### Non-goals
