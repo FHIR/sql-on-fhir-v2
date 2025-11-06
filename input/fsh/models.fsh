@@ -15,7 +15,7 @@ Description: """
 Can only have at most one of `forEach`, `forEachOrNull`, or `repeat`.
 """
 Severity: #error
-Expression: "(forEach | forEachOrNull | repeat).count() <= 1"
+Expression: "(forEach.exists().toInteger() + forEachOrNull.exists().toInteger() + repeat.exists().toInteger()) <= 1"
 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 Logical: ViewDefinition
