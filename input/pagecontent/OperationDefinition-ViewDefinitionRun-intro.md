@@ -1,4 +1,4 @@
-The `$run` operation applies a ViewDefinition to transform FHIR resources into a tabular format and returns the results synchronously.
+The `$viewdefinition-run` operation applies a ViewDefinition to transform FHIR resources into a tabular format and returns the results synchronously.
 
 **Use Cases:**
 * Interactive development and debugging of ViewDefinitions
