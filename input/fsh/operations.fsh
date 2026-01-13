@@ -7,13 +7,13 @@ Title: "ViewDefinition Export"
 Description: "Export a view definition. User can provide view definition references and/or resources as part of the input parameters."
 
 * id = "ViewDefinitionExport"
-* url = "http://sql-on-fhir.org/OperationDefinition/$export"
+* url = "http://sql-on-fhir.org/OperationDefinition/$viewdefinition-export"
 * version = "0.0.1"
 * name = "ViewDefinitionExport"
 * status = #active
 * kind = #operation
-* code = #export
-* system = false
+* code = #viewdefinition-export
+* system = true
 * type = true
 * instance = true
 // Hack: it should be #ViewDefinition, but we don't have that type yet
@@ -24,7 +24,8 @@ Description: "Export a view definition. User can provide view definition referen
 * parameter[0].use = #in
 * parameter[0].min = 1
 * parameter[0].max = "*"
-* parameter[0].scope[0] = #type
+* parameter[0].scope[0] = #system
+* parameter[0].scope[1] = #type
 * parameter[0].documentation = "One or more ViewDefinitions to export. Each repetition identifies a single view."
 * parameter[0].part[0].name = #name
 * parameter[0].part[0].use = #in
@@ -50,7 +51,8 @@ Description: "Export a view definition. User can provide view definition referen
 * parameter[1].use = #in
 * parameter[1].min = 0
 * parameter[1].max = "1"
-* parameter[1].scope[0] = #type
+* parameter[1].scope[0] = #system
+* parameter[1].scope[1] = #type
 * parameter[1].type = #string
 * parameter[1].documentation = "Client-provided tracking identifier for the export operation."
 
@@ -58,7 +60,8 @@ Description: "Export a view definition. User can provide view definition referen
 * parameter[2].use = #in
 * parameter[2].min = 0
 * parameter[2].max = "1"
-* parameter[2].scope[0] = #type
+* parameter[2].scope[0] = #system
+* parameter[2].scope[1] = #type
 * parameter[2].type = #code
 * parameter[2].binding.strength = #extensible
 * parameter[2].binding.valueSet = Canonical(OutputFormatCodes)
@@ -68,7 +71,8 @@ Description: "Export a view definition. User can provide view definition referen
 * parameter[3].use = #in
 * parameter[3].min = 0
 * parameter[3].max = "*"
-* parameter[3].scope[0] = #type
+* parameter[3].scope[0] = #system
+* parameter[3].scope[1] = #type
 * parameter[3].type = #Reference
 * parameter[3].documentation = "Filter exported data to the supplied patient(s)."
 
@@ -76,7 +80,8 @@ Description: "Export a view definition. User can provide view definition referen
 * parameter[4].use = #in
 * parameter[4].min = 0
 * parameter[4].max = "*"
-* parameter[4].scope[0] = #type
+* parameter[4].scope[0] = #system
+* parameter[4].scope[1] = #type
 * parameter[4].type = #Reference
 * parameter[4].documentation = "Filter exported data to members of the supplied group(s)."
 
@@ -84,7 +89,8 @@ Description: "Export a view definition. User can provide view definition referen
 * parameter[5].use = #in
 * parameter[5].min = 0
 * parameter[5].max = "1"
-* parameter[5].scope[0] = #type
+* parameter[5].scope[0] = #system
+* parameter[5].scope[1] = #type
 * parameter[5].type = #instant
 * parameter[5].documentation = "Export only resources updated since this instant."
 
@@ -92,7 +98,8 @@ Description: "Export a view definition. User can provide view definition referen
 * parameter[6].use = #in
 * parameter[6].min = 0
 * parameter[6].max = "1"
-* parameter[6].scope[0] = #type
+* parameter[6].scope[0] = #system
+* parameter[6].scope[1] = #type
 * parameter[6].type = #string
 * parameter[6].documentation = "External data source to use for the export (for example a URI or bucket name)."
 

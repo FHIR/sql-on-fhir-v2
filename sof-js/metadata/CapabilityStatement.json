@@ -20,8 +20,8 @@
       ],
       "operation": [
         {
-          "name": "$export",
-          "definition": "http://sql-on-fhir.org/OperationDefinition/$export"
+          "name": "$viewdefinition-export",
+          "definition": "http://sql-on-fhir.org/OperationDefinition/$viewdefinition-export"
         },
         {
           "name": "$evaluate",

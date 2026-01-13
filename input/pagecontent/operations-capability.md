@@ -5,8 +5,8 @@ The server SHALL support the CapabilityStatement resource to allow clients to di
 The CapabilityStatement.rest.resource array SHALL contain an entry for the ViewDefinition resource type with:
 
 - An operation element with:
-  - name = "$export"
-  - definition = "http://sql-on-fhir.org/OperationDefinition/$export"
+  - name = "$viewdefinition-export"
+  - definition = "http://sql-on-fhir.org/OperationDefinition/$viewdefinition-export"
 - An operation element with:  
   - name = "$run"
   - definition = "http://sql-on-fhir.org/OperationDefinition/$run"
@@ -54,8 +54,8 @@ Content-Type: application/fhir+json
       ],
       "operation": [
         {
-          "name": "$export",
-          "definition": "http://sql-on-fhir.org/OperationDefinition/$export"
+          "name": "$viewdefinition-export",
+          "definition": "http://sql-on-fhir.org/OperationDefinition/$viewdefinition-export"
         },
         {
           "name": "$validate",

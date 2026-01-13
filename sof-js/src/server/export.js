@@ -7,7 +7,7 @@ import { evaluate } from '../index.js';
 import path from 'path';
 
 export async function getExportFormEndpoint(req, res) {
-  const operation = await read(req.config, 'OperationDefinition', '$export');
+  const operation = await read(req.config, 'OperationDefinition', '$viewdefinition-export');
   const defaults = {
     "viewResource" : JSON.stringify(
       {
@@ -28,11 +28,11 @@ export async function getExportFormEndpoint(req, res) {
         <span class="text-gray-500">/</span>
         <a href="/ViewDefinition">ViewDefinition</a>
         <span class="text-gray-500">/</span>
-        <a href="/ViewDefinition/$export">Export</a>
+        <a href="/ViewDefinition/$viewdefinition-export">Export</a>
       </div>
       <h1 class="mt-4">Export</h1>
       <div id="export-result" class="mt-4">
-        <form action="/ViewDefinition/$export/form" method="post" >
+        <form action="/ViewDefinition/$viewdefinition-export/form" method="post" >
           ${await renderOperationDefinition(req, operation, defaults)}
           <div class="mt-4">
             <button type="submit" class="btn">Export</button>
@@ -110,7 +110,7 @@ export async function postExportFormEndpoint(req, res) {
   }
   const startTime = new Date().getTime();
   const exportId = startTime.toString();
-  const location = '/ViewDefinition/$export/status/' + exportId;
+  const location = '/ViewDefinition/$viewdefinition-export/status/' + exportId;
   const exportDir = ensureExportDir(exportId);
   const exportStatusFile = exportDir + '/status.json';
 
@@ -249,7 +249,7 @@ export async function getExportStatusEndpoint(req, res) {
         <span class="text-gray-500">/</span>
         <a href="/ViewDefinition">ViewDefinition</a>
         <span class="text-gray-500">/</span>
-        <a href="/ViewDefinition/$export">Export</a>
+        <a href="/ViewDefinition/$viewdefinition-export">Export</a>
         <span class="text-gray-500">/</span>
         <a href="#">${exportId}</a>
       </div>
@@ -260,8 +260,15 @@ export async function getExportStatusEndpoint(req, res) {
 }
 
 export function mountRoutes(app) {
-    app.get('/ViewDefinition/\\$export', getExportFormEndpoint);
-    app.post('/ViewDefinition/\\$export/form', postExportFormEndpoint);
-    app.post('/ViewDefinition/\\$export', getExportEndpoint);
-    app.get('/ViewDefinition/\\$export/status/:id', getExportStatusEndpoint);
+    // System level
+    app.get('/\\$viewdefinition-export', getExportFormEndpoint);
+    app.post('/\\$viewdefinition-export/form', postExportFormEndpoint);
+    app.post('/\\$viewdefinition-export', getExportEndpoint);
+    app.get('/\\$viewdefinition-export/status/:id', getExportStatusEndpoint);
+
+    // Type level
+    app.get('/ViewDefinition/\\$viewdefinition-export', getExportFormEndpoint);
+    app.post('/ViewDefinition/\\$viewdefinition-export/form', postExportFormEndpoint);
+    app.post('/ViewDefinition/\\$viewdefinition-export', getExportEndpoint);
+    app.get('/ViewDefinition/\\$viewdefinition-export/status/:id', getExportStatusEndpoint);
 }

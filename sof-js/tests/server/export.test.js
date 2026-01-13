@@ -14,9 +14,9 @@ afterAll(async () => {
 
 describe('Server', () => {
 
-  test('ViewDefinition/$export endpoint returns a bundle of resources', async () => {
-    console.log('ViewDefinition/$export endpoint returns redirect to status');
-    const url = 'http://localhost:3001/ViewDefinition/$export';
+  test('ViewDefinition/$viewdefinition-export endpoint returns a bundle of resources', async () => {
+    console.log('ViewDefinition/$viewdefinition-export endpoint returns redirect to status');
+    const url = 'http://localhost:3001/ViewDefinition/$viewdefinition-export';
     console.log('URL: ' + url);
     const response = await fetch(url, {
       method: 'POST',
