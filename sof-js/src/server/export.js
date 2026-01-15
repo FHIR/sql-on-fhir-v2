@@ -121,6 +121,7 @@ export async function postExportFormEndpoint(req, res) {
     startTime: startTime,
     status: 'accepted',
     format: form.format,
+    header: form.header !== 'false',
     location: location,
     form: form,
     viewDefinitions: viewDefinitions
@@ -131,7 +132,7 @@ export async function postExportFormEndpoint(req, res) {
   res.status(301).end();
 }
 
-function writeFormattedData(fileName, data, format) {
+function writeFormattedData(fileName, data, format, includeHeader = true) {
   let outputFile = null;
   if (format === 'ndjson') {
     outputFile = fileName + '.ndjson';
@@ -141,7 +142,12 @@ function writeFormattedData(fileName, data, format) {
     fs.writeFileSync(outputFile, JSON.stringify(data, null, 2));
   } else if (format === 'csv') {
     outputFile = fileName + '.csv';
-    fs.writeFileSync(outputFile, data.map(r => Object.values(r).join(',')).join('\n'));
+    let csvContent = '';
+    if (includeHeader && data.length > 0) {
+      csvContent = Object.keys(data[0]).join(',') + '\n';
+    }
+    csvContent += data.map(r => Object.values(r).join(',')).join('\n');
+    fs.writeFileSync(outputFile, csvContent);
   } else {
     throw new Error('Unsupported format: ' + format);
   }
@@ -153,9 +159,10 @@ async function evaluateViewDefinition(config, resource, exportStatus) {
     const data = await search(config, resource.resource, 1000);
     const result = evaluate(resource, data);
     const fileName = path.join(exportStatus.exportDir, resource.name);
+    const includeHeader = exportStatus.header !== false;
     return {
       status: 'completed',
-      file: writeFormattedData(fileName, result, exportStatus.format), 
+      file: writeFormattedData(fileName, result, exportStatus.format, includeHeader),
       relativeFile: path.relative(exportStatus.exportDir, fileName),
       location: `/export/${exportStatus.exportId}/${resource.name}.${exportStatus.format}`,
       count: result.length
