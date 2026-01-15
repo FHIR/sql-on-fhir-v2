@@ -12,7 +12,7 @@ requirements for implementing ViewDefinition functionality in compliant systems.
 The following list of API endpoints are defined:
 
 - CapabilityStatement
-- Operation $export of ViewDefinition
+- Operation $viewdefinition-export of ViewDefinition
 - Operation $run of ViewDefinition
 
 
@@ -105,9 +105,9 @@ Server MUST support CapabilityStatement API for discovery of supported operation
 
 See [CapabilityStatement for SQL-on-FHIR API](./api/capability.md)
 
-### Operation $export of ViewDefinition
+### Operation $viewdefinition-export of ViewDefinition
 
-The `$export` operation enables bulk export of FHIR data transformed through ViewDefinitions into various formats including CSV, NDJSON, and Parquet.
+The `$viewdefinition-export` operation enables bulk export of FHIR data transformed through ViewDefinitions into various formats including CSV, NDJSON, and Parquet.
 This asynchronous operation accepts a list of ViewDefinitions to export and returns a list of export tasks that can be monitored for progress and completion.
 The operation supports filtering by patient, group, or source system, and allows specification of output format and destination.
 
@@ -115,7 +115,7 @@ The export process consists of four main endpoints: start export, get export sta
 The operation is designed for large-scale data extraction scenarios where clients need to export transformed FHIR data for analysis, reporting, or loading into data warehouses.
 The server processes the ViewDefinitions asynchronously and provides progress updates through polling mechanisms, making it suitable for handling large datasets without blocking the client.
 
-See [Operation $export of ViewDefinition](./operations-export.md)
+See [Operation $viewdefinition-export of ViewDefinition](./operations-export.md)
 
 ### Operation $run of ViewDefinition
 

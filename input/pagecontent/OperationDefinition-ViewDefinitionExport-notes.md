@@ -227,7 +227,7 @@ Clients MUST download all parts to obtain the complete dataset for a view.
 
 ##### HTTP Status Codes
 
-The $export operation uses standard HTTP status codes to indicate the outcome:
+The $viewdefinition-export operation uses standard HTTP status codes to indicate the outcome:
 
 | Status Code               | Description          | When to Use                                                          |
 |---------------------------|----------------------|----------------------------------------------------------------------|
@@ -370,7 +370,7 @@ Content-Type: application/fhir+json
 
 #### Operation flow
 
-1. **Kick-off Request**: Client sends `POST ViewDefinition/$export` with `Prefer: respond-async` header.
+1. **Kick-off Request**: Client sends `POST ViewDefinition/$viewdefinition-export` with `Prefer: respond-async` header.
 2. **Kick-off Response**: Server responds with:
    - `202 Accepted` status code
    - `Content-Location` header with the absolute URL for subsequent status requests (polling location)
@@ -417,7 +417,7 @@ This example demonstrates the full lifecycle of an export operation from initiat
 Client initiates export of two ViewDefinitions with patient filtering:
 
 ```http
-POST /ViewDefinition/$export HTTP/1.1
+POST /ViewDefinition/$viewdefinition-export HTTP/1.1
 Host: example.com
 Content-Type: application/fhir+json
 Prefer: respond-async

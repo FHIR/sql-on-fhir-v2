@@ -20,9 +20,10 @@ export async function getIndex(req, res ) {
       <p class="mb-4">The following endpoints are available:</p>
       <ul class="list-disc pl-5">
         <li><a class="text-blue-500 hover:text-blue-700" href="/metadata">Metadata</a></li>
+        <li><a class="text-blue-500 hover:text-blue-700" href="/$viewdefinition-export">$viewdefinition-export (system)</a></li>
         <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition">ViewDefinitions</a></li>
         <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$evaluate">ViewDefinition/$evaluate</a></li>
-        <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$export">ViewDefinition/$export</a></li>
+        <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$viewdefinition-export">ViewDefinition/$viewdefinition-export</a></li>
         <hr class="my-4"/>
         ${ resourceTypes.sort().map(resourceType => `<li><a class="text-blue-500 hover:text-blue-700" href="/${resourceType}">${resourceType}</a></li>`).join('\n') }
       </ul>
