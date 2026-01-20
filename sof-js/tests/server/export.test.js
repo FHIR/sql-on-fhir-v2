@@ -46,11 +46,36 @@ describe('Server', () => {
     const status = getParameterValue(body, 'status', 'code');
     expect(status).toBe('accepted');
 
-    const statusResponse = await fetch(statusUrl);
+    // Poll for status - should get 202 while in progress, 303 when complete
+    let statusResponse = await fetch(statusUrl, { redirect: 'manual' });
     console.log('Status Response: ' + statusResponse.status);
-    expect(statusResponse.status).toBe(200);
-    const statusBody = await statusResponse.json();
-    console.log('Status Body: ' + JSON.stringify(statusBody, null, 2));
-    
+
+    // Keep polling until we get 303 (complete) or hit max iterations
+    let iterations = 0;
+    while (statusResponse.status === 202 && iterations < 10) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      statusResponse = await fetch(statusUrl, { redirect: 'manual' });
+      console.log('Status Response: ' + statusResponse.status);
+      iterations++;
+    }
+
+    // Should get 303 See Other when complete
+    expect(statusResponse.status).toBe(303);
+    const resultUrl = statusResponse.headers.get('Location');
+    expect(resultUrl).not.toBeNull();
+    console.log('Result URL: ' + resultUrl);
+
+    // Follow the redirect to get the final result
+    const resultResponse = await fetch(resultUrl);
+    console.log('Result Response: ' + resultResponse.status);
+    expect(resultResponse.status).toBe(200);
+
+    const resultBody = await resultResponse.json();
+    console.log('Result Body: ' + JSON.stringify(resultBody, null, 2));
+    expect(resultBody.resourceType).toBe('Parameters');
+
+    // Verify output is present
+    const output = resultBody.parameter.find(p => p.name === 'output');
+    expect(output).toBeDefined();
   });
-}); 
+});

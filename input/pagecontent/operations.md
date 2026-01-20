@@ -38,16 +38,16 @@ And use standard tools like Apache Spark, AWS Athena or other tools to analyze d
 
 **Flow:**
 
-1. The client initiates an asynchronous bulk export operation by submitting 
-   a list of ViewDefinitions to the server or SQL on FHIR facade on top of existing FHIR servers.
-2. The server:
-   - Processes the ViewDefinitions
-   - Exports results in CSV and/or Parquet formats to file storage 
-   - Responds with URLs for accessing the exported files
-3. The client can then:
-   - Load the exported files into a data warehouse
-   - Analyze them using tools like Apache Spark or Amazon Athena
-
+1. The client initiates an asynchronous bulk export operation by submitting
+   a list of ViewDefinitions to the server with `Prefer: respond-async` header.
+2. The server returns `202 Accepted` with `Content-Location` header pointing to status URL.
+3. The client polls the status URL:
+   - Server returns `202 Accepted` while processing (MAY include interim results)
+   - Server returns `303 See Other` with `Location` header when complete
+4. The client follows the `Location` header to retrieve final results with output URLs.
+5. The client can then:
+   - Download exported files from the output URLs
+   - Load them into a data warehouse or analyze with tools like Apache Spark or Amazon Athena
 
 [See Async Bulk Export](#async-bulk-export)
 
