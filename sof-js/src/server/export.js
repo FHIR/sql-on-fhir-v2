@@ -43,14 +43,72 @@ export async function getExportFormEndpoint(req, res) {
   `));
 }
 
-export async function getExportEndpoint(req, res) {
-  res.status(404).json({
-    resourceType: 'OperationOutcome',
-    issue: [{
-      severity: 'error',
-      code: 'not-found',
-      diagnostics: 'Export endpoint not found'
-    }]
+export async function postExportEndpoint(req, res) {
+  const params = req.body;
+
+  if (!params || params.resourceType !== 'Parameters') {
+    res.status(400).json({
+      resourceType: 'OperationOutcome',
+      issue: [{
+        severity: 'error',
+        code: 'invalid',
+        diagnostics: 'Request body must be a Parameters resource'
+      }]
+    });
+    return;
+  }
+
+  // Extract parameters from the Parameters resource
+  const getParam = (name, type) => {
+    const param = params.parameter?.find(p => p.name === name);
+    return param ? param[`value${type}`] : null;
+  };
+
+  const viewUrl = getParam('viewUrl', 'Url');
+  const format = getParam('format', 'Code') || 'json';
+
+  let viewDefinitions = {};
+
+  // If viewUrl provided, resolve it
+  if (viewUrl) {
+    const parts = viewUrl.split('/');
+    const id = parts[parts.length - 1];
+    viewDefinitions[id] = {
+      view: { resourceType: 'ViewDefinition', name: id, resource: 'Patient', select: [{ column: [{ path: 'id', name: 'id' }] }] },
+      name: id,
+      processed: false
+    };
+  }
+
+  const startTime = new Date().getTime();
+  const exportId = startTime.toString();
+  const location = `${getBaseUrl(req)}/ViewDefinition/$viewdefinition-export/status/${exportId}`;
+  const exportDir = ensureExportDir(exportId);
+  const exportStatusFile = exportDir + '/status.json';
+
+  const status = {
+    exportId: exportId,
+    exportStatusFile: exportStatusFile,
+    exportDir: exportDir,
+    startTime: startTime,
+    status: 'accepted',
+    format: format,
+    location: location,
+    viewDefinitions: viewDefinitions
+  };
+
+  fs.writeFileSync(exportStatusFile, JSON.stringify(status, null, 2));
+
+  // Return 202 Accepted with location header and Parameters response
+  res.setHeader('Content-Location', location);
+  res.setHeader('Location', location);
+  res.status(202).json({
+    resourceType: 'Parameters',
+    parameter: [
+      { name: 'exportId', valueString: exportId },
+      { name: 'status', valueCode: 'accepted' },
+      { name: 'location', valueUrl: location }
+    ]
   });
 }
 
@@ -207,52 +265,146 @@ function readExportStatus(exportId) {
 
 const outputParams = ['name', 'status', 'error', 'count', 'location'];
 
-export async function getExportStatusEndpoint(req, res) {
-  const exportId = req.params.id;
-  let exportStatus = readExportStatus(exportId);
-  exportStatus = await makeProgress(req.config, exportStatus);
-  const response = {
+function buildResultResponse(exportId, exportStatus) {
+  return {
     resourceType: 'Parameters',
     parameter: [
       { name: 'exportId', valueString: exportId },
-      { name: 'status', valueString: exportStatus.status },
       { name: 'format', valueString: exportStatus.format },
-      { name: 'location', valueString: exportStatus.location },
-      { name: 'startTime', valueString: exportStatus.startTime }
+      { name: 'exportStartTime', valueInstant: new Date(exportStatus.startTime).toISOString() },
+      { name: 'exportEndTime', valueInstant: new Date().toISOString() }
     ].concat(Object.entries(exportStatus.viewDefinitions)
       .filter(([key, value]) => value.processed)
       .map(([key, value]) => ({
         name: 'output',
         part: outputParams.reduce((acc, p) => {
-          if (value[p]) { 
+          if (value[p]) {
             acc.push({ name: p, valueString: value[p] });
           }
           return acc;
         }, [])
       })))
   }
+}
 
-  const responseHtml = `
-      <div id="export-result">
-        <button hx-get="${req.originalUrl}" 
-                hx-trigger="click"
-                hx-target="#export-result"
-                hx-swap="outerHTML"
-                class="btn">
-          Refresh
-        </button>
-        <pre class="text-sm mt-4">${JSON.stringify(response, null, 2)}</pre>
+function buildInterimResponse(exportId, exportStatus) {
+  return {
+    resourceType: 'Parameters',
+    parameter: [
+      { name: 'exportId', valueString: exportId },
+      { name: 'exportStartTime', valueInstant: new Date(exportStatus.startTime).toISOString() }
+    ]
+  }
+}
+
+export async function getExportStatusEndpoint(req, res) {
+  const exportId = req.params.id;
+  let exportStatus = readExportStatus(exportId);
+  exportStatus = await makeProgress(req.config, exportStatus);
+
+  // If completed or failed, return 303 See Other with Location header to result endpoint
+  if (exportStatus.status === 'completed' || exportStatus.status === 'failed') {
+    const resultUrl = `${getBaseUrl(req)}/ViewDefinition/$viewdefinition-export/result/${exportId}`;
+    res.setHeader('Location', resultUrl);
+    res.status(303).end();
+    return;
+  }
+
+  // In progress: return 202 Accepted with interim status
+  const response = buildInterimResponse(exportId, exportStatus);
+
+  // For HTML requests (browser/htmx), show a polling UI
+  if (isHtml(req)) {
+    const responseHtml = `
+        <div id="export-result">
+          <button hx-get="${req.originalUrl}"
+                  hx-trigger="click"
+                  hx-target="#export-result"
+                  hx-swap="outerHTML"
+                  class="btn">
+            Refresh
+          </button>
+          <p class="mt-2">Status: ${exportStatus.status}</p>
+          <pre class="text-sm mt-4">${JSON.stringify(response, null, 2)}</pre>
+        </div>
+    `
+
+    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Retry-After', '2');
+    if (req.headers['hx-request']) {
+      res.status(202).send(responseHtml);
+    } else {
+      res.status(202).send(layout(`
+        <div class="container mx-auto p-4">
+          <div class="flex gap-4 space-x-2 mb-4">
+          <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>
+          <span class="text-gray-500">/</span>
+          <a href="/ViewDefinition">ViewDefinition</a>
+          <span class="text-gray-500">/</span>
+          <a href="/ViewDefinition/$viewdefinition-export">Export</a>
+          <span class="text-gray-500">/</span>
+          <a href="#">${exportId}</a>
+        </div>
+        ${responseHtml}
       </div>
-  ` 
-
-  res.setHeader('Content-Type', 'text/html');
-  if (req.headers['hx-request']) {
-    res.send(responseHtml);
+    `));
+    }
   } else {
+    // JSON response for API clients
+    res.setHeader('Content-Type', 'application/fhir+json');
+    res.setHeader('Retry-After', '2');
+    res.status(202).json(response);
+  }
+}
+
+// New result endpoint - returns final results after 303 redirect
+export async function getExportResultEndpoint(req, res) {
+  const exportId = req.params.id;
+  let exportStatus;
+
+  try {
+    exportStatus = readExportStatus(exportId);
+  } catch (error) {
+    res.status(404).json({
+      resourceType: 'OperationOutcome',
+      issue: [{
+        severity: 'error',
+        code: 'not-found',
+        diagnostics: `Export ${exportId} not found`
+      }]
+    });
+    return;
+  }
+
+  // If export failed, return error
+  if (exportStatus.status === 'failed') {
+    res.status(500).json({
+      resourceType: 'OperationOutcome',
+      issue: [{
+        severity: 'error',
+        code: 'exception',
+        diagnostics: 'Export operation failed'
+      }]
+    });
+    return;
+  }
+
+  // Return the final result (identical to what sync would return)
+  const response = buildResultResponse(exportId, exportStatus);
+
+  if (isHtml(req)) {
+    const responseHtml = `
+        <div id="export-result">
+          <h2>Export Complete</h2>
+          <pre class="text-sm mt-4">${JSON.stringify(response, null, 2)}</pre>
+        </div>
+    `
+
+    res.setHeader('Content-Type', 'text/html');
     res.send(layout(`
-      <div class="container mx-auto p-4"> 
+      <div class="container mx-auto p-4">
         <div class="flex gap-4 space-x-2 mb-4">
-        <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>    
+        <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>
         <span class="text-gray-500">/</span>
         <a href="/ViewDefinition">ViewDefinition</a>
         <span class="text-gray-500">/</span>
@@ -263,6 +415,9 @@ export async function getExportStatusEndpoint(req, res) {
       ${responseHtml}
     </div>
   `));
+  } else {
+    res.setHeader('Content-Type', 'application/fhir+json');
+    res.json(response);
   }
 }
 
@@ -270,12 +425,14 @@ export function mountRoutes(app) {
     // System level
     app.get('/\\$viewdefinition-export', getExportFormEndpoint);
     app.post('/\\$viewdefinition-export/form', postExportFormEndpoint);
-    app.post('/\\$viewdefinition-export', getExportEndpoint);
+    app.post('/\\$viewdefinition-export', postExportEndpoint);
     app.get('/\\$viewdefinition-export/status/:id', getExportStatusEndpoint);
+    app.get('/\\$viewdefinition-export/result/:id', getExportResultEndpoint);
 
     // Type level
     app.get('/ViewDefinition/\\$viewdefinition-export', getExportFormEndpoint);
     app.post('/ViewDefinition/\\$viewdefinition-export/form', postExportFormEndpoint);
-    app.post('/ViewDefinition/\\$viewdefinition-export', getExportEndpoint);
+    app.post('/ViewDefinition/\\$viewdefinition-export', postExportEndpoint);
     app.get('/ViewDefinition/\\$viewdefinition-export/status/:id', getExportStatusEndpoint);
+    app.get('/ViewDefinition/\\$viewdefinition-export/result/:id', getExportResultEndpoint);
 }

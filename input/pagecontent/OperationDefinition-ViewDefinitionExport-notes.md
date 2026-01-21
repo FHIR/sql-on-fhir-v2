@@ -6,15 +6,179 @@
 
 This operation follows the FHIR Asynchronous Interaction Request Pattern:
 1. Client sends request with `Prefer: respond-async` header and one or more `view` parameters
-2. Server returns location URL in header and response body
-3. Client polls the location URL for export status
-4. Server responds with Parameters resource containing export status
-5. Upon completion, each requested view has its own output entry with download URL(s)
+2. Server returns `202 Accepted` with `Content-Location` header pointing to status URL
+3. Client polls the status URL for export progress
+4. Server responds with `202 Accepted` while export is in progress (MAY include interim results)
+5. Upon completion, server returns `303 See Other` with `Location` header pointing to result URL
+6. Client GETs the result URL to retrieve final output (identical to synchronous response format)
 
 **Note**: This operation uses Parameters resource format instead of Bundle format to:
 - Provide structured status reporting and metadata
 - Allow extensible output metadata specific to export operations
 - Maintain consistency with other FHIR operations
+
+**Note**: The `303 See Other` redirect pattern cleanly separates status polling from result retrieval, eliminating ambiguity around error handling and request header scope.
+
+##### Async Flow Diagram
+
+```
+    Client                                          Server
+      │                                               │
+      │ ┌─────────────────────────────────────────┐   │
+      │ │ POST /ViewDefinition/$viewdefinition-export│
+      │ │ Content-Type: application/fhir+json     │   │
+      │ │ Prefer: respond-async                   │   │
+      │ │ Accept: application/fhir+json           │   │
+      │ │                                         │   │
+      │ │ { "resourceType": "Parameters",         │   │
+      │ │   "parameter": [                        │   │
+      │ │     {"name": "view", "part": [...]}     │   │
+      │ │   ]}                                    │   │
+      │ └─────────────────────────────────────────┘   │
+      │ ─────────────────────────────────────────────>│
+      │                                               │  Step 1: Kick-off
+      │   ┌─────────────────────────────────────────┐ │
+      │   │ 202 Accepted                            │ │
+      │   │ Content-Location: /status/abc123        │ │
+      │   │                                         │ │
+      │   │ { "resourceType": "Parameters",         │ │
+      │   │   "parameter": [                        │ │
+      │   │     {"name": "exportId",                │ │
+      │   │      "valueString": "abc123"},          │ │
+      │   │     {"name": "status",                  │ │
+      │   │      "valueCode": "accepted"}           │ │
+      │   │   ]}                                    │ │
+      │   └─────────────────────────────────────────┘ │
+      │ <─────────────────────────────────────────────│
+      │                                               │
+      ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┤
+      │                                               │
+      │ ┌─────────────────────────────────────────┐   │
+      │ │ GET /status/abc123                      │   │
+      │ │ Accept: application/fhir+json           │   │
+      │ └─────────────────────────────────────────┘   │
+      │ ─────────────────────────────────────────────>│
+      │                                               │  Step 2: Polling
+      │   ┌─────────────────────────────────────────┐ │  (repeat while
+      │   │ 202 Accepted                            │ │   in progress)
+      │   │ Retry-After: 10                         │ │
+      │   │ X-Progress: 45%                         │ │
+      │   │                                         │ │
+      │   │ { "resourceType": "Parameters",         │ │
+      │   │   "parameter": [                        │ │
+      │   │     {"name": "status",                  │ │
+      │   │      "valueCode": "in-progress"}        │ │
+      │   │   ]}                                    │ │
+      │   └─────────────────────────────────────────┘ │
+      │ <─────────────────────────────────────────────│
+      │                 ... (repeat) ...              │
+      │                                               │
+      ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┤
+      │                                               │
+      │ ┌─────────────────────────────────────────┐   │
+      │ │ GET /status/abc123                      │   │
+      │ └─────────────────────────────────────────┘   │
+      │ ─────────────────────────────────────────────>│
+      │                                               │  Step 3: Completion
+      │   ┌─────────────────────────────────────────┐ │  (redirect to result)
+      │   │ 303 See Other                           │ │
+      │   │ Location: /result/abc123                │ │
+      │   └─────────────────────────────────────────┘ │
+      │ <─────────────────────────────────────────────│
+      │                                               │
+      ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┤
+      │                                               │
+      │ ┌─────────────────────────────────────────┐   │
+      │ │ GET /result/abc123                      │   │
+      │ │ Accept: application/fhir+json           │   │
+      │ └─────────────────────────────────────────┘   │
+      │ ─────────────────────────────────────────────>│
+      │                                               │  Step 4: Result
+      │   ┌─────────────────────────────────────────┐ │
+      │   │ 200 OK                                  │ │
+      │   │ Content-Type: application/fhir+json    │ │
+      │   │ Expires: Mon, 21 Jan 2026 16:00:00 GMT │ │
+      │   │                                         │ │
+      │   │ { "resourceType": "Parameters",         │ │
+      │   │   "parameter": [                        │ │
+      │   │     {"name": "output", "part": [        │ │
+      │   │       {"name": "name",                  │ │
+      │   │        "valueString": "patients"},      │ │
+      │   │       {"name": "location",              │ │
+      │   │        "valueUrl": "/export/.../..."}   │ │
+      │   │     ]}                                  │ │
+      │   │   ]}                                    │ │
+      │   └─────────────────────────────────────────┘ │
+      │ <─────────────────────────────────────────────│
+      │                                               │
+      ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┤
+      │                                               │
+      │ ┌─────────────────────────────────────────┐   │
+      │ │ GET /export/abc123/patients.ndjson      │   │
+      │ └─────────────────────────────────────────┘   │
+      │ ─────────────────────────────────────────────>│
+      │                                               │  Step 5: Download
+      │   ┌─────────────────────────────────────────┐ │
+      │   │ 200 OK                                  │ │
+      │   │ Content-Type: application/fhir+ndjson  │ │
+      │   │                                         │ │
+      │   │ {"id":"pt1","name":[{"given":["John"]}]}│ │
+      │   │ {"id":"pt2","name":[{"given":["Jane"]}]}│ │
+      │   └─────────────────────────────────────────┘ │
+      │ <─────────────────────────────────────────────│
+      │                                               │
+```
+
+**Alternative Flows:**
+
+```
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  CANCELLATION (Recommended)                                      │
+  ├─────────────────────────────────────────────────────────────────┤
+  │                                                                 │
+  │  Client                                          Server         │
+  │    │                                               │            │
+  │    │ DELETE /status/abc123                         │            │
+  │    │ ─────────────────────────────────────────────>│            │
+  │    │                                               │            │
+  │    │   202 Accepted                                │            │
+  │    │ <─────────────────────────────────────────────│            │
+  │    │                                               │            │
+  │    │ GET /status/abc123  (subsequent poll)         │            │
+  │    │ ─────────────────────────────────────────────>│            │
+  │    │                                               │            │
+  │    │   404 Not Found                               │            │
+  │    │ <─────────────────────────────────────────────│            │
+  │                                                                 │
+  └─────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────┐
+  │  ERROR HANDLING (Operation Failure)                             │
+  ├─────────────────────────────────────────────────────────────────┤
+  │                                                                 │
+  │  Client                                          Server         │
+  │    │                                               │            │
+  │    │ GET /status/abc123                            │            │
+  │    │ ─────────────────────────────────────────────>│            │
+  │    │                                               │            │
+  │    │   303 See Other                               │            │
+  │    │   Location: /result/abc123                    │            │
+  │    │ <─────────────────────────────────────────────│            │
+  │    │                                               │            │
+  │    │ GET /result/abc123                            │            │
+  │    │ ─────────────────────────────────────────────>│            │
+  │    │                                               │            │
+  │    │   500 Internal Server Error                   │            │
+  │    │   { "resourceType": "OperationOutcome",       │            │
+  │    │     "issue": [{                               │            │
+  │    │       "severity": "error",                    │            │
+  │    │       "code": "exception",                    │            │
+  │    │       "diagnostics": "Export failed: ..."     │            │
+  │    │     }]}                                       │            │
+  │    │ <─────────────────────────────────────────────│            │
+  │                                                                 │
+  └─────────────────────────────────────────────────────────────────┘
+```
 
 #### Data Sources
 
@@ -31,12 +195,22 @@ Optional filtering parameters:
 
 #### Required Headers
 
-#### Kick-off Request
+##### Kick-off Request
 * `Prefer: respond-async` (required) - Specifies that the response should be asynchronous
-* `Accept` (recommended) - Specifies the format of the response
+* `Accept` (recommended) - Specifies the format of the kick-off response
 
-#### Status Request
-* `Accept` (recommended) - Specifies the format of the response
+##### Status Request
+* `Accept` (recommended) - Specifies the format of the status response
+
+##### Result Request
+* `Accept` (recommended) - Specifies the format of the final result response
+
+##### Header Scope
+
+Request headers sent during status polling apply **only to the status response**, not to the final operation result. This separation:
+- Allows different content negotiation for status vs. result responses
+- Enables servers to use different formats for interim status (e.g., minimal JSON) vs. final results (e.g., detailed Parameters)
+- Eliminates ambiguity about which response the headers apply to
 
 #### Parameters
 
@@ -141,6 +315,8 @@ the server MAY include these resources in a response irrespective of the `_since
 
 #### Output Parameters
 
+Output parameters appear in the **result response** (after following the `303 See Other` redirect), not in status polling responses.
+
 ##### Export Identifiers
 
 | Name             | Type   | Min | Max | Description                                                 |
@@ -149,34 +325,36 @@ the server MAY include these resources in a response irrespective of the `_since
 | clientTrackingId | string | 0   | 1   | Client-provided tracking ID (echoed from input if provided) |
 {:.table-data}
 
-##### Export Status
-
-| Name      | Type | Min | Max | Description                                                                             |
-|-----------|------|-----|-----|-----------------------------------------------------------------------------------------|
-| status    | code | 1   | 1   | The status of the export: `accepted`, `in-progress`, `completed`, `cancelled`, `failed` |
-| location  | uri  | 1   | 1   | The URL to poll for the status of the export                                            |
-| cancelUrl | uri  | 0   | 1   | Dedicated URL to cancel the export (alternative to DELETE on location URL)              |
-{:.table-data}
-
 ##### Export Metadata
 
 | Name                   | Type    | Min | Max | Description                                                             |
 |------------------------|---------|-----|-----|-------------------------------------------------------------------------|
 | _format                | code    | 0   | 1   | The format of the exported files (echoed from input if provided)        |
 | exportStartTime        | instant | 0   | 1   | When the export operation began                                         |
-| exportEndTime          | instant | 0   | 1   | When the export operation completed (only in completed status)          |
-| exportDuration         | integer | 0   | 1   | The actual duration of the export in seconds (only in completed status) |
-| estimatedTimeRemaining | integer | 0   | 1   | Estimated seconds until completion (only in in-progress status)         |
+| exportEndTime          | instant | 0   | 1   | When the export operation completed                                     |
+| exportDuration         | integer | 0   | 1   | The actual duration of the export in seconds                            |
 {:.table-data}
 
 ##### Export Results
 
 | Name            | Type    | Min | Max | Description                                                              |
 |-----------------|---------|-----|-----|--------------------------------------------------------------------------|
-| output          | complex | 0   | *   | Output information for each exported view (only in completed status)     |
+| output          | complex | 0   | *   | Output information for each exported view                                |
 | output.name     | string  | 1   | 1   | The name of the exported view. [Details](#output-name-clarification)     |
 | output.location | uri     | 1   | *   | URL(s) to download the exported file(s). [Details](#output-partitioning) |
 {:.table-data}
+
+##### Status Polling Parameters (interim)
+
+During status polling (`202 Accepted` responses), servers MAY include the following in the response body:
+
+| Name                   | Type    | Min | Max | Description                                         |
+|------------------------|---------|-----|-----|-----------------------------------------------------|
+| exportId               | string  | 0   | 1   | Server-generated export ID                          |
+| estimatedTimeRemaining | integer | 0   | 1   | Estimated seconds until completion                  |
+{:.table-data}
+
+Servers MAY also include partial/interim results during polling. The format of interim responses is implementation-defined.
 
 ##### Output Name Clarification
 
@@ -231,11 +409,12 @@ The $viewdefinition-export operation uses standard HTTP status codes to indicate
 
 | Status Code               | Description          | When to Use                                                          |
 |---------------------------|----------------------|----------------------------------------------------------------------|
-| 202 Accepted              | Success              | Export request accepted, poll for status                             |
+| 202 Accepted              | In Progress          | Export request accepted or still in progress during polling          |
+| 303 See Other             | Complete             | Export complete, follow `Location` header to retrieve results        |
 | 400 Bad Request           | Client Error         | Invalid parameters, unsupported parameters, missing required headers |
-| 404 Not Found             | Not Found            | ViewDefinition resource not found                                    |
+| 404 Not Found             | Not Found            | ViewDefinition not found, or cancelled export status URL             |
 | 422 Unprocessable Entity  | Business Logic Error | Valid request but ViewDefinition is invalid or cannot be processed   |
-| 500 Internal Server Error | Server Error         | Unexpected server error                                              |
+| 500 Internal Server Error | Server Error         | Unexpected server error (at result URL indicates operation failure)  |
 {:.table-data}
 
 All error responses (4xx and 5xx) SHOULD include an `OperationOutcome` resource providing details about the error.
@@ -377,34 +556,39 @@ Content-Type: application/fhir+json
    - Parameters resource with `status` parameter set to `accepted` and `location` parameter
    - If request is not valid or cannot be processed, server responds with `400 Bad Request` and `OperationOutcome` resource in the body.
 3. **Status Polling**: Client polls the polling location to get status of the export:
-   - **In Progress**: `202 Accepted` with Parameters resource containing `status` parameter set to `in-progress`
+   - **In Progress**: `202 Accepted` with optional Parameters resource for interim status
    - **Progress Updates**: Server MAY include `X-Progress` header to indicate completion percentage
    - **Retry-After**: Server SHOULD include `Retry-After` header to indicate when to retry
-   - **Partial Results**: Server MAY report partial results using `output` parameter
+   - **Interim Results**: Server MAY include partial/interim results in response body (implementation-defined)
 4. **Completion**: When export is ready, server responds with:
-   - `200 OK` status code
-   - Parameters resource with `status` parameter set to `completed`
-   - `output` parameter containing the results of the export
-5. **Error Handling**: If export fails, server responds with:
-   - `202 Accepted` status code (during polling)
-   - Parameters resource with `status` parameter set to `failed`
-   - Error details in additional parameters
-6. **Cancellation** (Optional): 
-   Servers MAY support export cancellation using one of two approaches:
-   
-   **Option 1: DELETE on location URL**
-   - Client sends `DELETE` request to the status polling URL (from `location` parameter)
-   - Example: `DELETE /fhir/export/{exportId}/status`
-   
-   **Option 2: Separate cancel URL**
-   - Server returns `cancelUrl` parameter in responses
-   - Client sends `DELETE` request to the provided cancel URL
-   - Example: `DELETE /fhir/export/{exportId}/cancel`
-   
-   After successful cancellation:
-   - Subsequent status requests SHOULD return `404 Not Found`
+   - `303 See Other` status code
+   - `Location` header pointing to the result URL
+   - Response body is optional (MAY be empty or contain minimal status)
+5. **Result Retrieval**: Client GETs the result URL from the `Location` header:
+   - `200 OK` status code with Parameters resource containing `output` locations
+   - Response format is identical to what a synchronous call would return
+6. **Error Handling**: If export fails:
+   - Status endpoint still returns `303 See Other` with `Location` header
+   - Result URL returns appropriate error status code (e.g., `500 Internal Server Error`)
+   - Result response contains `OperationOutcome` with error details
+   - This cleanly separates polling errors from operation errors
+7. **Cancellation** (Recommended):
+   Servers SHOULD support export cancellation via DELETE request to the status URL:
+   - Client sends `DELETE` request to the status polling URL
+   - Server responds with `202 Accepted`
+   - Subsequent status requests return `404 Not Found`
    - Server SHOULD clean up any partial results
-7. **File Download**: Client downloads the output from URLs in the `output.location` parameters.
+8. **Result URL Lifetime**:
+   Result URLs SHALL remain valid for at least 24 hours after export completion:
+   - Servers SHOULD support multiple retrievals of the same result
+   - Servers MAY include an `Expires` header to indicate result URL expiration
+   - Clients should retrieve results promptly but can retry within the validity window
+9. **Access Control**:
+   Servers SHALL protect status and result URLs with appropriate access controls:
+   - Same authorization context as the original request, OR
+   - Non-guessable URLs (e.g., cryptographically random tokens)
+   - Unauthorized access attempts return `401 Unauthorized` or `403 Forbidden`
+10. **File Download**: Client downloads the output from URLs in the `output.location` parameters.
 
 #### Examples
 
@@ -429,7 +613,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...
   "parameter": [
     {
       "name": "clientTrackingId",
-      "valueString": "monthly-report-2024-01"
+      "valueString": "monthly-report-2026-01"
     },
     {
       "name": "view",
@@ -496,7 +680,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...
     },
     {
       "name": "_since",
-      "valueInstant": "2024-01-01T00:00:00Z"
+      "valueInstant": "2026-01-01T00:00:00Z"
     },
     {
       "name": "_format",
@@ -524,7 +708,7 @@ Content-Type: application/fhir+json
     },
     {
       "name": "clientTrackingId",
-      "valueString": "monthly-report-2024-01"
+      "valueString": "monthly-report-2026-01"
     },
     {
       "name": "status",
@@ -566,7 +750,7 @@ X-Progress: 0%
     },
     {
       "name": "clientTrackingId",
-      "valueString": "monthly-report-2024-01"
+      "valueString": "monthly-report-2026-01"
     },
     {
       "name": "status",
@@ -577,12 +761,8 @@ X-Progress: 0%
       "valueUri": "https://example.com/fhir/export/550e8400-e29b-41d4-a716-446655440000/status"
     },
     {
-      "name": "cancelUrl",
-      "valueUri": "https://example.com/fhir/export/550e8400-e29b-41d4-a716-446655440000"
-    },
-    {
       "name": "exportStartTime",
-      "valueInstant": "2024-01-15T14:30:00Z"
+      "valueInstant": "2026-01-15T14:30:00Z"
     }
   ]
 }
@@ -616,7 +796,7 @@ X-Progress: 65%
     },
     {
       "name": "clientTrackingId",
-      "valueString": "monthly-report-2024-01"
+      "valueString": "monthly-report-2026-01"
     },
     {
       "name": "status",
@@ -627,12 +807,8 @@ X-Progress: 65%
       "valueUri": "https://example.com/fhir/export/550e8400-e29b-41d4-a716-446655440000/status"
     },
     {
-      "name": "cancelUrl",
-      "valueUri": "https://example.com/fhir/export/550e8400-e29b-41d4-a716-446655440000"
-    },
-    {
       "name": "exportStartTime",
-      "valueInstant": "2024-01-15T14:30:00Z"
+      "valueInstant": "2026-01-15T14:30:00Z"
     },
     {
       "name": "estimatedTimeRemaining",
@@ -653,12 +829,30 @@ Accept: application/fhir+json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...
 ```
 
-Response shows completion with download URLs:
+Response indicates completion with redirect to result URL:
+
+```http
+HTTP/1.1 303 See Other
+Location: https://example.com/fhir/export/550e8400-e29b-41d4-a716-446655440000/result
+```
+
+**Step 6: Result Retrieval**
+
+Client follows the `Location` header to retrieve the final results:
+
+```http
+GET /fhir/export/550e8400-e29b-41d4-a716-446655440000/result HTTP/1.1
+Host: example.com
+Accept: application/fhir+json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGc...
+```
+
+Response contains the export results (identical to what a synchronous call would return):
 
 ```http
 HTTP/1.1 200 OK
 Content-Type: application/fhir+json
-Expires: Tue, 16 Jan 2024 14:30:42 GMT
+Expires: Fri, 16 Jan 2026 14:30:42 GMT
 
 {
   "resourceType": "Parameters",
@@ -669,7 +863,7 @@ Expires: Tue, 16 Jan 2024 14:30:42 GMT
     },
     {
       "name": "clientTrackingId",
-      "valueString": "monthly-report-2024-01"
+      "valueString": "monthly-report-2026-01"
     },
     {
       "name": "status",
@@ -681,11 +875,11 @@ Expires: Tue, 16 Jan 2024 14:30:42 GMT
     },
     {
       "name": "exportStartTime",
-      "valueInstant": "2024-01-15T14:30:00Z"
+      "valueInstant": "2026-01-15T14:30:00Z"
     },
     {
       "name": "exportEndTime",
-      "valueInstant": "2024-01-15T14:30:42Z"
+      "valueInstant": "2026-01-15T14:30:42Z"
     },
     {
       "name": "exportDuration",
@@ -725,7 +919,7 @@ Expires: Tue, 16 Jan 2024 14:30:42 GMT
 }
 ```
 
-**Step 6: Download Files**
+**Step 7: Download Files**
 
 Client downloads each file:
 
