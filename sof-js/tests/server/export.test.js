@@ -1,9 +1,10 @@
 import { startServer } from '../../src/server.js';
 import { getParameterValue } from '../../src/server/utils.js';
+
 var server;
 
 beforeAll(async () => {
-  server = await startServer({port: 3001});
+  server = await startServer({port: 3003});
   console.log('Server started');
 });
 
@@ -12,45 +13,133 @@ afterAll(async () => {
   server?.close();
 });
 
-describe('Server', () => {
+// Helper function to extract JSON from HTML response.
+// The status endpoint returns HTML with JSON embedded in a <pre> tag.
+function extractJsonFromHtml(html) {
+  const match = html.match(/<pre[^>]*>([\s\S]*?)<\/pre>/);
+  if (match && match[1]) {
+    return JSON.parse(match[1]);
+  }
+  throw new Error('Could not extract JSON from HTML response');
+}
 
-  test('ViewDefinition/$viewdefinition-export endpoint returns a bundle of resources', async () => {
-    console.log('ViewDefinition/$viewdefinition-export endpoint returns redirect to status');
-    const url = 'http://localhost:3001/ViewDefinition/$viewdefinition-export';
-    console.log('URL: ' + url);
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      redirect: 'manual',
-      body: JSON.stringify({
-        resourceType: 'Parameters',
-        parameter: [
-          {name: 'viewUrl', valueUrl: 'http://myig.org/ViewDefinition/patient_demographics' },
-          {name: 'format', valueCode: 'csv'},
-        ]
-      })
-    });
+// Helper function to poll export status until completion.
+async function waitForExportCompletion(statusUrl, maxAttempts = 10) {
+  for (let i = 0; i < maxAttempts; i++) {
+    const response = await fetch(statusUrl);
+    const html = await response.text();
+    const body = extractJsonFromHtml(html);
+    const status = getParameterValue(body, 'status', 'string');
+    if (status === 'completed') {
+      return body;
+    }
+    // Wait a short time before polling again.
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+  throw new Error('Export did not complete within expected time');
+}
 
-    console.log('Status: ' + response.status);
-    expect(response.status).toBe(202);
-    expect(response.headers.get('Location')).not.toBeNull()
-    const body = await response.json();
-    expect(body.resourceType).toBe('Parameters');
-    console.log('Body: ' + JSON.stringify(body, null, 2));
+describe('$viewdefinition-export operation', () => {
 
-    const statusUrl = response.headers.get('Location');
-    console.log('Status URL: ' + statusUrl);
+  test('form endpoint returns redirect to status endpoint', async () => {
+    // Start export using the form endpoint.
+    const exportResponse = await fetch(
+      'http://localhost:3003/ViewDefinition/$viewdefinition-export/form',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        redirect: 'manual',
+        body: new URLSearchParams({
+          viewReference: 'ViewDefinition/patient_demographics',
+          format: 'csv'
+        })
+      }
+    );
 
-    const location = getParameterValue(body, 'location', 'url');
-    expect(location).not.toBeNull();
-    const status = getParameterValue(body, 'status', 'code');
-    expect(status).toBe('accepted');
+    expect(exportResponse.status).toBe(301);
+    expect(exportResponse.headers.get('Location')).not.toBeNull();
 
+    // Verify the status endpoint is accessible.
+    const statusUrl = 'http://localhost:3003' + exportResponse.headers.get('Location');
     const statusResponse = await fetch(statusUrl);
-    console.log('Status Response: ' + statusResponse.status);
     expect(statusResponse.status).toBe(200);
-    const statusBody = await statusResponse.json();
-    console.log('Status Body: ' + JSON.stringify(statusBody, null, 2));
-    
   });
-}); 
+
+  test('CSV export includes header row by default', async () => {
+    // Start export with default header setting (should include header).
+    const exportResponse = await fetch(
+      'http://localhost:3003/ViewDefinition/$viewdefinition-export/form',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        redirect: 'manual',
+        body: new URLSearchParams({
+          viewReference: 'ViewDefinition/patient_demographics',
+          format: 'csv'
+        })
+      }
+    );
+
+    expect(exportResponse.status).toBe(301);
+    const statusUrl = 'http://localhost:3003' + exportResponse.headers.get('Location');
+
+    // Poll until export completes.
+    const statusBody = await waitForExportCompletion(statusUrl);
+
+    // Get the output file location.
+    const outputParam = statusBody.parameter.find(p => p.name === 'output');
+    expect(outputParam).toBeDefined();
+    const locationPart = outputParam.part.find(p => p.name === 'location');
+    expect(locationPart).toBeDefined();
+
+    // Fetch the exported CSV file.
+    const csvResponse = await fetch('http://localhost:3003' + locationPart.valueString);
+    expect(csvResponse.status).toBe(200);
+    const csvContent = await csvResponse.text();
+    const lines = csvContent.split('\n');
+
+    // First line should be the header row.
+    expect(lines[0]).toBe('id,date_of_birth,gender');
+  });
+
+  test('CSV export excludes header row when header=false', async () => {
+    // Start export with header=false.
+    const exportResponse = await fetch(
+      'http://localhost:3003/ViewDefinition/$viewdefinition-export/form',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        redirect: 'manual',
+        body: new URLSearchParams({
+          viewReference: 'ViewDefinition/patient_demographics',
+          format: 'csv',
+          header: 'false'
+        })
+      }
+    );
+
+    expect(exportResponse.status).toBe(301);
+    const statusUrl = 'http://localhost:3003' + exportResponse.headers.get('Location');
+
+    // Poll until export completes.
+    const statusBody = await waitForExportCompletion(statusUrl);
+
+    // Get the output file location.
+    const outputParam = statusBody.parameter.find(p => p.name === 'output');
+    expect(outputParam).toBeDefined();
+    const locationPart = outputParam.part.find(p => p.name === 'location');
+    expect(locationPart).toBeDefined();
+
+    // Fetch the exported CSV file.
+    const csvResponse = await fetch('http://localhost:3003' + locationPart.valueString);
+    expect(csvResponse.status).toBe(200);
+    const csvContent = await csvResponse.text();
+    const lines = csvContent.split('\n');
+
+    // First line should be data, not the header.
+    expect(lines[0]).not.toBe('id,date_of_birth,gender');
+    // Verify it looks like a UUID (data row).
+    expect(lines[0]).toMatch(/^[0-9a-f-]+,/);
+  });
+
+});
