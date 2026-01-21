@@ -68,7 +68,7 @@ export async function getRunFormEndpoint(req, res) {
     `));
 };
 
-function renderResult(req, res, result, format) {
+function renderResult(req, res, result, format, includeHeader = true) {
     if (isHtml(req)) {
         res.setHeader('Content-Type', 'text/html');
         res.send(layout(`
@@ -90,7 +90,12 @@ function renderResult(req, res, result, format) {
         res.end();
     } else if (format === 'csv') {
         res.setHeader('Content-Type', 'text/csv');
-        res.send(result.map(item => Object.values(item).join(',')).join('\n'));
+        let csvContent = '';
+        if (includeHeader && result.length > 0) {
+            csvContent = Object.keys(result[0]).join(',') + '\n';
+        }
+        csvContent += result.map(item => Object.values(item).join(',')).join('\n');
+        res.send(csvContent);
     }
 }
 
@@ -102,9 +107,10 @@ export async function getRunEndpoint(req, res) {
         return;
     }
     try {
-        const result=  await runOperation(req, resource, req.query);
+        const result = await runOperation(req, resource, req.query);
         const format = req.query.format || 'json';
-        renderResult(req, res, result, format);
+        const includeHeader = req.query.header !== 'false';
+        renderResult(req, res, result, format, includeHeader);
     } catch (error) {
         console.error('$run-error', error);
         renderError(req, res, error);
@@ -117,7 +123,12 @@ function renderRunResults(query, result) {
     } else if (query.format === 'ndjson') {
         return `<pre>${result.map(item => JSON.stringify(item)).join('\n')}</pre>`;
     } else if (query.format === 'csv') {
-        return `<pre>${result.map(item => Object.values(item).join(',')).join('\n')}</pre>`;
+        let csvContent = '';
+        if (query.header !== 'false' && result.length > 0) {
+            csvContent = Object.keys(result[0]).join(',') + '\n';
+        }
+        csvContent += result.map(item => Object.values(item).join(',')).join('\n');
+        return `<pre>${csvContent}</pre>`;
     } else {
         return `<pre>${JSON.stringify(result, null, 2)}</pre>`;
     }
