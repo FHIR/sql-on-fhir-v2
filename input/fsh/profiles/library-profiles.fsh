@@ -13,9 +13,35 @@ Profile: SQLQuery
 Title: "SQL Query Library"
 Parent: Library
 Description: """
-A profile for FHIR Library used to represent a single logical SQL query,
-possibly with multiple SQL dialects.
+The SQLQuery profile represents a SQL query that runs against ViewDefinition
+tables. It bundles the SQL, dependencies, and parameters for sharing and
+versioning.
 """
 * obeys sql-must-be-sql-expressions
 * obeys sql-dialect-must-be-in-dialect-code-system
 * type = LibraryTypesCodes#sql-query
+
+// Content constraints - SQL attachment(s)
+* content 1..* MS
+* content.contentType 1..1 MS
+* content.contentType ^short = "application/sql or application/sql;dialect=..."
+* content.title 1..1 MS
+* content.title ^short = "SQL query text (plain text)"
+* content.data 1..1 MS
+* content.data ^short = "SQL query (base64-encoded)"
+
+// ViewDefinition dependencies
+* relatedArtifact MS
+* relatedArtifact.type 1..1 MS
+* relatedArtifact.type ^short = "depends-on for ViewDefinition references"
+* relatedArtifact.resource 1..1 MS
+* relatedArtifact.resource ^short = "Canonical URL of ViewDefinition"
+* relatedArtifact.label 1..1 MS
+* relatedArtifact.label ^short = "Table name used in SQL query"
+
+// Query parameters
+* parameter MS
+* parameter.name 1..1 MS
+* parameter.type 1..1 MS
+* parameter.use 1..1 MS
+* parameter.use ^short = "in (query parameters are always input)"
