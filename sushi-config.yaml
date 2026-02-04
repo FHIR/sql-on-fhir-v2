@@ -135,7 +135,39 @@ menu:
 #     description: An example Patient
 #     exampleBoolean: true
 #   Patient/bad-example: omit
-#
+
+# Add the implementationguide-resource-logical extension to ViewDefinition examples
+# so the IG Publisher knows to validate them as logical model instances.
+resources:
+  Binary/PatientDemographics:
+    extension:
+      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
+        valueString: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
+  Binary/ShareablePatientDemographics:
+    extension:
+      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
+        valueString: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
+  Binary/PatientAddresses:
+    extension:
+      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
+        valueString: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
+  Binary/PatientAndContactAddressUnion:
+    extension:
+      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
+        valueString: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
+  Binary/UsCoreBloodPressures:
+    extension:
+      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
+        valueString: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
+  Binary/ConditionFlat:
+    extension:
+      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
+        valueString: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
+  Binary/EncounterFlat:
+    extension:
+      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
+        valueString: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
+
 #
 # Groups can control certain aspects of the IG generation.  The IG
 # documentation recommends that authors use the default groups that
