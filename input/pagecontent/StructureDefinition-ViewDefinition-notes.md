@@ -559,6 +559,111 @@ This is an example of a constant used in the `where` constraint of a view:
 }
 ```
 
+## Environment Variables
+
+In addition to user-defined constants, SQL on FHIR provides built-in environment
+variables that can be referenced in [FHIRPath](https://hl7.org/fhirpath/)
+expressions using the `%name` syntax.
+
+### %rowIndex
+
+The `%rowIndex` environment variable returns the 0-based index of the current
+element within the collection being iterated. This is useful for:
+
+-   **Preserving ordering semantics**: SQL result sets are unordered by default;
+    including the original index allows users to restore FHIR ordering.
+-   **Disambiguation**: When a resource has multiple repeating elements (e.g.,
+    multiple names), knowing which is the first, second, etc. can be
+    semantically important.
+-   **Surrogate keys**: Combining the resource ID with the element index creates
+    a unique identifier for each row.
+
+#### Behaviour
+
+-   Within `forEach`, `forEachOrNull`, and `repeat` contexts, `%rowIndex`
+    returns the position of the current element in the collection (starting
+    from 0).
+-   At the top level (no iteration context), `%rowIndex` evaluates to `0`.
+-   Each nesting level has its own independent `%rowIndex` value. For nested
+    iterations, users can capture the parent-level index in a column before
+    entering the child iteration.
+-   The type of `%rowIndex` is `integer`.
+
+#### Example: Capturing element position
+
+```json
+{
+  "resource": "Patient",
+  "select": [
+    {
+      "column": [
+        { "name": "id", "path": "id", "type": "id" }
+      ]
+    },
+    {
+      "forEach": "name",
+      "column": [
+        { "name": "name_index", "path": "%rowIndex", "type": "integer" },
+        { "name": "family", "path": "family", "type": "string" }
+      ]
+    }
+  ]
+}
+```
+
+For a Patient with two names, this would produce:
+
+| id   | name_index | family |
+|------|------------|--------|
+| pt1  | 0          | Smith  |
+| pt1  | 1          | Jones  |
+{:.table-data}
+
+#### Example: Nested iteration with independent indices
+
+```json
+{
+  "resource": "Patient",
+  "select": [
+    {
+      "column": [
+        { "name": "id", "path": "id", "type": "id" }
+      ]
+    },
+    {
+      "forEach": "contact",
+      "column": [
+        { "name": "contact_index", "path": "%rowIndex", "type": "integer" }
+      ],
+      "select": [
+        {
+          "forEach": "telecom",
+          "column": [
+            { "name": "telecom_index", "path": "%rowIndex", "type": "integer" },
+            { "name": "system", "path": "system", "type": "code" }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+For a Patient with two contacts, where the first contact has two telecom entries
+(phone and email) and the second contact has one telecom entry (phone), this
+would produce:
+
+| id   | contact_index | telecom_index | system |
+|------|---------------|---------------|--------|
+| pt1  | 0             | 0             | phone  |
+| pt1  | 0             | 1             | email  |
+| pt1  | 1             | 0             | phone  |
+{:.table-data}
+
+In this example, `contact_index` captures the position in the outer `contact`
+collection, while `telecom_index` captures the position in the inner `telecom`
+collection. Each iteration level maintains its own independent index.
+
 ## Joins with Resource and Reference Keys
 
 While ViewDefinitions do not directly implement joins across resources, the
@@ -890,7 +995,9 @@ Resource, by setting up a recursive call.
         - If `R` is not a candidate for `V`, return immediately without emitting
           any rows
         - Otherwise, continue
-3. Emit all rows from `Process(S, V)`
+3. Initialise `%rowIndex` to `0` (the top-level row index)
+4. Emit all rows from `Process(S, V)` with `%rowIndex` available in the
+   evaluation context
 
 ### `Process(S, N)` (recursive step)
 
@@ -940,8 +1047,10 @@ Then the Cartesian product of these sets consists of four complete rows:
     - Else if `S.forEachOrNull` is defined: `fhirpath(S.forEachOrNull, N)`
     - Otherwise: `[N]` (a list with just the input node)
 
-2. For each element `f` of `foci`
+2. For each element `f` of `foci` (with 0-based index `i`)
 
+    0. Set `%rowIndex` to `i` for this iteration level (each nesting level has
+       its own independent `%rowIndex` value)
     1. Initialize an empty list `parts` (each element of `parts` will be a list
        of partial rows)
     2. Process Columns:
@@ -996,10 +1105,12 @@ Then the Cartesian product of these sets consists of four complete rows:
 
 3. If `foci` is an empty list and `S.forEachOrNull` is defined (Note: when this
    condition is met, no rows have been emitted so far)
-    1. Initialize a blank row `r`
-    2. For each Column `c` in `ValidateColumns(V, [])`
-        - Bind the column `c.name` to `null` in the row `r`
-    3. Emit the row `r`
+    1. Set `%rowIndex` to `0` for this empty collection case
+    2. Initialize a blank row `r`
+    3. For each Column `c` in `ValidateColumns(V, [])`
+        - Bind the column `c.name` to `null` in the row `r` (except for columns
+          with path `%rowIndex`, which should be bound to `0`)
+    4. Emit the row `r`
 
 ## Functional Model
 

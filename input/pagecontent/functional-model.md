@@ -224,14 +224,21 @@ primary difference is that `forEach` removes records where the FHIRPath
 expression returns no results, whereas `forEachOrNull` keeps an empty record in
 such cases.
 
+Both functions set the `%rowIndex` environment variable to the 0-based index
+of the current element within the collection being iterated. This allows
+columns to capture the position of each element for ordering or surrogate key
+purposes.
+
 Basic JavaScript implementation:
 
 ```javascript
-function forEach(path, expr, rows) {
+function forEach(path, expr, rows, envVars = {}) {
     return rows.flatMap((row) => {
-        return fhirpath(expr, row).map((item) => {
-            // evalKeyword will call column, select or other functions
-            return evalKeyword(expr, item);
+        return fhirpath(expr, row).map((item, index) => {
+            // Set %rowIndex for this iteration level.
+            const childEnvVars = { ...envVars, rowIndex: index };
+            // evalKeyword will call column, select or other functions.
+            return evalKeyword(expr, item, childEnvVars);
         });
     });
 }
