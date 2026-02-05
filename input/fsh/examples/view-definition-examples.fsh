@@ -242,6 +242,37 @@ Usage: #example
     * path = "code"
     * name = "verification_status"
 
+Instance: PatientNamesWithIndex
+InstanceOf: ViewDefinition
+Description: """An example demonstrating the use of %rowIndex to capture the
+position of elements within a collection. This is useful for preserving FHIR
+ordering semantics and creating surrogate keys that combine resource ID with
+element position."""
+Usage: #example
+* name = "patient_names_with_index"
+* status = #draft
+* resource = #Patient
+* select[+]
+  * column[+]
+    * path = "getResourceKey()"
+    * name = "patient_id"
+* select[+]
+  * forEach = "name"
+  * column[+]
+    * path = "%rowIndex"
+    * name = "name_index"
+    * type = "integer"
+    * description = "The 0-based position of this name in the patient's name array."
+  * column[+]
+    * path = "use"
+    * name = "use"
+  * column[+]
+    * path = "family"
+    * name = "family"
+  * column[+]
+    * path = "given.join(' ')"
+    * name = "given"
+
 Instance: EncounterFlat
 InstanceOf: ViewDefinition
 Description: """A simple view for flattening an Encounter resource. Some of the
