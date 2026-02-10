@@ -38,6 +38,7 @@ versioning.
 * relatedArtifact.resource ^short = "Canonical URL of ViewDefinition"
 * relatedArtifact.label 1..1 MS
 * relatedArtifact.label ^short = "Table name used in SQL query"
+* relatedArtifact.label obeys sql-name
 
 // Query parameters
 * parameter MS
