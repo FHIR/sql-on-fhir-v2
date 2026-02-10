@@ -211,6 +211,13 @@ Use `:parameter_name` syntax for SQL parameter placeholders (aligned with Brian'
 
 Allow dialect-specific variants in individual content attachments.
 
+### Decision 2A: Parameter binding must be safe
+
+Implementations MUST ensure parameter values are safely bound to queries and not
+subject to SQL injection. Use parameterized queries or equivalent safe binding
+mechanisms where available. Simple string interpolation MUST NOT be used to
+implement parameter binding.
+
 ### Decision 3: Adopt Brian's annotation syntax
 
 The `@annotation` syntax from sql-fhir-library-builder is adopted as the standard:
@@ -233,6 +240,7 @@ Labels are required (1..1) for ViewDefinition dependencies. This ensures unambig
 - Explicit is better than implicit
 - Avoids runtime resolution errors
 - Ensures queries are self-contained and portable
+- Aligns with ViewDefinition name constraints (valid identifier pattern)
 
 ### Decision 5: Annotation syntax is informational only
 
@@ -262,6 +270,10 @@ Rationale:
 - Title provides quick visual inspection without decoding
 - Data provides reliable machine-readable format
 - Dual format supports both use cases without extensions
+ 
+**Concerns raised (John Grimes):**
+- Using `title` for plain-text SQL may be seen as co-opting an element with a different semantic purpose.
+- Alternative approach: use an extension (e.g., `sqlText`) or require only `data` and rely on tooling/UI for display.
 
 ### Decision 8: Create $sqlquery-run operation
 
@@ -306,6 +318,7 @@ A synchronous operation for executing SQLQuery Libraries against ViewDefinition 
 | uri | VARCHAR, TEXT | URL/URN string |
 
 Note: Exact mappings are implementation-specific. This table provides guidance.
+**Concerns raised (John Grimes):** The table is incomplete for all FHIR types and needs clarification on whether it is normative or informative.
 
 ## Risks / Trade-offs
 
@@ -316,6 +329,8 @@ Note: Exact mappings are implementation-specific. This table provides guidance.
 | Parameter syntax differences | Allow dialect variants, document canonical form |
 | Case sensitivity issues | Document as case-insensitive for matching |
 | Divergence from Brian's impl | Align spec with existing implementation |
+| SQL injection risk | Require safe parameter binding; prohibit string interpolation |
+| `contentType` dialect parsing | Consider extension-based dialect declaration (John Grimes) |
 
 ## Migration Plan
 
@@ -345,24 +360,35 @@ Note: Exact mappings are implementation-specific. This table provides guidance.
 ## Open Questions
 
 1. Should we add FHIRPath invariant to validate SQL identifier pattern?
-2. Should query executors be required to validate label/query correspondence?
-3. How to handle versioned ViewDefinitions - does label need to include version context?
-4. Should annotations support structured parameter types (e.g., `@param: city string "City name filter"`)?
-5. ~~Is there value in a `$run-query` operation for SQLQuery resources?~~ **Resolved:** Yes, created `$sqlquery-run` operation (Decision 8)
-6. Should we reference/depend on sql-fhir-library-builder for tooling?
-7. **Should `relatedArtifact.label` be required (SHALL) or recommended (SHOULD)?**
+1. Should query executors be required to validate label/query correspondence?
+1. How to handle versioned ViewDefinitions - does label need to include version context?
+1. Should annotations support structured parameter types (e.g., `@param: city string "City name filter"`)?
+   They should support structured parameter types!
+1. Should `relatedArtifact.label` be constrained to the same identifier pattern as ViewDefinition `name`? (John Grimes)
+   - Aligning constraints avoids inconsistent validation across resources.
+
+1. **Should `relatedArtifact.label` be required (SHALL) or recommended (SHOULD)?**
    - Current decision: Required (1..1)
    - Pro: Ensures unambiguous table resolution, queries are self-contained
    - Con: Breaking change for existing SQLQuery resources without labels
    - Alternative: SHOULD with fallback to ViewDefinition.name
-8. **How should output columns/schema be documented?**
+1. **How should output columns/schema be documented?**
    - Option A: Use `Library.parameter` with `use = "out"` for output columns
    - Option B: Add output schema in a separate content attachment (e.g., JSON Schema)
    - Option C: No formal output documentation - rely on SQL introspection
    - Option D: Use `Library.dataRequirement` to describe output structure
    - Considerations: Schema evolution, type mapping, tooling support
+1. **Should the dialect be represented via extension instead of `contentType` parameter?** (John Grimes)
+   - Pros: Easier profile validation, no parsing of `contentType`
+   - Cons: Less aligned with MIME conventions; another extension to maintain
+1. **Should plain-text SQL be stored in `content.title` or a dedicated extension?** (John Grimes)
+   - Pros (title): human-readable without decoding; no new extension
+   - Cons (title): semantic mismatch with `Attachment.title`
+   - Alternative: require only `data` and rely on tooling/UI for display
+1. **Should the FHIR-to-SQL type mapping table be marked informative and expanded?** (John Grimes)
+   - Add missing FHIR types or scope it to commonly used scalar types
 
-9. **Should `$sqlquery-run` support named query parameters directly?**
+1. **Should `$sqlquery-run` support named query parameters directly?**
    - Current: Complex nested structure in Parameters resource
      ```json
      { "name": "parameter", "part": [
