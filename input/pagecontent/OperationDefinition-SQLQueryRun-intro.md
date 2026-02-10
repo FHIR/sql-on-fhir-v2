@@ -20,3 +20,8 @@ Execute a SQLQuery Library against ViewDefinition tables synchronously.
 3. Bind parameter values to SQL placeholders
 4. Execute SQL query
 5. Return results in requested format
+
+Implementations MUST ensure parameter values are safely bound to queries and not
+subject to SQL injection. Use parameterized queries or equivalent safe binding
+mechanisms where available. Simple string interpolation MUST NOT be used to
+implement parameter binding.

@@ -90,7 +90,6 @@ Annotation reference:
 | `@publisher` | `Library.publisher` | `@publisher: Org` |
 | `@param` | `Library.parameter` | `@param: name type [description]` (repeatable) |
 | `@relatedDependency` | `relatedArtifact` | `@relatedDependency: URL [as label]` (repeatable) |
-
 ### Tooling
 
 Builders SHALL:

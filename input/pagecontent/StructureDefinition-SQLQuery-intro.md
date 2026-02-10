@@ -49,8 +49,11 @@ Reference parameters in SQL with colon-prefix placeholders (`:name`):
 WHERE patient.id = :patient_id AND bp.effective_date >= :from_date
 ```
 
-Other placeholder styles exist (`@name` for SQL Server, `$1` for PostgreSQL,
-`?` for JDBC) but `:name` is recommended for portability.
+Implementations MUST ensure parameter values are safely bound to queries and not
+subject to SQL injection. Use parameterized queries or equivalent safe binding
+mechanisms where available. Simple string interpolation MUST NOT be used to
+implement parameter binding.
+
 
 #### SQL Attachments
 
