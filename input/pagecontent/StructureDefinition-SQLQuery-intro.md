@@ -78,8 +78,8 @@ parameter names consistent across variants.
 
 ### Conformance
 
-**Terminology:** Dialect values in `contentType` SHALL come from
-[All SQL Dialect Codes](ValueSet-AllSQLDialectCodes.html).
+**Terminology:** `contentType` SHALL come from
+[All SQL Content Type Codes](ValueSet-AllSQLContentTypeCodes.html).
 
 **Constraints:**
 * Library type SHALL be `LibraryTypesCodes#sql-query`

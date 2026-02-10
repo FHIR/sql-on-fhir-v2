@@ -35,22 +35,6 @@ WHERE patient.id = :patient_id
   AND bp.effective_date >= :from_date
 ```
 
-### Type Mappings
-
-FHIR to SQL types:
-
-| FHIR Type | SQL Type(s) | Notes |
-|-----------|-------------|-------|
-| `string` | VARCHAR, TEXT | Variable length |
-| `integer` | INTEGER, INT | 32-bit signed |
-| `decimal` | DECIMAL, NUMERIC | Arbitrary precision |
-| `boolean` | BOOLEAN, BIT | Database-dependent |
-| `date` | DATE | YYYY-MM-DD |
-| `dateTime` | TIMESTAMP | With timezone |
-| `instant` | TIMESTAMP WITH TIME ZONE | Full precision |
-| `code` | VARCHAR | Short string |
-| `uri` | VARCHAR, TEXT | URL/URN string |
-
 ### SQL Annotations
 
 SQL files MAY include annotations to generate SQLQuery Libraries automatically.
