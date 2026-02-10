@@ -185,4 +185,4 @@ The content attachment SHALL have `contentType` starting with `application/sql`.
 #### Scenario: Dialect-specific SQL
 - **GIVEN** a PostgreSQL-specific query
 - **THEN** `contentType` SHALL be `#application/sql;dialect=postgresql`
-- **AND** the dialect SHALL be from the AllSQLDialectCodes value set
+- **AND** the `contentType` SHALL be from the AllSQLContentTypeCodes value set
