@@ -1,3 +1,11 @@
+Extension: SqlText
+Id: sql-text
+Title: "SQL Text"
+Description: "Plain-text SQL query for human readability. Supplements the base64-encoded Attachment.data."
+Context: Attachment
+* value[x] only string
+* valueString 1..1
+
 Invariant: sql-must-be-sql-expressions
 Description: "The content of the Library must be SQL expressions."
 Severity: #error
@@ -19,8 +27,8 @@ versioning.
 * content.contentType 1..1 MS
 * content.contentType ^short = "application/sql or application/sql;dialect=..."
 * content.contentType from AllSQLContentTypeCodes (required)
-* content.title 1..1 MS
-* content.title ^short = "SQL query text (plain text)"
+* content.extension contains sql-text named sqlText 0..1 MS
+* content.extension[sqlText] ^short = "Plain-text SQL for readability"
 * content.data 1..1 MS
 * content.data ^short = "SQL query (base64-encoded)"
 

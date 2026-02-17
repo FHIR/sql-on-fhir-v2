@@ -73,7 +73,7 @@ ORDER BY patient_view.id, patient_address_view.updated_at DESC, patient_address_
   * label = "patient_address_view"
 * content[+]
   * contentType = #application/sql
-  * title = """WITH ranked_addresses AS (
+  * extension[sql-text].valueString = """WITH ranked_addresses AS (
   SELECT
     patient_view.id AS patient_id,
     patient_view.name,
@@ -104,7 +104,7 @@ WHERE address_rank = 1"""
   * data = "V0lUSCByYW5rZWRfYWRkcmVzc2VzIEFTICgKICBTRUxFQ1QKICAgIHBhdGllbnRfdmlldy5pZCBBUyBwYXRpZW50X2lkLAogICAgcGF0aWVudF92aWV3Lm5hbWUsCiAgICBwYXRpZW50X2FkZHJlc3Nfdmlldy5hZGRyZXNzX2xpbmUxLAogICAgcGF0aWVudF9hZGRyZXNzX3ZpZXcuY2l0eSwKICAgIHBhdGllbnRfYWRkcmVzc192aWV3LnN0YXRlLAogICAgcGF0aWVudF9hZGRyZXNzX3ZpZXcucG9zdGFsX2NvZGUsCiAgICBwYXRpZW50X2FkZHJlc3Nfdmlldy51cGRhdGVkX2F0LAogICAgUk9XX05VTUJFUigpIE9WRVIgKAogICAgICBQQVJUSVRJT04gQlkgcGF0aWVudF92aWV3LmlkCiAgICAgIE9SREVSIEJZIHBhdGllbnRfYWRkcmVzc192aWV3LnVwZGF0ZWRfYXQgREVTQywgcGF0aWVudF9hZGRyZXNzX3ZpZXcuYWRkcmVzc19pZCBERVNDCiAgICApIEFTIGFkZHJlc3NfcmFuawogIEZST00gcGF0aWVudF92aWV3CiAgSk9JTiBwYXRpZW50X2FkZHJlc3NfdmlldwogICAgT04gcGF0aWVudF92aWV3LmlkID0gcGF0aWVudF9hZGRyZXNzX3ZpZXcucGF0aWVudF9pZAogIFdIRVJFIHBhdGllbnRfdmlldy5hY3RpdmUgPSB0cnVlCiAgICBBTkQgcGF0aWVudF9hZGRyZXNzX3ZpZXcuY2l0eSA9IDpjaXR5CikKU0VMRUNUCiAgcGF0aWVudF9pZCwKICBuYW1lLAogIGFkZHJlc3NfbGluZTEsCiAgY2l0eSwKICBzdGF0ZSwKICBwb3N0YWxfY29kZQpGUk9NIHJhbmtlZF9hZGRyZXNzZXMKV0hFUkUgYWRkcmVzc19yYW5rID0gMQ=="
 * content[+]
   * contentType = #"application/sql;dialect=postgresql"
-  * title = """SELECT DISTINCT ON (patient_view.id)
+  * extension[sql-text].valueString = """SELECT DISTINCT ON (patient_view.id)
   patient_view.id AS patient_id,
   patient_view.name,
   patient_address_view.address_line1,
@@ -188,7 +188,7 @@ ORDER BY blood_pressure_view.effective_date
   * resource = "https://example.org/ViewDefinition/blood_pressure_view"
   * label = "blood_pressure_view"
 * content.contentType = #application/sql
-* content.title = """/*
+* content.extension[sql-text].valueString = """/*
 @name: SqlOnFhirExample
 @title: Blood Pressure Trend Report
 @description: Return blood pressure observations for a patient in a date range
@@ -266,7 +266,7 @@ WHERE omop_person.source_system = :source_system
   * label = "diagnoses_view"
   * display = "Diagnosis facts view"
 * content.contentType = #application/sql
-* content.title = """SELECT
+* content.extension[sql-text].valueString = """SELECT
   omop_person.person_id AS omop_person_id,
   fhir_patient.id AS fhir_patient_id,
   fhir_patient.name,

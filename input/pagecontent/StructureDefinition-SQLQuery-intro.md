@@ -54,21 +54,26 @@ subject to SQL injection. Use parameterized queries or equivalent safe binding
 mechanisms where available. Simple string interpolation MUST NOT be used to
 implement parameter binding.
 
-
 #### SQL Attachments
 
-Store the query in `content` with `contentType = "application/sql"`. Both
-`title` (plain text SQL) and `data` (base64-encoded SQL) are required.
+Store the query in `content` with `contentType = "application/sql"`. The
+`data` element (base64-encoded SQL) is required. The
+[`sql-text`](StructureDefinition-sql-text.html) extension MAY carry a
+plain-text copy for human readability.
 
 ```json
 "content": [{
   "contentType": "application/sql",
-  "title": "SELECT patient.id, bp.systolic FROM patient JOIN bp ON ...",
+  "extension": [{
+    "url": "https://sql-on-fhir.org/ig/StructureDefinition/sql-text",
+    "valueString": "SELECT patient.id, bp.systolic FROM ..."
+  }],
   "data": "U0VMRUNUIHBhdGllbnQu..."
 }]
 ```
 
-The `title` provides human-readable SQL; the `data` provides machine-processable SQL.
+The `sql-text` extension provides human-readable SQL; `data` provides
+the machine-processable (base64-encoded) form.
 
 #### Dialect Variants
 
@@ -84,7 +89,7 @@ parameter names consistent across variants.
 **Constraints:**
 * Library type SHALL be `LibraryTypesCodes#sql-query`
 * `content.contentType` SHALL start with `application/sql`
-* `content.title` and `content.data` SHALL both be present
+* `content.data` SHALL be present; the `sql-text` extension MAY carry a plain-text copy
 * Dependencies SHALL use `relatedArtifact` with `type = "depends-on"` and `label`
 * Parameters SHALL use `Library.parameter` with `use = "in"`
 
