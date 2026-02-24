@@ -5,19 +5,19 @@ The application of a ViewDefinition is an algorithm that describes the
 transformation of FHIR resources and is composed of combinations of a small set
 of functions:
 
--   `column({name:column_name,path: fhirpath},...)` - The main workhorse of
-    transformation. This function will extract elements by FHIRPath expressions
-    and put the result into columns
--   `where(fhirpath)` - This function filters resources by FHIRPath expression.
-    For example, you may want to transform only specific profiles like blood
-    pressure into a simple table
--   `forEach(expr, transform)` - This function unnests collection elements into
-    separate rows
--   `select(rows1, rows2)` - This function cross-joins `rows1` and `rows2`, and is
-    mostly used to join results of `forEach` with top-level columns
--   `union(rows, rows)` - This function concatenates sets of rows. It's main use
-    case is combining rows from different branches of a resource (for example,
-    `telecom` and `contact.telecom`)
+- `column({name:column_name,path: fhirpath},...)` - The main workhorse of
+  transformation. This function will extract elements by FHIRPath expressions
+  and put the result into columns
+- `where(fhirpath)` - This function filters resources by FHIRPath expression.
+  For example, you may want to transform only specific profiles like blood
+  pressure into a simple table
+- `forEach(expr, transform)` - This function unnests collection elements into
+  separate rows
+- `select(rows1, rows2)` - This function cross-joins `rows1` and `rows2`, and is
+  mostly used to join results of `forEach` with top-level columns
+- `union(rows, rows)` - This function concatenates sets of rows. It's main use
+  case is combining rows from different branches of a resource (for example,
+  `telecom` and `contact.telecom`)
 
 A ViewDefinition is represented as a FHIR logical model (in this case as a JSON
 document) where the keywords of the ViewDefinition correspond to the functions
@@ -118,11 +118,11 @@ to make implementation as simple as possible.
 
 The specification also introduces two special functions:
 
--   `getResourceKey` - Indirectly get a resource's id. Since it my not be
-    straightforward to access a resource's id, this layer of indirection is
-    useful
--   `getReferenceKey(resourceType)` - A similar function to get an id from a
-    reference
+- `getResourceKey` - Indirectly get a resource's id. Since it my not be
+  straightforward to access a resource's id, this layer of indirection is
+  useful
+- `getReferenceKey(resourceType)` - A similar function to get an id from a
+  reference
 
 ## The Functions in Detail
 
@@ -336,6 +336,11 @@ unionAll([1, 2, 3], [3, 4, 5])[
 ];
 ```
 
+Note that `unionAll` does not create a new `%rowIndex` scope. Each branch
+inherits `%rowIndex` from the enclosing context. If a branch contains its own
+iteration expression (`forEach`, `forEachOrNull`, or `repeat`), that expression
+establishes an independent `%rowIndex` sequence starting from 0.
+
 ### Function Precedence
 
 To interpret such nodes, you have to re-order keywords (functions) according to
@@ -347,10 +352,10 @@ keywords/functions according to the following precedence rule.
 
 Keyword/function reordering rule (highest to lowest precedence):
 
--   forEach or forEachOrNull
--   select
--   unionAll
--   column
+- forEach or forEachOrNull
+- select
+- unionAll
+- column
 
 For example given the following ViewDefinition snippet with all
 keywords/functions at the top level, the keywords/functions should be reordered
