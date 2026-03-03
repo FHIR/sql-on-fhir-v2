@@ -21,167 +21,66 @@ This operation follows the FHIR Asynchronous Interaction Request Pattern:
 
 ##### Async Flow Diagram
 
-```
-    Client                                          Server
-      │                                               │
-      │ ┌─────────────────────────────────────────┐   │
-      │ │ POST /Library/$sqlquery-export           │   │
-      │ │ Content-Type: application/fhir+json     │   │
-      │ │ Prefer: respond-async                   │   │
-      │ │ Accept: application/fhir+json           │   │
-      │ │                                         │   │
-      │ │ { "resourceType": "Parameters",         │   │
-      │ │   "parameter": [                        │   │
-      │ │     {"name": "query", "part": [         │   │
-      │ │       {"name": "queryReference",...},    │   │
-      │ │       {"name": "parameters",...}         │   │
-      │ │     ]}                                  │   │
-      │ │   ]}                                    │   │
-      │ └─────────────────────────────────────────┘   │
-      │ ─────────────────────────────────────────────>│
-      │                                               │  Step 1: Kick-off
-      │   ┌─────────────────────────────────────────┐ │
-      │   │ 202 Accepted                            │ │
-      │   │ Content-Location: /status/abc123        │ │
-      │   │                                         │ │
-      │   │ { "resourceType": "Parameters",         │ │
-      │   │   "parameter": [                        │ │
-      │   │     {"name": "exportId",                │ │
-      │   │      "valueString": "abc123"},          │ │
-      │   │     {"name": "status",                  │ │
-      │   │      "valueCode": "accepted"}           │ │
-      │   │   ]}                                    │ │
-      │   └─────────────────────────────────────────┘ │
-      │ <─────────────────────────────────────────────│
-      │                                               │
-      ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┤
-      │                                               │
-      │ ┌─────────────────────────────────────────┐   │
-      │ │ GET /status/abc123                      │   │
-      │ │ Accept: application/fhir+json           │   │
-      │ └─────────────────────────────────────────┘   │
-      │ ─────────────────────────────────────────────>│
-      │                                               │  Step 2: Polling
-      │   ┌─────────────────────────────────────────┐ │  (repeat while
-      │   │ 202 Accepted                            │ │   in progress)
-      │   │ Retry-After: 10                         │ │
-      │   │ X-Progress: 45%                         │ │
-      │   │                                         │ │
-      │   │ { "resourceType": "Parameters",         │ │
-      │   │   "parameter": [                        │ │
-      │   │     {"name": "status",                  │ │
-      │   │      "valueCode": "in-progress"}        │ │
-      │   │   ]}                                    │ │
-      │   └─────────────────────────────────────────┘ │
-      │ <─────────────────────────────────────────────│
-      │                 ... (repeat) ...              │
-      │                                               │
-      ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┤
-      │                                               │
-      │ ┌─────────────────────────────────────────┐   │
-      │ │ GET /status/abc123                      │   │
-      │ └─────────────────────────────────────────┘   │
-      │ ─────────────────────────────────────────────>│
-      │                                               │  Step 3: Completion
-      │   ┌─────────────────────────────────────────┐ │  (redirect to result)
-      │   │ 303 See Other                           │ │
-      │   │ Location: /result/abc123                │ │
-      │   └─────────────────────────────────────────┘ │
-      │ <─────────────────────────────────────────────│
-      │                                               │
-      ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┤
-      │                                               │
-      │ ┌─────────────────────────────────────────┐   │
-      │ │ GET /result/abc123                      │   │
-      │ │ Accept: application/fhir+json           │   │
-      │ └─────────────────────────────────────────┘   │
-      │ ─────────────────────────────────────────────>│
-      │                                               │  Step 4: Result
-      │   ┌─────────────────────────────────────────┐ │
-      │   │ 200 OK                                  │ │
-      │   │ Content-Type: application/fhir+json    │ │
-      │   │ Expires: Mon, 03 Mar 2026 16:00:00 GMT │ │
-      │   │                                         │ │
-      │   │ { "resourceType": "Parameters",         │ │
-      │   │   "parameter": [                        │ │
-      │   │     {"name": "output", "part": [        │ │
-      │   │       {"name": "name",                  │ │
-      │   │        "valueString": "bp-results"},    │ │
-      │   │       {"name": "location",              │ │
-      │   │        "valueUrl": "/export/.../..."}   │ │
-      │   │     ]}                                  │ │
-      │   │   ]}                                    │ │
-      │   └─────────────────────────────────────────┘ │
-      │ <─────────────────────────────────────────────│
-      │                                               │
-      ├ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─┤
-      │                                               │
-      │ ┌─────────────────────────────────────────┐   │
-      │ │ GET /export/abc123/bp-results.csv       │   │
-      │ └─────────────────────────────────────────┘   │
-      │ ─────────────────────────────────────────────>│
-      │                                               │  Step 5: Download
-      │   ┌─────────────────────────────────────────┐ │
-      │   │ 200 OK                                  │ │
-      │   │ Content-Type: text/csv                  │ │
-      │   │                                         │ │
-      │   │ patient_id,systolic,effective_date       │ │
-      │   │ Patient/123,120,2024-01-15              │ │
-      │   │ Patient/123,118,2024-02-20              │ │
-      │   └─────────────────────────────────────────┘ │
-      │ <─────────────────────────────────────────────│
-      │                                               │
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+
+    rect rgb(240, 248, 255)
+    Note over C,S: Step 1: Kick-off
+    C->>S: POST /Library/$sqlquery-export<br/>Prefer: respond-async<br/>Body: Parameters{query, _format, ...}
+    S-->>C: 202 Accepted<br/>Content-Location: /status/abc123<br/>Body: Parameters{exportId, status: accepted}
+    end
+
+    rect rgb(245, 245, 245)
+    Note over C,S: Step 2: Polling (repeat while in progress)
+    C->>S: GET /status/abc123
+    S-->>C: 202 Accepted<br/>Retry-After: 10, X-Progress: 45%<br/>Body: Parameters{status: in-progress}
+    end
+
+    rect rgb(240, 255, 240)
+    Note over C,S: Step 3: Completion
+    C->>S: GET /status/abc123
+    S-->>C: 303 See Other<br/>Location: /result/abc123
+    end
+
+    rect rgb(255, 255, 240)
+    Note over C,S: Step 4: Result
+    C->>S: GET /result/abc123
+    S-->>C: 200 OK<br/>Body: Parameters{output: [{name, location}]}
+    end
+
+    rect rgb(255, 248, 240)
+    Note over C,S: Step 5: Download
+    C->>S: GET /export/abc123/bp-results.csv
+    S-->>C: 200 OK<br/>Content-Type: text/csv<br/>Body: patient_id,systolic,...
+    end
 ```
 
-**Alternative Flows:**
+##### Cancellation Flow
 
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+
+    C->>S: DELETE /status/abc123
+    S-->>C: 202 Accepted
+    C->>S: GET /status/abc123 (subsequent poll)
+    S-->>C: 404 Not Found
 ```
-  ┌─────────────────────────────────────────────────────────────────┐
-  │  CANCELLATION (Recommended)                                      │
-  ├─────────────────────────────────────────────────────────────────┤
-  │                                                                 │
-  │  Client                                          Server         │
-  │    │                                               │            │
-  │    │ DELETE /status/abc123                         │            │
-  │    │ ─────────────────────────────────────────────>│            │
-  │    │                                               │            │
-  │    │   202 Accepted                                │            │
-  │    │ <─────────────────────────────────────────────│            │
-  │    │                                               │            │
-  │    │ GET /status/abc123  (subsequent poll)         │            │
-  │    │ ─────────────────────────────────────────────>│            │
-  │    │                                               │            │
-  │    │   404 Not Found                               │            │
-  │    │ <─────────────────────────────────────────────│            │
-  │                                                                 │
-  └─────────────────────────────────────────────────────────────────┘
 
-  ┌─────────────────────────────────────────────────────────────────┐
-  │  ERROR HANDLING (Operation Failure)                             │
-  ├─────────────────────────────────────────────────────────────────┤
-  │                                                                 │
-  │  Client                                          Server         │
-  │    │                                               │            │
-  │    │ GET /status/abc123                            │            │
-  │    │ ─────────────────────────────────────────────>│            │
-  │    │                                               │            │
-  │    │   303 See Other                               │            │
-  │    │   Location: /result/abc123                    │            │
-  │    │ <─────────────────────────────────────────────│            │
-  │    │                                               │            │
-  │    │ GET /result/abc123                            │            │
-  │    │ ─────────────────────────────────────────────>│            │
-  │    │                                               │            │
-  │    │   500 Internal Server Error                   │            │
-  │    │   { "resourceType": "OperationOutcome",       │            │
-  │    │     "issue": [{                               │            │
-  │    │       "severity": "error",                    │            │
-  │    │       "code": "exception",                    │            │
-  │    │       "diagnostics": "Export failed: ..."     │            │
-  │    │     }]}                                       │            │
-  │    │ <─────────────────────────────────────────────│            │
-  │                                                                 │
-  └─────────────────────────────────────────────────────────────────┘
+##### Error Handling Flow
+
+```mermaid
+sequenceDiagram
+    participant C as Client
+    participant S as Server
+
+    C->>S: GET /status/abc123
+    S-->>C: 303 See Other<br/>Location: /result/abc123
+    C->>S: GET /result/abc123
+    S-->>C: 500 Internal Server Error<br/>Body: OperationOutcome{severity: error, diagnostics: ...}
 ```
 
 #### Data Sources
