@@ -69,19 +69,20 @@ Content-Type: application/fhir+json
       ],
       "content": [{
         "contentType": "application/sql",
-        "title": "SELECT p.id, p.name FROM p WHERE p.active = true",
-        "data": "U0VMRUNUIHAuaWQsIHAubmFtZSBGUk9NIHAgV0hFUkUgcC5hY3RpdmUgPSB0cnVl"
+        "data": "U0VMRUNUIHAuaWQsIHAubmFtZSBGUk9NIHAgV0hFUkUgcC5hY3RpdmUgPSB0cnVl",
+        "extension": [{
+          "url": "https://sql-on-fhir.org/ig/StructureDefinition/sql-text",
+          "valueString": "SELECT p.id, p.name FROM p WHERE p.active = true"
+        }]
       }]
     }}
   ]
 }
 ```
 
-The inline SQL (base64-decoded): `SELECT p.id, p.name FROM p WHERE p.active = true`
-
 #### Response
 
-All examples return a Binary with results in the requested format:
+For flat formats (`csv`, `json`, `ndjson`, `parquet`), the response is a Binary:
 
 ```http
 HTTP/1.1 200 OK
@@ -90,6 +91,47 @@ Content-Type: text/csv
 patient_id,systolic,effective_date
 Patient/123,120,2024-01-15
 Patient/123,118,2024-02-20
+```
+
+#### FHIR Format Response
+
+When `_format=fhir`, the response is a FHIR Parameters resource with each row as a
+repeating `row` parameter.
+
+```http
+POST /Library/patient-bp-query/$sqlquery-run HTTP/1.1
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    { "name": "_format", "valueCode": "fhir" },
+    { "name": "parameter", "part": [
+      { "name": "name", "valueString": "patient_id" },
+      { "name": "value", "valueString": "Patient/123" }
+    ]}
+  ]
+}
+```
+
+Response:
+
+```json
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    { "name": "row", "part": [
+      { "name": "patient_id", "valueString": "Patient/123" },
+      { "name": "systolic", "valueInteger": 120 },
+      { "name": "effective_date", "valueDate": "2024-01-15" }
+    ]},
+    { "name": "row", "part": [
+      { "name": "patient_id", "valueString": "Patient/123" },
+      { "name": "systolic", "valueInteger": 118 },
+      { "name": "effective_date", "valueDate": "2024-02-20" }
+    ]}
+  ]
+}
 ```
 
 ### Parameter Types
