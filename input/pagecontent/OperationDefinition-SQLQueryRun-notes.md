@@ -169,6 +169,11 @@ microseconds), but FHIR `instant` supports at most millisecond precision.
 Implementations SHOULD round to the nearest millisecond when converting to
 `valueInstant`.
 
+TIMESTAMP (without time zone) values are converted to `valueDateTime` without a
+timezone offset. FHIR `dateTime` permits values with or without a timezone, so
+the absence of timezone information is preserved rather than trying to infer a
+time zone.
+
 ISO/IEC 9075 types not listed in this table (such as INTERVAL, ARRAY, XML, ROW,
 and MULTISET) are not supported. If a query produces a result column with an
 unsupported type, the server MUST return a `422 Unprocessable Entity` error.
