@@ -164,6 +164,11 @@ Conversion of REAL, FLOAT, and DOUBLE PRECISION values to `valueDecimal` may
 introduce representation artefacts due to the difference between binary and
 decimal floating point.
 
+TIMESTAMP WITH TIME ZONE values may carry sub-millisecond precision (e.g.
+microseconds), but FHIR `instant` supports at most millisecond precision.
+Implementations SHOULD round to the nearest millisecond when converting to
+`valueInstant`.
+
 ISO/IEC 9075 types not listed in this table (such as INTERVAL, ARRAY, XML, ROW,
 and MULTISET) are not supported. If a query produces a result column with an
 unsupported type, the server MUST return a `422 Unprocessable Entity` error.
