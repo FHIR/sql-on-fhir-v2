@@ -144,8 +144,7 @@ parameter value types.
 | ISO/IEC 9075 SQL type                                | FHIR value type     |
 |------------------------------------------------------|---------------------|
 | BOOLEAN                                              | `valueBoolean`      |
-| SMALLINT                                             | `valueInteger`      |
-| INT, INTEGER                                         | `valueInteger`      |
+| TINYINT, SMALLINT, INT, INTEGER                      | `valueInteger`      |
 | BIGINT                                               | `valueInteger64`    |
 | DECIMAL, NUMERIC                                     | `valueDecimal`      |
 | REAL                                                 | `valueDecimal`      |
