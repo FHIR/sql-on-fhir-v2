@@ -134,6 +134,43 @@ Response:
 }
 ```
 
+### SQL to FHIR type mapping
+
+When `_format=fhir`, each result column must be encoded using a FHIR `value[x]`
+type. The following table defines the mapping from
+[ISO/IEC 9075](https://www.iso.org/standard/76583.html) SQL types to FHIR
+parameter value types.
+
+| ISO/IEC 9075 SQL type                                | FHIR value type     |
+|------------------------------------------------------|---------------------|
+| BOOLEAN                                              | `valueBoolean`      |
+| SMALLINT                                             | `valueInteger`      |
+| INT, INTEGER                                         | `valueInteger`      |
+| BIGINT                                               | `valueInteger64`    |
+| DECIMAL, NUMERIC                                     | `valueDecimal`      |
+| REAL                                                 | `valueDecimal`      |
+| FLOAT, DOUBLE PRECISION                              | `valueDecimal`      |
+| CHARACTER, CHARACTER VARYING, CHARACTER LARGE OBJECT | `valueString`       |
+| BINARY, BINARY VARYING, BINARY LARGE OBJECT          | `valueBase64Binary` |
+| DATE                                                 | `valueDate`         |
+| TIME, TIME WITH TIME ZONE                            | `valueTime`         |
+| TIMESTAMP                                            | `valueDateTime`     |
+| TIMESTAMP WITH TIME ZONE                             | `valueInstant`      |
+{:.table-data}
+
+SQL NULL values are represented by omitting the corresponding part from the row
+parameter.
+
+Conversion of REAL, FLOAT, and DOUBLE PRECISION values to `valueDecimal` may
+introduce representation artefacts due to the difference between binary and
+decimal floating point.
+
+ISO/IEC 9075 types not listed in this table (such as INTERVAL, ARRAY, XML, ROW,
+and MULTISET) are not supported. If a query produces a result column with an
+unsupported type, the server MUST return a `422 Unprocessable Entity` error.
+Query authors can work around this by casting unsupported types to a supported
+type within the SQL query.
+
 ### Parameter Types
 
 Use the appropriate `value[x]` type matching the Library's declared parameter type:
@@ -153,4 +190,4 @@ Use the appropriate `value[x]` type matching the Library's declared parameter ty
 |--------|-----------|
 | `400 Bad Request` | Missing required parameter, invalid value type |
 | `404 Not Found` | Library or ViewDefinition not found |
-| `422 Unprocessable Entity` | SQL execution error |
+| `422 Unprocessable Entity` | SQL execution error, or unsupported column type with `_format=fhir` |
