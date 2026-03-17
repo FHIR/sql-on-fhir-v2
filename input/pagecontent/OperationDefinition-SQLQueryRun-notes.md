@@ -199,4 +199,4 @@ Use the appropriate `value[x]` type matching the Library's declared parameter ty
 |--------|-----------|
 | `400 Bad Request` | Missing required parameter, invalid value type |
 | `404 Not Found` | Library or ViewDefinition not found |
-| `422 Unprocessable Entity` | SQL execution error, or unsupported column type with `_format=fhir` |
+| `422 Unprocessable Entity` | SQL execution error, or unsupported SQL column type when using `_format=fhir` (see [type mapping](#sql-to-fhir-type-mapping)) |
