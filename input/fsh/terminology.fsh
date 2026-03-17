@@ -54,8 +54,10 @@ CodeSystem: OutputFormatCodes
 Title: "Output Format Codes"
 Description: "Output format codes for SQL on FHIR."
 * #csv "CSV" "Comma-separated values"
+* #ndjson "NDJSON" "Newline-delimited JSON"
 * #parquet "Parquet" "Apache Parquet"
 * #json "JSON" "JavaScript Object Notation"
+* #fhir "FHIR" "FHIR Parameters resource"
 
 ValueSet: OutputFormatCodes
 Title: "Output Format Codes"
