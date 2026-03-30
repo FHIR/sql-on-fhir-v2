@@ -357,7 +357,7 @@ Description: "Execute a SQLQuery Library against ViewDefinition tables."
 * parameter[0].scope[2] = #instance
 * parameter[0].type = #code
 * parameter[0].binding.strength = #extensible
-* parameter[0].binding.valueSet = Canonical(OutputFormatCodes)
+* parameter[0].binding.valueSet = Canonical(SQLQueryRunOutputFormatCodes)
 * parameter[0].documentation = "Output format for the result (json, ndjson, csv, parquet, fhir). Use fhir to return results as a FHIR Parameters resource."
 
 * parameter[1].name = #header

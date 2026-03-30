@@ -63,3 +63,12 @@ ValueSet: OutputFormatCodes
 Title: "Output Format Codes"
 Description: "ValueSet of all codes from Output Format Codes codesystem"
 * codes from system OutputFormatCodes
+
+ValueSet: SQLQueryRunOutputFormatCodes
+Title: "SQLQuery Run Output Format Codes"
+Description: "Output format codes supported by the $sqlquery-run operation."
+* OutputFormatCodes#csv
+* OutputFormatCodes#ndjson
+* OutputFormatCodes#parquet
+* OutputFormatCodes#json
+* OutputFormatCodes#fhir
