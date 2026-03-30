@@ -158,6 +158,15 @@ Response:
 }
 ```
 
+When a query returns zero rows, the response is a Parameters resource with no
+`parameter` elements:
+
+```json
+{
+  "resourceType": "Parameters"
+}
+```
+
 ### SQL to FHIR type mapping
 
 When `_format=fhir`, each result column must be encoded using a FHIR `value[x]`
