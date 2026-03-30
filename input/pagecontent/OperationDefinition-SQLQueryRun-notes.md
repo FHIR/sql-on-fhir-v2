@@ -80,6 +80,30 @@ Content-Type: application/fhir+json
 }
 ```
 
+#### System-Level
+
+Invoke at the server base without a resource type. This is useful when the server
+supports SQLQuery Libraries but does not expose them as FHIR Library resources:
+
+```http
+POST /$sqlquery-run HTTP/1.1
+Content-Type: application/fhir+json
+
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    { "name": "_format", "valueCode": "csv" },
+    { "name": "queryReference", "valueReference": {
+      "reference": "Library/patient-bp-query"
+    }},
+    { "name": "parameter", "part": [
+      { "name": "name", "valueString": "patient_id" },
+      { "name": "value", "valueString": "Patient/123" }
+    ]}
+  ]
+}
+```
+
 #### Response
 
 For flat formats (`csv`, `json`, `ndjson`, `parquet`), the response is a Binary:
