@@ -12,14 +12,13 @@ Content-Type: application/fhir+json
   "resourceType": "Parameters",
   "parameter": [
     { "name": "_format", "valueCode": "csv" },
-    { "name": "parameter", "part": [
-      { "name": "name", "valueString": "patient_id" },
-      { "name": "value", "valueString": "Patient/123" }
-    ]},
-    { "name": "parameter", "part": [
-      { "name": "name", "valueString": "from_date" },
-      { "name": "value", "valueDate": "2024-01-01" }
-    ]}
+    { "name": "parameters", "resource": {
+      "resourceType": "Parameters",
+      "parameter": [
+        { "name": "patient_id", "valueString": "Patient/123" },
+        { "name": "from_date", "valueDate": "2024-01-01" }
+      ]
+    }}
   ]
 }
 ```
@@ -39,10 +38,12 @@ Content-Type: application/fhir+json
     { "name": "queryReference", "valueReference": {
       "reference": "Library/patient-bp-query"
     }},
-    { "name": "parameter", "part": [
-      { "name": "name", "valueString": "patient_id" },
-      { "name": "value", "valueString": "Patient/123" }
-    ]}
+    { "name": "parameters", "resource": {
+      "resourceType": "Parameters",
+      "parameter": [
+        { "name": "patient_id", "valueString": "Patient/123" }
+      ]
+    }}
   ]
 }
 ```
@@ -130,10 +131,12 @@ Content-Type: application/fhir+json
   "resourceType": "Parameters",
   "parameter": [
     { "name": "_format", "valueCode": "fhir" },
-    { "name": "parameter", "part": [
-      { "name": "name", "valueString": "patient_id" },
-      { "name": "value", "valueString": "Patient/123" }
-    ]}
+    { "name": "parameters", "resource": {
+      "resourceType": "Parameters",
+      "parameter": [
+        { "name": "patient_id", "valueString": "Patient/123" }
+      ]
+    }}
   ]
 }
 ```
@@ -213,12 +216,17 @@ unsupported type, the server MUST return a `422 Unprocessable Entity` error.
 Query authors can work around this by casting unsupported types to a supported
 type within the SQL query.
 
-### Parameter Types
+### Parameter Passing
+
+Query parameters are passed as a nested `Parameters` resource, following the same
+pattern as the [CQL `$evaluate` operation](https://build.fhir.org/ig/HL7/cql-ig/en/OperationDefinition-cql-library-evaluate.html).
+Each parameter in the `Parameters` resource is bound by name to a parameter declared
+in the SQLQuery Library (`Library.parameter`).
 
 Use the appropriate `value[x]` type matching the Library's declared parameter type:
 
-| Library.parameter.type | Parameters value |
-|------------------------|------------------|
+| Library.parameter.type | Parameters.parameter value |
+|------------------------|----------------------------|
 | `string` | `valueString` |
 | `integer` | `valueInteger` |
 | `date` | `valueDate` |
@@ -230,6 +238,6 @@ Use the appropriate `value[x]` type matching the Library's declared parameter ty
 
 | Status | Condition |
 |--------|-----------|
-| `400 Bad Request` | Missing required parameter, invalid value type |
+| `400 Bad Request` | Missing required parameter, unknown parameter name, or value type mismatch |
 | `404 Not Found` | Library or ViewDefinition not found |
 | `422 Unprocessable Entity` | SQL execution error, or unsupported SQL column type when using `_format=fhir` (see [type mapping](#sql-to-fhir-type-mapping)) |

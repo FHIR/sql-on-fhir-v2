@@ -389,26 +389,15 @@ Description: "Execute a SQLQuery Library against ViewDefinition tables."
 * parameter[3].documentation = "Inline SQLQuery Library resource to execute."
 * parameter[3].extension[$allowedType].valueUri = "https://sql-on-fhir.org/ig/StructureDefinition/SQLQuery"
 
-* parameter[4].name = #parameter
+* parameter[4].name = #parameters
 * parameter[4].use = #in
 * parameter[4].min = 0
-* parameter[4].max = "*"
+* parameter[4].max = "1"
 * parameter[4].scope[0] = #system
 * parameter[4].scope[1] = #type
 * parameter[4].scope[2] = #instance
-* parameter[4].documentation = "Query parameter values. Each parameter must match a declared parameter in the SQLQuery Library."
-* parameter[4].part[0].name = #name
-* parameter[4].part[0].use = #in
-* parameter[4].part[0].min = 1
-* parameter[4].part[0].max = "1"
-* parameter[4].part[0].type = #string
-* parameter[4].part[0].documentation = "Parameter name (must match Library.parameter.name)."
-* parameter[4].part[1].name = #value
-* parameter[4].part[1].use = #in
-* parameter[4].part[1].min = 1
-* parameter[4].part[1].max = "1"
-* parameter[4].part[1].type = #DataType
-* parameter[4].part[1].documentation = "Parameter value (use valueString, valueDate, valueInteger, etc. matching the declared type)."
+* parameter[4].type = #Parameters
+* parameter[4].documentation = "Input parameters for the query. Parameters are bound by name to parameters declared in the SQLQuery Library (Library.parameter.name). Parameter types are mapped using the appropriate value[x] type matching the declared parameter type."
 
 * parameter[5].name = #source
 * parameter[5].use = #in
