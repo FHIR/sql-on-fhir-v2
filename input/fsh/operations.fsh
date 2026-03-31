@@ -230,8 +230,9 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[0].use = #in
 * parameter[0].min = 1
 * parameter[0].max = "1"
-* parameter[0].scope[0] = #type
-* parameter[0].scope[1] = #instance
+* parameter[0].scope[0] = #system
+* parameter[0].scope[1] = #type
+* parameter[0].scope[2] = #instance
 * parameter[0].type = #code
 * parameter[0].binding.strength = #extensible
 * parameter[0].binding.valueSet = Canonical(OutputFormatCodes)
@@ -241,8 +242,9 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[1].use = #in
 * parameter[1].min = 0
 * parameter[1].max = "1"
-* parameter[1].scope[0] = #type
-* parameter[1].scope[1] = #instance
+* parameter[1].scope[0] = #system
+* parameter[1].scope[1] = #type
+* parameter[1].scope[2] = #instance
 * parameter[1].type = #boolean
 * parameter[1].documentation = "Include CSV headers (default true). Applies only when csv output is requested."
 
@@ -250,8 +252,8 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[2].use = #in
 * parameter[2].min = 0
 * parameter[2].max = "1"
-* parameter[2].scope[0] = #type
-* parameter[2].scope[1] = #instance
+* parameter[2].scope[0] = #system
+* parameter[2].scope[1] = #type
 * parameter[2].type = #Reference
 * parameter[2].documentation = "Reference to a ViewDefinition stored on the server."
 
@@ -259,7 +261,8 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[3].use = #in
 * parameter[3].min = 0
 * parameter[3].max = "1"
-* parameter[3].scope[0] = #type
+* parameter[3].scope[0] = #system
+* parameter[3].scope[1] = #type
 //* parameter[3].type = #ViewDefinition
 * parameter[3].type = #CanonicalResource
 * parameter[3].targetProfile = Canonical(ViewDefinition)
@@ -270,8 +273,9 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[4].use = #in
 * parameter[4].min = 0
 * parameter[4].max = "1"
-* parameter[4].scope[0] = #type
-* parameter[4].scope[1] = #instance
+* parameter[4].scope[0] = #system
+* parameter[4].scope[1] = #type
+* parameter[4].scope[2] = #instance
 * parameter[4].type = #Reference
 * parameter[4].documentation = "Restrict execution to the specified patient."
 
@@ -279,8 +283,9 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[5].use = #in
 * parameter[5].min = 0
 * parameter[5].max = "*"
-* parameter[5].scope[0] = #type
-* parameter[5].scope[1] = #instance
+* parameter[5].scope[0] = #system
+* parameter[5].scope[1] = #type
+* parameter[5].scope[2] = #instance
 * parameter[5].type = #Reference
 * parameter[5].documentation = "Restrict execution to members of the given group(s)."
 
@@ -288,8 +293,9 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[6].use = #in
 * parameter[6].min = 0
 * parameter[6].max = "1"
-* parameter[6].scope[0] = #type
-* parameter[6].scope[1] = #instance
+* parameter[6].scope[0] = #system
+* parameter[6].scope[1] = #type
+* parameter[6].scope[2] = #instance
 * parameter[6].type = #string
 * parameter[6].documentation = "External data source to use (for example a URI or bucket name)."
 
@@ -297,8 +303,9 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[7].use = #in
 * parameter[7].min = 0
 * parameter[7].max = "*"
-* parameter[7].scope[0] = #type
-* parameter[7].scope[1] = #instance
+* parameter[7].scope[0] = #system
+* parameter[7].scope[1] = #type
+* parameter[7].scope[2] = #instance
 * parameter[7].type = #Resource
 * parameter[7].documentation = "FHIR resources to transform instead of using server data."
 
@@ -306,8 +313,9 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[8].use = #in
 * parameter[8].min = 0
 * parameter[8].max = "1"
-* parameter[8].scope[0] = #type
-* parameter[8].scope[1] = #instance
+* parameter[8].scope[0] = #system
+* parameter[8].scope[1] = #type
+* parameter[8].scope[2] = #instance
 * parameter[8].type = #integer
 * parameter[8].documentation = "Maximum number of rows to return."
 
@@ -315,8 +323,9 @@ Description: "Execute a view definition against supplied or server data."
 * parameter[9].use = #in
 * parameter[9].min = 0
 * parameter[9].max = "1"
-* parameter[9].scope[0] = #type
-* parameter[9].scope[1] = #instance
+* parameter[9].scope[0] = #system
+* parameter[9].scope[1] = #type
+* parameter[9].scope[2] = #instance
 * parameter[9].type = #instant
 * parameter[9].documentation = "Include only resources modified after this instant."
 
