@@ -403,8 +403,13 @@ function renderError(req, res, error) {
  * Shared handler logic for all $sqlquery-run endpoints.
  * @param {object} req - Express request object.
  * @param {object} res - Express response object.
+ * @param {object} [options] - Handler options.
+ * @param {boolean} [options.asFragment] - When true, render result as an HTML
+ *   fragment suitable for HTMX swap (used by the form endpoints). When false,
+ *   send raw typed output (JSON/NDJSON/CSV/FHIR) for programmatic clients.
  */
-async function handleSqlQueryRun(req, res) {
+async function handleSqlQueryRun(req, res, options = {}) {
+  const { asFragment = false } = options
   const createdTables = []
   try {
     const params = req.body
@@ -431,12 +436,23 @@ async function handleSqlQueryRun(req, res) {
 
     const rows = await executeSqlQuery(req.config, sql, bindings)
 
-    res.setHeader('Content-Type', getContentType(format))
-    const result = formatResult(rows, format, includeHeader)
-    res.send(result)
+    if (asFragment) {
+      res.setHeader('Content-Type', 'text/html')
+      res.send(renderRunResultFragment(rows, format, includeHeader, params))
+    } else {
+      res.setHeader('Content-Type', getContentType(format))
+      const result = formatResult(rows, format, includeHeader)
+      res.send(result)
+    }
   } catch (error) {
     console.error('$sqlquery-run error:', error)
-    renderError(req, res, error)
+    if (asFragment) {
+      res.setHeader('Content-Type', 'text/html')
+      res.status(error.statusCode || 500)
+      res.send(renderRunErrorFragment(error))
+    } else {
+      renderError(req, res, error)
+    }
   } finally {
     // Clean up temporary tables.
     for (const tableName of createdTables) {
@@ -445,6 +461,37 @@ async function handleSqlQueryRun(req, res) {
       })
     }
   }
+}
+
+function renderRunResultFragment(rows, format, includeHeader, params) {
+  const count = Array.isArray(rows) ? rows.length : 0
+  const rowLabel = `${count} row${count === 1 ? '' : 's'}`
+  const formatLabel = (format || 'json').toUpperCase()
+  const body = formatResult(rows, format, includeHeader)
+  return `
+    <div class="panel panel--flush mt-2">
+      <div class="panel__header">
+        <span>result · ${rowLabel}</span>
+        <span>${formatLabel}</span>
+      </div>
+      <div class="panel__body">
+        <h3 style="margin-top:0">Parameters</h3>
+        <pre>${JSON.stringify(params, null, 2)}</pre>
+        <h3>Result</h3>
+        <pre>${body}</pre>
+      </div>
+    </div>
+  `
+}
+
+function renderRunErrorFragment(error) {
+  const code = error.code || 'error'
+  return `
+    <div class="alert">
+      <div class="alert__eyebrow">${code}</div>
+      <p>${error.message || String(error)}</p>
+    </div>
+  `
 }
 
 function buildParametersFromBody(body) {
@@ -497,17 +544,17 @@ export async function postInstanceLevel(req, res) {
 
 export async function postSystemForm(req, res) {
   req.body = buildParametersFromBody(req.body)
-  await postSystemLevel(req, res)
+  await withLock(() => handleSqlQueryRun(req, res, { asFragment: true }))
 }
 
 export async function postTypeForm(req, res) {
   req.body = buildParametersFromBody(req.body)
-  await postTypeLevel(req, res)
+  await withLock(() => handleSqlQueryRun(req, res, { asFragment: true }))
 }
 
 export async function postInstanceForm(req, res) {
   req.body = buildParametersFromBody(req.body)
-  await postInstanceLevel(req, res)
+  await withLock(() => handleSqlQueryRun(req, res, { asFragment: true }))
 }
 
 export async function getSystemForm(req, res) {

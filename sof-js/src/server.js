@@ -6,6 +6,7 @@ import { mountRoutes as mountExportRoutes } from './server/export.js'
 import { mountRoutes as mountRunRoutes } from './server/run.js'
 import { mountRoutes as mountFhirRoutes } from './server/fhir.js'
 import { mountRoutes as mountViewsRoutes } from './server/views.js'
+import { mountRoutes as mountLibrariesRoutes } from './server/libraries.js'
 import { mountRoutes as mountEvaluateRoutes } from './server/evaluate.js'
 import { mountRoutes as mountValidateRoutes } from './server/validate.js'
 import { mountRoutes as mountSqlQueryRunRoutes } from './server/sqlquery-run.js'
@@ -50,12 +51,6 @@ const OPERATION_OVERRIDES = {
   $run: {
     href: '/ViewDefinition',
     desc: 'Run a stored ViewDefinition and stream the tabular result. Select a view to invoke.',
-  },
-  $materialize: {
-    desc: 'Materialise a ViewDefinition into a persistent table and keep it up to date. Not part of the standard.',
-  },
-  $refresh: {
-    desc: 'Refresh a materialised ViewDefinition to reflect the latest source data. Not part of the standard.',
   },
   '$sqlquery-run': {
     href: '/$sqlquery-run/form',
@@ -168,6 +163,7 @@ export async function startServer(config) {
   mountEvaluateRoutes(app)
   mountValidateRoutes(app)
   mountViewsRoutes(app)
+  mountLibrariesRoutes(app)
   mountSqlQueryRunRoutes(app)
   mountFhirRoutes(app)
   app.get('/', getIndex)

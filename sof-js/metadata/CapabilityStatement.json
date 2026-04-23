@@ -38,14 +38,6 @@
               "definition": "http://sql-on-fhir.org/OperationDefinition/$run"
             },
             {
-              "name": "$materialize",
-              "definition": "http://sql-on-fhir.org/OperationDefinition/$materialize"
-            },
-            {
-              "name": "$refresh",
-              "definition": "http://sql-on-fhir.org/OperationDefinition/$refresh"
-            },
-            {
               "name": "$sqlquery-run",
               "definition": "http://sql-on-fhir.org/OperationDefinition/$sqlquery-run"
             }

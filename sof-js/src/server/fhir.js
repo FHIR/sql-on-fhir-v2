@@ -32,22 +32,41 @@ export async function getCapabilityStatementEndpoint(req, res) {
   }
 }
 
-function renderResourceTypeList(resource) {
-  return `<li><a class="plain" href="/${resource.resourceType}/${resource.id}"><span>${resource.id}</span></a></li>`
+function renderResourceTypeRow(resource) {
+  return `
+    <tr>
+      <td>
+        <a href="/${resource.resourceType}/${resource.id}">${resource.id}</a>
+      </td>
+    </tr>
+  `
 }
 
 function renderResourceTypeEndpoint(req, res, resourceType, resources) {
+  const count = resources.length
+  const countLabel = `${count} ${resourceType} resource${count === 1 ? '' : 's'}`
   res.send(
     layout(`
       ${crumb([{ href: '/', label: 'Home' }, { label: resourceType }])}
       ${sectionHead({
         eyebrow: `resource · collection`,
         title: resourceType,
-        actions: `<span class="tag">${resources.length} total</span>`,
+        actions: `<span class="tag">${count} total</span>`,
       })}
-      <ul class="resource-list">
-        ${resources.map(renderResourceTypeList).join('')}
-      </ul>
+      <div class="panel panel--flush">
+        <div class="panel__header">
+          <span>${countLabel}</span>
+          <span>GET /${resourceType}</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+            </tr>
+          </thead>
+          <tbody>${resources.map(renderResourceTypeRow).join('')}</tbody>
+        </table>
+      </div>
     `),
   )
 }
