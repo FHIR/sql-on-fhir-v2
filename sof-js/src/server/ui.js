@@ -114,7 +114,7 @@ export function layout(content) {
       <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
       <script src="/htmx.js"></script>
       <script src="/app.js"></script>
-      <link href="/app.build.css" rel="stylesheet"></link>
+      <link href="/app.css" rel="stylesheet"></link>
     </head>
     <body>
       ${shell(content)}

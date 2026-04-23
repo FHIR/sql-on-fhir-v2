@@ -187,7 +187,7 @@ async function renderOpInputDefParam(req, param, defaults, ident = '') {
     if (valueSet) {
       bindingHtm = `<a href="/ValueSet/${valueSet.id}">${valueSet.id}</a>`
     } else {
-      bindingHtm = `<a class= "text-red-500"">${binding.valueSet}</a>`
+      bindingHtm = `<a class="text-red-500">${binding.valueSet}</a>`
     }
   }
 
@@ -282,7 +282,7 @@ async function renderOpOutputDefParam(req, param, defaults, ident = '') {
     if (valueSet) {
       bindingHtm = `<a href="/ValueSet/${valueSet.id}">${valueSet.id}</a>`
     } else {
-      bindingHtm = `<a class= "text-red-500"">${binding.valueSet}</a>`
+      bindingHtm = `<a class="text-red-500">${binding.valueSet}</a>`
     }
   }
   return `

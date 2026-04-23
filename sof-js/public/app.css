@@ -1,18 +1,15 @@
-@import "tailwindcss";
-
-@source "../src/**/*.js";
-
 /*
- * SQL on FHIR - Reference implementation console.
+ * SQL on FHIR reference implementation - stylesheet.
  *
- * Aesthetic: a paper-white scientific instrument panel. Ink-black typography
- * set in Fraunces (display) and IBM Plex Sans (UI), with IBM Plex Mono for
- * code. Surgical teal drives primary signals; signal orange marks alerts. A
- * faint blueprint grid sits beneath the content to reinforce the measured,
- * lab-notebook feeling.
+ * Served directly to the browser; no build step.
+ *
+ * Google Fonts (Fraunces, IBM Plex Sans, IBM Plex Mono) are linked from the
+ * HTML head in ui.js.
  */
 
-@theme {
+:root {
+  color-scheme: light;
+
   --font-display: "Fraunces", "Times New Roman", serif;
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -36,14 +33,29 @@
   --color-terminal-green: #7fb36b;
 }
 
-/*
- * Google Fonts (Fraunces, IBM Plex Sans, IBM Plex Mono) are linked from the
- * HTML head in ui.js - CSS @import rules must precede all other rules, and
- * we already have @theme and @source above, so the link tag is cleaner.
- */
+/* Minimal reset (replaces what Tailwind preflight previously supplied). */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
-:root {
-  color-scheme: light;
+body {
+  margin: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
 }
 
 html,
@@ -176,7 +188,8 @@ a.btn-ghost:hover {
 /* ---------- Tables ---------- */
 
 table {
-  @apply table-auto border-collapse;
+  table-layout: auto;
+  border-collapse: collapse;
   width: 100%;
   background: var(--color-paper-raised);
   border: 1px solid var(--color-ink);
@@ -778,4 +791,96 @@ table.op-def .op-def__input select {
   border-bottom-width: 2px;
   border-radius: 2px;
   background: var(--color-paper-raised);
+}
+
+/* ---------- Utility classes (the subset referenced by templates) ---------- */
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.grid {
+  display: grid;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.leading-tight {
+  line-height: 1.25;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.text-gray-500 {
+  color: oklch(55.1% 0.027 264.364);
+}
+
+.text-red-500 {
+  color: oklch(63.7% 0.237 25.331);
+}
+
+.text-ink-mute {
+  color: var(--color-ink-mute);
+}
+
+.text-ink-soft {
+  color: var(--color-ink-soft);
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
+.mb-10 {
+  margin-bottom: 2.5rem;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.space-x-2 > * + * {
+  margin-left: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .lg\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }

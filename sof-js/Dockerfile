@@ -13,7 +13,6 @@ RUN bun install --frozen-lockfile --production
 COPY src/ ./src/
 COPY metadata/ ./metadata/
 COPY public/ ./public/
-COPY tailwind.config.js ./
 
 # Create a non-root user
 RUN addgroup -g 1001 -S bunuser && \
