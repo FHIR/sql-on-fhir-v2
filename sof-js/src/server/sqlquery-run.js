@@ -446,6 +446,42 @@ async function handleSqlQueryRun(req, res) {
   }
 }
 
+function buildParametersFromBody(body) {
+  const parameter = []
+
+  if (body.queryResource) {
+    try {
+      parameter.push({ name: 'queryResource', valueResource: JSON.parse(body.queryResource) })
+    } catch (e) {
+      throw badRequestError(`Invalid queryResource JSON: ${e.message}`)
+    }
+  }
+
+  if (body.queryReference) {
+    parameter.push({ name: 'queryReference', valueReference: { reference: body.queryReference } })
+  }
+
+  if (body.parameters) {
+    try {
+      parameter.push({ name: 'parameters', valueParameters: JSON.parse(body.parameters) })
+    } catch (e) {
+      throw badRequestError(`Invalid parameters JSON: ${e.message}`)
+    }
+  }
+
+  if (body._format) {
+    parameter.push({ name: '_format', valueCode: body._format })
+  }
+
+  if (body.header === 'true' || body.header === true) {
+    parameter.push({ name: 'header', valueBoolean: true })
+  } else if (body.header === 'false' || body.header === false) {
+    parameter.push({ name: 'header', valueBoolean: false })
+  }
+
+  return { resourceType: 'Parameters', parameter }
+}
+
 export async function postSystemLevel(req, res) {
   await withLock(() => handleSqlQueryRun(req, res))
 }
@@ -456,6 +492,21 @@ export async function postTypeLevel(req, res) {
 
 export async function postInstanceLevel(req, res) {
   await withLock(() => handleSqlQueryRun(req, res))
+}
+
+export async function postSystemForm(req, res) {
+  req.body = buildParametersFromBody(req.body)
+  await postSystemLevel(req, res)
+}
+
+export async function postTypeForm(req, res) {
+  req.body = buildParametersFromBody(req.body)
+  await postTypeLevel(req, res)
+}
+
+export async function postInstanceForm(req, res) {
+  req.body = buildParametersFromBody(req.body)
+  await postInstanceLevel(req, res)
 }
 
 export async function getSystemForm(req, res) {
@@ -492,7 +543,7 @@ export async function getSystemForm(req, res) {
           <span class="text-gray-500">/</span>
           <a href="/$sqlquery-run/form">$sqlquery-run</a>
         </div>
-        <form hx-post="/$sqlquery-run" hx-target="#result" hx-swap="innerHTML" method="post">
+        <form hx-post="/$sqlquery-run/form" hx-target="#result" hx-swap="innerHTML" method="post">
           <div class="mt-4">
             ${await renderOperationDefinition(req, operation, defaults)}
           </div>
@@ -529,7 +580,51 @@ export async function getTypeForm(req, res) {
           <span class="text-gray-500">/</span>
           <a href="/Library/$sqlquery-run/form">$sqlquery-run</a>
         </div>
-        <form hx-post="/Library/$sqlquery-run" hx-target="#result" hx-swap="innerHTML" method="post">
+        <form hx-post="/Library/$sqlquery-run/form" hx-target="#result" hx-swap="innerHTML" method="post">
+          <div class="mt-4">
+            ${await renderOperationDefinition(req, operation, defaults)}
+          </div>
+          <div class="mt-4">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm">Run</button>
+          </div>
+        </form>
+        <div id="result" class="mt-4"></div>
+      </div>
+    `),
+  )
+}
+
+export async function getInstanceForm(req, res) {
+  const operation = await read(req.config, 'OperationDefinition', '$sqlquery-run')
+  if (!operation) {
+    renderNotFound(req, res, 'OperationDefinition $sqlquery-run not found')
+    return
+  }
+
+  const library = await read(req.config, 'Library', req.params.id)
+  if (!library) {
+    renderNotFound(req, res, `Library id = "${req.params.id}" not found`)
+    return
+  }
+
+  const defaults = {
+    _format: 'json',
+  }
+
+  res.setHeader('Content-Type', 'text/html')
+  res.send(
+    layout(`
+      <div class="container mx-auto p-4">
+        <div class="flex items-center gap-4">
+          <a href="/">Home</a>
+          <span class="text-gray-500">/</span>
+          <a href="/Library">Library</a>
+          <span class="text-gray-500">/</span>
+          <a href="/Library/${library.id}">${library.id}</a>
+          <span class="text-gray-500">/</span>
+          <a href="/Library/${library.id}/$sqlquery-run/form">$sqlquery-run</a>
+        </div>
+        <form hx-post="/Library/${library.id}/$sqlquery-run/form" hx-target="#result" hx-swap="innerHTML" method="post">
           <div class="mt-4">
             ${await renderOperationDefinition(req, operation, defaults)}
           </div>
@@ -567,6 +662,10 @@ export function mountRoutes(app) {
   app.post('/\\$sqlquery-run', postSystemLevel)
   app.post('/Library/\\$sqlquery-run', postTypeLevel)
   app.post('/Library/:id/\\$sqlquery-run', postInstanceLevel)
+  app.post('/\\$sqlquery-run/form', postSystemForm)
+  app.post('/Library/\\$sqlquery-run/form', postTypeForm)
+  app.post('/Library/:id/\\$sqlquery-run/form', postInstanceForm)
   app.get('/\\$sqlquery-run/form', getSystemForm)
   app.get('/Library/\\$sqlquery-run/form', getTypeForm)
+  app.get('/Library/:id/\\$sqlquery-run/form', getInstanceForm)
 }

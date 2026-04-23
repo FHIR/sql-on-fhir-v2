@@ -1,0 +1,69 @@
+{
+  "resourceType": "OperationDefinition",
+  "id": "$sqlquery-run",
+  "url": "http://sql-on-fhir.org/OperationDefinition/$sqlquery-run",
+  "version": "0.0.1",
+  "name": "$sqlquery-run",
+  "code": "sqlquery-run",
+  "status": "active",
+  "kind": "operation",
+  "description": "Execute a SQL query defined within a Library resource against materialised ViewDefinitions.",
+  "system": true,
+  "type": true,
+  "instance": true,
+  "resource": ["Library"],
+  "parameter": [
+    {
+      "name": "queryResource",
+      "use": "in",
+      "min": 0,
+      "max": "1",
+      "type": "Resource",
+      "documentation": "The Library resource containing the SQL query and relatedArtifact dependencies inline."
+    },
+    {
+      "name": "queryReference",
+      "use": "in",
+      "min": 0,
+      "max": "1",
+      "type": "Reference",
+      "documentation": "A reference to a stored Library resource that contains the SQL query."
+    },
+    {
+      "name": "parameters",
+      "use": "in",
+      "min": 0,
+      "max": "1",
+      "type": "Parameters",
+      "documentation": "Named parameter bindings to pass to the SQL query as a FHIR Parameters resource."
+    },
+    {
+      "name": "_format",
+      "use": "in",
+      "min": 0,
+      "max": "1",
+      "type": "code",
+      "documentation": "Output format - json, ndjson, csv, or fhir.",
+      "binding": {
+        "strength": "extensible",
+        "valueSet": "http://sql-on-fhir.org/ValueSet/output-format"
+      }
+    },
+    {
+      "name": "header",
+      "use": "in",
+      "min": 0,
+      "max": "1",
+      "type": "boolean",
+      "documentation": "Whether to include the header row in CSV output. Defaults to true."
+    },
+    {
+      "name": "result",
+      "use": "out",
+      "min": 0,
+      "max": "*",
+      "type": "Binary",
+      "documentation": "The query result in the requested format."
+    }
+  ]
+}

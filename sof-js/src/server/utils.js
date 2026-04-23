@@ -1,103 +1,103 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { gunzip } from 'zlib';
-import { evaluate } from '../index.js';
-import { search, expandValueSet, select } from './db.js';
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { gunzip } from 'zlib'
+import { evaluate } from '../index.js'
+import { search, expandValueSet, select } from './db.js'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
-export const DATABASE_URL = "https://storage.googleapis.com/aidbox-public/synthea/v2/100/fhir/";
+export const DATABASE_URL = 'https://storage.googleapis.com/aidbox-public/synthea/v2/100/fhir/'
 
 export const resourceTypes = [
-  "AllergyIntolerance",
-  "CarePlan",
-  "CareTeam",
-  "Claim",
-  "Condition",
-  "Device",
-  "DiagnosticReport",
-  "DocumentReference",
-  "Encounter",
-  "ExplanationOfBenefit",
-  "ImagingStudy",
-  "Immunization",
-  "Location",
-  "Medication",
-  "MedicationAdministration",
-  "MedicationRequest",
-  "Observation",
-  "Organization",
-  "Patient",
-  "Practitioner",
-  "PractitionerRole",
-  "Procedure",
-  "Provenance",
-  "SupplyDelivery"
-];
+  'AllergyIntolerance',
+  'CarePlan',
+  'CareTeam',
+  'Claim',
+  'Condition',
+  'Device',
+  'DiagnosticReport',
+  'DocumentReference',
+  'Encounter',
+  'ExplanationOfBenefit',
+  'ImagingStudy',
+  'Immunization',
+  'Location',
+  'Medication',
+  'MedicationAdministration',
+  'MedicationRequest',
+  'Observation',
+  'Organization',
+  'Patient',
+  'Practitioner',
+  'PractitionerRole',
+  'Procedure',
+  'Provenance',
+  'SupplyDelivery',
+]
 
 export async function getFHIRData(resourceType) {
   if (!resourceTypes.includes(resourceType)) {
-    return null;
+    return null
   }
-  const datapath = DATABASE_URL + resourceType + '.ndjson.gz';
-  const response = await fetch(datapath);
-  const buffer = await response.arrayBuffer();
-  const bufferView = new Uint8Array(buffer);
+  const datapath = DATABASE_URL + resourceType + '.ndjson.gz'
+  const response = await fetch(datapath)
+  const buffer = await response.arrayBuffer()
+  const bufferView = new Uint8Array(buffer)
   const text = await new Promise((resolve, reject) => {
     gunzip(bufferView, (err, result) => {
-      if (err) reject(err);
-      else resolve(result.toString('utf8'));
-    });
-  });
+      if (err) reject(err)
+      else resolve(result.toString('utf8'))
+    })
+  })
 
   const jsonArray = text
     .split('\n')
-    .filter(line => line.trim() !== '')
-    .map(line => JSON.parse(line));
-  return jsonArray;
+    .filter((line) => line.trim() !== '')
+    .map((line) => JSON.parse(line))
+  return jsonArray
 }
 
 export function readResourcesFromDirectory(resourceType) {
-  const directoryPath = path.join(__dirname, '../../metadata', resourceType);
+  const directoryPath = path.join(__dirname, '../../metadata', resourceType)
   if (!fs.existsSync(directoryPath) || !fs.statSync(directoryPath).isDirectory()) {
-    return null;
+    return null
   }
 
-  const resources = [];
+  const resources = []
   try {
-    const files = fs.readdirSync(directoryPath);
-    files.forEach(file => {
-      const filePath = path.join(directoryPath, file);
+    const files = fs.readdirSync(directoryPath)
+    files.forEach((file) => {
+      const filePath = path.join(directoryPath, file)
       if (fs.statSync(filePath).isFile()) {
         try {
-          const fileContent = fs.readFileSync(filePath, 'utf8');
-          const resource = JSON.parse(fileContent);
-          resource.id = file.replace('.json', '');
-          resources.push(resource);
+          const fileContent = fs.readFileSync(filePath, 'utf8')
+          const resource = JSON.parse(fileContent)
+          resource.id = file.replace('.json', '')
+          resources.push(resource)
         } catch (error) {
-          console.error(`Error processing file ${file}:`, error);
+          console.error(`Error processing file ${file}:`, error)
         }
       }
-    });
-    return resources;
+    })
+    return resources
   } catch (error) {
-    console.error(`Error reading directory ${directoryPath}:`, error);
-    return null;
+    console.error(`Error reading directory ${directoryPath}:`, error)
+    return null
   }
 }
 
 export function readResource(resourceType, id) {
-  const resourceDir = path.join(__dirname, '../../metadata', resourceType);
-  const filePath = path.join(resourceDir, `${id}.json`);
+  const resourceDir = path.join(__dirname, '../../metadata', resourceType)
+  const filePath = path.join(resourceDir, `${id}.json`)
   if (!fs.existsSync(filePath)) {
-    return null;
+    return null
   }
-  const fileContent = fs.readFileSync(filePath, 'utf8');
-  const resource = JSON.parse(fileContent);
-  resource.id = id;
-  return resource;
+  const fileContent = fs.readFileSync(filePath, 'utf8')
+  const resource = JSON.parse(fileContent)
+  resource.id = id
+  return resource
 }
 
 export function wrapBundle(resources) {
@@ -105,123 +105,134 @@ export function wrapBundle(resources) {
     resourceType: 'Bundle',
     type: 'searchset',
     total: resources.length,
-    entry: resources.map(resource => ({
-      resource: resource
-    }))
-  };
+    entry: resources.map((resource) => ({
+      resource: resource,
+    })),
+  }
 }
 
 export function getBaseUrl(req) {
-  const protocol = req.protocol;
-  const host = req.get('host');
-  return `${protocol}://${host}`;
+  const protocol = req.protocol
+  const host = req.get('host')
+  return `${protocol}://${host}`
 }
 
 export function getParameters(params, name) {
-  return params.parameter.filter(p => p.name === name);
+  return params.parameter.filter((p) => p.name === name)
 }
 
 export function capitalize(str) {
   if (!str || typeof str !== 'string' || str.length === 0) {
-    return str;
+    return str
   }
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 export function getParameterValue(params, name, type) {
-  const parameter = getParameters(params, name)[0];
+  const parameter = getParameters(params, name)[0]
   if (!parameter) {
-    return null;
+    return null
   }
-  const attribute = `value${capitalize(type)}`;
-  return parameter[attribute];
+  const attribute = `value${capitalize(type)}`
+  return parameter[attribute]
 }
 
 export function isHtml(req) {
-  return req.query._format !== 'json' && req.headers.accept.indexOf('text/html') != -1;
+  return req.query._format !== 'json' && req.headers.accept.indexOf('text/html') != -1
 }
-
 
 export function renderNotFound(req, res, message) {
   if (isHtml(req)) {
-    res.setHeader('Content-Type', 'text/html');
-    res.send(layout(`
+    res.setHeader('Content-Type', 'text/html')
+    res.send(
+      layout(`
             <div class="container mx-auto p-4">
                 <h1 class="text-2xl font-bold mb-4">Evaluate ViewDefinition</h1>
                 <p>${message}</p>
             </div>
-        `));
+        `),
+    )
   } else {
-    res.status(404);
+    res.status(404)
     res.json({
       resourceType: 'OperationOutcome',
-      issue: [{ code: 'not-found', message: message }]
-    });
+      issue: [{ code: 'not-found', message: message }],
+    })
   }
 }
 
 export async function runOperation(req, resource, params) {
-  console.log('runOperation', resource, params);
-  let data = null;
+  console.log('runOperation', resource, params)
+  let data = null
   if (params.patient) {
-    data = await select(req.config, `SELECT resource FROM ${resource.resource.toLowerCase()} WHERE resource ->> '$.subject.reference' = 'Patient/${params.patient}'`)
-    data = data.map(r => JSON.parse(r.resource));
+    data = await select(
+      req.config,
+      `SELECT resource FROM ${resource.resource.toLowerCase()} WHERE resource ->> '$.subject.reference' = 'Patient/${params.patient}'`,
+    )
+    data = data.map((r) => JSON.parse(r.resource))
   } else {
-    data = await search(req.config, resource.resource, params.count || 100);
+    data = await search(req.config, resource.resource, params.count || 100)
   }
-  return await evaluate(resource, data);
+  return await evaluate(resource, data)
 }
 
 async function renderOpInputDefParam(req, param, defaults, ident = '') {
-  const defaultValue = defaults[param.name];
+  const defaultValue = defaults[param.name]
   const binding = param.binding
-  let bindingHtm = '';
-  let valueSet = null;
+  let bindingHtm = ''
+  let valueSet = null
   if (binding) {
-    valueSet = await expandValueSet(req.config, binding.valueSet);
+    valueSet = await expandValueSet(req.config, binding.valueSet)
     if (valueSet) {
-      bindingHtm = `<a href="/ValueSet/${valueSet.id}">${valueSet.id}</a>`;
+      bindingHtm = `<a href="/ValueSet/${valueSet.id}">${valueSet.id}</a>`
     } else {
-      bindingHtm = `<a class= "text-red-500"">${binding.valueSet}</a>`;
+      bindingHtm = `<a class= "text-red-500"">${binding.valueSet}</a>`
     }
   }
 
-  let inputHtm = '';
+  let inputHtm = ''
   if (param.use === 'in') {
     if (param.type === 'string') {
-      inputHtm = `<input name="${param.name}" type="text"/>`;
+      inputHtm = `<input name="${param.name}" type="text"/>`
     } else if (param.type === 'code') {
       if (valueSet?.concept) {
-        inputHtm = `<select name="${param.name}">${valueSet.concept.map(c => `<option value="${c.code}">${c.display}</option>`).join('')}</select>`;
+        inputHtm = `<select name="${param.name}">${valueSet.concept.map((c) => `<option value="${c.code}">${c.display}</option>`).join('')}</select>`
       } else {
-        inputHtm = `<input name="${param.name}" type="text"/>`;
+        inputHtm = `<input name="${param.name}" type="text"/>`
       }
     } else if (param.type === 'Reference') {
       if (param.name === 'patient') {
-        const patients = await search(req.config, 'Patient', 100);
-        inputHtm = `<select name="${param.name}">${patients.map(p => `<option value="${p.id}">${p.name[0]?.family} ${p.name[0]?.given[0]}</option>`).join('')}</select>`;
+        const patients = await search(req.config, 'Patient', 100)
+        inputHtm = `<select name="${param.name}">${patients.map((p) => `<option value="${p.id}">${p.name[0]?.family} ${p.name[0]?.given[0]}</option>`).join('')}</select>`
       } else if (param.name === 'viewReference') {
-        const views = await search(req.config, 'ViewDefinition', 100);
-        inputHtm = `<select name="${param.name}">${views.map(v => `<option value="ViewDefinition/${v.id}">${v.id}</option>`).join('')}</select>`;
+        const views = await search(req.config, 'ViewDefinition', 100)
+        inputHtm = `<select name="${param.name}">${views.map((v) => `<option value="ViewDefinition/${v.id}">${v.id}</option>`).join('')}</select>`
+      } else if (param.name === 'queryReference') {
+        const libraries = await search(req.config, 'Library', 100)
+        inputHtm = `<select name="${param.name}">${libraries.map((l) => `<option value="Library/${l.id}">${l.id}</option>`).join('')}</select>`
       } else {
-        inputHtm = `<span>TODO: ${param.name}</span>`;
+        inputHtm = `<input name="${param.name}" type="text" value="${defaultValue || ''}"/>`
       }
     } else if (param.type === 'ViewDefinition') {
-      inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`;
+      inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`
     } else if (param.name === 'resource') {
-      inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`;
+      inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`
+    } else if (param.type === 'Resource') {
+      inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || ''}</textarea>`
+    } else if (param.type === 'Parameters') {
+      inputHtm = `<textarea name="${param.name}" rows="6" cols="90">${defaultValue || '{"resourceType": "Parameters", "parameter": []}'}</textarea>`
     } else if (param.type === 'token') {
-      inputHtm = `<input name="${param.name}" type="text"/>`;
+      inputHtm = `<input name="${param.name}" type="text"/>`
     } else if (param.type === 'number' || param.type === 'integer') {
-      inputHtm = `<input name="${param.name}" type="number"/>`;
+      inputHtm = `<input name="${param.name}" type="number"/>`
     } else if (param.type === 'boolean') {
-      inputHtm = `<input name="${param.name}" type="checkbox" value="true"/>`;
+      inputHtm = `<input name="${param.name}" type="checkbox" value="true"/>`
     } else if (param.type === 'date') {
-      inputHtm = `<input name="${param.name}" type="date"/>`;
+      inputHtm = `<input name="${param.name}" type="date"/>`
     } else if (param.type === 'dateTime' || param.type === 'instant') {
-      inputHtm = `<input name="${param.name}" type="datetime-local"/>`;
+      inputHtm = `<input name="${param.name}" type="datetime-local"/>`
     } else if (param.type === 'time') {
-      inputHtm = `<input name="${param.name}" type="time"/>`;
+      inputHtm = `<input name="${param.name}" type="time"/>`
     }
   }
 
@@ -231,7 +242,9 @@ async function renderOpInputDefParam(req, param, defaults, ident = '') {
 
   let nested = ''
   if (param.part) {
-    const items = await Promise.all(param.part.map(p => renderOpInputDefParam(req, p, defaults, ident + param.name + '.')))
+    const items = await Promise.all(
+      param.part.map((p) => renderOpInputDefParam(req, p, defaults, ident + param.name + '.')),
+    )
     if (items.length > 0) {
       nested = items.join('')
     }
@@ -247,26 +260,28 @@ async function renderOpInputDefParam(req, param, defaults, ident = '') {
         <td class="text-xs text-gray-500">${bindingHtm} ${param.documentation || ''}</td>
     </tr>
     ${nested}
-    `;
+    `
 }
 
 async function renderOpOutputDefParam(req, param, defaults, ident = '') {
   let nested = ''
   if (param.part) {
-    const items = await Promise.all(param.part.map(p => renderOpOutputDefParam(req, p, defaults, ident + param.name + '.')))
+    const items = await Promise.all(
+      param.part.map((p) => renderOpOutputDefParam(req, p, defaults, ident + param.name + '.')),
+    )
     if (items.length > 0) {
       nested = items.join('')
     }
   }
   const binding = param.binding
-  let bindingHtm = '';
-  let valueSet = null;
+  let bindingHtm = ''
+  let valueSet = null
   if (binding) {
-    valueSet = await expandValueSet(req.config, binding.valueSet);
+    valueSet = await expandValueSet(req.config, binding.valueSet)
     if (valueSet) {
-      bindingHtm = `<a href="/ValueSet/${valueSet.id}">${valueSet.id}</a>`;
+      bindingHtm = `<a href="/ValueSet/${valueSet.id}">${valueSet.id}</a>`
     } else {
-      bindingHtm = `<a class= "text-red-500"">${binding.valueSet}</a>`;
+      bindingHtm = `<a class= "text-red-500"">${binding.valueSet}</a>`
     }
   }
   return `
@@ -277,14 +292,18 @@ async function renderOpOutputDefParam(req, param, defaults, ident = '') {
         <td class="text-xs text-gray-500">${bindingHtm} ${param.documentation || ''}</td>
     </tr>
     ${nested}
-    `;
+    `
 }
 
 export async function renderOperationDefinition(req, operation, defaults = {}) {
-  const inputParams = operation.parameter.filter(p => p.use === 'in');
-  const outputParams = operation.parameter.filter(p => p.use === 'out');
-  const inputParamHtml = await Promise.all(inputParams.map(param => renderOpInputDefParam(req, param, defaults)));
-  const outputParamHtml = await Promise.all(outputParams.map(param => renderOpOutputDefParam(req, param, defaults)));
+  const inputParams = operation.parameter.filter((p) => p.use === 'in')
+  const outputParams = operation.parameter.filter((p) => p.use === 'out')
+  const inputParamHtml = await Promise.all(
+    inputParams.map((param) => renderOpInputDefParam(req, param, defaults)),
+  )
+  const outputParamHtml = await Promise.all(
+    outputParams.map((param) => renderOpOutputDefParam(req, param, defaults)),
+  )
   return `
     <div class="mt-4">
         <h2 class="text-2xl font-bold mt-4"> ${operation.name} </h2>
@@ -324,15 +343,15 @@ export async function renderOperationDefinition(req, operation, defaults = {}) {
             </tbody>
         </table>
     </div>
-    `;
+    `
 }
 
 export function arrayify(value) {
   if (value === null || value === undefined) {
-    return [];
+    return []
   }
   if (Array.isArray(value)) {
-    return value;
+    return value
   }
-  return [value];
+  return [value]
 }
