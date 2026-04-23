@@ -1,8 +1,7 @@
-import { search } from './db.js';
-import { errors as verrors } from '../validate.js'
-import { layout } from './ui.js';
-import { read } from './db.js'; 
-import { renderOperationDefinition, runOperation } from './utils.js';
+import { errors as verrors } from '../validate.js';
+import { layout, crumb, sectionHead } from './ui.js';
+import { read } from './db.js';
+import { renderOperationDefinition } from './utils.js';
 
 
 const defaultResource = {
@@ -32,32 +31,29 @@ export async function getValidateFormEndpoint(req, res) {
     };
     res.setHeader('Content-Type', 'text/html');
     res.send(layout(`
-      <div class="container mx-auto p-4">
-        <div class="flex items-center gap-4">
-          <a href="/">Home</a>
-          <span class="text-gray-500">/</span>
-          <a href="/ViewDefinition/">ViewDefinition</a>
-          <span class="text-gray-500">/</span>
-          <a href="/ViewDefinition/$validate">$validate</a>
+      ${crumb([
+        { href: '/', label: 'Home' },
+        { href: '/ViewDefinition', label: 'View definitions' },
+        { label: '$validate' },
+      ])}
+      ${sectionHead({
+        eyebrow: 'operation · type · $validate',
+        title: 'Validate a ViewDefinition',
+      })}
+      <p class="lead mb-6">
+        Paste a ViewDefinition resource below to check it against the SQL on
+        FHIR schema and report any structural issues.
+      </p>
+      <form hx-post="/ViewDefinition/$validate/form"
+            hx-target="#result"
+            hx-swap="innerHTML"
+            hx-trigger="submit">
+        ${await renderOperationDefinition(req, operation, defaults)}
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary">validate</button>
         </div>
-        <div class="">
-            <div class="flex-1">
-                <form 
-                    hx-post="/ViewDefinition/$validate/form" 
-                    hx-target="#result"
-                    hx-swap="innerHTML"
-                    hx-trigger="submit" >
-                    <div class="mt-4">
-                     ${await renderOperationDefinition(req, operation, defaults)}
-                    </div>
-                    <div class="mt-4">
-                     <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm">Evaluate</button>
-                    </div>
-                </form>
-            </div>
-            <div class="flex-1" id="result"></div>
-        </div>
-      </div>
+      </form>
+      <div id="result" class="mt-6"></div>
     `));
 };
 
@@ -76,20 +72,26 @@ export async function postValidateFormEndpoint(req, res) {
     try {
         const resource = JSON.parse(req.body.resource);
         const result = validateViewDefinition(resource);
+        const issueCount = Array.isArray(result) ? result.length : 0;
         res.setHeader('Content-Type', 'text/html');
-        res.send(layout(`
-            <div class="container mx-auto py-4">
-                <pre class="bg-gray-100 p-4 rounded-md text-xs">${JSON.stringify(result, null, 2)}</pre>
+        // Fragment response for htmx swap into #result.
+        res.send(`
+            <div class="panel panel--flush">
+              <div class="panel__header">
+                <span>${issueCount === 0 ? 'valid · 0 issues' : `${issueCount} issue${issueCount === 1 ? '' : 's'}`}</span>
+                <span>JSON</span>
+              </div>
+              <pre class="panel__body" style="margin:0;border:0;box-shadow:none;border-radius:0">${JSON.stringify(result, null, 2)}</pre>
             </div>
-        `));
+        `);
     } catch (error) {
         res.setHeader('Content-Type', 'text/html');
-        res.send(layout(`
-            <div class="container mx-auto p-4 bg-red-100 border border-red-500 rounded-md">
-                <h1 class="text-2xl">Error</h1>
-                <p class="text-red-500">Invalid JSON: ${error.message}</p>  
+        res.send(`
+            <div class="alert">
+              <div class="alert__eyebrow">invalid json</div>
+              <p>${error.message}</p>
             </div>
-        `));
+        `);
     }
     res.end();
 };

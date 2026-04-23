@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url'
 import { gunzip } from 'zlib'
 import { evaluate } from '../index.js'
 import { search, expandValueSet, select } from './db.js'
+import { layout } from './ui.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -146,11 +147,11 @@ export function renderNotFound(req, res, message) {
     res.setHeader('Content-Type', 'text/html')
     res.send(
       layout(`
-            <div class="container mx-auto p-4">
-                <h1 class="text-2xl font-bold mb-4">Evaluate ViewDefinition</h1>
-                <p>${message}</p>
-            </div>
-        `),
+        <div class="alert">
+          <div class="alert__eyebrow">404 · not found</div>
+          <p>${message}</p>
+        </div>
+      `),
     )
   } else {
     res.status(404)
@@ -214,13 +215,13 @@ async function renderOpInputDefParam(req, param, defaults, ident = '') {
         inputHtm = `<input name="${param.name}" type="text" value="${defaultValue || ''}"/>`
       }
     } else if (param.type === 'ViewDefinition') {
-      inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`
+      inputHtm = `<textarea name="${param.name}" rows="10">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`
     } else if (param.name === 'resource') {
-      inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`
+      inputHtm = `<textarea name="${param.name}" rows="10">${defaultValue || '{"resourceType": "ViewDefinition", "resource": "Patient"}'}</textarea>`
     } else if (param.type === 'Resource') {
-      inputHtm = `<textarea name="${param.name}" rows="10" cols="90">${defaultValue || ''}</textarea>`
+      inputHtm = `<textarea name="${param.name}" rows="10">${defaultValue || ''}</textarea>`
     } else if (param.type === 'Parameters') {
-      inputHtm = `<textarea name="${param.name}" rows="6" cols="90">${defaultValue || '{"resourceType": "Parameters", "parameter": []}'}</textarea>`
+      inputHtm = `<textarea name="${param.name}" rows="6">${defaultValue || '{"resourceType": "Parameters", "parameter": []}'}</textarea>`
     } else if (param.type === 'token') {
       inputHtm = `<input name="${param.name}" type="text"/>`
     } else if (param.type === 'number' || param.type === 'integer') {
@@ -253,7 +254,7 @@ async function renderOpInputDefParam(req, param, defaults, ident = '') {
   return `
     <tr>
         <td>${ident}${param.name}</td>
-        <td class="min-w-80">${inputHtm}</td>
+        <td class="op-def__input">${inputHtm}</td>
         <td>${param.scope?.join(',') || ''}</td>
         <td>${param.type}</td>
         <td>${param.min || 0}..${param.max || '*'}</td>
@@ -305,15 +306,15 @@ export async function renderOperationDefinition(req, operation, defaults = {}) {
     outputParams.map((param) => renderOpOutputDefParam(req, param, defaults)),
   )
   return `
-    <div class="mt-4">
-        <h2 class="text-2xl font-bold mt-4"> ${operation.name} </h2>
-        <p class="mt-4"> ${operation.description} </p>
-        <details class="mt-4">
-            <summary class="text-sky-600 hover:text-sky-700 cursor-pointer">OperationDefinition</summary>
+    <div>
+        <h2>${operation.name}</h2>
+        <p class="text-ink-soft mb-4" style="max-width:48rem">${operation.description || ''}</p>
+        <details class="mb-4">
+            <summary>OperationDefinition ⟩</summary>
             <pre>${JSON.stringify(operation, null, 2)}</pre>
         </details>
-        <h3 class="text-lg font-bold mt-4 mb-2"> Output </h3>
-        <table class="mt-4">
+        <h3>Output</h3>
+        <table class="op-def">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -326,8 +327,8 @@ export async function renderOperationDefinition(req, operation, defaults = {}) {
                 ${outputParamHtml.join('')}
             </tbody>
         </table>
-        <h3 class="text-lg font-bold mt-4 mb-2"> Input </h3>
-        <table class="mt-4">
+        <h3>Input</h3>
+        <table class="op-def">
             <thead>
                 <tr>
                     <th>Name</th>

@@ -1,126 +1,141 @@
-import { wrapBundle } from './utils.js';
-import { layout } from './ui.js';
-import { isHtml } from './utils.js';
-import { search, read } from './db.js';
+import { wrapBundle } from './utils.js'
+import { layout, crumb, sectionHead } from './ui.js'
+import { isHtml } from './utils.js'
+import { search, read } from './db.js'
 
 function renderViewDefinitions(req, res, resources) {
-    const viewsList = resources.map(resource => `
+  const viewsList = resources
+    .map(
+      (resource) => `
         <tr>
-            <td class="border border-gray-200 p-2">
-                <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/${resource.id}">
-                    ${resource.name}
-                </a>
-            </td>
-            <td class="border border-gray-200 p-2">
-               ${resource.resource}
-            </td>
-            <td class="border border-gray-200 p-2">
-               ${resource.url}
-            </td>
-            <td class="border border-gray-200 p-2">
-                <a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/${resource.id}/$run/form">
-                    $run
-                </a>
-            </td>
+          <td>
+            <a href="/ViewDefinition/${resource.id}">${resource.name}</a>
+          </td>
+          <td><span class="tag">${resource.resource}</span></td>
+          <td class="text-ink-mute"><code>${resource.url}</code></td>
+          <td>
+            <a class="btn btn-primary" href="/ViewDefinition/${resource.id}/$run/form">$run</a>
+          </td>
         </tr>
-        `).join('');
-    res.setHeader('Content-Type', 'text/html');
-    res.send(layout(`
-        <div class="container mx-auto p-4">
-            <div class="flex items-center space-x-4">
-                <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>
-                <span class="text-gray-500">/</span>
-            </div>
-            <div class="mt-4 flex items-center space-x-4 border-b border-gray-200 pb-2">  
-                <h1 class="flex-1 text-2xl font-bold">View Definitions</h1>
-                <a href="/ViewDefinition/$viewdefinition-export" class="btn">$viewdefinition-export</a>
-                <a href="/ViewDefinition/$validate" class="btn">$validate?</a>
-                <a href="/ViewDefinition/$evaluate" class="btn">$evaluate</a>
-                <a href="/ViewDefinition/new" class="btn">New ViewDefinition</a>
-            </div>
-            <table class="mt-4 table-auto border-collapse border border-gray-200">
-                <thead>
-                    <tr>
-                        <th class="bg-gray-100 border border-gray-200 p-2">Name</th>
-                        <th class="bg-gray-100 border border-gray-200 p-2">Resource</th>
-                        <th class="bg-gray-100 border border-gray-200 p-2">URL</th>
-                        <th class="bg-gray-100 border border-gray-200 p-2">Run</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${viewsList}
-                </tbody>
-            </table>
-            </ul>
+      `,
+    )
+    .join('')
+  res.setHeader('Content-Type', 'text/html')
+  res.send(
+    layout(`
+      ${crumb([{ href: '/', label: 'Home' }, { label: 'View definitions' }])}
+      ${sectionHead({
+        eyebrow: 'resource · collection',
+        title: 'View definitions',
+        actions: `
+          <a href="/ViewDefinition/$viewdefinition-export" class="btn">$viewdefinition-export</a>
+          <a href="/ViewDefinition/$validate" class="btn">$validate</a>
+          <a href="/ViewDefinition/$evaluate" class="btn">$evaluate</a>
+          <a href="/ViewDefinition/new" class="btn btn-primary">+ new</a>
+        `,
+      })}
+      <div class="panel panel--flush">
+        <div class="panel__header">
+          <span>${resources.length} view${resources.length === 1 ? '' : 's'} registered</span>
+          <span>GET /ViewDefinition</span>
         </div>
-    `));
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Resource</th>
+              <th>URL</th>
+              <th>Run</th>
+            </tr>
+          </thead>
+          <tbody>${viewsList}</tbody>
+        </table>
+      </div>
+    `),
+  )
 }
 
 export async function getVeiwListEndpoint(req, res) {
-    const resources = await search(req.config, 'ViewDefinition')
-    if(isHtml(req)) {
-        renderViewDefinitions(req, res, resources);
+  const resources = await search(req.config, 'ViewDefinition')
+  if (isHtml(req)) {
+    renderViewDefinitions(req, res, resources)
+  } else {
+    if (resources == null) {
+      res.status(404)
+      res.json({
+        resourceType: 'OperationOutcome',
+        issue: [
+          {
+            code: 'not-found',
+            message: 'Resource type not found',
+          },
+        ],
+      })
     } else {
-        if (resources == null) {
-            res.status(404);
-            res.json({
-            resourceType: 'OperationOutcome',
-            issue: [{
-                code: 'not-found',
-                message: 'Resource type not found'
-            }]
-        });
-    } else {
-            res.setHeader('Content-Type', 'application/fhir+json');
-            res.json(wrapBundle(resources));
-        }
+      res.setHeader('Content-Type', 'application/fhir+json')
+      res.json(wrapBundle(resources))
     }
-};
+  }
+}
 
 function renderViewDefinition(req, res, resource) {
-    const resourceJson = JSON.stringify(resource, null, 2);
-    res.setHeader('Content-Type', 'text/html');
-    res.send(layout(`
-        <div class="container mx-auto p-4">
-            <div class="flex items-center space-x-4">
-                <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>
-                <span class="text-gray-500">/</span>
-                <a href="/ViewDefinition" class="text-blue-500 hover:text-blue-700">View Definitions</a>
-                <span class="text-gray-500">/</span>
-                <a href="#" class="text-blue-500 hover:text-blue-700">${resource.name}</a>
-            </div>
-            <div class="mt-4 flex items-center space-x-4 border-b border-gray-200 pb-2">  
-                <h1 class="flex-1 text-2xl font-bold">View Definition</h1>
-                <a href="/ViewDefinition/${resource.id}/$run/form" class="border border-blue-500 rounded-md px-2 py-1 text-sm text-blue-500 hover:text-blue-700">$run</a>
-            </div>
-            <pre class="bg-gray-100 p-4 rounded-md text-xs">${resourceJson}</pre>
-
+  const resourceJson = JSON.stringify(resource, null, 2)
+  res.setHeader('Content-Type', 'text/html')
+  res.send(
+    layout(`
+      ${crumb([
+        { href: '/', label: 'Home' },
+        { href: '/ViewDefinition', label: 'View definitions' },
+        { label: resource.name || resource.id },
+      ])}
+      ${sectionHead({
+        eyebrow: `resource · ${resource.resource || 'ViewDefinition'}`,
+        title: resource.name || resource.id,
+        actions: `
+          <a href="/ViewDefinition/${resource.id}/$run/form" class="btn btn-primary">$run</a>
+        `,
+      })}
+      <div class="panel panel--flush">
+        <div class="panel__header">
+          <span>Raw resource</span>
+          <span>application/fhir+json</span>
         </div>
-    `));
+        <pre class="panel__body" style="margin:0;border:0;box-shadow:none;border-radius:0">${resourceJson}</pre>
+      </div>
+    `),
+  )
 }
 
 export async function getVeiwEndpoint(req, res) {
-    console.log('getVeiwEndpoint', req.params.id);
-    const resource = await read(req.config, 'ViewDefinition', req.params.id);
-    if(isHtml(req)) {   
-        if(resource == null) { 
-            res.send(layout(`
-                <div class="container mx-auto p-4">
-                    <h1 class="text-2xl font-bold mb-4">View Definition</h1>
-                    <p>View Definition not found</p>
-                </div>
-            `));
-        } else {
-            renderViewDefinition(req, res, resource);
-        }
+  console.log('getVeiwEndpoint', req.params.id)
+  const resource = await read(req.config, 'ViewDefinition', req.params.id)
+  if (isHtml(req)) {
+    if (resource == null) {
+      res.send(
+        layout(`
+          ${crumb([
+            { href: '/', label: 'Home' },
+            { href: '/ViewDefinition', label: 'View definitions' },
+            { label: req.params.id },
+          ])}
+          ${sectionHead({ eyebrow: 'resource · missing', title: 'View definition not found' })}
+          <div class="alert">
+            <div class="alert__eyebrow">404 · not found</div>
+            <p>No ViewDefinition with id <code>${req.params.id}</code> could be located in this server.</p>
+          </div>
+        `),
+      )
     } else {
-        res.setHeader('Content-Type', 'application/fhir+json');
-        res.json(resource);
+      renderViewDefinition(req, res, resource)
     }
+  } else {
+    res.setHeader('Content-Type', 'application/fhir+json')
+    res.json(resource)
+  }
 }
 
 export function mountRoutes(app) {
-    console.log('mounting views routes');
-    app.get('/ViewDefinition', getVeiwListEndpoint);
-    app.get('/ViewDefinition/:id', getVeiwEndpoint);
+  console.log('mounting views routes')
+  app.get('/ViewDefinition', getVeiwListEndpoint)
+  app.get('/ViewDefinition/:id', getVeiwEndpoint)
 }

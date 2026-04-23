@@ -1,7 +1,7 @@
 import express from 'express'
 import { read, search, select } from './db.js'
 import { evaluate } from '../index.js'
-import { layout } from './ui.js'
+import { layout, crumb, sectionHead } from './ui.js'
 import { isHtml, renderOperationDefinition, renderNotFound } from './utils.js'
 
 const DEFAULT_ROW_LIMIT = 1000
@@ -383,9 +383,10 @@ function renderError(req, res, error) {
     res.status(statusCode)
     res.send(
       layout(`
-        <div class="container mx-auto p-4 bg-red-100 border border-red-500 rounded-md">
-          <h1 class="text-2xl">Error</h1>
-          <p class="text-red-500">${error.message}</p>
+        ${sectionHead({ eyebrow: `status · ${statusCode}`, title: 'Operation failed' })}
+        <div class="alert">
+          <div class="alert__eyebrow">${code}</div>
+          <p>${error.message}</p>
         </div>
       `),
     )
@@ -535,24 +536,27 @@ export async function getSystemForm(req, res) {
   res.setHeader('Content-Type', 'text/html')
   res.send(
     layout(`
-      <div class="container mx-auto p-4">
-        <div class="flex items-center gap-4">
-          <a href="/">Home</a>
-          <span class="text-gray-500">/</span>
-          <a href="/Library">Library</a>
-          <span class="text-gray-500">/</span>
-          <a href="/$sqlquery-run/form">$sqlquery-run</a>
+      ${crumb([
+        { href: '/', label: 'Home' },
+        { href: '/Library', label: 'Library' },
+        { label: '$sqlquery-run' },
+      ])}
+      ${sectionHead({
+        eyebrow: 'operation · system · $sqlquery-run',
+        title: 'Run SQL against materialised views',
+      })}
+      <p class="lead mb-6">
+        Provide a Library resource containing SQL and the ViewDefinitions it
+        depends on. The server materialises each view and evaluates the SQL
+        against the resulting tables.
+      </p>
+      <form hx-post="/$sqlquery-run/form" hx-target="#result" hx-swap="innerHTML" method="post">
+        ${await renderOperationDefinition(req, operation, defaults)}
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary">execute</button>
         </div>
-        <form hx-post="/$sqlquery-run/form" hx-target="#result" hx-swap="innerHTML" method="post">
-          <div class="mt-4">
-            ${await renderOperationDefinition(req, operation, defaults)}
-          </div>
-          <div class="mt-4">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm">Run</button>
-          </div>
-        </form>
-        <div id="result" class="mt-4"></div>
-      </div>
+      </form>
+      <div id="result" class="mt-6"></div>
     `),
   )
 }
@@ -572,24 +576,26 @@ export async function getTypeForm(req, res) {
   res.setHeader('Content-Type', 'text/html')
   res.send(
     layout(`
-      <div class="container mx-auto p-4">
-        <div class="flex items-center gap-4">
-          <a href="/">Home</a>
-          <span class="text-gray-500">/</span>
-          <a href="/Library">Library</a>
-          <span class="text-gray-500">/</span>
-          <a href="/Library/$sqlquery-run/form">$sqlquery-run</a>
+      ${crumb([
+        { href: '/', label: 'Home' },
+        { href: '/Library', label: 'Library' },
+        { label: '$sqlquery-run' },
+      ])}
+      ${sectionHead({
+        eyebrow: 'operation · type · $sqlquery-run',
+        title: 'Run a stored Library',
+      })}
+      <p class="lead mb-6">
+        Resolve a stored Library by reference, materialise its dependent
+        ViewDefinitions, and evaluate the bundled SQL.
+      </p>
+      <form hx-post="/Library/$sqlquery-run/form" hx-target="#result" hx-swap="innerHTML" method="post">
+        ${await renderOperationDefinition(req, operation, defaults)}
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary">execute</button>
         </div>
-        <form hx-post="/Library/$sqlquery-run/form" hx-target="#result" hx-swap="innerHTML" method="post">
-          <div class="mt-4">
-            ${await renderOperationDefinition(req, operation, defaults)}
-          </div>
-          <div class="mt-4">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm">Run</button>
-          </div>
-        </form>
-        <div id="result" class="mt-4"></div>
-      </div>
+      </form>
+      <div id="result" class="mt-6"></div>
     `),
   )
 }
@@ -614,26 +620,23 @@ export async function getInstanceForm(req, res) {
   res.setHeader('Content-Type', 'text/html')
   res.send(
     layout(`
-      <div class="container mx-auto p-4">
-        <div class="flex items-center gap-4">
-          <a href="/">Home</a>
-          <span class="text-gray-500">/</span>
-          <a href="/Library">Library</a>
-          <span class="text-gray-500">/</span>
-          <a href="/Library/${library.id}">${library.id}</a>
-          <span class="text-gray-500">/</span>
-          <a href="/Library/${library.id}/$sqlquery-run/form">$sqlquery-run</a>
+      ${crumb([
+        { href: '/', label: 'Home' },
+        { href: '/Library', label: 'Library' },
+        { href: `/Library/${library.id}`, label: library.id },
+        { label: '$sqlquery-run' },
+      ])}
+      ${sectionHead({
+        eyebrow: `operation · instance · ${library.id}`,
+        title: `$sqlquery-run — ${library.name || library.id}`,
+      })}
+      <form hx-post="/Library/${library.id}/$sqlquery-run/form" hx-target="#result" hx-swap="innerHTML" method="post">
+        ${await renderOperationDefinition(req, operation, defaults)}
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary">execute</button>
         </div>
-        <form hx-post="/Library/${library.id}/$sqlquery-run/form" hx-target="#result" hx-swap="innerHTML" method="post">
-          <div class="mt-4">
-            ${await renderOperationDefinition(req, operation, defaults)}
-          </div>
-          <div class="mt-4">
-            <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm">Run</button>
-          </div>
-        </form>
-        <div id="result" class="mt-4"></div>
-      </div>
+      </form>
+      <div id="result" class="mt-6"></div>
     `),
   )
 }

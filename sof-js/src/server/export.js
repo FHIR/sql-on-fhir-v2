@@ -1,6 +1,6 @@
 import { getBaseUrl, arrayify } from './utils.js';
 import fs from 'fs';
-import { layout } from './ui.js';
+import { layout, crumb, sectionHead } from './ui.js';
 import { read, search } from './db.js';
 import { renderOperationDefinition, isHtml } from './utils.js';
 import { evaluate } from '../index.js';
@@ -22,23 +22,26 @@ export async function getExportFormEndpoint(req, res) {
   }
   res.setHeader('Content-Type', 'text/html');
   res.send(layout(`
-    <div class="container mx-auto p-4">
-      <div class="flex gap-4 space-x-2">
-        <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>    
-        <span class="text-gray-500">/</span>
-        <a href="/ViewDefinition">ViewDefinition</a>
-        <span class="text-gray-500">/</span>
-        <a href="/ViewDefinition/$viewdefinition-export">Export</a>
-      </div>
-      <h1 class="mt-4">Export</h1>
-      <div id="export-result" class="mt-4">
-        <form action="/ViewDefinition/$viewdefinition-export/form" method="post" >
-          ${await renderOperationDefinition(req, operation, defaults)}
-          <div class="mt-4">
-            <button type="submit" class="btn">Export</button>
-          </div>
-        </form>
-       </div>
+    ${crumb([
+      { href: '/', label: 'Home' },
+      { href: '/ViewDefinition', label: 'View definitions' },
+      { label: '$viewdefinition-export' },
+    ])}
+    ${sectionHead({
+      eyebrow: 'operation · $viewdefinition-export',
+      title: 'Bulk export materialised views',
+    })}
+    <p class="lead mb-6">
+      Submit one or more ViewDefinitions and the server will evaluate them
+      against the local FHIR data and stage the tabular output for download.
+    </p>
+    <div id="export-result">
+      <form action="/ViewDefinition/$viewdefinition-export/form" method="post">
+        ${await renderOperationDefinition(req, operation, defaults)}
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary">export</button>
+        </div>
+      </form>
     </div>
   `));
 }
@@ -317,15 +320,17 @@ export async function getExportStatusEndpoint(req, res) {
   if (isHtml(req)) {
     const responseHtml = `
         <div id="export-result">
-          <button hx-get="${req.originalUrl}"
-                  hx-trigger="click"
-                  hx-target="#export-result"
-                  hx-swap="outerHTML"
-                  class="btn">
-            Refresh
-          </button>
-          <p class="mt-2">Status: ${exportStatus.status}</p>
-          <pre class="text-sm mt-4">${JSON.stringify(response, null, 2)}</pre>
+          <div class="flex items-center gap-3 mb-4">
+            <button hx-get="${req.originalUrl}"
+                    hx-trigger="click"
+                    hx-target="#export-result"
+                    hx-swap="outerHTML"
+                    class="btn">
+              refresh
+            </button>
+            <span class="tag tag--accent">${exportStatus.status}</span>
+          </div>
+          <pre>${JSON.stringify(response, null, 2)}</pre>
         </div>
     `
 
@@ -335,19 +340,18 @@ export async function getExportStatusEndpoint(req, res) {
       res.status(202).send(responseHtml);
     } else {
       res.status(202).send(layout(`
-        <div class="container mx-auto p-4">
-          <div class="flex gap-4 space-x-2 mb-4">
-          <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>
-          <span class="text-gray-500">/</span>
-          <a href="/ViewDefinition">ViewDefinition</a>
-          <span class="text-gray-500">/</span>
-          <a href="/ViewDefinition/$viewdefinition-export">Export</a>
-          <span class="text-gray-500">/</span>
-          <a href="#">${exportId}</a>
-        </div>
+        ${crumb([
+          { href: '/', label: 'Home' },
+          { href: '/ViewDefinition', label: 'View definitions' },
+          { href: '/ViewDefinition/$viewdefinition-export', label: '$viewdefinition-export' },
+          { label: exportId },
+        ])}
+        ${sectionHead({
+          eyebrow: 'export · in progress',
+          title: `Export ${exportId}`,
+        })}
         ${responseHtml}
-      </div>
-    `));
+      `));
     }
   } else {
     // JSON response for API clients
@@ -395,26 +399,30 @@ export async function getExportResultEndpoint(req, res) {
   if (isHtml(req)) {
     const responseHtml = `
         <div id="export-result">
-          <h2>Export Complete</h2>
-          <pre class="text-sm mt-4">${JSON.stringify(response, null, 2)}</pre>
+          <div class="panel panel--flush">
+            <div class="panel__header">
+              <span>result · ${exportStatus.status}</span>
+              <span>Parameters</span>
+            </div>
+            <pre class="panel__body" style="margin:0;border:0;box-shadow:none;border-radius:0">${JSON.stringify(response, null, 2)}</pre>
+          </div>
         </div>
     `
 
     res.setHeader('Content-Type', 'text/html');
     res.send(layout(`
-      <div class="container mx-auto p-4">
-        <div class="flex gap-4 space-x-2 mb-4">
-        <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>
-        <span class="text-gray-500">/</span>
-        <a href="/ViewDefinition">ViewDefinition</a>
-        <span class="text-gray-500">/</span>
-        <a href="/ViewDefinition/$viewdefinition-export">Export</a>
-        <span class="text-gray-500">/</span>
-        <a href="#">${exportId}</a>
-      </div>
+      ${crumb([
+        { href: '/', label: 'Home' },
+        { href: '/ViewDefinition', label: 'View definitions' },
+        { href: '/ViewDefinition/$viewdefinition-export', label: '$viewdefinition-export' },
+        { label: exportId },
+      ])}
+      ${sectionHead({
+        eyebrow: 'export · complete',
+        title: `Export ${exportId}`,
+      })}
       ${responseHtml}
-    </div>
-  `));
+    `));
   } else {
     res.setHeader('Content-Type', 'application/fhir+json');
     res.json(response);

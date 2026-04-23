@@ -10,35 +10,81 @@ import { mountRoutes as mountValidateRoutes } from './server/validate.js'
 import { mountRoutes as mountSqlQueryRunRoutes } from './server/sqlquery-run.js'
 import { migrate, getDb } from './server/db.js'
 import { resourceTypes } from './server/utils.js'
-import { layout } from './server/ui.js'
+import { layout, sectionHead } from './server/ui.js'
+
+const FEATURE_TILES = [
+  {
+    eyebrow: 'system · get',
+    href: '/metadata',
+    title: 'Capability statement',
+    desc: 'Inspect the server manifest, supported operations, and conformance profile.',
+  },
+  {
+    eyebrow: 'view · collection',
+    href: '/ViewDefinition',
+    title: 'View definitions',
+    desc: 'Browse materialisable views, inspect their shape, and invoke $run interactively.',
+  },
+  {
+    eyebrow: 'view · operation',
+    href: '/ViewDefinition/$evaluate',
+    title: '$evaluate',
+    desc: 'Execute a ViewDefinition against inline data and stream tabular output.',
+  },
+  {
+    eyebrow: 'view · operation',
+    href: '/ViewDefinition/$viewdefinition-export',
+    title: '$viewdefinition-export',
+    desc: 'Export ViewDefinitions and their materialised rows as a downloadable bundle.',
+  },
+  {
+    eyebrow: 'library · operation',
+    href: '/$sqlquery-run/form',
+    title: '$sqlquery-run · system',
+    desc: 'Run arbitrary SQL against in-memory views built from dependent ViewDefinitions.',
+  },
+  {
+    eyebrow: 'library · operation',
+    href: '/Library/$sqlquery-run/form',
+    title: '$sqlquery-run · type',
+    desc: 'Invoke $sqlquery-run from a stored Library reference and render the result.',
+  },
+]
+
+function renderTile(tile) {
+  return `
+    <a class="tile plain" href="${tile.href}">
+      <span class="tile__eyebrow">${tile.eyebrow}</span>
+      <span class="tile__title">${tile.title}</span>
+      <span class="tile__desc">${tile.desc}</span>
+    </a>
+  `
+}
 
 export async function getIndex(req, res) {
   res.setHeader('Content-Type', 'text/html')
   res.send(
     layout(`
-    <div class="container mx-auto p-4">
-      <h1 class="text-2xl font-bold mb-4">SQL on FHIR</h1>
-      <p class="mb-4">Welcome to the SQL on FHIR server. This server provides endpoints for executing SQL queries against FHIR resources.</p>
-      <p class="mb-4">The following endpoints are available:</p>
-      <ul class="list-disc pl-5">
-        <li><a class="text-blue-500 hover:text-blue-700" href="/metadata">Metadata</a></li>
-        <li><a class="text-blue-500 hover:text-blue-700" href="/$viewdefinition-export">$viewdefinition-export (system)</a></li>
-        <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition">ViewDefinitions</a></li>
-        <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$evaluate">ViewDefinition/$evaluate</a></li>
-        <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$viewdefinition-export">ViewDefinition/$viewdefinition-export</a></li>
-        <li><a class="text-blue-500 hover:text-blue-700" href="/$sqlquery-run/form">$sqlquery-run (system)</a></li>
-        <li><a class="text-blue-500 hover:text-blue-700" href="/Library/$sqlquery-run/form">Library/$sqlquery-run (type)</a></li>
-        <hr class="my-4"/>
+      <h3>Operations</h3>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+        ${FEATURE_TILES.map(renderTile).join('')}
+      </div>
+      <h3>Resource types</h3>
+      <ul class="resource-list">
         ${resourceTypes
           .sort()
           .map(
-            (resourceType) =>
-              `<li><a class="text-blue-500 hover:text-blue-700" href="/${resourceType}">${resourceType}</a></li>`,
+            (resourceType) => `
+              <li>
+                <a class="plain" href="/${resourceType}">
+                  <span>${resourceType}</span>
+                </a>
+              </li>
+            `,
           )
           .join('\n')}
       </ul>
-    </div>
-  `),
+    `),
   )
 }
 

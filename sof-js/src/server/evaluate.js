@@ -1,7 +1,7 @@
 import { search } from './db.js';
 import { evaluate } from '../index.js';
-import { layout } from './ui.js';
-import { read } from './db.js'; 
+import { layout, crumb, sectionHead } from './ui.js';
+import { read } from './db.js';
 import { renderOperationDefinition, runOperation } from './utils.js';
 
 
@@ -32,32 +32,29 @@ export async function getEvaluateFormEndpoint(req, res) {
     };
     res.setHeader('Content-Type', 'text/html');
     res.send(layout(`
-      <div class="container mx-auto p-4">
-        <div class="flex items-center gap-4">
-          <a href="/">Home</a>
-          <span class="text-gray-500">/</span>
-          <a href="/ViewDefinition/">ViewDefinition</a>
-          <span class="text-gray-500">/</span>
-          <a href="/ViewDefinition/$evaluate">$evaluate</a>
+      ${crumb([
+        { href: '/', label: 'Home' },
+        { href: '/ViewDefinition', label: 'View definitions' },
+        { label: '$evaluate' },
+      ])}
+      ${sectionHead({
+        eyebrow: 'operation · type · $evaluate',
+        title: 'Evaluate a ViewDefinition inline',
+      })}
+      <p class="lead mb-6">
+        Supply a ViewDefinition resource and evaluate it against the server's
+        FHIR data to produce a tabular response in CSV, NDJSON, or JSON.
+      </p>
+      <form hx-post="/ViewDefinition/$evaluate/form"
+            hx-target="#result"
+            hx-swap="innerHTML"
+            hx-trigger="submit">
+        ${await renderOperationDefinition(req, operation, defaults)}
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary">evaluate</button>
         </div>
-        <div class="">
-            <div class="flex-1">
-                <form 
-                    hx-post="/ViewDefinition/$evaluate/form" 
-                    hx-target="#result"
-                    hx-swap="innerHTML"
-                    hx-trigger="submit" >
-                    <div class="mt-4">
-                     ${await renderOperationDefinition(req, operation, defaults)}
-                    </div>
-                    <div class="mt-4">
-                     <button type="submit" class="bg-blue-500 text-white px-4 py-1 rounded-md text-sm">Evaluate</button>
-                    </div>
-                </form>
-            </div>
-            <div class="flex-1" id="result"></div>
-        </div>
-      </div>
+      </form>
+      <div id="result" class="mt-6"></div>
     `));
 };
 
@@ -91,19 +88,24 @@ export async function postEvaluateFormEndpoint(req, res) {
         const result = await runOperation(req, resource, req.body);
         const formatedResult = formatResult(result, req.body.format);
         res.setHeader('Content-Type', 'text/html');
-        res.send(layout(`
-            <div class="container mx-auto py-4">
-                <pre class="bg-gray-100 p-4 rounded-md text-xs">${formatedResult}</pre>
+        // Fragment response for htmx swap into #result.
+        res.send(`
+            <div class="panel panel--flush">
+              <div class="panel__header">
+                <span>result</span>
+                <span>${(req.body.format || 'json').toUpperCase()}</span>
+              </div>
+              <pre class="panel__body" style="margin:0;border:0;box-shadow:none;border-radius:0">${formatedResult}</pre>
             </div>
-        `));
+        `);
     } catch (error) {
         res.setHeader('Content-Type', 'text/html');
-        res.send(layout(`
-            <div class="container mx-auto p-4 bg-red-100 border border-red-500 rounded-md">
-                <h1 class="text-2xl">Error</h1>
-                <p class="text-red-500">Invalid JSON: ${error.message}</p>  
+        res.send(`
+            <div class="alert">
+              <div class="alert__eyebrow">invalid json</div>
+              <p>${error.message}</p>
             </div>
-        `));
+        `);
     }
     res.end();
 };
