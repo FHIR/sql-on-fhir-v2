@@ -1,0 +1,28 @@
+{
+  "resourceType": "Library",
+  "id": "patient-bp-query",
+  "url": "http://sql-on-fhir.org/Library/patient-bp-query",
+  "name": "patient-bp-query",
+  "status": "active",
+  "type": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/library-type",
+        "code": "logic-library"
+      }
+    ]
+  },
+  "relatedArtifact": [
+    {
+      "type": "depends-on",
+      "label": "p",
+      "resource": "http://sql-on-fhir.org/ViewDefinition/patient_demographics"
+    }
+  ],
+  "content": [
+    {
+      "contentType": "application/sql",
+      "data": "U0VMRUNUICogRlJPTSBw"
+    }
+  ]
+}
