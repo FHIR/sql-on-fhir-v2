@@ -6,6 +6,7 @@
     {
       "resourceType": "QuestionnaireResponse",
       "id": "qr1",
+      "status": "completed",
       "item": [
         {
           "linkId": "1",
