@@ -19,7 +19,7 @@ function masthead() {
         <nav class="masthead__nav">
           <a href="/metadata">Capability</a>
           <a href="/ViewDefinition">Views</a>
-          <a href="/Library">SQL Queries</a>
+          <a href="/Library">SQL</a>
         </nav>
       </div>
     </header>

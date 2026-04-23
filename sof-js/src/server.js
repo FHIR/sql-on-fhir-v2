@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import fs from 'fs'
 import { fileURLToPath } from 'url'
 import { mountRoutes as mountExportRoutes } from './server/export.js'
 import { mountRoutes as mountRunRoutes } from './server/run.js'
@@ -12,44 +13,77 @@ import { migrate, getDb } from './server/db.js'
 import { resourceTypes } from './server/utils.js'
 import { layout, sectionHead } from './server/ui.js'
 
-const FEATURE_TILES = [
+const HEADLINE_TILES = [
   {
-    eyebrow: 'system · get',
+    eyebrow: 'system · conformance',
     href: '/metadata',
     title: 'Capability statement',
-    desc: 'Inspect the server manifest, supported operations, and conformance profile.',
+    desc: 'Inspect the server manifest, declared operations, and conformance profile.',
   },
   {
-    eyebrow: 'view · collection',
+    eyebrow: 'resource · collection',
     href: '/ViewDefinition',
     title: 'View definitions',
     desc: 'Browse materialisable views, inspect their shape, and invoke $run interactively.',
   },
   {
-    eyebrow: 'view · operation',
-    href: '/ViewDefinition/$evaluate',
-    title: '$evaluate',
-    desc: 'Execute a ViewDefinition against inline data and stream tabular output.',
-  },
-  {
-    eyebrow: 'view · operation',
-    href: '/ViewDefinition/$viewdefinition-export',
-    title: '$viewdefinition-export',
-    desc: 'Export ViewDefinitions and their materialised rows as a downloadable bundle.',
-  },
-  {
-    eyebrow: 'library · operation',
-    href: '/$sqlquery-run/form',
-    title: '$sqlquery-run · system',
-    desc: 'Run arbitrary SQL against in-memory views built from dependent ViewDefinitions.',
-  },
-  {
-    eyebrow: 'library · operation',
-    href: '/Library/$sqlquery-run/form',
-    title: '$sqlquery-run · type',
-    desc: 'Invoke $sqlquery-run from a stored Library reference and render the result.',
+    eyebrow: 'resource · collection',
+    href: '/Library',
+    title: 'SQL queries',
+    desc: 'Browse stored Library resources containing SQL that runs against materialised views.',
   },
 ]
+
+const OPERATION_OVERRIDES = {
+  '$viewdefinition-export': {
+    href: '/ViewDefinition/$viewdefinition-export',
+    desc: 'Export ViewDefinitions and their materialised rows as a downloadable bundle.',
+  },
+  $evaluate: {
+    href: '/ViewDefinition/$evaluate',
+    desc: 'Execute a ViewDefinition against inline data and stream tabular output.',
+  },
+  $validate: {
+    href: '/ViewDefinition/$validate',
+    desc: 'Validate a ViewDefinition against the SQL on FHIR schema and report any issues.',
+  },
+  $run: {
+    href: '/ViewDefinition',
+    desc: 'Run a stored ViewDefinition and stream the tabular result. Select a view to invoke.',
+  },
+  $materialize: {
+    desc: 'Materialise a ViewDefinition into a persistent table and keep it up to date. Not part of the standard.',
+  },
+  $refresh: {
+    desc: 'Refresh a materialised ViewDefinition to reflect the latest source data. Not part of the standard.',
+  },
+  '$sqlquery-run': {
+    href: '/$sqlquery-run/form',
+    desc: 'Run arbitrary SQL against views built from dependent ViewDefinitions.',
+  },
+}
+
+function loadCapabilityOperations() {
+  const cap = JSON.parse(fs.readFileSync('./metadata/CapabilityStatement.json', 'utf8'))
+  const ops = []
+  const seen = new Set()
+  for (const rest of cap.rest || []) {
+    for (const resource of rest.resource || []) {
+      for (const op of resource.operation || []) {
+        if (seen.has(op.name)) continue
+        seen.add(op.name)
+        const override = OPERATION_OVERRIDES[op.name] || {}
+        ops.push({
+          name: op.name,
+          eyebrow: `operation · ${resource.type}`,
+          href: override.href || `/OperationDefinition/${op.name}`,
+          desc: override.desc || 'View the Operation Definition for this operation.',
+        })
+      }
+    }
+  }
+  return ops
+}
 
 function renderTile(tile) {
   return `
@@ -62,12 +96,29 @@ function renderTile(tile) {
 }
 
 export async function getIndex(req, res) {
+  const operations = loadCapabilityOperations().map((op) => ({
+    eyebrow: op.eyebrow,
+    href: op.href,
+    title: op.name,
+    desc: op.desc,
+  }))
+
   res.setHeader('Content-Type', 'text/html')
   res.send(
     layout(`
+      ${sectionHead({
+        eyebrow: 'Implementation-driven standards development',
+        title: 'SQL on FHIR reference server',
+      })}
+      <p class="lead mb-6">
+        Basic implementation of the SQL on FHIR API using JavaScript and SQLite.
+      </p>
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-10">
+        ${HEADLINE_TILES.map(renderTile).join('')}
+      </div>
       <h3>Operations</h3>
       <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mb-10">
-        ${FEATURE_TILES.map(renderTile).join('')}
+        ${operations.map(renderTile).join('')}
       </div>
       <h3>Resource types</h3>
       <ul class="resource-list">

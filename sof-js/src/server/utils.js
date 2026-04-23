@@ -310,7 +310,7 @@ export async function renderOperationDefinition(req, operation, defaults = {}) {
         <h2>${operation.name}</h2>
         <p class="text-ink-soft mb-4" style="max-width:48rem">${operation.description || ''}</p>
         <details class="mb-4">
-            <summary>OperationDefinition ⟩</summary>
+            <summary>Operation Definition</summary>
             <pre>${JSON.stringify(operation, null, 2)}</pre>
         </details>
         <h3>Output</h3>
