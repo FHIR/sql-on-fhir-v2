@@ -277,148 +277,98 @@ export async function executeSqlQuery(config, sql, bindings) {
 }
 
 /**
- * Replace `:name` parameter placeholders in the SQL with literal `NULL` so
- * that the statement can be used to create a view (views cannot carry
- * parameters in SQLite). Placeholders inside string or identifier literals
- * and inside comments are left untouched so that they are not confused with
- * data or commentary.
- *
- * @param {string} sql - The SQL text to rewrite.
- * @param {Array<string>} names - Parameter names, without the leading colon.
- * @returns {string} The rewritten SQL.
- */
-export function substituteParamsWithNull(sql, names) {
-  if (!names || names.length === 0) {
-    return sql
-  }
-  const nameSet = new Set(names)
-  let out = ''
-  let i = 0
-  const n = sql.length
-  while (i < n) {
-    const c = sql[i]
-    if (c === "'") {
-      // Single-quoted string literal; `''` is an escaped single quote.
-      out += c
-      i++
-      while (i < n) {
-        if (sql[i] === "'" && sql[i + 1] === "'") {
-          out += "''"
-          i += 2
-          continue
-        }
-        out += sql[i]
-        if (sql[i] === "'") {
-          i++
-          break
-        }
-        i++
-      }
-      continue
-    }
-    if (c === '"') {
-      // Double-quoted identifier literal.
-      out += c
-      i++
-      while (i < n) {
-        out += sql[i]
-        if (sql[i] === '"') {
-          i++
-          break
-        }
-        i++
-      }
-      continue
-    }
-    if (c === '-' && sql[i + 1] === '-') {
-      // Line comment to end of line.
-      while (i < n && sql[i] !== '\n') {
-        out += sql[i]
-        i++
-      }
-      continue
-    }
-    if (c === '/' && sql[i + 1] === '*') {
-      // Block comment up to closing */.
-      out += '/*'
-      i += 2
-      while (i < n && !(sql[i] === '*' && sql[i + 1] === '/')) {
-        out += sql[i]
-        i++
-      }
-      if (i < n) {
-        out += '*/'
-        i += 2
-      }
-      continue
-    }
-    if (c === ':') {
-      // Parameter placeholder: consume identifier characters and decide.
-      let j = i + 1
-      while (j < n && /[A-Za-z0-9_]/.test(sql[j])) {
-        j++
-      }
-      const name = sql.slice(i + 1, j)
-      if (name && nameSet.has(name)) {
-        out += 'NULL'
-      } else {
-        out += sql.slice(i, j)
-      }
-      i = j
-      continue
-    }
-    out += c
-    i++
-  }
-  return out
-}
-
-/**
  * Execute the user SQL for `_format=fhir` requests. Creates a temporary
- * view mirroring the query (with parameter placeholders substituted for
- * NULL) purely so that `PRAGMA table_info` can report the declared types of
- * the result columns. Executes the original SQL separately with bindings to
+ * table from the query with all parameter bindings set to `NULL` purely so
+ * that `PRAGMA table_info` can report the declared types of the result
+ * columns. Executes the original SQL separately with real bindings to
  * retrieve the rows.
+ *
+ * `CREATE TABLE ... AS SELECT` in SQLite collapses NUMERIC-affinity types
+ * (DATE, TIMESTAMP, BOOLEAN, DECIMAL) to `NUM` and BLOB to a blank type.
+ * When `viewDefs` is supplied, direct column references are healed back to
+ * their declared SQL type using the ViewDefinition metadata; expression
+ * columns are left blank so that downstream code falls back to runtime
+ * inference.
  *
  * @param {object} config - Server configuration object with db connection.
  * @param {string} sql - The user SQL query.
  * @param {object} bindings - Named parameter bindings, keyed with leading colons.
+ * @param {Array<{label: string, viewDef: object}>} [viewDefs] - Resolved
+ *   ViewDefinitions used to heal collapsed types.
  * @returns {Promise<{rows: Array<object>, columnTypes: Array<{name: string, type: string}>}>}
  */
-export async function executeSqlQueryWithTypes(config, sql, bindings) {
-  const viewName = `_sqlquery_result_${Math.random().toString(36).slice(2, 10)}`
-  const bindingNames = Object.keys(bindings || {}).map((k) => k.replace(/^:/, ''))
-  const probeSql = substituteParamsWithNull(sql, bindingNames)
+export async function executeSqlQueryWithTypes(config, sql, bindings, viewDefs) {
+  const tableName = `_sqlquery_result_${Math.random().toString(36).slice(2, 10)}`
 
-  const createdView = await new Promise((resolve) => {
-    config.db.run(`CREATE TEMP VIEW "${viewName}" AS ${probeSql}`, (err) => {
-      // Missing-column and similar schema errors still cause type probing to
-      // fail gracefully; the data query below surfaces the real cause.
+  // Build null bindings so that SQLite can parse the statement natively
+  // without requiring a custom parameter rewriter.
+  const nullBindings = {}
+  for (const key of Object.keys(bindings || {})) {
+    nullBindings[key] = null
+  }
+
+  // Map column name to the declared FHIR type from the ViewDefinitions.
+  const declaredTypeByName = new Map()
+  if (viewDefs) {
+    for (const { viewDef } of viewDefs) {
+      for (const col of get_columns_with_types(viewDef)) {
+        if (!declaredTypeByName.has(col.name)) {
+          declaredTypeByName.set(col.name, col.type)
+        }
+      }
+    }
+  }
+
+  // Wrap the user SQL in a subquery so that an existing LIMIT clause does
+  // not collide with the trailing LIMIT 0.
+  const probeSql = `SELECT * FROM (${sql}) AS _sub LIMIT 0`
+
+  const createdTable = await new Promise((resolve) => {
+    config.db.run(`CREATE TEMP TABLE "${tableName}" AS ${probeSql}`, nullBindings, (err) => {
+      // Missing-column and similar schema errors still cause type probing
+      // to fail gracefully; the data query below surfaces the real cause.
       resolve(!err)
     })
   })
 
   let columnTypes = []
-  if (createdView) {
+  if (createdTable) {
     try {
       columnTypes = await new Promise((resolve, reject) => {
-        config.db.all(`PRAGMA table_info('${viewName}')`, (err, rows) => {
+        config.db.all(`PRAGMA table_info('${tableName}')`, (err, rows) => {
           if (err) reject(err)
-          else resolve((rows || []).map((r) => ({ name: r.name, type: r.type || '' })))
+          else {
+            resolve(
+              (rows || []).map((r) => {
+                let type = r.type || ''
+                // SQLite collapses NUMERIC-affinity columns to NUM; heal
+                // them back using the ViewDefinition metadata. Blank types
+                // are left alone so that expressions fall back to runtime
+                // inference.
+                if (type === 'NUM') {
+                  const fhirType = declaredTypeByName.get(r.name)
+                  if (fhirType) {
+                    type = fhirTypeToSqlType(fhirType)
+                  }
+                }
+                return { name: r.name, type }
+              }),
+            )
+          }
         })
       })
     } finally {
       await new Promise((resolve) => {
-        config.db.run(`DROP VIEW IF EXISTS "${viewName}"`, () => resolve())
+        config.db.run(`DROP TABLE IF EXISTS "${tableName}"`, () => resolve())
       })
     }
   }
 
   const rows = await executeSqlQuery(config, sql, bindings)
 
-  // When the probe could not run (e.g. SQL feature the view layer rejects),
-  // fall back to column names observed in the first row so that downstream
-  // code can still emit typed output using runtime inference.
+  // When the probe could not run (e.g. SQL feature the temp-table layer
+  // rejects), fall back to column names observed in the first row so that
+  // downstream code can still emit typed output using runtime inference.
   if (columnTypes.length === 0 && rows.length > 0) {
     columnTypes = Object.keys(rows[0]).map((name) => ({ name, type: '' }))
   }
@@ -648,13 +598,13 @@ async function handleSqlQueryRun(req, res, options = {}) {
       }
     }
 
-    // FHIR output needs declared column types, so take a detour via
-    // `CREATE TEMP VIEW` for type introspection; other formats use the
-    // simpler `db.all` path.
+    // FHIR output needs declared column types, so take a detour via a
+    // temporary table for type introspection; other formats use the simpler
+    // `db.all` path.
     let rows
     let columnTypes
     if (format === 'fhir') {
-      const result = await executeSqlQueryWithTypes(req.config, sql, bindings)
+      const result = await executeSqlQueryWithTypes(req.config, sql, bindings, viewDefs)
       rows = result.rows
       columnTypes = result.columnTypes
     } else {
