@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals'
-import { get_columns, row_product } from '../src/index.js'
+import { get_columns, get_columns_with_types, row_product } from '../src/index.js'
 
 describe('internal tests', () => {
   test('row_product', () => {
@@ -67,5 +67,41 @@ describe('internal tests', () => {
         ],
       }),
     ).toEqual(['id', 'birthDate', 'last_name', 'first_name'])
+  })
+
+  test('columns_with_types preserves declared types', () => {
+    // Declared types should flow through the same way column names do so
+    // that callers can materialise typed temporary tables.
+    expect(
+      get_columns_with_types({
+        select: [
+          {
+            column: [
+              { name: 'id', path: 'id', type: 'string' },
+              { name: 'age', path: 'age', type: 'integer' },
+              { name: 'dob', path: 'birthDate', type: 'date' },
+            ],
+          },
+        ],
+      }),
+    ).toEqual([
+      { name: 'id', type: 'string' },
+      { name: 'age', type: 'integer' },
+      { name: 'dob', type: 'date' },
+    ])
+  })
+
+  test('columns_with_types defaults missing types to string', () => {
+    // Column entries without a declared type should not break callers; the
+    // canonical fallback is `string`, mirroring how `name` falls back to
+    // `path` when absent.
+    expect(
+      get_columns_with_types({
+        select: [{ column: [{ path: 'id' }, { path: 'birthDate', name: 'dob' }] }],
+      }),
+    ).toEqual([
+      { name: 'id', type: 'string' },
+      { name: 'dob', type: 'string' },
+    ])
   })
 })

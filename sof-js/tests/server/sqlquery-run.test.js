@@ -234,8 +234,11 @@ describe('$sqlquery-run operation', () => {
     }
   })
 
-  test('_format=fhir returns Parameters resource with typed values', async () => {
-    const response = await fetch('http://localhost:3004/$sqlquery-run', {
+  // Helper to invoke $sqlquery-run with an inline SQL Library against the
+  // patient_demographics ViewDefinition (aliased as `p`).
+  async function runFhirQuery(sql) {
+    const encodedSql = Buffer.from(sql, 'utf8').toString('base64')
+    return fetch('http://localhost:3004/$sqlquery-run', {
       method: 'POST',
       headers: { 'Content-Type': 'application/fhir+json' },
       body: JSON.stringify({
@@ -262,27 +265,80 @@ describe('$sqlquery-run operation', () => {
                   resource: 'http://sql-on-fhir.org/ViewDefinition/patient_demographics',
                 },
               ],
-              content: [
-                {
-                  contentType: 'application/sql',
-                  data: 'U0VMRUNUICogRlJPTSBwIExJTUlUIDE=',
-                },
-              ],
+              content: [{ contentType: 'application/sql', data: encodedSql }],
             },
           },
         ],
       }),
     })
+  }
 
+  test('_format=fhir encodes columns using their declared SQL types', async () => {
+    // The patient_demographics ViewDefinition declares `date_of_birth` as a
+    // `date`. The server must materialise that as a DATE column so that the
+    // FHIR response carries `valueDate`, not `valueString`.
+    const response = await runFhirQuery('SELECT id, date_of_birth, gender FROM p LIMIT 1')
     expect(response.status).toBe(200)
     expect(response.headers.get('Content-Type')).toContain('application/fhir+json')
 
     const body = await response.json()
     expect(body.resourceType).toBe('Parameters')
-    expect(body.parameter.length).toBeGreaterThan(0)
+    expect(body.parameter).toHaveLength(1)
     expect(body.parameter[0].name).toBe('row')
-    expect(body.parameter[0].part).toBeDefined()
-    expect(body.parameter[0].part.length).toBeGreaterThan(0)
+
+    const parts = body.parameter[0].part
+    const byName = Object.fromEntries(parts.map((p) => [p.name, p]))
+
+    expect(byName.id).toBeDefined()
+    expect(byName.id.valueString).toEqual(expect.any(String))
+    expect(byName.id.valueDate).toBeUndefined()
+
+    expect(byName.date_of_birth).toBeDefined()
+    expect(byName.date_of_birth.valueDate).toMatch(/^\d{4}(-\d{2}(-\d{2})?)?$/)
+    expect(byName.date_of_birth.valueString).toBeUndefined()
+
+    expect(byName.gender).toBeDefined()
+    expect(byName.gender.valueString).toEqual(expect.any(String))
+  })
+
+  test('_format=fhir omits SQL NULL values from row parts', async () => {
+    // Per the spec: "SQL NULL values are represented by omitting the
+    // corresponding part from the row parameter." Previously the reference
+    // implementation emitted `{ valueString: 'null' }` which is incorrect.
+    const response = await runFhirQuery('SELECT id, NULL AS missing FROM p LIMIT 1')
+    expect(response.status).toBe(200)
+
+    const body = await response.json()
+    const parts = body.parameter[0].part
+    const byName = Object.fromEntries(parts.map((p) => [p.name, p]))
+
+    expect(byName.id).toBeDefined()
+    expect(byName.missing).toBeUndefined()
+  })
+
+  test('_format=fhir uses runtime type inference when declared SQL type is blank', async () => {
+    // Expression columns like constants have no declared type in PRAGMA; the
+    // implementation must fall back to the runtime JavaScript type so that
+    // integers still come through as `valueInteger`.
+    const response = await runFhirQuery("SELECT 42 AS answer, 'hello' AS greet FROM p LIMIT 1")
+    expect(response.status).toBe(200)
+
+    const body = await response.json()
+    const parts = body.parameter[0].part
+    const byName = Object.fromEntries(parts.map((p) => [p.name, p]))
+
+    expect(byName.answer.valueInteger).toBe(42)
+    expect(byName.greet.valueString).toBe('hello')
+  })
+
+  test('_format=fhir returns a bare Parameters resource when the query matches zero rows', async () => {
+    // Spec: when a query returns zero rows, the response is a Parameters
+    // resource with no `parameter` elements.
+    const response = await runFhirQuery('SELECT id FROM p WHERE 1=0')
+    expect(response.status).toBe(200)
+
+    const body = await response.json()
+    expect(body).toEqual({ resourceType: 'Parameters' })
   })
 
   test('CSV output without header when header=false', async () => {

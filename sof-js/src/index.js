@@ -349,6 +349,48 @@ export function get_columns(def) {
   return collect_columns([], normalize(structuredClone(def)))
 }
 
+// Like collect_columns, but returns `{ name, type }` pairs so that callers
+// can propagate declared FHIR types when materialising ViewDefinitions into
+// typed temporary tables. Falls back to `'string'` when no type is declared.
+function collect_columns_with_types(acc, def) {
+  switch (def.type) {
+    case 'select':
+    case 'forEach':
+    case 'forEachNull':
+    case 'repeat':
+      return def.select.reduce((acc, s) => {
+        return collect_columns_with_types(acc, s)
+      }, acc)
+    case 'unionAll': {
+      let unions = def.unionAll.map((s) => {
+        return collect_columns_with_types([], s)
+      })
+      if (unions.length > 1) {
+        let first = unions[0].map((c) => c.name)
+        for (let i = 1; i < unions.length; ++i) {
+          let next = unions[i].map((c) => c.name)
+          if (!arrays_eq(first, next)) {
+            throw new Error(`Union columns mismatch: ${JSON.stringify(unions)}`)
+          }
+        }
+      }
+      return acc.concat(unions[0])
+    }
+    case 'column':
+      return def.column.reduce((acc, c) => {
+        acc.push({ name: c.name || c.path, type: c.type || 'string' })
+        return acc
+      }, acc)
+    default:
+      return acc
+  }
+}
+
+// Like get_columns but preserves each column's declared FHIR type.
+export function get_columns_with_types(def) {
+  return collect_columns_with_types([], normalize(structuredClone(def)))
+}
+
 export function evaluate(def, node, for_test = true) {
   if (!Array.isArray(node)) {
     return evaluate(def, [node])

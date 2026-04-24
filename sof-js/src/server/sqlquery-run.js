@@ -1,8 +1,13 @@
-import express from 'express'
-import { read, search, select } from './db.js'
-import { evaluate } from '../index.js'
+import { read, search } from './db.js'
+import { evaluate, get_columns_with_types } from '../index.js'
 import { layout, crumb, sectionHead } from './ui.js'
 import { isHtml, renderOperationDefinition, renderNotFound } from './utils.js'
+import {
+  encodeFhirValue,
+  fhirTypeToSqlType,
+  inferFhirValueKeyFromRuntime,
+  sqlTypeToFhirValueKey,
+} from './sqlTypeMapping.js'
 
 const DEFAULT_ROW_LIMIT = 1000
 
@@ -143,6 +148,10 @@ export function extractParameters(params) {
 
 /**
  * Evaluate a ViewDefinition and create a temporary SQLite table from the results.
+ * The ViewDefinition's declared column types flow through to the temporary
+ * table's column declarations so that `PRAGMA table_info` can later surface
+ * them to callers that need typed FHIR output.
+ *
  * @param {object} config - Server configuration object with db connection.
  * @param {object} viewDef - The ViewDefinition resource.
  * @param {string} tableName - The name for the temporary table.
@@ -154,17 +163,25 @@ export async function materialiseViewDefinition(config, viewDef, tableName) {
   const limit = config.sqlqueryRunRowLimit || DEFAULT_ROW_LIMIT
   const limitedData = data.slice(0, limit)
   const rows = await evaluate(viewDef, limitedData)
-  await createTempTable(config.db, tableName, rows)
+  const columnTypes = get_columns_with_types(viewDef)
+  await createTempTable(config.db, tableName, rows, columnTypes)
 }
 
 /**
- * Generate a temporary SQLite table and insert rows into it.
+ * Generate a temporary SQLite table and insert rows into it. When
+ * `columnTypes` is provided, the declared FHIR type for each column is mapped
+ * to an SQL declared type so that downstream queries can see it via
+ * `PRAGMA table_info`.
+ *
  * @param {object} db - SQLite database connection.
  * @param {string} tableName - Name for the temporary table.
  * @param {Array<object>} rows - Array of row objects.
+ * @param {Array<{name: string, type: string}>} [columnTypes] - Optional
+ *   declared FHIR types for each column. When omitted, columns are declared
+ *   without types (preserving the prior, untyped behaviour).
  * @returns {Promise<void>}
  */
-export async function createTempTable(db, tableName, rows) {
+export async function createTempTable(db, tableName, rows, columnTypes) {
   // Drop any existing temp table with the same name to avoid conflicts.
   await new Promise((resolve, reject) => {
     db.run(`DROP TABLE IF EXISTS "${tableName}"`, (err) => {
@@ -174,7 +191,19 @@ export async function createTempTable(db, tableName, rows) {
   })
 
   if (rows.length === 0) {
-    // Create an empty temp table with no columns - this is valid in SQLite.
+    // When no rows are available, lean on the declared column types so that
+    // an empty table still exposes the right schema for downstream PRAGMA
+    // introspection. Fall back to a dummy column only when no types are
+    // known (preserving the prior shape).
+    if (columnTypes && columnTypes.length > 0) {
+      const declarations = columnTypes.map((c) => `"${c.name}" ${fhirTypeToSqlType(c.type)}`).join(', ')
+      return new Promise((resolve, reject) => {
+        db.run(`CREATE TEMP TABLE "${tableName}" (${declarations})`, (err) => {
+          if (err) reject(err)
+          else resolve()
+        })
+      })
+    }
     return new Promise((resolve, reject) => {
       db.run(`CREATE TEMP TABLE "${tableName}" (_dummy INTEGER)`, (err) => {
         if (err) reject(err)
@@ -183,8 +212,19 @@ export async function createTempTable(db, tableName, rows) {
     })
   }
 
-  const columns = Object.keys(rows[0])
-  const createSql = `CREATE TEMP TABLE "${tableName}" (${columns.map((c) => `"${c}"`).join(', ')})`
+  // Prefer the declared column types when building the CREATE statement so
+  // that types propagate through subsequent queries; otherwise fall back to
+  // the column names discovered from the first row.
+  const columns =
+    columnTypes && columnTypes.length > 0 ? columnTypes.map((c) => c.name) : Object.keys(rows[0])
+  const typeByName = new Map((columnTypes || []).map((c) => [c.name, c.type]))
+  const columnClause = columns
+    .map((c) => {
+      const fhirType = typeByName.get(c)
+      return fhirType ? `"${c}" ${fhirTypeToSqlType(fhirType)}` : `"${c}"`
+    })
+    .join(', ')
+  const createSql = `CREATE TEMP TABLE "${tableName}" (${columnClause})`
 
   await new Promise((resolve, reject) => {
     db.run(createSql, (err) => {
@@ -237,11 +277,164 @@ export async function executeSqlQuery(config, sql, bindings) {
 }
 
 /**
- * Format query results according to the requested format.
+ * Replace `:name` parameter placeholders in the SQL with literal `NULL` so
+ * that the statement can be used to create a view (views cannot carry
+ * parameters in SQLite). Placeholders inside string or identifier literals
+ * and inside comments are left untouched so that they are not confused with
+ * data or commentary.
+ *
+ * @param {string} sql - The SQL text to rewrite.
+ * @param {Array<string>} names - Parameter names, without the leading colon.
+ * @returns {string} The rewritten SQL.
+ */
+export function substituteParamsWithNull(sql, names) {
+  if (!names || names.length === 0) {
+    return sql
+  }
+  const nameSet = new Set(names)
+  let out = ''
+  let i = 0
+  const n = sql.length
+  while (i < n) {
+    const c = sql[i]
+    if (c === "'") {
+      // Single-quoted string literal; `''` is an escaped single quote.
+      out += c
+      i++
+      while (i < n) {
+        if (sql[i] === "'" && sql[i + 1] === "'") {
+          out += "''"
+          i += 2
+          continue
+        }
+        out += sql[i]
+        if (sql[i] === "'") {
+          i++
+          break
+        }
+        i++
+      }
+      continue
+    }
+    if (c === '"') {
+      // Double-quoted identifier literal.
+      out += c
+      i++
+      while (i < n) {
+        out += sql[i]
+        if (sql[i] === '"') {
+          i++
+          break
+        }
+        i++
+      }
+      continue
+    }
+    if (c === '-' && sql[i + 1] === '-') {
+      // Line comment to end of line.
+      while (i < n && sql[i] !== '\n') {
+        out += sql[i]
+        i++
+      }
+      continue
+    }
+    if (c === '/' && sql[i + 1] === '*') {
+      // Block comment up to closing */.
+      out += '/*'
+      i += 2
+      while (i < n && !(sql[i] === '*' && sql[i + 1] === '/')) {
+        out += sql[i]
+        i++
+      }
+      if (i < n) {
+        out += '*/'
+        i += 2
+      }
+      continue
+    }
+    if (c === ':') {
+      // Parameter placeholder: consume identifier characters and decide.
+      let j = i + 1
+      while (j < n && /[A-Za-z0-9_]/.test(sql[j])) {
+        j++
+      }
+      const name = sql.slice(i + 1, j)
+      if (name && nameSet.has(name)) {
+        out += 'NULL'
+      } else {
+        out += sql.slice(i, j)
+      }
+      i = j
+      continue
+    }
+    out += c
+    i++
+  }
+  return out
+}
+
+/**
+ * Execute the user SQL for `_format=fhir` requests. Creates a temporary
+ * view mirroring the query (with parameter placeholders substituted for
+ * NULL) purely so that `PRAGMA table_info` can report the declared types of
+ * the result columns. Executes the original SQL separately with bindings to
+ * retrieve the rows.
+ *
+ * @param {object} config - Server configuration object with db connection.
+ * @param {string} sql - The user SQL query.
+ * @param {object} bindings - Named parameter bindings, keyed with leading colons.
+ * @returns {Promise<{rows: Array<object>, columnTypes: Array<{name: string, type: string}>}>}
+ */
+export async function executeSqlQueryWithTypes(config, sql, bindings) {
+  const viewName = `_sqlquery_result_${Math.random().toString(36).slice(2, 10)}`
+  const bindingNames = Object.keys(bindings || {}).map((k) => k.replace(/^:/, ''))
+  const probeSql = substituteParamsWithNull(sql, bindingNames)
+
+  const createdView = await new Promise((resolve) => {
+    config.db.run(`CREATE TEMP VIEW "${viewName}" AS ${probeSql}`, (err) => {
+      // Missing-column and similar schema errors still cause type probing to
+      // fail gracefully; the data query below surfaces the real cause.
+      resolve(!err)
+    })
+  })
+
+  let columnTypes = []
+  if (createdView) {
+    try {
+      columnTypes = await new Promise((resolve, reject) => {
+        config.db.all(`PRAGMA table_info('${viewName}')`, (err, rows) => {
+          if (err) reject(err)
+          else resolve((rows || []).map((r) => ({ name: r.name, type: r.type || '' })))
+        })
+      })
+    } finally {
+      await new Promise((resolve) => {
+        config.db.run(`DROP VIEW IF EXISTS "${viewName}"`, () => resolve())
+      })
+    }
+  }
+
+  const rows = await executeSqlQuery(config, sql, bindings)
+
+  // When the probe could not run (e.g. SQL feature the view layer rejects),
+  // fall back to column names observed in the first row so that downstream
+  // code can still emit typed output using runtime inference.
+  if (columnTypes.length === 0 && rows.length > 0) {
+    columnTypes = Object.keys(rows[0]).map((name) => ({ name, type: '' }))
+  }
+
+  return { rows, columnTypes }
+}
+
+/**
+ * Format query results for non-FHIR output formats (JSON, NDJSON, CSV).
+ * FHIR format is handled separately because it requires column type
+ * metadata; see {@link formatResultAsFhir}.
+ *
  * @param {Array<object>} rows - Query result rows.
- * @param {string} format - Output format: json, ndjson, csv, or fhir.
+ * @param {string} format - Output format: json, ndjson, or csv.
  * @param {boolean} includeHeader - Whether to include CSV header row.
- * @returns {string|object} Formatted result.
+ * @returns {string} Formatted result.
  */
 export function formatResult(rows, format, includeHeader = true) {
   if (format === 'json') {
@@ -276,52 +469,66 @@ export function formatResult(rows, format, includeHeader = true) {
     return result
   }
 
-  if (format === 'fhir') {
-    return JSON.stringify(formatResultAsFhir(rows), null, 2)
-  }
-
   throw badRequestError(`Unsupported format: ${format}`)
 }
 
 /**
- * Convert SQL result rows to a FHIR Parameters resource with proper value[x] typing.
+ * Convert SQL result rows to a FHIR Parameters resource with proper
+ * `value[x]` typing. The encoding is driven by the declared column types in
+ * `columnTypes`; when a type is unknown the runtime JavaScript type of the
+ * value is used as a fallback. NULL cells are omitted from the row part as
+ * required by the specification.
+ *
  * @param {Array<object>} rows - Query result rows.
+ * @param {Array<{name: string, type: string}>} columnTypes - Column metadata
+ *   with declared SQL types, ordered to match the SELECT list.
  * @returns {object} FHIR Parameters resource.
- * @throws {Error} If a column type is unsupported for FHIR mapping.
+ * @throws {Error} If a column has a spec-unsupported SQL type.
  */
-export function formatResultAsFhir(rows) {
-  const parameters = []
+export function formatResultAsFhir(rows, columnTypes) {
+  // Pre-compute the FHIR value[x] key per column using the declared type so
+  // we do not have to re-parse for every row. Columns with no declared type
+  // fall through to runtime inference on a per-value basis.
+  const columnKeys = columnTypes.map((c) => {
+    let declaredKey
+    try {
+      declaredKey = sqlTypeToFhirValueKey(c.type)
+    } catch (err) {
+      throw notSupportedError(err.message)
+    }
+    return { name: c.name, declaredKey }
+  })
 
+  const parameters = []
   for (const row of rows) {
     const parts = []
-    for (const [key, value] of Object.entries(row)) {
+    for (const { name, declaredKey } of columnKeys) {
+      const value = row[name]
       if (value === null || value === undefined) {
-        parts.push({ name: key, valueString: 'null' })
+        // Per the specification, SQL NULL values are represented by omitting
+        // the corresponding part from the row parameter.
         continue
       }
-
-      const type = typeof value
-      if (type === 'number') {
-        if (Number.isInteger(value)) {
-          parts.push({ name: key, valueInteger: value })
-        } else {
-          parts.push({ name: key, valueDecimal: value })
+      let valueKey = declaredKey
+      if (!valueKey) {
+        try {
+          valueKey = inferFhirValueKeyFromRuntime(value)
+        } catch (err) {
+          throw notSupportedError(`${err.message} (column: ${name})`)
         }
-      } else if (type === 'boolean') {
-        parts.push({ name: key, valueBoolean: value })
-      } else if (type === 'string') {
-        parts.push({ name: key, valueString: value })
-      } else {
-        throw notSupportedError(`Unsupported column type for FHIR format: ${type} (column: ${key})`)
       }
+      parts.push({ name, ...encodeFhirValue(value, valueKey) })
     }
     parameters.push({ name: 'row', part: parts })
   }
 
-  return {
-    resourceType: 'Parameters',
-    parameter: parameters,
+  const result = { resourceType: 'Parameters' }
+  if (parameters.length > 0) {
+    // Zero rows yield a Parameters resource with no `parameter` array, per
+    // the specification's zero-row example.
+    result.parameter = parameters
   }
+  return result
 }
 
 /**
@@ -434,15 +641,29 @@ async function handleSqlQueryRun(req, res, options = {}) {
       }
     }
 
-    const rows = await executeSqlQuery(req.config, sql, bindings)
+    // FHIR output needs declared column types, so take a detour via
+    // `CREATE TEMP VIEW` for type introspection; other formats use the
+    // simpler `db.all` path.
+    let rows
+    let columnTypes
+    if (format === 'fhir') {
+      const result = await executeSqlQueryWithTypes(req.config, sql, bindings)
+      rows = result.rows
+      columnTypes = result.columnTypes
+    } else {
+      rows = await executeSqlQuery(req.config, sql, bindings)
+    }
 
     if (asFragment) {
       res.setHeader('Content-Type', 'text/html')
-      res.send(renderRunResultFragment(rows, format, includeHeader, params))
+      res.send(renderRunResultFragment(rows, format, includeHeader, params, columnTypes))
     } else {
       res.setHeader('Content-Type', getContentType(format))
-      const result = formatResult(rows, format, includeHeader)
-      res.send(result)
+      const body =
+        format === 'fhir'
+          ? JSON.stringify(formatResultAsFhir(rows, columnTypes), null, 2)
+          : formatResult(rows, format, includeHeader)
+      res.send(body)
     }
   } catch (error) {
     console.error('$sqlquery-run error:', error)
@@ -463,11 +684,14 @@ async function handleSqlQueryRun(req, res, options = {}) {
   }
 }
 
-function renderRunResultFragment(rows, format, includeHeader, params) {
+function renderRunResultFragment(rows, format, includeHeader, params, columnTypes) {
   const count = Array.isArray(rows) ? rows.length : 0
   const rowLabel = `${count} row${count === 1 ? '' : 's'}`
   const formatLabel = (format || 'json').toUpperCase()
-  const body = formatResult(rows, format, includeHeader)
+  const body =
+    format === 'fhir'
+      ? JSON.stringify(formatResultAsFhir(rows, columnTypes || []), null, 2)
+      : formatResult(rows, format, includeHeader)
   return `
     <div class="panel panel--flush mt-2">
       <div class="panel__header">
