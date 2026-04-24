@@ -23,7 +23,7 @@ function masthead() {
         </nav>
       </div>
     </header>
-  `
+  `;
 }
 
 /**
@@ -37,7 +37,7 @@ function footer() {
       <span>sof-js</span>
       <a class="plain" href="https://github.com/FHIR/sql-on-fhir-v2">GitHub ⇢</a>
     </footer>
-  `
+  `;
 }
 
 /**
@@ -48,17 +48,17 @@ function footer() {
  */
 export function crumb(items) {
   const parts = items.map((item, i) => {
-    const isLast = i === items.length - 1
+    const isLast = i === items.length - 1;
     if (isLast || !item.href) {
-      return `<span class="crumb__current">${item.label}</span>`
+      return `<span class="crumb__current">${item.label}</span>`;
     }
-    return `<a href="${item.href}">${item.label}</a>`
-  })
+    return `<a href="${item.href}">${item.label}</a>`;
+  });
   return `
     <nav class="crumb">
       ${parts.join('<span class="crumb__sep">›</span>')}
     </nav>
-  `
+  `;
 }
 
 /**
@@ -76,7 +76,7 @@ export function sectionHead({ eyebrow, title, actions }) {
       </div>
       ${actions ? `<div class="section-head__actions">${actions}</div>` : ''}
     </div>
-  `
+  `;
 }
 
 /**
@@ -93,7 +93,7 @@ export function shell(content) {
     <div class="page" style="padding-top:0;padding-bottom:0">
       ${footer()}
     </div>
-  `
+  `;
 }
 
 /**
@@ -120,5 +120,5 @@ export function layout(content) {
       ${shell(content)}
     </body>
     </html>
-  `
+  `;
 }
