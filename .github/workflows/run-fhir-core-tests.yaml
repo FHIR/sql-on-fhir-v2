@@ -1,0 +1,62 @@
+name: Run FHIR Core SQL on FHIR Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      fhir_core_branch:
+        description: "Branch of hapifhir/org.hl7.fhir.core to test"
+        required: true
+        default: "master"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: releases-branch
+  cancel-in-progress: false
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout FHIR Core
+        uses: actions/checkout@v4
+        with:
+          repository: hapifhir/org.hl7.fhir.core
+          ref: ${{ github.event.inputs.fhir_core_branch }}
+          path: fhir-core
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: 17
+          cache: maven
+
+      - name: Run SQL on FHIR tests
+        working-directory: fhir-core
+        run: mvn surefire:test@sof-compliance-test -pl org.hl7.fhir.r5
+
+      - name: Checkout releases branch
+        uses: actions/checkout@v4
+        with:
+          ref: releases
+          path: releases
+
+      - name: Copy test report to releases
+        run: |
+          mkdir -p releases/extra
+          cp fhir-core/org.hl7.fhir.r5/target/sof-test-report.json releases/extra/hl7-fhir-core-test-results.json
+
+      - name: Commit and push report
+        working-directory: releases
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add extra/hl7-fhir-core-test-results.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update HL7 FHIR Core SQL on FHIR test results"
+            git push origin releases
+          fi
