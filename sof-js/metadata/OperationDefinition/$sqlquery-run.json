@@ -7,43 +7,19 @@
   "code": "sqlquery-run",
   "status": "active",
   "kind": "operation",
-  "description": "Execute a SQL query defined within a Library resource against materialised ViewDefinitions.",
+  "description": "Execute a SQLQuery Library against ViewDefinition tables.",
   "system": true,
   "type": true,
   "instance": true,
   "resource": ["Library"],
   "parameter": [
     {
-      "name": "queryResource",
-      "use": "in",
-      "min": 0,
-      "max": "1",
-      "type": "Resource",
-      "documentation": "The Library resource containing the SQL query and relatedArtifact dependencies inline."
-    },
-    {
-      "name": "queryReference",
-      "use": "in",
-      "min": 0,
-      "max": "1",
-      "type": "Reference",
-      "documentation": "A reference to a stored Library resource that contains the SQL query."
-    },
-    {
-      "name": "parameters",
-      "use": "in",
-      "min": 0,
-      "max": "1",
-      "type": "Parameters",
-      "documentation": "Named parameter bindings to pass to the SQL query as a FHIR Parameters resource."
-    },
-    {
       "name": "_format",
       "use": "in",
-      "min": 0,
+      "min": 1,
       "max": "1",
       "type": "code",
-      "documentation": "Output format - json, ndjson, csv, or fhir.",
+      "documentation": "Output format for the result (json, ndjson, csv, parquet, fhir). Use fhir to return results as a FHIR Parameters resource.",
       "binding": {
         "strength": "extensible",
         "valueSet": "http://sql-on-fhir.org/ValueSet/output-format"
@@ -55,15 +31,63 @@
       "min": 0,
       "max": "1",
       "type": "boolean",
-      "documentation": "Whether to include the header row in CSV output. Defaults to true."
+      "documentation": "Include CSV headers (default true). Applies only when csv output is requested."
     },
     {
-      "name": "result",
-      "use": "out",
+      "name": "queryReference",
+      "use": "in",
       "min": 0,
-      "max": "*",
-      "type": "Binary",
-      "documentation": "The query result in the requested format."
+      "max": "1",
+      "type": "Reference",
+      "documentation": "Reference to a SQLQuery Library stored on the server."
+    },
+    {
+      "name": "queryResource",
+      "use": "in",
+      "min": 0,
+      "max": "1",
+      "type": "Resource",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/operationdefinition-allowed-type",
+          "valueUri": "https://sql-on-fhir.org/ig/StructureDefinition/SQLQuery"
+        }
+      ],
+      "documentation": "Inline SQLQuery Library resource to execute."
+    },
+    {
+      "name": "parameters",
+      "use": "in",
+      "min": 0,
+      "max": "1",
+      "type": "Parameters",
+      "documentation": "Input parameters for the query. Parameters are bound by name to parameters declared in the SQLQuery Library (Library.parameter.name). Parameter types are mapped using the appropriate value[x] type matching the declared parameter type."
+    },
+    {
+      "name": "source",
+      "use": "in",
+      "min": 0,
+      "max": "1",
+      "type": "string",
+      "documentation": "External data source containing the ViewDefinition tables."
+    },
+    {
+      "name": "return",
+      "use": "out",
+      "min": 1,
+      "max": "1",
+      "type": "Resource",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/operationdefinition-allowed-type",
+          "valueUri": "Binary"
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/operationdefinition-allowed-type",
+          "valueUri": "Parameters"
+        }
+      ],
+      "documentation": "Query results. Returns Binary for flat formats (csv, json, ndjson, parquet) or Parameters for _format=fhir."
     }
   ]
 }

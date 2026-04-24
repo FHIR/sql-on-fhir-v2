@@ -620,7 +620,14 @@ async function handleSqlQueryRun(req, res, options = {}) {
   const createdTables = []
   try {
     const params = req.body
-    const format = getParameterValue(params, '_format', 'Code') || 'json'
+    const format = getParameterValue(params, '_format', 'Code')
+    if (!format) {
+      throw badRequestError('_format is required')
+    }
+    const source = getParameterValue(params, 'source', 'String')
+    if (source) {
+      throw notSupportedError('The source parameter is not supported by this server')
+    }
     const headerParam = getParameterValue(params, 'header', 'Boolean')
     const includeHeader = headerParam !== false && headerParam !== 'false'
 
@@ -749,6 +756,10 @@ function buildParametersFromBody(body) {
     parameter.push({ name: 'header', valueBoolean: true })
   } else if (body.header === 'false' || body.header === false) {
     parameter.push({ name: 'header', valueBoolean: false })
+  }
+
+  if (body.source) {
+    parameter.push({ name: 'source', valueString: body.source })
   }
 
   return { resourceType: 'Parameters', parameter }

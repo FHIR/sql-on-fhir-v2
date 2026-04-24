@@ -451,6 +451,86 @@ describe('$sqlquery-run operation', () => {
     expect(body.resourceType).toBe('OperationOutcome')
   })
 
+  test('missing _format returns 400', async () => {
+    // The spec declares _format as 1..1, so a request without it must be
+    // rejected rather than silently defaulting to JSON.
+    const response = await fetch('http://localhost:3004/Library/$sqlquery-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify({
+        resourceType: 'Parameters',
+        parameter: [{ name: 'queryReference', valueReference: { reference: 'Library/patient-bp-query' } }],
+      }),
+    })
+
+    expect(response.status).toBe(400)
+    const body = await response.json()
+    expect(body.resourceType).toBe('OperationOutcome')
+    expect(body.issue[0].code).toBe('invalid')
+  })
+
+  test('source parameter returns 422 not-supported', async () => {
+    // This reference implementation has no external data source concept, so
+    // supplying `source` should be rejected explicitly rather than ignored.
+    const response = await fetch('http://localhost:3004/Library/$sqlquery-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify({
+        resourceType: 'Parameters',
+        parameter: [
+          { name: '_format', valueCode: 'json' },
+          { name: 'source', valueString: 'http://example.com/data' },
+          { name: 'queryReference', valueReference: { reference: 'Library/patient-bp-query' } },
+        ],
+      }),
+    })
+
+    expect(response.status).toBe(422)
+    const body = await response.json()
+    expect(body.resourceType).toBe('OperationOutcome')
+    expect(body.issue[0].code).toBe('not-supported')
+  })
+
+  test('OperationDefinition exposes spec-aligned parameters', async () => {
+    // The stored OperationDefinition must reflect the FSH source: _format is
+    // required, queryResource carries an allowed-type extension for the
+    // SQLQuery profile, source is declared, and the output is `return` with
+    // Binary or Parameters allowed types.
+    const response = await fetch('http://localhost:3004/OperationDefinition/$sqlquery-run')
+    expect(response.status).toBe(200)
+
+    const body = await response.json()
+    const byName = Object.fromEntries(body.parameter.map((p) => [p.name, p]))
+
+    expect(byName._format).toBeDefined()
+    expect(byName._format.min).toBe(1)
+    expect(byName._format.max).toBe('1')
+
+    expect(byName.queryResource).toBeDefined()
+    const allowedTypeUrl = 'http://hl7.org/fhir/StructureDefinition/operationdefinition-allowed-type'
+    const queryResourceAllowed = (byName.queryResource.extension || [])
+      .filter((e) => e.url === allowedTypeUrl)
+      .map((e) => e.valueUri)
+    expect(queryResourceAllowed).toContain('https://sql-on-fhir.org/ig/StructureDefinition/SQLQuery')
+
+    expect(byName.source).toBeDefined()
+    expect(byName.source.type).toBe('string')
+    expect(byName.source.min).toBe(0)
+    expect(byName.source.max).toBe('1')
+
+    expect(byName.return).toBeDefined()
+    expect(byName.return.use).toBe('out')
+    expect(byName.return.min).toBe(1)
+    expect(byName.return.max).toBe('1')
+    const returnAllowed = (byName.return.extension || [])
+      .filter((e) => e.url === allowedTypeUrl)
+      .map((e) => e.valueUri)
+    expect(returnAllowed).toContain('Binary')
+    expect(returnAllowed).toContain('Parameters')
+
+    expect(byName.result).toBeUndefined()
+  })
+
   test('invalid SQL returns 422', async () => {
     const response = await fetch('http://localhost:3004/$sqlquery-run', {
       method: 'POST',
