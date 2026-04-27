@@ -33,6 +33,10 @@ jobs:
           java-version: 17
           cache: maven
 
+      - name: Build r5 module and dependencies
+        working-directory: fhir-core
+        run: mvn install -pl org.hl7.fhir.r5 -am -DskipTests
+
       - name: Run SQL on FHIR tests
         working-directory: fhir-core
         run: mvn surefire:test@sof-compliance-test -pl org.hl7.fhir.r5
