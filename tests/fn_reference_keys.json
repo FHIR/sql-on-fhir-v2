@@ -5,10 +5,6 @@
   "resources": [
     {
       "resourceType": "Patient",
-      "id": "p3"
-    },
-    {
-      "resourceType": "Patient",
       "id": "p1",
       "link": [
         {
@@ -56,9 +52,6 @@
         },
         {
           "key_equal_ref": false
-        },
-        {
-          "key_equal_ref": null
         }
       ]
     },
@@ -85,9 +78,6 @@
         },
         {
           "key_equal_ref": false
-        },
-        {
-          "key_equal_ref": null
         }
       ]
     },
@@ -109,9 +99,6 @@
         ]
       },
       "expect": [
-        {
-          "key_equal_ref": null
-        },
         {
           "key_equal_ref": null
         },
