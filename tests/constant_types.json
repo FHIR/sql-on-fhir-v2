@@ -12,7 +12,9 @@
       "id": "d1",
       "udiCarrier": [
         {
-          "carrierAIDC": "aGVsbG8K"
+          "carrierAIDC": "aGVsbG8K",
+          "deviceIdentifier": "device-id",
+          "issuer": "issuer"
         }
       ]
     },
@@ -21,7 +23,9 @@
       "id": "d2",
       "udiCarrier": [
         {
-          "carrierAIDC": "YnllCg=="
+          "carrierAIDC": "YnllCg==",
+          "deviceIdentifier": "device-id",
+          "issuer": "issuer"
         }
       ]
     },
