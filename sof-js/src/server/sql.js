@@ -316,6 +316,19 @@ export function bindParameters(library, parametersResource) {
     }
     let value = part[expectedField]
     if (decl.type === 'boolean') value = value ? 1 : 0
+    else if (decl.type === 'integer64') {
+      // FHIR JSON serialises integer64 as a string; coerce to a numeric
+      // value so SQLite stores it with INTEGER affinity.
+      const numeric = Number(value)
+      if (!Number.isFinite(numeric)) {
+        throw new SqlQueryRunError(
+          400,
+          'invalid',
+          `Parameter '${part.name}' valueInteger64 '${value}' is not a valid integer`,
+        )
+      }
+      value = numeric
+    }
     bindings[`:${part.name}`] = value
   }
   return bindings
