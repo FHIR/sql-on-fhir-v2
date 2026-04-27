@@ -23,10 +23,11 @@ export async function getIndex(req, res) {
       <ul class="list-disc pl-5">
         <li><a class="text-blue-500 hover:text-blue-700" href="/metadata">Metadata</a></li>
         <li><a class="text-blue-500 hover:text-blue-700" href="/$viewdefinition-export">$viewdefinition-export (system)</a></li>
+        <li><a class="text-blue-500 hover:text-blue-700" href="/$sqlquery-run/form">$sqlquery-run (system)</a></li>
         <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition">ViewDefinitions</a></li>
         <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$evaluate">ViewDefinition/$evaluate</a></li>
         <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$viewdefinition-export">ViewDefinition/$viewdefinition-export</a></li>
-        <li><a class="text-blue-500 hover:text-blue-700" href="/Library/patient-count/$sqlquery-run/form">Library/$sqlquery-run</a></li>
+        <li><a class="text-blue-500 hover:text-blue-700" href="/Library/$sqlquery-run/form">Library/$sqlquery-run</a></li>
         <hr class="my-4"/>
         ${resourceTypes
           .sort()
@@ -70,8 +71,10 @@ export async function startServer(config) {
   mountEvaluateRoutes(app)
   mountValidateRoutes(app)
   mountViewsRoutes(app)
-  mountFhirRoutes(app)
+  // Operation routes must be mounted before the catch-all FHIR routes so
+  // that paths like /$sqlquery-run/form are not shadowed by /:resourceType/:id.
   mountSqlQueryRunRoutes(app)
+  mountFhirRoutes(app)
   app.get('/', getIndex)
   console.log('Routes mounted')
 

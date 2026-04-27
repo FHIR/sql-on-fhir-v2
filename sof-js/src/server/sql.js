@@ -560,54 +560,419 @@ export async function postSqlQueryRunInstance(req, res) {
   await postSqlQueryRun(req, res, { id: req.params.id })
 }
 
-// Render an HTML form for interactive testing of the instance route.
-export async function getSqlQueryRunForm(req, res) {
+// Escape user-supplied or resource-derived strings before inserting them into
+// the HTML form output.
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+// Pick the HTML input type that best fits a FHIR primitive parameter type.
+function inputTypeForFhirType(type) {
+  switch (type) {
+    case 'integer':
+    case 'integer64':
+    case 'decimal':
+      return 'number'
+    case 'boolean':
+      return 'checkbox'
+    case 'date':
+      return 'date'
+    case 'dateTime':
+    case 'instant':
+      return 'datetime-local'
+    case 'time':
+      return 'time'
+    default:
+      return 'text'
+  }
+}
+
+// Render a per-parameter input row for the instance form, driven by the
+// declared `Library.parameter` entries.
+function renderInstanceParameterFields(library) {
+  const params = library.parameter || []
+  if (params.length === 0) {
+    return `<p class="text-sm text-gray-500">This Library declares no parameters.</p>`
+  }
+  const rows = params
+    .map((p) => {
+      const inputType = inputTypeForFhirType(p.type)
+      const fieldName = `param_${p.name}`
+      const input =
+        inputType === 'checkbox'
+          ? `<input type="checkbox" name="${escapeHtml(fieldName)}" value="true" />`
+          : `<input type="${inputType}" name="${escapeHtml(fieldName)}" />`
+      return `
+        <tr>
+          <td><code>${escapeHtml(p.name)}</code></td>
+          <td>${escapeHtml(p.type)}</td>
+          <td>${input}</td>
+          <td class="text-xs text-gray-500">${escapeHtml(p.documentation || '')}</td>
+        </tr>
+      `
+    })
+    .join('')
+  return `
+    <table class="mt-2">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Value</th>
+          <th>Documentation</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `
+}
+
+// Build the breadcrumb header for the form page.
+function renderBreadcrumbs(scope, library) {
+  if (scope === 'instance') {
+    return `
+      <a href="/">Home</a>
+      <span class="text-gray-500">/</span>
+      <a href="/Library">Library</a>
+      <span class="text-gray-500">/</span>
+      <a href="/Library/${escapeHtml(library.id)}">${escapeHtml(library.id)}</a>
+      <span class="text-gray-500">/</span>
+      <span class="text-gray-700">$sqlquery-run</span>
+    `
+  }
+  return `
+    <a href="/">Home</a>
+    <span class="text-gray-500">/</span>
+    <a href="/Library">Library</a>
+    <span class="text-gray-500">/</span>
+    <span class="text-gray-700">$sqlquery-run</span>
+  `
+}
+
+// Render the SQLQuery Run form. Used at system, type, and instance scopes.
+async function renderForm(req, res, { scope, library }) {
+  const operation = await read(req.config, 'OperationDefinition', '$sqlquery-run')
+  const libraries = scope === 'instance' ? [] : await search(req.config, 'Library', 100)
+
+  const formAction =
+    scope === 'instance'
+      ? `/Library/${library.id}/$sqlquery-run/form`
+      : scope === 'type'
+        ? '/Library/$sqlquery-run/form'
+        : '/$sqlquery-run/form'
+
+  const sourceFields =
+    scope === 'instance'
+      ? `<p class="text-sm text-gray-500">Library: <a href="/Library/${escapeHtml(library.id)}">${escapeHtml(library.id)}</a></p>`
+      : `
+          <p class="text-sm text-gray-500">
+            Choose a stored Library or paste an inline Library JSON. If both
+            are provided, the inline resource takes precedence.
+          </p>
+          <table class="mt-2">
+            <tr>
+              <th>queryReference</th>
+              <td>
+                <select name="queryReference">
+                  <option value="">- choose -</option>
+                  ${libraries
+                    .map((l) => `<option value="Library/${escapeHtml(l.id)}">${escapeHtml(l.id)}</option>`)
+                    .join('')}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>queryResource</th>
+              <td>
+                <textarea name="queryResource" rows="10" cols="80"
+                  placeholder='Paste a Library resource JSON, e.g. {"resourceType":"Library", ...}'></textarea>
+              </td>
+            </tr>
+          </table>
+        `
+
+  const parameterFields =
+    scope === 'instance'
+      ? renderInstanceParameterFields(library)
+      : `
+          <p class="text-sm text-gray-500">
+            Optional: a FHIR Parameters resource bound to the Library's
+            declared inputs.
+          </p>
+          <textarea name="parametersJson" rows="6" cols="80"
+            placeholder='{"resourceType":"Parameters","parameter":[{"name":"...","valueString":"..."}]}'></textarea>
+        `
+
+  res.setHeader('Content-Type', 'text/html')
+  res.send(
+    layout(`
+      <div class="container mx-auto p-4">
+        <div class="flex items-center gap-4">${renderBreadcrumbs(scope, library)}</div>
+        <h1 class="mt-4">SQLQuery Run</h1>
+        <p class="mb-4">${escapeHtml(operation?.description || '')}</p>
+        <form
+          hx-post="${formAction}"
+          hx-target="#sqlquery-result"
+          hx-swap="innerHTML">
+          <h3 class="font-bold mt-4">Library source</h3>
+          ${sourceFields}
+
+          <h3 class="font-bold mt-4">Library parameters</h3>
+          ${parameterFields}
+
+          <h3 class="font-bold mt-4">Output</h3>
+          <table class="mt-2">
+            <tr>
+              <th>_format</th>
+              <td>
+                <select name="_format">
+                  <option value="json">json</option>
+                  <option value="ndjson">ndjson</option>
+                  <option value="csv">csv</option>
+                  <option value="fhir">fhir</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <th>header</th>
+              <td>
+                <label>
+                  <input type="checkbox" name="header" value="true" checked />
+                  Include CSV header (only applies to csv output)
+                </label>
+              </td>
+            </tr>
+          </table>
+
+          <div class="mt-4">
+            <button class="btn" type="submit">Run</button>
+          </div>
+        </form>
+        <div id="sqlquery-result" class="mt-4"></div>
+
+        <details class="mt-8">
+          <summary class="text-sky-600 hover:text-sky-700 cursor-pointer">OperationDefinition</summary>
+          <div class="mt-2">${operation ? await renderOperationDefinition(req, operation) : ''}</div>
+        </details>
+      </div>
+    `),
+  )
+}
+
+// Translate per-parameter form fields into a Parameters resource using the
+// Library's declared parameter types.
+function buildInstanceParametersResource(library, form) {
+  const declared = library.parameter || []
+  const parts = []
+  for (const decl of declared) {
+    const fieldName = `param_${decl.name}`
+    const raw = form[fieldName]
+    if (decl.type === 'boolean') {
+      // Unchecked boolean inputs send no field at all; treat as omitted unless
+      // the user explicitly ticked the box.
+      if (raw === undefined) continue
+      parts.push({ name: decl.name, valueBoolean: raw === 'true' || raw === 'on' })
+      continue
+    }
+    if (raw === undefined || raw === null || raw === '') continue
+    const valueField = fhirTypeToValueField[decl.type]
+    if (!valueField) {
+      throw new SqlQueryRunError(
+        400,
+        'invalid',
+        `Unsupported parameter type '${decl.type}' for '${decl.name}'`,
+      )
+    }
+    let value = raw
+    if (decl.type === 'integer' || decl.type === 'decimal') {
+      const n = Number(raw)
+      if (!Number.isFinite(n)) {
+        throw new SqlQueryRunError(
+          400,
+          'invalid',
+          `Parameter '${decl.name}' value '${raw}' is not a valid number`,
+        )
+      }
+      value = n
+    } else if (decl.type === 'integer64') {
+      // FHIR JSON serialises integer64 as a string; bindParameters coerces it
+      // back to a numeric SQLite binding.
+      const n = Number(raw)
+      if (!Number.isFinite(n)) {
+        throw new SqlQueryRunError(
+          400,
+          'invalid',
+          `Parameter '${decl.name}' value '${raw}' is not a valid integer`,
+        )
+      }
+      value = String(n)
+    }
+    parts.push({ name: decl.name, [valueField]: value })
+  }
+  if (parts.length === 0) return null
+  return { resourceType: 'Parameters', parameter: parts }
+}
+
+// Send the rendered result region back to the browser. htmx swaps inner HTML
+// of #sqlquery-result; non-htmx callers get a fully laid-out page.
+function sendFormResult(req, res, result) {
+  const html = `
+    <div>
+      <h2 class="text-xl font-bold">Result</h2>
+      <p class="text-xs text-gray-500 mt-1">Content-Type: <code>${escapeHtml(result.contentType)}</code></p>
+      <pre class="mt-2">${escapeHtml(result.body)}</pre>
+    </div>
+  `
+  res.setHeader('Content-Type', 'text/html')
+  if (req.headers['hx-request']) {
+    res.send(html)
+  } else {
+    res.send(layout(`<div class="container mx-auto p-4">${html}</div>`))
+  }
+}
+
+function sendFormError(req, res, err) {
+  let status = 500
+  let code = 'exception'
+  let message = err?.message || String(err)
+  if (err instanceof SqlQueryRunError) {
+    status = err.status
+    code = err.code
+  } else {
+    console.error('$sqlquery-run form unexpected error', err)
+  }
+  const html = `
+    <div class="bg-red-50 border border-red-300 rounded-md p-4">
+      <h2 class="text-xl font-bold text-red-700">Error</h2>
+      <p class="text-sm text-red-700 mt-1">
+        <code>${escapeHtml(code)}</code>: ${escapeHtml(message)}
+      </p>
+    </div>
+  `
+  res.setHeader('Content-Type', 'text/html')
+  // htmx swaps on 2xx responses by default; send 200 so the error region
+  // replaces the previous result without extra configuration.
+  if (req.headers['hx-request']) {
+    res.status(200).send(html)
+  } else {
+    res.status(status).send(layout(`<div class="container mx-auto p-4">${html}</div>`))
+  }
+}
+
+// Shared form-submit handler. Resolves the library, builds a Parameters
+// resource, runs the operation, and renders the result.
+async function handleFormSubmit(req, res, { scope, id }) {
+  try {
+    const form = req.body || {}
+    const format = form._format || 'json'
+    const header = form.header === 'true'
+
+    let library
+    let parametersResource
+
+    if (scope === 'instance') {
+      library = await read(req.config, 'Library', id)
+      if (!library) {
+        throw new SqlQueryRunError(404, 'not-found', `Library/${id} not found`)
+      }
+      parametersResource = buildInstanceParametersResource(library, form)
+    } else {
+      let queryResource = null
+      let queryReference = null
+      if (form.queryResource && form.queryResource.trim()) {
+        try {
+          queryResource = JSON.parse(form.queryResource)
+        } catch (parseErr) {
+          throw new SqlQueryRunError(400, 'invalid', `queryResource is not valid JSON: ${parseErr.message}`)
+        }
+      } else if (form.queryReference) {
+        queryReference = { reference: form.queryReference }
+      } else {
+        throw new SqlQueryRunError(400, 'required', 'Provide either a queryReference or a queryResource')
+      }
+      library = await resolveLibrary({
+        queryReference,
+        queryResource,
+        config: req.config,
+      })
+      if (form.parametersJson && form.parametersJson.trim()) {
+        try {
+          parametersResource = JSON.parse(form.parametersJson)
+        } catch (parseErr) {
+          throw new SqlQueryRunError(400, 'invalid', `parametersJson is not valid JSON: ${parseErr.message}`)
+        }
+      } else {
+        parametersResource = null
+      }
+    }
+
+    const result = await executeSqlQueryRun({
+      library,
+      parametersResource,
+      format,
+      header,
+      config: req.config,
+    })
+    sendFormResult(req, res, result)
+  } catch (err) {
+    sendFormError(req, res, err)
+  }
+}
+
+export async function getSqlQueryRunFormSystem(req, res) {
+  await renderForm(req, res, { scope: 'system', library: null })
+}
+
+export async function getSqlQueryRunFormType(req, res) {
+  await renderForm(req, res, { scope: 'type', library: null })
+}
+
+export async function getSqlQueryRunFormInstance(req, res) {
   const id = req.params.id
   const library = await read(req.config, 'Library', id)
-  const operation = await read(req.config, 'OperationDefinition', '$sqlquery-run')
   if (!library) {
     res.status(404)
     res.setHeader('Content-Type', 'text/html')
     res.send(
       layout(`
         <div class="container mx-auto p-4">
-          <h1 class="text-2xl font-bold mb-4">SQLQuery Run</h1>
-          <p>Library/${id} not found</p>
+          <h1>SQLQuery Run</h1>
+          <p>Library/${escapeHtml(id)} not found</p>
         </div>
       `),
     )
     return
   }
-  res.setHeader('Content-Type', 'text/html')
-  res.send(
-    layout(`
-      <div class="container mx-auto p-4">
-        <div class="flex items-center gap-4">
-          <a href="/">Home</a>
-          <span class="text-gray-500">/</span>
-          <a href="/Library">Library</a>
-          <span class="text-gray-500">/</span>
-          <a href="#">${library.id}</a>
-          <span class="text-gray-500">/</span>
-          <a class="text-gray-700" href="#">$sqlquery-run</a>
-        </div>
-        <div class="mt-4">
-          ${await renderOperationDefinition(req, operation)}
-          <p class="mt-4 text-sm text-gray-500">
-            POST a Parameters resource to
-            <code>/Library/${library.id}/$sqlquery-run</code> with at minimum a
-            <code>_format</code> input. The instance route resolves the
-            Library from the URL.
-          </p>
-        </div>
-      </div>
-    `),
-  )
+  await renderForm(req, res, { scope: 'instance', library })
+}
+
+export async function postSqlQueryRunFormSystem(req, res) {
+  await handleFormSubmit(req, res, { scope: 'system' })
+}
+
+export async function postSqlQueryRunFormType(req, res) {
+  await handleFormSubmit(req, res, { scope: 'type' })
+}
+
+export async function postSqlQueryRunFormInstance(req, res) {
+  await handleFormSubmit(req, res, { scope: 'instance', id: req.params.id })
 }
 
 export function mountRoutes(app) {
+  // API endpoints. POST a Parameters resource and receive query results.
   app.post('/\\$sqlquery-run', postSqlQueryRunSystem)
   app.post('/Library/\\$sqlquery-run', postSqlQueryRunType)
   app.post('/Library/:id/\\$sqlquery-run', postSqlQueryRunInstance)
-  app.get('/Library/:id/\\$sqlquery-run/form', getSqlQueryRunForm)
+
+  // Interactive HTML form endpoints.
+  app.get('/\\$sqlquery-run/form', getSqlQueryRunFormSystem)
+  app.get('/Library/\\$sqlquery-run/form', getSqlQueryRunFormType)
+  app.get('/Library/:id/\\$sqlquery-run/form', getSqlQueryRunFormInstance)
+  app.post('/\\$sqlquery-run/form', postSqlQueryRunFormSystem)
+  app.post('/Library/\\$sqlquery-run/form', postSqlQueryRunFormType)
+  app.post('/Library/:id/\\$sqlquery-run/form', postSqlQueryRunFormInstance)
 }
