@@ -1,12 +1,12 @@
-import { wrapBundle } from './utils.js';
-import { layout, crumb, sectionHead } from './ui.js';
-import { isHtml } from './utils.js';
-import { search, read } from './db.js';
+import { wrapBundle } from './utils.js'
+import { layout, crumb, sectionHead } from './ui.js'
+import { isHtml } from './utils.js'
+import { search, read } from './db.js'
 
 function renderViewDefinitions(req, res, resources) {
   const viewsList = resources
     .map(
-      resource => `
+      (resource) => `
         <tr>
           <td>
             <a href="/ViewDefinition/${resource.id}">${resource.name}</a>
@@ -14,13 +14,13 @@ function renderViewDefinitions(req, res, resources) {
           <td><span class="tag">${resource.resource}</span></td>
           <td class="text-ink-mute"><code>${resource.url}</code></td>
           <td>
-            <a class="btn btn-primary" href="/ViewDefinition/${resource.id}/$run/form">$run</a>
+            <a class="btn btn-primary" href="/ViewDefinition/${resource.id}/$viewdefinition-run/form">$viewdefinition-run</a>
           </td>
         </tr>
       `,
     )
-    .join('');
-  res.setHeader('Content-Type', 'text/html');
+    .join('')
+  res.setHeader('Content-Type', 'text/html')
   res.send(
     layout(`
       ${crumb([{ href: '/', label: 'Home' }, { label: 'View definitions' }])}
@@ -52,16 +52,16 @@ function renderViewDefinitions(req, res, resources) {
         </table>
       </div>
     `),
-  );
+  )
 }
 
 export async function getVeiwListEndpoint(req, res) {
-  const resources = await search(req.config, 'ViewDefinition');
+  const resources = await search(req.config, 'ViewDefinition')
   if (isHtml(req)) {
-    renderViewDefinitions(req, res, resources);
+    renderViewDefinitions(req, res, resources)
   } else {
     if (resources == null) {
-      res.status(404);
+      res.status(404)
       res.json({
         resourceType: 'OperationOutcome',
         issue: [
@@ -70,17 +70,17 @@ export async function getVeiwListEndpoint(req, res) {
             message: 'Resource type not found',
           },
         ],
-      });
+      })
     } else {
-      res.setHeader('Content-Type', 'application/fhir+json');
-      res.json(wrapBundle(resources));
+      res.setHeader('Content-Type', 'application/fhir+json')
+      res.json(wrapBundle(resources))
     }
   }
 }
 
 function renderViewDefinition(req, res, resource) {
-  const resourceJson = JSON.stringify(resource, null, 2);
-  res.setHeader('Content-Type', 'text/html');
+  const resourceJson = JSON.stringify(resource, null, 2)
+  res.setHeader('Content-Type', 'text/html')
   res.send(
     layout(`
       ${crumb([
@@ -92,7 +92,7 @@ function renderViewDefinition(req, res, resource) {
         eyebrow: `resource · ${resource.resource || 'ViewDefinition'}`,
         title: resource.name || resource.id,
         actions: `
-          <a href="/ViewDefinition/${resource.id}/$run/form" class="btn btn-primary">$run</a>
+          <a href="/ViewDefinition/${resource.id}/$viewdefinition-run/form" class="btn btn-primary">$viewdefinition-run</a>
         `,
       })}
       <div class="panel panel--flush">
@@ -103,12 +103,12 @@ function renderViewDefinition(req, res, resource) {
         <pre class="panel__body" style="margin:0;border:0;box-shadow:none;border-radius:0">${resourceJson}</pre>
       </div>
     `),
-  );
+  )
 }
 
 export async function getVeiwEndpoint(req, res) {
-  console.log('getVeiwEndpoint', req.params.id);
-  const resource = await read(req.config, 'ViewDefinition', req.params.id);
+  console.log('getVeiwEndpoint', req.params.id)
+  const resource = await read(req.config, 'ViewDefinition', req.params.id)
   if (isHtml(req)) {
     if (resource == null) {
       res.send(
@@ -124,18 +124,18 @@ export async function getVeiwEndpoint(req, res) {
             <p>No ViewDefinition with id <code>${req.params.id}</code> could be located in this server.</p>
           </div>
         `),
-      );
+      )
     } else {
-      renderViewDefinition(req, res, resource);
+      renderViewDefinition(req, res, resource)
     }
   } else {
-    res.setHeader('Content-Type', 'application/fhir+json');
-    res.json(resource);
+    res.setHeader('Content-Type', 'application/fhir+json')
+    res.json(resource)
   }
 }
 
 export function mountRoutes(app) {
-  console.log('mounting views routes');
-  app.get('/ViewDefinition', getVeiwListEndpoint);
-  app.get('/ViewDefinition/:id', getVeiwEndpoint);
+  console.log('mounting views routes')
+  app.get('/ViewDefinition', getVeiwListEndpoint)
+  app.get('/ViewDefinition/:id', getVeiwEndpoint)
 }

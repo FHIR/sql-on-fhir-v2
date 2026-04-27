@@ -34,8 +34,8 @@
               "definition": "http://sql-on-fhir.org/OperationDefinition/$validate"
             },
             {
-              "name": "$run",
-              "definition": "http://sql-on-fhir.org/OperationDefinition/$run"
+              "name": "$viewdefinition-run",
+              "definition": "http://sql-on-fhir.org/OperationDefinition/$viewdefinition-run"
             },
             {
               "name": "$sqlquery-run",
