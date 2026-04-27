@@ -246,6 +246,38 @@ describe('$sqlquery-run operation', () => {
     expect(body.issue[0].code).toBe('not-found')
   })
 
+  test('boolean column maps to valueBoolean under _format=fhir', async () => {
+    // Use an inline Library that depends on the patient_multiple_birth view,
+    // whose multiple_birth column is declared as boolean. The fhir output
+    // should encode that column with valueBoolean per the SQL-to-FHIR type
+    // mapping.
+    const inline = inlinePatientMultipleBirthLibrary()
+    const res = await postSqlQueryRun(
+      '/Library/$sqlquery-run',
+      paramsBody([
+        { name: '_format', valueCode: 'fhir' },
+        { name: 'queryResource', resource: inline },
+      ]),
+    )
+
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body.resourceType).toBe('Parameters')
+    expect(Array.isArray(body.parameter)).toBe(true)
+    expect(body.parameter.length).toBeGreaterThan(0)
+
+    // Find rows whose multiple_birth part is present and assert it carries
+    // valueBoolean rather than a numeric or string encoding.
+    const presentParts = body.parameter
+      .map((row) => row.part.find((p) => p.name === 'multiple_birth'))
+      .filter((part) => part !== undefined)
+    expect(presentParts.length).toBeGreaterThan(0)
+    for (const part of presentParts) {
+      expect(typeof part.valueBoolean).toBe('boolean')
+      expect(part.valueInteger).toBeUndefined()
+    }
+  })
+
   test('referenced ViewDefinition that cannot be resolved returns 404', async () => {
     const inline = inlineMissingViewLibrary()
     const res = await postSqlQueryRun(
@@ -301,6 +333,32 @@ function inlinePatientCountLibrary() {
           {
             url: 'https://sql-on-fhir.org/ig/StructureDefinition/sql-text',
             valueString: 'SELECT COUNT(*) AS total FROM patient_demographics',
+          },
+        ],
+      },
+    ],
+  }
+}
+
+function inlinePatientMultipleBirthLibrary() {
+  return {
+    resourceType: 'Library',
+    status: 'active',
+    type: { coding: [{ code: 'sql-query' }] },
+    relatedArtifact: [
+      {
+        type: 'depends-on',
+        resource: 'http://myig.org/ViewDefinition/patient_multiple_birth',
+        label: 'patient_multiple_birth',
+      },
+    ],
+    content: [
+      {
+        contentType: 'application/sql',
+        extension: [
+          {
+            url: 'https://sql-on-fhir.org/ig/StructureDefinition/sql-text',
+            valueString: 'SELECT id, multiple_birth FROM patient_multiple_birth',
           },
         ],
       },
