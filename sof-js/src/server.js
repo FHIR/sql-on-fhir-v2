@@ -35,8 +35,11 @@ const HEADLINE_TILES = [
   },
 ]
 
-// Operation names hidden from the home page operations grid.
-const HIDDEN_OPERATIONS = new Set(['$evaluate', '$validate'])
+// Operation names hidden from the home page operations grid. The endpoints
+// remain mounted (see mountEvaluateRoutes, mountValidateRoutes), but the
+// tooling-oriented $evaluate and $validate operations don't contribute to
+// the headline narrative the home page is selling.
+const HOMEPAGE_HIDDEN_OPERATIONS = new Set(['$evaluate', '$validate'])
 
 const OPERATION_OVERRIDES = {
   '$viewdefinition-export': {
@@ -62,7 +65,7 @@ function loadCapabilityOperations() {
       for (const op of resource.operation || []) {
         if (seen.has(op.name)) continue
         seen.add(op.name)
-        if (HIDDEN_OPERATIONS.has(op.name)) continue
+        if (HOMEPAGE_HIDDEN_OPERATIONS.has(op.name)) continue
         const override = OPERATION_OVERRIDES[op.name] || {}
         ops.push({
           name: op.name,

@@ -1,0 +1,28 @@
+{
+  "resourceType": "ViewDefinition",
+  "name": "patient_typed_columns",
+  "description": "Patient view exposing typed columns (boolean, decimal) backed by FHIRPath expressions that are reliably populated. Used by the `_format=fhir` runtime-typing tests.",
+  "url": "http://myig.org/ViewDefinition/patient_typed_columns",
+  "resource": "Patient",
+  "select": [
+    {
+      "column": [
+        {
+          "path": "getResourceKey()",
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "path": "name.exists()",
+          "name": "has_name",
+          "type": "boolean"
+        },
+        {
+          "path": "name.given.count()",
+          "name": "given_count",
+          "type": "integer"
+        }
+      ]
+    }
+  ]
+}

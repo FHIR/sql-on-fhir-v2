@@ -15,14 +15,13 @@ export function getDb() {
 
 function loadCanonicalResources(config, resourceType) {
   console.log(`Loading ${resourceType} canonical resources`)
-  const migrate = `CREATE TABLE IF NOT EXISTS ${resourceType.toLowerCase()} ( id text PRIMARY KEY, resource JSON);`
+  const table = `"${resourceType.toLowerCase()}"`
+  const migrate = `CREATE TABLE IF NOT EXISTS ${table} ( id text PRIMARY KEY, resource JSON);`
   const db = config.db
   db.serialize(() => {
     db.run(migrate)
     const resources = readResourcesFromDirectory(resourceType)
-    const stmt = db.prepare(
-      `INSERT OR REPLACE INTO ${resourceType.toLowerCase()} (id, resource) VALUES (?, ?)`,
-    )
+    const stmt = db.prepare(`INSERT OR REPLACE INTO ${table} (id, resource) VALUES (?, ?)`)
     resources.forEach((resource) => {
       stmt.run(resource.id, JSON.stringify(resource))
     })
@@ -32,15 +31,14 @@ function loadCanonicalResources(config, resourceType) {
 
 async function loadResources(config, resourceType) {
   //console.log(`Loading ${resourceType} resources`);
-  const migrate = `CREATE TABLE IF NOT EXISTS ${resourceType.toLowerCase()} ( id text PRIMARY KEY, resource JSON);`
+  const table = `"${resourceType.toLowerCase()}"`
+  const migrate = `CREATE TABLE IF NOT EXISTS ${table} ( id text PRIMARY KEY, resource JSON);`
 
   const db = config.db
   db.serialize(async () => {
     db.run(migrate)
-    const stmt = db.prepare(
-      `INSERT OR REPLACE INTO ${resourceType.toLowerCase()} (id, resource) VALUES (?, ?)`,
-    )
-    const count = await select(config, `SELECT COUNT(*) as count FROM ${resourceType.toLowerCase()}`)
+    const stmt = db.prepare(`INSERT OR REPLACE INTO ${table} (id, resource) VALUES (?, ?)`)
+    const count = await select(config, `SELECT COUNT(*) as count FROM ${table}`)
     //console.log(resourceType, count);
     if (count[0].count > 0) {
       return

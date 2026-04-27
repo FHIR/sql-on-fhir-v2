@@ -14,6 +14,17 @@ const DEFAULT_ROW_LIMIT = 1000
 // Simple async lock to serialize $sqlquery-run requests on the shared connection.
 let lockPromise = Promise.resolve()
 
+/**
+ * Run an async function under a process-wide lock. Each call queues behind the
+ * previous one, ensuring at most one critical section is in flight at a time.
+ *
+ * Used to guard the shared SQLite connection against interleaved DROP and
+ * CREATE TEMP TABLE statements between concurrent $sqlquery-run requests.
+ *
+ * @template T
+ * @param {() => Promise<T>} fn - The async function to run under the lock.
+ * @returns {Promise<T>} The result of `fn`.
+ */
 async function withLock(fn) {
   const unlock = await new Promise((resolveOuter) => {
     lockPromise = lockPromise.then(
@@ -71,17 +82,23 @@ export async function resolveLibrary(req, params) {
   throw badRequestError('Either queryReference or queryResource must be provided')
 }
 
+// Each label is interpolated into a SQL identifier (e.g. CREATE TEMP TABLE
+// "<label>"). Restrict it to a SQL identifier shape so that an unusual label
+// can't break out of the quoting or cause a confusing SQL syntax error.
+const LABEL_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/
+
 /**
  * Resolve relatedArtifact dependencies of type 'depends-on' to ViewDefinitions.
  * @param {object} config - Server configuration object with db connection.
  * @param {object} library - The Library resource to resolve dependencies for.
  * @returns {Promise<Array<{label: string, viewDef: object}>>} Array of resolved ViewDefinitions with labels.
- * @throws {Error} If a referenced ViewDefinition cannot be found.
+ * @throws {Error} 400 invalid if a label is malformed or duplicated; 404 not-found if a referenced ViewDefinition is missing.
  */
 export async function resolveViewDefinitions(config, library) {
   const artifacts = (library.relatedArtifact || []).filter((ra) => ra.type === 'depends-on')
 
   const results = []
+  const seenLabels = new Set()
   for (const artifact of artifacts) {
     const resourceUrl = artifact.resource
     if (!resourceUrl) {
@@ -95,6 +112,15 @@ export async function resolveViewDefinitions(config, library) {
     }
 
     const label = artifact.label || viewDef.name || id
+    if (!LABEL_PATTERN.test(label)) {
+      throw badRequestError(
+        `relatedArtifact label "${label}" is not a valid SQL identifier; must match ${LABEL_PATTERN}`,
+      )
+    }
+    if (seenLabels.has(label)) {
+      throw badRequestError(`Duplicate relatedArtifact label "${label}"; labels must be unique`)
+    }
+    seenLabels.add(label)
     results.push({ label, viewDef })
   }
 
@@ -542,6 +568,25 @@ function getContentType(format) {
   }
 }
 
+/**
+ * Determine the download filename hint for a given output format. JSON and
+ * FHIR responses are typically consumed inline by programmatic clients, so
+ * only the flat tabular formats get a filename.
+ * @param {string} format - Output format.
+ * @returns {string|null} Filename to use in `Content-Disposition`, or null
+ *   when the response should remain inline.
+ */
+function getDownloadFilename(format) {
+  switch (format) {
+    case 'csv':
+      return 'sqlquery-run.csv'
+    case 'ndjson':
+      return 'sqlquery-run.ndjson'
+    default:
+      return null
+  }
+}
+
 // Error helpers.
 
 function notFoundError(message) {
@@ -574,6 +619,14 @@ function notSupportedError(message) {
   return err
 }
 
+/**
+ * Render a thrown error as either an HTML alert (for browser/form clients) or
+ * an OperationOutcome JSON body (for programmatic clients).
+ * @param {object} req - Express request object, used to detect HTML preference.
+ * @param {object} res - Express response object.
+ * @param {Error & {statusCode?: number, code?: string}} error - The error to
+ *   render. `statusCode` defaults to 500 and `code` defaults to `error`.
+ */
 function renderError(req, res, error) {
   const statusCode = error.statusCode || 500
   const code = error.code || 'error'
@@ -622,7 +675,7 @@ async function handleSqlQueryRun(req, res, options = {}) {
       throw notSupportedError('The source parameter is not supported by this server')
     }
     const headerParam = getParameterValue(params, 'header', 'Boolean')
-    const includeHeader = headerParam !== false && headerParam !== 'false'
+    const includeHeader = headerParam !== false
 
     const library = await resolveLibrary(req, params)
     const viewDefs = await resolveViewDefinitions(req.config, library)
@@ -659,6 +712,12 @@ async function handleSqlQueryRun(req, res, options = {}) {
       res.send(renderRunResultFragment(rows, format, includeHeader, params, columnTypes))
     } else {
       res.setHeader('Content-Type', getContentType(format))
+      const filename = getDownloadFilename(format)
+      if (filename) {
+        // Tabular formats are typically saved to disk; suggest a sensible
+        // filename so browsers and curl -OJ pick a reasonable default.
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`)
+      }
       const body =
         format === 'fhir'
           ? JSON.stringify(formatResultAsFhir(rows, columnTypes), null, 2)
@@ -684,6 +743,18 @@ async function handleSqlQueryRun(req, res, options = {}) {
   }
 }
 
+/**
+ * Render a successful $sqlquery-run result as an HTML fragment for the HTMX
+ * form pages. The Parameters and the formatted result body are escaped and
+ * shown side by side so users can see both their request and the response.
+ * @param {Array<object>} rows - The query result rows.
+ * @param {string} format - The selected output format (json, ndjson, csv, fhir).
+ * @param {boolean} includeHeader - Whether to include a CSV header row.
+ * @param {object} params - The input Parameters resource, rendered for context.
+ * @param {Array<{name: string, type: string}>} [columnTypes] - Declared column
+ *   types, used by the FHIR formatter to choose value[x] keys.
+ * @returns {string} HTML fragment.
+ */
 function renderRunResultFragment(rows, format, includeHeader, params, columnTypes) {
   const count = Array.isArray(rows) ? rows.length : 0
   const rowLabel = `${count} row${count === 1 ? '' : 's'}`
@@ -708,6 +779,14 @@ function renderRunResultFragment(rows, format, includeHeader, params, columnType
   `
 }
 
+/**
+ * Render a $sqlquery-run failure as an HTML alert fragment for the HTMX form
+ * pages. Returns 200 to HTMX so the fragment swaps in; the underlying error
+ * code and message are surfaced inside the alert.
+ * @param {Error & {code?: string}} error - The error to render. `code` defaults
+ *   to `error`.
+ * @returns {string} HTML fragment.
+ */
 function renderRunErrorFragment(error) {
   const code = error.code || 'error'
   return `
@@ -718,6 +797,16 @@ function renderRunErrorFragment(error) {
   `
 }
 
+/**
+ * Convert an HTML-form body into a Parameters resource matching the JSON
+ * surface area of $sqlquery-run. Mirrors the parameter set on the
+ * OperationDefinition so the form path and the JSON path share validation.
+ * @param {Record<string, string|boolean>} body - The form body parsed by
+ *   Express, with one entry per form field.
+ * @returns {object} A Parameters resource.
+ * @throws {Error} 400 invalid if `queryResource` or `parameters` cannot be
+ *   parsed as JSON.
+ */
 function buildParametersFromBody(body) {
   const parameter = []
 
@@ -916,6 +1005,11 @@ export async function getInstanceForm(req, res) {
   )
 }
 
+/**
+ * Register all $sqlquery-run routes (system, type, and instance level POST
+ * endpoints, plus their HTMX form counterparts) on an Express app.
+ * @param {object} app - The Express app to mount routes on.
+ */
 export function mountRoutes(app) {
   app.post('/\\$sqlquery-run', postSystemLevel)
   app.post('/Library/\\$sqlquery-run', postTypeLevel)

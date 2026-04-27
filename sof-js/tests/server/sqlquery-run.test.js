@@ -1,11 +1,22 @@
+import fs from 'fs'
+import os from 'os'
+import path from 'path'
+
 import { startServer } from '../../src/server.js'
 
 var server
-const DB_PATH = './test-sqlquery-run.sqlite'
+var config
+// Place the test SQLite database in an isolated tmp directory so it does not
+// leak into the working directory on test failure.
+const TMP_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'sof-sqlquery-'))
+const DB_PATH = path.join(TMP_DIR, 'db.sqlite')
 
 beforeAll(async () => {
   process.env.DB_PATH = DB_PATH
-  server = await startServer({ port: 3004 })
+  // Pass a config object by reference so we can access the SQLite connection
+  // for shutdown later.
+  config = { port: 3004 }
+  server = await startServer(config)
   console.log('Server started')
 
   // Wait for Patient data to be loaded.
@@ -25,6 +36,13 @@ beforeAll(async () => {
 afterAll(async () => {
   console.log('Server stopped')
   server?.close()
+  // Close the SQLite connection so any pending writes from the (still
+  // running) background resource loader fail fast instead of attempting to
+  // write to a path that's about to be removed. The close itself is
+  // best-effort; we don't await drain because the loader may still be
+  // working through 100k+ records.
+  config?.db?.close()
+  fs.rmSync(TMP_DIR, { recursive: true, force: true })
 })
 
 describe('$sqlquery-run operation', () => {
@@ -96,11 +114,43 @@ describe('$sqlquery-run operation', () => {
 
     expect(response.status).toBe(200)
     expect(response.headers.get('Content-Type')).toContain('text/csv')
+    expect(response.headers.get('Content-Disposition')).toBe('attachment; filename="sqlquery-run.csv"')
 
     const body = await response.text()
     const lines = body.split('\n')
     expect(lines[0]).toBe('id,date_of_birth,gender')
     expect(lines.length).toBeGreaterThan(1)
+  })
+
+  test('type-level with _format=ndjson returns newline-delimited JSON', async () => {
+    const response = await fetch('http://localhost:3004/Library/$sqlquery-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify({
+        resourceType: 'Parameters',
+        parameter: [
+          { name: '_format', valueCode: 'ndjson' },
+          { name: 'queryReference', valueReference: { reference: 'Library/patient-bp-query' } },
+        ],
+      }),
+    })
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get('Content-Type')).toContain('application/ndjson')
+    expect(response.headers.get('Content-Disposition')).toBe('attachment; filename="sqlquery-run.ndjson"')
+
+    const body = await response.text()
+    // NDJSON has no trailing newline - one JSON object per line.
+    expect(body.endsWith('\n')).toBe(false)
+
+    const lines = body.split('\n')
+    expect(lines.length).toBeGreaterThan(0)
+    for (const line of lines) {
+      const row = JSON.parse(line)
+      expect(row).toHaveProperty('id')
+      expect(row).toHaveProperty('date_of_birth')
+      expect(row).toHaveProperty('gender')
+    }
   })
 
   test('instance-level execution returns JSON results', async () => {
@@ -119,6 +169,37 @@ describe('$sqlquery-run operation', () => {
     const body = await response.json()
     expect(Array.isArray(body)).toBe(true)
     expect(body.length).toBeGreaterThan(0)
+  })
+
+  test('parallel $sqlquery-run requests are serialised on shared TEMP tables', async () => {
+    // The handler relies on withLock to serialise access to shared TEMP
+    // tables on the single SQLite connection. Two requests that both
+    // materialise a TEMP table named "p" must each see their own copy of
+    // the data; without the lock, the DROP/CREATE/INSERT sequence in one
+    // request can interleave with the other and corrupt or empty the table.
+    const requestBody = {
+      resourceType: 'Parameters',
+      parameter: [{ name: '_format', valueCode: 'json' }],
+    }
+    const submit = () =>
+      fetch('http://localhost:3004/Library/patient-bp-query/$sqlquery-run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/fhir+json' },
+        body: JSON.stringify(requestBody),
+      })
+
+    const [responseA, responseB] = await Promise.all([submit(), submit()])
+
+    expect(responseA.status).toBe(200)
+    expect(responseB.status).toBe(200)
+
+    const [bodyA, bodyB] = await Promise.all([responseA.json(), responseB.json()])
+    expect(Array.isArray(bodyA)).toBe(true)
+    expect(Array.isArray(bodyB)).toBe(true)
+    expect(bodyA.length).toBeGreaterThan(0)
+    // Both requests run the same query against the same materialised view, so
+    // their result sets must match exactly even when fired in parallel.
+    expect(bodyB.length).toBe(bodyA.length)
   })
 
   test('ViewDefinition dependency resolution creates temporary tables', async () => {
@@ -359,6 +440,110 @@ describe('$sqlquery-run operation', () => {
     expect(body.issue[0].diagnostics).toContain('anything')
   })
 
+  test('relatedArtifact label that is not a SQL identifier is rejected', async () => {
+    // Labels are interpolated into CREATE TEMP TABLE identifiers. A label
+    // containing a double quote would break out of the quoting and produce a
+    // confusing SQL syntax error rather than a clean 400, so we validate the
+    // shape up front.
+    const response = await fetch('http://localhost:3004/$sqlquery-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify({
+        resourceType: 'Parameters',
+        parameter: [
+          { name: '_format', valueCode: 'json' },
+          {
+            name: 'queryResource',
+            resource: {
+              resourceType: 'Library',
+              type: {
+                coding: [
+                  {
+                    system: 'http://terminology.hl7.org/CodeSystem/library-type',
+                    code: 'logic-library',
+                  },
+                ],
+              },
+              status: 'active',
+              relatedArtifact: [
+                {
+                  type: 'depends-on',
+                  label: 'bad"label',
+                  resource: 'http://sql-on-fhir.org/ViewDefinition/patient_demographics',
+                },
+              ],
+              content: [
+                {
+                  contentType: 'application/sql',
+                  data: 'U0VMRUNUICogRlJPTSBwIExJTUlUIDE=',
+                },
+              ],
+            },
+          },
+        ],
+      }),
+    })
+
+    expect(response.status).toBe(400)
+    const body = await response.json()
+    expect(body.issue[0].code).toBe('invalid')
+    expect(body.issue[0].diagnostics).toContain('bad"label')
+  })
+
+  test('duplicate relatedArtifact labels are rejected', async () => {
+    // Two depends-on entries with the same label would silently shadow each
+    // other in the temporary table; reject up front so callers get a clear
+    // error rather than mysterious results.
+    const response = await fetch('http://localhost:3004/$sqlquery-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify({
+        resourceType: 'Parameters',
+        parameter: [
+          { name: '_format', valueCode: 'json' },
+          {
+            name: 'queryResource',
+            resource: {
+              resourceType: 'Library',
+              type: {
+                coding: [
+                  {
+                    system: 'http://terminology.hl7.org/CodeSystem/library-type',
+                    code: 'logic-library',
+                  },
+                ],
+              },
+              status: 'active',
+              relatedArtifact: [
+                {
+                  type: 'depends-on',
+                  label: 'p',
+                  resource: 'http://sql-on-fhir.org/ViewDefinition/patient_demographics',
+                },
+                {
+                  type: 'depends-on',
+                  label: 'p',
+                  resource: 'http://sql-on-fhir.org/ViewDefinition/observations',
+                },
+              ],
+              content: [
+                {
+                  contentType: 'application/sql',
+                  data: 'U0VMRUNUICogRlJPTSBwIExJTUlUIDE=',
+                },
+              ],
+            },
+          },
+        ],
+      }),
+    })
+
+    expect(response.status).toBe(400)
+    const body = await response.json()
+    expect(body.issue[0].code).toBe('invalid')
+    expect(body.issue[0].diagnostics).toContain('Duplicate')
+  })
+
   // Helper to invoke $sqlquery-run with an inline SQL Library against the
   // patient_demographics ViewDefinition (aliased as `p`).
   async function runFhirQuery(sql) {
@@ -464,6 +649,110 @@ describe('$sqlquery-run operation', () => {
 
     const body = await response.json()
     expect(body).toEqual({ resourceType: 'Parameters' })
+  })
+
+  // Helper that materialises the `patient_typed_columns` ViewDefinition (which
+  // exposes boolean / date / instant columns) and runs an inline SQL query
+  // against it. Used by the type-coercion stress tests below.
+  async function runTypedFhirQuery(sql) {
+    const encodedSql = Buffer.from(sql, 'utf8').toString('base64')
+    return fetch('http://localhost:3004/$sqlquery-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify({
+        resourceType: 'Parameters',
+        parameter: [
+          { name: '_format', valueCode: 'fhir' },
+          {
+            name: 'queryResource',
+            resource: {
+              resourceType: 'Library',
+              type: {
+                coding: [
+                  {
+                    system: 'http://terminology.hl7.org/CodeSystem/library-type',
+                    code: 'logic-library',
+                  },
+                ],
+              },
+              status: 'active',
+              relatedArtifact: [
+                {
+                  type: 'depends-on',
+                  label: 't',
+                  resource: 'http://sql-on-fhir.org/ViewDefinition/patient_typed_columns',
+                },
+              ],
+              content: [{ contentType: 'application/sql', data: encodedSql }],
+            },
+          },
+        ],
+      }),
+    })
+  }
+
+  test('_format=fhir encodes a declared boolean column as valueBoolean even when SQLite stores 0/1', async () => {
+    // SQLite has no native BOOLEAN type and stores boolean values as integers.
+    // The temp-table column declared as BOOLEAN drives sqlTypeToFhirValueKey
+    // back to `valueBoolean`, and encodeFhirValue must coerce the stored
+    // integer into a real JSON boolean. The `has_name` column in
+    // patient_typed_columns is derived from `name.exists()` so it is reliably
+    // populated for every row.
+    const response = await runTypedFhirQuery('SELECT id, has_name FROM t LIMIT 1')
+    expect(response.status).toBe(200)
+
+    const body = await response.json()
+    expect(body.resourceType).toBe('Parameters')
+    expect(body.parameter).toHaveLength(1)
+
+    const parts = body.parameter[0].part
+    const byName = Object.fromEntries(parts.map((p) => [p.name, p]))
+
+    expect(byName.has_name).toBeDefined()
+    expect(typeof byName.has_name.valueBoolean).toBe('boolean')
+    // Guard against the regression where an integer slips through as
+    // `valueInteger: 1` instead of `valueBoolean: true`.
+    expect(byName.has_name.valueInteger).toBeUndefined()
+    expect(byName.has_name.valueString).toBeUndefined()
+  })
+
+  test('_format=fhir preserves declared integer column type through expression queries', async () => {
+    // Even when the result column is wrapped in COALESCE / arithmetic, the
+    // temp-table column type drives the FHIR output. `given_count` is
+    // declared as integer; assert the response uses `valueInteger`, not
+    // `valueDecimal` or `valueString`.
+    const response = await runTypedFhirQuery(
+      'SELECT id, COALESCE(given_count, 0) AS given_count FROM t LIMIT 1',
+    )
+    expect(response.status).toBe(200)
+
+    const body = await response.json()
+    const parts = body.parameter[0].part
+    const byName = Object.fromEntries(parts.map((p) => [p.name, p]))
+
+    expect(byName.given_count).toBeDefined()
+    expect(typeof byName.given_count.valueInteger).toBe('number')
+    expect(Number.isInteger(byName.given_count.valueInteger)).toBe(true)
+    expect(byName.given_count.valueDecimal).toBeUndefined()
+  })
+
+  test('_format=fhir uses runtime inference for aggregate expressions that bypass column-type probing', async () => {
+    // COUNT(*) has no source-table column type for the probe to read; the
+    // runtime-inferred JavaScript number must come through as
+    // `valueInteger`. This exercises the second fallback branch in
+    // executeSqlQueryWithTypes where columnTypes is filled from the first
+    // result row instead of PRAGMA.
+    const response = await runFhirQuery('SELECT COUNT(*) AS n FROM p')
+    expect(response.status).toBe(200)
+
+    const body = await response.json()
+    const parts = body.parameter[0].part
+    const byName = Object.fromEntries(parts.map((p) => [p.name, p]))
+
+    expect(byName.n).toBeDefined()
+    expect(byName.n.valueInteger).toEqual(expect.any(Number))
+    expect(Number.isInteger(byName.n.valueInteger)).toBe(true)
+    expect(byName.n.valueDecimal).toBeUndefined()
   })
 
   test('CSV output without header when header=false', async () => {

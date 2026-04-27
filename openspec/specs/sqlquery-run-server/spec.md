@@ -124,6 +124,11 @@ The system SHALL return the correct HTTP status and an OperationOutcome for erro
 - **WHEN** `_format` is `fhir` and the query returns a column with an unsupported SQL type (e.g. INTERVAL, ARRAY)
 - **THEN** the server returns HTTP 422 with an OperationOutcome indicating `not-supported`
 
+#### Scenario: Source parameter rejected
+
+- **WHEN** the request includes a `source` parameter
+- **THEN** the server returns HTTP 422 with an OperationOutcome indicating `not-supported`
+
 ### Requirement: Server provides HTML forms for interactive testing
 
 The system SHALL provide HTML forms at `GET /$sqlquery-run/form` and `GET /Library/$sqlquery-run/form` for interactive operation testing.
