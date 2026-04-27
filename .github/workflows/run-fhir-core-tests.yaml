@@ -8,8 +8,9 @@ on:
         required: true
         default: "master"
   schedule:
-    # Run weekly on Sunday at 00:00 UTC.
-    - cron: "0 0 * * 0"
+    # Run weekly on Sunday at 03:17 UTC. The offbeat minute and hour avoid
+    # GitHub's scheduling backlog at the top of common hours.
+    - cron: "17 3 * * 0"
 
 permissions:
   contents: write
