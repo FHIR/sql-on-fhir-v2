@@ -26,7 +26,7 @@ export async function getIndex(req, res) {
         <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition">ViewDefinitions</a></li>
         <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$evaluate">ViewDefinition/$evaluate</a></li>
         <li><a class="text-blue-500 hover:text-blue-700" href="/ViewDefinition/$viewdefinition-export">ViewDefinition/$viewdefinition-export</a></li>
-        <li><a class="text-blue-500 hover:text-blue-700" href="/Library/patient-count/$sqlquery-run/form">Library/$sqlquery-run (form)</a></li>
+        <li><a class="text-blue-500 hover:text-blue-700" href="/Library/patient-count/$sqlquery-run/form">Library/$sqlquery-run</a></li>
         <hr class="my-4"/>
         ${resourceTypes
           .sort()
