@@ -129,10 +129,18 @@ export function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
+// Resource-typed Parameters inputs are carried in `parameter.resource` per
+// FHIR, not in a `value[x]` slot. `Resource` is the abstract base; other
+// concrete resource types (e.g. `Parameters`) follow the same rule.
+const RESOURCE_PARAMETER_TYPES = new Set(['Resource', 'Parameters'])
+
 export function getParameterValue(params, name, type) {
   const parameter = getParameters(params, name)[0]
   if (!parameter) {
     return null
+  }
+  if (RESOURCE_PARAMETER_TYPES.has(type)) {
+    return parameter.resource ?? null
   }
   const attribute = `value${capitalize(type)}`
   return parameter[attribute]
@@ -345,6 +353,23 @@ export async function renderOperationDefinition(req, operation, defaults = {}) {
         </table>
     </div>
     `
+}
+
+/**
+ * Escape a value for safe interpolation into HTML text or attributes.
+ * Coerces non-string inputs via `String()`. Use everywhere user-controlled
+ * content is interpolated into a template literal that becomes HTML.
+ *
+ * @param {unknown} value - Value to escape.
+ * @returns {string} HTML-escaped string.
+ */
+export function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
 }
 
 export function arrayify(value) {

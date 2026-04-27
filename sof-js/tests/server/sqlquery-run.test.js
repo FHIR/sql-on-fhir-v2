@@ -38,7 +38,7 @@ describe('$sqlquery-run operation', () => {
           { name: '_format', valueCode: 'json' },
           {
             name: 'queryResource',
-            valueResource: {
+            resource: {
               resourceType: 'Library',
               type: {
                 coding: [
@@ -131,7 +131,7 @@ describe('$sqlquery-run operation', () => {
           { name: '_format', valueCode: 'json' },
           {
             name: 'queryResource',
-            valueResource: {
+            resource: {
               resourceType: 'Library',
               type: {
                 coding: [
@@ -181,7 +181,7 @@ describe('$sqlquery-run operation', () => {
           { name: '_format', valueCode: 'json' },
           {
             name: 'queryResource',
-            valueResource: {
+            resource: {
               resourceType: 'Library',
               type: {
                 coding: [
@@ -213,7 +213,7 @@ describe('$sqlquery-run operation', () => {
           },
           {
             name: 'parameters',
-            valueParameters: {
+            resource: {
               resourceType: 'Parameters',
               parameter: [
                 { name: 'gender_filter', valueString: 'male' },
@@ -234,6 +234,131 @@ describe('$sqlquery-run operation', () => {
     }
   })
 
+  // Inline Library used by the parameter-validation tests below. Declares
+  // two parameters whose declared types drive the value[x] mapping check.
+  const PARAMETER_VALIDATION_LIBRARY = {
+    resourceType: 'Library',
+    type: {
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/library-type',
+          code: 'logic-library',
+        },
+      ],
+    },
+    status: 'active',
+    parameter: [
+      { name: 'gender_filter', type: 'string' },
+      { name: 'max_rows', type: 'integer' },
+    ],
+    relatedArtifact: [
+      {
+        type: 'depends-on',
+        label: 'p',
+        resource: 'http://sql-on-fhir.org/ViewDefinition/patient_demographics',
+      },
+    ],
+    content: [
+      {
+        contentType: 'application/sql',
+        data: 'U0VMRUNUICogRlJPTSBwIFdIRVJFIGdlbmRlciA9IDpnZW5kZXJfZmlsdGVyIExJTUlUIDptYXhfcm93cw==',
+      },
+    ],
+  }
+
+  test('unknown parameter name returns 400 invalid', async () => {
+    // Per the spec, an input parameter whose name is not declared in
+    // Library.parameter must be rejected at the boundary.
+    const response = await fetch('http://localhost:3004/$sqlquery-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify({
+        resourceType: 'Parameters',
+        parameter: [
+          { name: '_format', valueCode: 'json' },
+          { name: 'queryResource', resource: PARAMETER_VALIDATION_LIBRARY },
+          {
+            name: 'parameters',
+            resource: {
+              resourceType: 'Parameters',
+              parameter: [
+                { name: 'gender_filter', valueString: 'male' },
+                { name: 'max_rows', valueInteger: 5 },
+                { name: 'unknown_param', valueString: 'oops' },
+              ],
+            },
+          },
+        ],
+      }),
+    })
+
+    expect(response.status).toBe(400)
+    const body = await response.json()
+    expect(body.issue[0].severity).toBe('error')
+    expect(body.issue[0].code).toBe('invalid')
+    expect(body.issue[0].diagnostics).toContain('unknown_param')
+  })
+
+  test('parameter value type mismatch returns 400 invalid', async () => {
+    // The Library declares max_rows as integer; sending it as valueString
+    // must be rejected with 400 invalid per the spec error table.
+    const response = await fetch('http://localhost:3004/$sqlquery-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify({
+        resourceType: 'Parameters',
+        parameter: [
+          { name: '_format', valueCode: 'json' },
+          { name: 'queryResource', resource: PARAMETER_VALIDATION_LIBRARY },
+          {
+            name: 'parameters',
+            resource: {
+              resourceType: 'Parameters',
+              parameter: [
+                { name: 'gender_filter', valueString: 'male' },
+                { name: 'max_rows', valueString: 'not-an-integer' },
+              ],
+            },
+          },
+        ],
+      }),
+    })
+
+    expect(response.status).toBe(400)
+    const body = await response.json()
+    expect(body.issue[0].severity).toBe('error')
+    expect(body.issue[0].code).toBe('invalid')
+    expect(body.issue[0].diagnostics).toContain('max_rows')
+  })
+
+  test('library without declared parameters rejects any input parameter', async () => {
+    // patient-bp-query has no Library.parameter array, so any input
+    // parameter is by definition unknown.
+    const response = await fetch('http://localhost:3004/Library/patient-bp-query/$sqlquery-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify({
+        resourceType: 'Parameters',
+        parameter: [
+          { name: '_format', valueCode: 'json' },
+          {
+            name: 'parameters',
+            resource: {
+              resourceType: 'Parameters',
+              parameter: [{ name: 'anything', valueString: 'x' }],
+            },
+          },
+        ],
+      }),
+    })
+
+    expect(response.status).toBe(400)
+    const body = await response.json()
+    expect(body.issue[0].severity).toBe('error')
+    expect(body.issue[0].code).toBe('invalid')
+    expect(body.issue[0].diagnostics).toContain('anything')
+  })
+
   // Helper to invoke $sqlquery-run with an inline SQL Library against the
   // patient_demographics ViewDefinition (aliased as `p`).
   async function runFhirQuery(sql) {
@@ -247,7 +372,7 @@ describe('$sqlquery-run operation', () => {
           { name: '_format', valueCode: 'fhir' },
           {
             name: 'queryResource',
-            valueResource: {
+            resource: {
               resourceType: 'Library',
               type: {
                 coding: [
@@ -352,7 +477,7 @@ describe('$sqlquery-run operation', () => {
           { name: 'header', valueBoolean: false },
           {
             name: 'queryResource',
-            valueResource: {
+            resource: {
               resourceType: 'Library',
               type: {
                 coding: [
@@ -404,6 +529,10 @@ describe('$sqlquery-run operation', () => {
     expect(response.status).toBe(404)
     const body = await response.json()
     expect(body.resourceType).toBe('OperationOutcome')
+    expect(body.issue[0].severity).toBe('error')
+    expect(body.issue[0].code).toBe('not-found')
+    expect(body.issue[0].diagnostics).toEqual(expect.any(String))
+    expect(body.issue[0].diagnostics.length).toBeGreaterThan(0)
   })
 
   test('missing ViewDefinition returns 404', async () => {
@@ -416,7 +545,7 @@ describe('$sqlquery-run operation', () => {
           { name: '_format', valueCode: 'json' },
           {
             name: 'queryResource',
-            valueResource: {
+            resource: {
               resourceType: 'Library',
               type: {
                 coding: [
@@ -449,6 +578,9 @@ describe('$sqlquery-run operation', () => {
     expect(response.status).toBe(404)
     const body = await response.json()
     expect(body.resourceType).toBe('OperationOutcome')
+    expect(body.issue[0].severity).toBe('error')
+    expect(body.issue[0].code).toBe('not-found')
+    expect(body.issue[0].diagnostics).toEqual(expect.any(String))
   })
 
   test('missing _format returns 400', async () => {
@@ -466,7 +598,9 @@ describe('$sqlquery-run operation', () => {
     expect(response.status).toBe(400)
     const body = await response.json()
     expect(body.resourceType).toBe('OperationOutcome')
+    expect(body.issue[0].severity).toBe('error')
     expect(body.issue[0].code).toBe('invalid')
+    expect(body.issue[0].diagnostics).toEqual(expect.any(String))
   })
 
   test('source parameter returns 422 not-supported', async () => {
@@ -488,7 +622,34 @@ describe('$sqlquery-run operation', () => {
     expect(response.status).toBe(422)
     const body = await response.json()
     expect(body.resourceType).toBe('OperationOutcome')
+    expect(body.issue[0].severity).toBe('error')
     expect(body.issue[0].code).toBe('not-supported')
+    expect(body.issue[0].diagnostics).toEqual(expect.any(String))
+  })
+
+  test('parquet format returns 422 not-supported', async () => {
+    // The OperationDefinition advertises parquet (per the FSH source) but
+    // this reference impl doesn't produce it. The spec's error-handling
+    // table maps "advertised but not implemented" to 422 not-supported, not
+    // 400 invalid.
+    const response = await fetch('http://localhost:3004/Library/$sqlquery-run', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/fhir+json' },
+      body: JSON.stringify({
+        resourceType: 'Parameters',
+        parameter: [
+          { name: '_format', valueCode: 'parquet' },
+          { name: 'queryReference', valueReference: { reference: 'Library/patient-bp-query' } },
+        ],
+      }),
+    })
+
+    expect(response.status).toBe(422)
+    const body = await response.json()
+    expect(body.resourceType).toBe('OperationOutcome')
+    expect(body.issue[0].severity).toBe('error')
+    expect(body.issue[0].code).toBe('not-supported')
+    expect(body.issue[0].diagnostics).toEqual(expect.any(String))
   })
 
   test('OperationDefinition exposes spec-aligned parameters', async () => {
@@ -531,6 +692,56 @@ describe('$sqlquery-run operation', () => {
     expect(byName.result).toBeUndefined()
   })
 
+  test('form fragment escapes HTML in user-supplied content', async () => {
+    // The form path renders the input Parameters and the result body into a
+    // <pre>. A queryResource string field containing markup must be escaped,
+    // not rendered as live HTML.
+    const malicious = `</pre><script>alert('xss')</script>`
+    const queryResource = JSON.stringify({
+      resourceType: 'Library',
+      type: {
+        coding: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/library-type',
+            code: 'logic-library',
+          },
+        ],
+      },
+      status: 'active',
+      // The malicious markup lives in a free-text field that the form
+      // serialises into the rendered Parameters block.
+      title: malicious,
+      relatedArtifact: [
+        {
+          type: 'depends-on',
+          label: 'p',
+          resource: 'http://sql-on-fhir.org/ViewDefinition/patient_demographics',
+        },
+      ],
+      content: [{ contentType: 'application/sql', data: 'U0VMRUNUICogRlJPTSBwIExJTUlUIDE=' }],
+    })
+
+    const formBody = new URLSearchParams({
+      _format: 'json',
+      queryResource,
+    })
+
+    const response = await fetch('http://localhost:3004/$sqlquery-run/form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formBody.toString(),
+    })
+
+    expect(response.status).toBe(200)
+    const text = await response.text()
+    // The literal `<script>` tag must not survive into the response.
+    expect(text).not.toContain('<script>')
+    expect(text).not.toContain('</pre><script>')
+    // The escaped form must be present, proving the value reached the
+    // template but was sanitised.
+    expect(text).toContain('&lt;script&gt;')
+  })
+
   test('invalid SQL returns 422', async () => {
     const response = await fetch('http://localhost:3004/$sqlquery-run', {
       method: 'POST',
@@ -541,7 +752,7 @@ describe('$sqlquery-run operation', () => {
           { name: '_format', valueCode: 'json' },
           {
             name: 'queryResource',
-            valueResource: {
+            resource: {
               resourceType: 'Library',
               type: {
                 coding: [
@@ -574,5 +785,11 @@ describe('$sqlquery-run operation', () => {
     expect(response.status).toBe(422)
     const body = await response.json()
     expect(body.resourceType).toBe('OperationOutcome')
+    expect(body.issue[0].severity).toBe('error')
+    // SQL execution failures map to FHIR issue-type `processing`; the
+    // invalid `unprocessable` code that the impl previously emitted is not in
+    // the FHIR ValueSet.
+    expect(body.issue[0].code).toBe('processing')
+    expect(body.issue[0].diagnostics).toEqual(expect.any(String))
   })
 })

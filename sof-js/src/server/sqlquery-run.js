@@ -1,7 +1,7 @@
 import { read, search } from './db.js'
 import { evaluate, get_columns_with_types } from '../index.js'
 import { layout, crumb, sectionHead } from './ui.js'
-import { isHtml, renderOperationDefinition, renderNotFound } from './utils.js'
+import { escapeHtml, getParameterValue, isHtml, renderNotFound, renderOperationDefinition } from './utils.js'
 import {
   encodeFhirValue,
   fhirTypeToSqlType,
@@ -121,26 +121,64 @@ export function getSqlFromLibrary(library) {
   throw unprocessableError('Library SQL content does not contain a base64 data field')
 }
 
+// Maps Library.parameter.type to the FHIR value[x] key required on the
+// matching input parameter. Mirrors the table in the IG spec at
+// `OperationDefinition-SQLQueryRun-notes.md`.
+const PARAMETER_VALUE_KEY_BY_TYPE = {
+  string: 'valueString',
+  integer: 'valueInteger',
+  date: 'valueDate',
+  dateTime: 'valueDateTime',
+  boolean: 'valueBoolean',
+  decimal: 'valueDecimal',
+}
+
 /**
- * Build a bindings object from the input Parameters resource for SQLite named parameters.
- * @param {object} params - The input Parameters resource.
- * @returns {object} Object mapping parameter names to their values.
+ * Build a bindings object from the input Parameters resource for SQLite
+ * named parameters, validating each input against `Library.parameter[]`
+ * declarations.
+ *
+ * Per the spec error table, an unknown parameter name or a value[x] key
+ * that doesn't match the declared parameter type is a 400 invalid.
+ *
+ * @param {object} params - The input Parameters resource (may be null).
+ * @param {object} library - The resolved Library resource. Its
+ *   `parameter` array drives validation; missing or empty means any input
+ *   parameter is unknown.
+ * @returns {object} Object mapping `:name` keys to bound values.
+ * @throws {Error} 400 invalid for unknown names or type mismatches.
  */
-export function extractParameters(params) {
+export function extractParameters(params, library) {
   const bindings = {}
   if (!params || !params.parameter) {
     return bindings
   }
 
+  const declared = new Map((library?.parameter || []).map((p) => [p.name, p.type]))
+
   for (const param of params.parameter) {
     const name = param.name
     if (!name) continue
 
-    // Find the first value[x] property.
-    const valueKey = Object.keys(param).find((k) => k.startsWith('value'))
-    if (valueKey) {
-      bindings[`:${name}`] = param[valueKey]
+    if (!declared.has(name)) {
+      throw badRequestError(`Unknown parameter name "${name}"; not declared in Library.parameter`)
     }
+
+    const declaredType = declared.get(name)
+    const expectedKey = PARAMETER_VALUE_KEY_BY_TYPE[declaredType]
+    if (!expectedKey) {
+      throw badRequestError(`Library parameter "${name}" has unsupported declared type "${declaredType}"`)
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(param, expectedKey)) {
+      const actualKey = Object.keys(param).find((k) => k.startsWith('value'))
+      throw badRequestError(
+        `Value type mismatch for parameter "${name}": expected ${expectedKey}` +
+          (actualKey ? `, got ${actualKey}` : ', no value[x] present'),
+      )
+    }
+
+    bindings[`:${name}`] = param[expectedKey]
   }
 
   return bindings
@@ -419,7 +457,10 @@ export function formatResult(rows, format, includeHeader = true) {
     return result
   }
 
-  throw badRequestError(`Unsupported format: ${format}`)
+  // The OperationDefinition advertises additional formats (e.g. parquet)
+  // for parity with the IG, but this reference impl only produces the four
+  // above. Surface that as 422 not-supported per the spec's error table.
+  throw notSupportedError(`Unsupported format: ${format}`)
 }
 
 /**
@@ -520,7 +561,9 @@ function badRequestError(message) {
 function unprocessableError(message) {
   const err = new Error(message)
   err.statusCode = 422
-  err.code = 'unprocessable'
+  // `processing` is the FHIR issue-type code for processing failures (the
+  // earlier `unprocessable` is not in the ValueSet).
+  err.code = 'processing'
   return err
 }
 
@@ -542,8 +585,8 @@ function renderError(req, res, error) {
       layout(`
         ${sectionHead({ eyebrow: `status · ${statusCode}`, title: 'Operation failed' })}
         <div class="alert">
-          <div class="alert__eyebrow">${code}</div>
-          <p>${error.message}</p>
+          <div class="alert__eyebrow">${escapeHtml(code)}</div>
+          <p>${escapeHtml(error.message)}</p>
         </div>
       `),
     )
@@ -551,7 +594,7 @@ function renderError(req, res, error) {
     res.status(statusCode)
     res.json({
       resourceType: 'OperationOutcome',
-      issue: [{ code: code, message: error.message }],
+      issue: [{ severity: 'error', code, diagnostics: error.message }],
     })
   }
 }
@@ -584,7 +627,7 @@ async function handleSqlQueryRun(req, res, options = {}) {
     const library = await resolveLibrary(req, params)
     const viewDefs = await resolveViewDefinitions(req.config, library)
     const sql = getSqlFromLibrary(library)
-    const bindings = extractParameters(getParameterValue(params, 'parameters', 'Parameters'))
+    const bindings = extractParameters(getParameterValue(params, 'parameters', 'Parameters'), library)
 
     // Materialise each ViewDefinition into a temporary table.
     for (const { label, viewDef } of viewDefs) {
@@ -652,14 +695,14 @@ function renderRunResultFragment(rows, format, includeHeader, params, columnType
   return `
     <div class="panel panel--flush mt-2">
       <div class="panel__header">
-        <span>result · ${rowLabel}</span>
-        <span>${formatLabel}</span>
+        <span>result · ${escapeHtml(rowLabel)}</span>
+        <span>${escapeHtml(formatLabel)}</span>
       </div>
       <div class="panel__body">
         <h3 style="margin-top:0">Parameters</h3>
-        <pre>${JSON.stringify(params, null, 2)}</pre>
+        <pre>${escapeHtml(JSON.stringify(params, null, 2))}</pre>
         <h3>Result</h3>
-        <pre>${body}</pre>
+        <pre>${escapeHtml(body)}</pre>
       </div>
     </div>
   `
@@ -669,8 +712,8 @@ function renderRunErrorFragment(error) {
   const code = error.code || 'error'
   return `
     <div class="alert">
-      <div class="alert__eyebrow">${code}</div>
-      <p>${error.message || String(error)}</p>
+      <div class="alert__eyebrow">${escapeHtml(code)}</div>
+      <p>${escapeHtml(error.message || String(error))}</p>
     </div>
   `
 }
@@ -680,7 +723,7 @@ function buildParametersFromBody(body) {
 
   if (body.queryResource) {
     try {
-      parameter.push({ name: 'queryResource', valueResource: JSON.parse(body.queryResource) })
+      parameter.push({ name: 'queryResource', resource: JSON.parse(body.queryResource) })
     } catch (e) {
       throw badRequestError(`Invalid queryResource JSON: ${e.message}`)
     }
@@ -692,7 +735,7 @@ function buildParametersFromBody(body) {
 
   if (body.parameters) {
     try {
-      parameter.push({ name: 'parameters', valueParameters: JSON.parse(body.parameters) })
+      parameter.push({ name: 'parameters', resource: JSON.parse(body.parameters) })
     } catch (e) {
       throw badRequestError(`Invalid parameters JSON: ${e.message}`)
     }
@@ -871,26 +914,6 @@ export async function getInstanceForm(req, res) {
       <div id="result" class="mt-6"></div>
     `),
   )
-}
-
-// Helper to extract a parameter value from a Parameters resource.
-function getParameterValue(params, name, type) {
-  if (!params || !params.parameter) {
-    return null
-  }
-  const parameter = params.parameter.find((p) => p.name === name)
-  if (!parameter) {
-    return null
-  }
-  const attribute = `value${capitalize(type)}`
-  return parameter[attribute]
-}
-
-function capitalize(str) {
-  if (!str || typeof str !== 'string' || str.length === 0) {
-    return str
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 export function mountRoutes(app) {
