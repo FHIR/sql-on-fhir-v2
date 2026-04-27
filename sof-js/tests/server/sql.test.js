@@ -246,6 +246,23 @@ describe('$sqlquery-run operation', () => {
     expect(body.issue[0].code).toBe('not-found')
   })
 
+  test('referenced ViewDefinition that cannot be resolved returns 404', async () => {
+    const inline = inlineMissingViewLibrary()
+    const res = await postSqlQueryRun(
+      '/Library/$sqlquery-run',
+      paramsBody([
+        { name: '_format', valueCode: 'json' },
+        { name: 'queryResource', resource: inline },
+      ]),
+    )
+
+    expect(res.status).toBe(404)
+    const body = await res.json()
+    expect(body.resourceType).toBe('OperationOutcome')
+    expect(body.issue[0].code).toBe('not-found')
+    expect(body.issue[0].diagnostics).toContain('ViewDefinition')
+  })
+
   test('SQL referencing a non-existent column returns 422', async () => {
     const inline = inlineBadColumnLibrary()
     const res = await postSqlQueryRun(
@@ -284,6 +301,32 @@ function inlinePatientCountLibrary() {
           {
             url: 'https://sql-on-fhir.org/ig/StructureDefinition/sql-text',
             valueString: 'SELECT COUNT(*) AS total FROM patient_demographics',
+          },
+        ],
+      },
+    ],
+  }
+}
+
+function inlineMissingViewLibrary() {
+  return {
+    resourceType: 'Library',
+    status: 'active',
+    type: { coding: [{ code: 'sql-query' }] },
+    relatedArtifact: [
+      {
+        type: 'depends-on',
+        resource: 'http://myig.org/ViewDefinition/no_such_view',
+        label: 'no_such_view',
+      },
+    ],
+    content: [
+      {
+        contentType: 'application/sql',
+        extension: [
+          {
+            url: 'https://sql-on-fhir.org/ig/StructureDefinition/sql-text',
+            valueString: 'SELECT 1 AS one FROM no_such_view',
           },
         ],
       },
