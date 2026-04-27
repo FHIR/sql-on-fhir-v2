@@ -1,13 +1,13 @@
-import { getBaseUrl, arrayify } from './utils.js';
-import fs from 'fs';
-import { layout, crumb, sectionHead } from './ui.js';
-import { read, search } from './db.js';
-import { renderOperationDefinition, isHtml } from './utils.js';
-import { evaluate } from '../index.js';
-import path from 'path';
+import { getBaseUrl, arrayify } from './utils.js'
+import fs from 'fs'
+import { layout, crumb, sectionHead } from './ui.js'
+import { read, search } from './db.js'
+import { renderOperationDefinition, isHtml } from './utils.js'
+import { evaluate } from '../index.js'
+import path from 'path'
 
 export async function getExportFormEndpoint(req, res) {
-  const operation = await read(req.config, 'OperationDefinition', '$viewdefinition-export');
+  const operation = await read(req.config, 'OperationDefinition', '$viewdefinition-export')
   const defaults = {
     viewResource: JSON.stringify(
       {
@@ -19,8 +19,8 @@ export async function getExportFormEndpoint(req, res) {
       null,
       2,
     ),
-  };
-  res.setHeader('Content-Type', 'text/html');
+  }
+  res.setHeader('Content-Type', 'text/html')
   res.send(
     layout(`
     ${crumb([
@@ -45,11 +45,11 @@ export async function getExportFormEndpoint(req, res) {
       </form>
     </div>
   `),
-  );
+  )
 }
 
 export async function postExportEndpoint(req, res) {
-  const params = req.body;
+  const params = req.body
 
   if (!params || params.resourceType !== 'Parameters') {
     res.status(400).json({
@@ -61,25 +61,25 @@ export async function postExportEndpoint(req, res) {
           diagnostics: 'Request body must be a Parameters resource',
         },
       ],
-    });
-    return;
+    })
+    return
   }
 
   // Extract parameters from the Parameters resource
   const getParam = (name, type) => {
-    const param = params.parameter?.find(p => p.name === name);
-    return param ? param[`value${type}`] : null;
-  };
+    const param = params.parameter?.find((p) => p.name === name)
+    return param ? param[`value${type}`] : null
+  }
 
-  const viewUrl = getParam('viewUrl', 'Url');
-  const format = getParam('format', 'Code') || 'json';
+  const viewUrl = getParam('viewUrl', 'Url')
+  const format = getParam('format', 'Code') || 'json'
 
-  let viewDefinitions = {};
+  let viewDefinitions = {}
 
   // If viewUrl provided, resolve it
   if (viewUrl) {
-    const parts = viewUrl.split('/');
-    const id = parts[parts.length - 1];
+    const parts = viewUrl.split('/')
+    const id = parts[parts.length - 1]
     viewDefinitions[id] = {
       view: {
         resourceType: 'ViewDefinition',
@@ -89,14 +89,14 @@ export async function postExportEndpoint(req, res) {
       },
       name: id,
       processed: false,
-    };
+    }
   }
 
-  const startTime = new Date().getTime();
-  const exportId = startTime.toString();
-  const location = `${getBaseUrl(req)}/ViewDefinition/$viewdefinition-export/status/${exportId}`;
-  const exportDir = ensureExportDir(exportId);
-  const exportStatusFile = exportDir + '/status.json';
+  const startTime = new Date().getTime()
+  const exportId = startTime.toString()
+  const location = `${getBaseUrl(req)}/ViewDefinition/$viewdefinition-export/status/${exportId}`
+  const exportDir = ensureExportDir(exportId)
+  const exportStatusFile = exportDir + '/status.json'
 
   const status = {
     exportId: exportId,
@@ -107,13 +107,13 @@ export async function postExportEndpoint(req, res) {
     format: format,
     location: location,
     viewDefinitions: viewDefinitions,
-  };
+  }
 
-  fs.writeFileSync(exportStatusFile, JSON.stringify(status, null, 2));
+  fs.writeFileSync(exportStatusFile, JSON.stringify(status, null, 2))
 
   // Return 202 Accepted with location header and Parameters response
-  res.setHeader('Content-Location', location);
-  res.setHeader('Location', location);
+  res.setHeader('Content-Location', location)
+  res.setHeader('Location', location)
   res.status(202).json({
     resourceType: 'Parameters',
     parameter: [
@@ -121,68 +121,68 @@ export async function postExportEndpoint(req, res) {
       { name: 'status', valueCode: 'accepted' },
       { name: 'location', valueUrl: location },
     ],
-  });
+  })
 }
 
 async function resolveViewDefinitions(config, references) {
-  let viewDefinitions = {};
+  let viewDefinitions = {}
   for (let ref of references) {
-    const parts = ref.split('/');
-    const id = parts[parts.length - 1];
-    const viewDefinition = await read(config, 'ViewDefinition', id);
+    const parts = ref.split('/')
+    const id = parts[parts.length - 1]
+    const viewDefinition = await read(config, 'ViewDefinition', id)
     if (viewDefinition) {
       viewDefinitions[id] = {
         view: viewDefinition,
         name: viewDefinition.name,
         ref: ref,
         processed: false,
-      };
+      }
     } else {
-      console.log('View definition not found: ' + id);
+      console.log('View definition not found: ' + id)
       viewDefinitions[id] = {
         severity: 'error',
         code: 'not-found',
         diagnostics: `View definition not found: ${ref}`,
-      };
+      }
     }
   }
-  return viewDefinitions;
+  return viewDefinitions
 }
 
 function ensureExportDir(exportId) {
-  const exportDir = path.join(process.cwd(), 'public', 'export', exportId);
+  const exportDir = path.join(process.cwd(), 'public', 'export', exportId)
   if (!fs.existsSync(exportDir)) {
-    fs.mkdirSync(exportDir, { recursive: true });
+    fs.mkdirSync(exportDir, { recursive: true })
   }
-  return exportDir;
+  return exportDir
 }
 
 function parseViewDefinitions(resources) {
   return resources.reduce((acc, json) => {
-    const view = JSON.parse(json);
-    acc[view.name] = { view: view, name: view.name, processed: false };
-    return acc;
-  }, {});
+    const view = JSON.parse(json)
+    acc[view.name] = { view: view, name: view.name, processed: false }
+    return acc
+  }, {})
 }
 
 export async function postExportFormEndpoint(req, res) {
-  const form = req.body;
-  let viewDefinitions = {};
-  Object.assign(viewDefinitions, await resolveViewDefinitions(req.config, arrayify(form.viewReference)));
-  Object.assign(viewDefinitions, parseViewDefinitions(arrayify(form.viewResource)));
+  const form = req.body
+  let viewDefinitions = {}
+  Object.assign(viewDefinitions, await resolveViewDefinitions(req.config, arrayify(form.viewReference)))
+  Object.assign(viewDefinitions, parseViewDefinitions(arrayify(form.viewResource)))
 
-  if (Object.values(viewDefinitions).some(v => v.severity === 'error')) {
+  if (Object.values(viewDefinitions).some((v) => v.severity === 'error')) {
     res.status(422).json({
       resourceType: 'OperationOutcome',
-      issue: Object.values(viewDefinitions).filter(v => v.severity === 'error'),
-    });
-    return;
+      issue: Object.values(viewDefinitions).filter((v) => v.severity === 'error'),
+    })
+    return
   }
-  const startTime = new Date().getTime();
-  const exportId = startTime.toString();
-  const location = '/ViewDefinition/$viewdefinition-export/status/' + exportId;
-  const exportDir = ensureExportDir(exportId);
-  const exportStatusFile = exportDir + '/status.json';
+  const startTime = new Date().getTime()
+  const exportId = startTime.toString()
+  const location = '/ViewDefinition/$viewdefinition-export/status/' + exportId
+  const exportDir = ensureExportDir(exportId)
+  const exportStatusFile = exportDir + '/status.json'
 
   const status = {
     exportId: exportId,
@@ -195,53 +195,53 @@ export async function postExportFormEndpoint(req, res) {
     location: location,
     form: form,
     viewDefinitions: viewDefinitions,
-  };
+  }
 
-  fs.writeFileSync(exportStatusFile, JSON.stringify(status, null, 2));
-  res.setHeader('Location', location);
-  res.status(301).end();
+  fs.writeFileSync(exportStatusFile, JSON.stringify(status, null, 2))
+  res.setHeader('Location', location)
+  res.status(301).end()
 }
 
 function writeFormattedData(fileName, data, format, includeHeader = true) {
-  let outputFile = null;
+  let outputFile = null
   if (format === 'ndjson') {
-    outputFile = fileName + '.ndjson';
-    fs.writeFileSync(outputFile, data.map(r => JSON.stringify(r)).join('\n'));
+    outputFile = fileName + '.ndjson'
+    fs.writeFileSync(outputFile, data.map((r) => JSON.stringify(r)).join('\n'))
   } else if (format === 'json') {
-    outputFile = fileName + '.json';
-    fs.writeFileSync(outputFile, JSON.stringify(data, null, 2));
+    outputFile = fileName + '.json'
+    fs.writeFileSync(outputFile, JSON.stringify(data, null, 2))
   } else if (format === 'csv') {
-    outputFile = fileName + '.csv';
-    let csvContent = '';
+    outputFile = fileName + '.csv'
+    let csvContent = ''
     if (includeHeader && data.length > 0) {
-      csvContent = Object.keys(data[0]).join(',') + '\n';
+      csvContent = Object.keys(data[0]).join(',') + '\n'
     }
-    csvContent += data.map(r => Object.values(r).join(',')).join('\n');
-    fs.writeFileSync(outputFile, csvContent);
+    csvContent += data.map((r) => Object.values(r).join(',')).join('\n')
+    fs.writeFileSync(outputFile, csvContent)
   } else {
-    throw new Error('Unsupported format: ' + format);
+    throw new Error('Unsupported format: ' + format)
   }
-  return outputFile;
+  return outputFile
 }
 
 async function evaluateViewDefinition(config, resource, exportStatus) {
   try {
-    const data = await search(config, resource.resource, 1000);
-    const result = evaluate(resource, data);
-    const fileName = path.join(exportStatus.exportDir, resource.name);
-    const includeHeader = exportStatus.header !== false;
+    const data = await search(config, resource.resource, 1000)
+    const result = evaluate(resource, data)
+    const fileName = path.join(exportStatus.exportDir, resource.name)
+    const includeHeader = exportStatus.header !== false
     return {
       status: 'completed',
       file: writeFormattedData(fileName, result, exportStatus.format, includeHeader),
       relativeFile: path.relative(exportStatus.exportDir, fileName),
       location: `/export/${exportStatus.exportId}/${resource.name}.${exportStatus.format}`,
       count: result.length,
-    };
+    }
   } catch (error) {
     return {
       status: 'failed',
       error: error.message,
-    };
+    }
   }
 }
 
@@ -251,35 +251,35 @@ async function makeProgress(config, exportStatus) {
     exportStatus.status === 'failed' ||
     exportStatus.status === 'aborted'
   ) {
-    return exportStatus;
+    return exportStatus
   }
   if (exportStatus.status === 'accepted') {
-    exportStatus.status = 'in-progress';
-    fs.writeFileSync(exportStatus.exportStatusFile, JSON.stringify(exportStatus, null, 2));
-    return exportStatus;
+    exportStatus.status = 'in-progress'
+    fs.writeFileSync(exportStatus.exportStatusFile, JSON.stringify(exportStatus, null, 2))
+    return exportStatus
   }
   const nonProcessed = Object.entries(exportStatus.viewDefinitions)
     .filter(([key, value]) => !value.processed)
-    .map(([key, value]) => key)[0];
+    .map(([key, value]) => key)[0]
 
   if (nonProcessed) {
-    const viewDefinition = exportStatus.viewDefinitions[nonProcessed];
-    const result = await evaluateViewDefinition(config, viewDefinition.view, exportStatus);
-    viewDefinition.processed = true;
-    Object.assign(exportStatus.viewDefinitions[nonProcessed], result);
+    const viewDefinition = exportStatus.viewDefinitions[nonProcessed]
+    const result = await evaluateViewDefinition(config, viewDefinition.view, exportStatus)
+    viewDefinition.processed = true
+    Object.assign(exportStatus.viewDefinitions[nonProcessed], result)
   } else {
-    exportStatus.status = 'completed';
+    exportStatus.status = 'completed'
   }
-  fs.writeFileSync(exportStatus.exportStatusFile, JSON.stringify(exportStatus, null, 2));
-  return exportStatus;
+  fs.writeFileSync(exportStatus.exportStatusFile, JSON.stringify(exportStatus, null, 2))
+  return exportStatus
 }
 
 function readExportStatus(exportId) {
-  const exportStatusFile = path.join(process.cwd(), 'public', 'export', exportId, 'status.json');
-  return JSON.parse(fs.readFileSync(exportStatusFile, 'utf8'));
+  const exportStatusFile = path.join(process.cwd(), 'public', 'export', exportId, 'status.json')
+  return JSON.parse(fs.readFileSync(exportStatusFile, 'utf8'))
 }
 
-const outputParams = ['name', 'status', 'error', 'count', 'location'];
+const outputParams = ['name', 'status', 'error', 'count', 'location']
 
 function buildResultResponse(exportId, exportStatus) {
   return {
@@ -296,13 +296,13 @@ function buildResultResponse(exportId, exportStatus) {
           name: 'output',
           part: outputParams.reduce((acc, p) => {
             if (value[p]) {
-              acc.push({ name: p, valueString: value[p] });
+              acc.push({ name: p, valueString: value[p] })
             }
-            return acc;
+            return acc
           }, []),
         })),
     ),
-  };
+  }
 }
 
 function buildInterimResponse(exportId, exportStatus) {
@@ -312,24 +312,24 @@ function buildInterimResponse(exportId, exportStatus) {
       { name: 'exportId', valueString: exportId },
       { name: 'exportStartTime', valueInstant: new Date(exportStatus.startTime).toISOString() },
     ],
-  };
+  }
 }
 
 export async function getExportStatusEndpoint(req, res) {
-  const exportId = req.params.id;
-  let exportStatus = readExportStatus(exportId);
-  exportStatus = await makeProgress(req.config, exportStatus);
+  const exportId = req.params.id
+  let exportStatus = readExportStatus(exportId)
+  exportStatus = await makeProgress(req.config, exportStatus)
 
   // If completed or failed, return 303 See Other with Location header to result endpoint
   if (exportStatus.status === 'completed' || exportStatus.status === 'failed') {
-    const resultUrl = `${getBaseUrl(req)}/ViewDefinition/$viewdefinition-export/result/${exportId}`;
-    res.setHeader('Location', resultUrl);
-    res.status(303).end();
-    return;
+    const resultUrl = `${getBaseUrl(req)}/ViewDefinition/$viewdefinition-export/result/${exportId}`
+    res.setHeader('Location', resultUrl)
+    res.status(303).end()
+    return
   }
 
   // In progress: return 202 Accepted with interim status
-  const response = buildInterimResponse(exportId, exportStatus);
+  const response = buildInterimResponse(exportId, exportStatus)
 
   // For HTML requests (browser/htmx), show a polling UI
   if (isHtml(req)) {
@@ -347,12 +347,12 @@ export async function getExportStatusEndpoint(req, res) {
           </div>
           <pre>${JSON.stringify(response, null, 2)}</pre>
         </div>
-    `;
+    `
 
-    res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Retry-After', '2');
+    res.setHeader('Content-Type', 'text/html')
+    res.setHeader('Retry-After', '2')
     if (req.headers['hx-request']) {
-      res.status(202).send(responseHtml);
+      res.status(202).send(responseHtml)
     } else {
       res.status(202).send(
         layout(`
@@ -368,23 +368,23 @@ export async function getExportStatusEndpoint(req, res) {
         })}
         ${responseHtml}
       `),
-      );
+      )
     }
   } else {
     // JSON response for API clients
-    res.setHeader('Content-Type', 'application/fhir+json');
-    res.setHeader('Retry-After', '2');
-    res.status(202).json(response);
+    res.setHeader('Content-Type', 'application/fhir+json')
+    res.setHeader('Retry-After', '2')
+    res.status(202).json(response)
   }
 }
 
 // New result endpoint - returns final results after 303 redirect
 export async function getExportResultEndpoint(req, res) {
-  const exportId = req.params.id;
-  let exportStatus;
+  const exportId = req.params.id
+  let exportStatus
 
   try {
-    exportStatus = readExportStatus(exportId);
+    exportStatus = readExportStatus(exportId)
   } catch (error) {
     res.status(404).json({
       resourceType: 'OperationOutcome',
@@ -395,8 +395,8 @@ export async function getExportResultEndpoint(req, res) {
           diagnostics: `Export ${exportId} not found`,
         },
       ],
-    });
-    return;
+    })
+    return
   }
 
   // If export failed, return error
@@ -410,12 +410,12 @@ export async function getExportResultEndpoint(req, res) {
           diagnostics: 'Export operation failed',
         },
       ],
-    });
-    return;
+    })
+    return
   }
 
   // Return the final result (identical to what sync would return)
-  const response = buildResultResponse(exportId, exportStatus);
+  const response = buildResultResponse(exportId, exportStatus)
 
   if (isHtml(req)) {
     const responseHtml = `
@@ -428,9 +428,9 @@ export async function getExportResultEndpoint(req, res) {
             <pre class="panel__body" style="margin:0;border:0;box-shadow:none;border-radius:0">${JSON.stringify(response, null, 2)}</pre>
           </div>
         </div>
-    `;
+    `
 
-    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Content-Type', 'text/html')
     res.send(
       layout(`
       ${crumb([
@@ -445,25 +445,25 @@ export async function getExportResultEndpoint(req, res) {
       })}
       ${responseHtml}
     `),
-    );
+    )
   } else {
-    res.setHeader('Content-Type', 'application/fhir+json');
-    res.json(response);
+    res.setHeader('Content-Type', 'application/fhir+json')
+    res.json(response)
   }
 }
 
 export function mountRoutes(app) {
   // System level
-  app.get('/\\$viewdefinition-export', getExportFormEndpoint);
-  app.post('/\\$viewdefinition-export/form', postExportFormEndpoint);
-  app.post('/\\$viewdefinition-export', postExportEndpoint);
-  app.get('/\\$viewdefinition-export/status/:id', getExportStatusEndpoint);
-  app.get('/\\$viewdefinition-export/result/:id', getExportResultEndpoint);
+  app.get('/\\$viewdefinition-export', getExportFormEndpoint)
+  app.post('/\\$viewdefinition-export/form', postExportFormEndpoint)
+  app.post('/\\$viewdefinition-export', postExportEndpoint)
+  app.get('/\\$viewdefinition-export/status/:id', getExportStatusEndpoint)
+  app.get('/\\$viewdefinition-export/result/:id', getExportResultEndpoint)
 
   // Type level
-  app.get('/ViewDefinition/\\$viewdefinition-export', getExportFormEndpoint);
-  app.post('/ViewDefinition/\\$viewdefinition-export/form', postExportFormEndpoint);
-  app.post('/ViewDefinition/\\$viewdefinition-export', postExportEndpoint);
-  app.get('/ViewDefinition/\\$viewdefinition-export/status/:id', getExportStatusEndpoint);
-  app.get('/ViewDefinition/\\$viewdefinition-export/result/:id', getExportResultEndpoint);
+  app.get('/ViewDefinition/\\$viewdefinition-export', getExportFormEndpoint)
+  app.post('/ViewDefinition/\\$viewdefinition-export/form', postExportFormEndpoint)
+  app.post('/ViewDefinition/\\$viewdefinition-export', postExportEndpoint)
+  app.get('/ViewDefinition/\\$viewdefinition-export/status/:id', getExportStatusEndpoint)
+  app.get('/ViewDefinition/\\$viewdefinition-export/result/:id', getExportResultEndpoint)
 }

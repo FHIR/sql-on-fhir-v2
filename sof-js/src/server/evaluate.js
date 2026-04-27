@@ -1,8 +1,8 @@
-import { search } from './db.js';
-import { evaluate } from '../index.js';
-import { layout, crumb, sectionHead } from './ui.js';
-import { read } from './db.js';
-import { renderOperationDefinition, runOperation } from './utils.js';
+import { search } from './db.js'
+import { evaluate } from '../index.js'
+import { layout, crumb, sectionHead } from './ui.js'
+import { read } from './db.js'
+import { renderOperationDefinition, runOperation } from './utils.js'
 
 const defaultResource = {
   resourceType: 'ViewDefinition',
@@ -20,15 +20,15 @@ const defaultResource = {
       ],
     },
   ],
-};
+}
 
 export async function getEvaluateFormEndpoint(req, res) {
-  const operation = await read(req.config, 'OperationDefinition', '$evaluate');
+  const operation = await read(req.config, 'OperationDefinition', '$evaluate')
   const defaults = {
     resource: JSON.stringify(defaultResource, null, 2),
     format: 'csv',
-  };
-  res.setHeader('Content-Type', 'text/html');
+  }
+  res.setHeader('Content-Type', 'text/html')
   res.send(
     layout(`
       ${crumb([
@@ -55,39 +55,39 @@ export async function getEvaluateFormEndpoint(req, res) {
       </form>
       <div id="result" class="mt-6"></div>
     `),
-  );
+  )
 }
 
 async function evaluateViewDefinition(req, resource) {
-  const data = await search(req.config, resource.resource);
-  const limitedData = data.slice(0, 100);
-  return await evaluate(resource, limitedData);
+  const data = await search(req.config, resource.resource)
+  const limitedData = data.slice(0, 100)
+  return await evaluate(resource, limitedData)
 }
 
 export async function postEvaluateEndpoint(req, res) {
-  const resource = await req.body.json();
-  res.setHeader('Content-Type', 'application/fhir+json');
-  res.send(JSON.stringify(resource, null, 2));
-  res.end();
+  const resource = await req.body.json()
+  res.setHeader('Content-Type', 'application/fhir+json')
+  res.send(JSON.stringify(resource, null, 2))
+  res.end()
 }
 
 function formatResult(result, format) {
   if (format === 'csv') {
-    return result.map(item => Object.values(item).join(',')).join('\n');
+    return result.map((item) => Object.values(item).join(',')).join('\n')
   } else if (format === 'ndjson') {
-    return result.map(item => JSON.stringify(item) + '\n').join('');
+    return result.map((item) => JSON.stringify(item) + '\n').join('')
   } else if (format === 'json') {
-    return JSON.stringify(result, null, 2);
+    return JSON.stringify(result, null, 2)
   }
-  return result;
+  return result
 }
 
 export async function postEvaluateFormEndpoint(req, res) {
   try {
-    const resource = JSON.parse(req.body.resource);
-    const result = await runOperation(req, resource, req.body);
-    const formatedResult = formatResult(result, req.body.format);
-    res.setHeader('Content-Type', 'text/html');
+    const resource = JSON.parse(req.body.resource)
+    const result = await runOperation(req, resource, req.body)
+    const formatedResult = formatResult(result, req.body.format)
+    res.setHeader('Content-Type', 'text/html')
     // Fragment response for htmx swap into #result.
     res.send(`
             <div class="panel panel--flush">
@@ -97,21 +97,21 @@ export async function postEvaluateFormEndpoint(req, res) {
               </div>
               <pre class="panel__body" style="margin:0;border:0;box-shadow:none;border-radius:0">${formatedResult}</pre>
             </div>
-        `);
+        `)
   } catch (error) {
-    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Content-Type', 'text/html')
     res.send(`
             <div class="alert">
               <div class="alert__eyebrow">invalid json</div>
               <p>${error.message}</p>
             </div>
-        `);
+        `)
   }
-  res.end();
+  res.end()
 }
 
 export function mountRoutes(app) {
-  app.get('/ViewDefinition/\\$evaluate', getEvaluateFormEndpoint);
-  app.post('/ViewDefinition/\\$evaluate/form', postEvaluateFormEndpoint);
-  app.post('/ViewDefinition/\\$evaluate', postEvaluateEndpoint);
+  app.get('/ViewDefinition/\\$evaluate', getEvaluateFormEndpoint)
+  app.post('/ViewDefinition/\\$evaluate/form', postEvaluateFormEndpoint)
+  app.post('/ViewDefinition/\\$evaluate', postEvaluateEndpoint)
 }

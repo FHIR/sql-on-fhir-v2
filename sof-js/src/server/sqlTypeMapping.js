@@ -12,7 +12,7 @@
  * returning rows under `_format=fhir`. Encountering any of these MUST produce
  * a 422 Unprocessable Entity per the spec.
  */
-export const UNSUPPORTED_SQL_TYPES = ['INTERVAL', 'ARRAY', 'XML', 'ROW', 'MULTISET'];
+export const UNSUPPORTED_SQL_TYPES = ['INTERVAL', 'ARRAY', 'XML', 'ROW', 'MULTISET']
 
 // ViewDefinition column `type` values mapped to the SQL declared type that
 // should be used when materialising a temporary table. The declared type
@@ -28,7 +28,7 @@ const FHIR_TO_SQL = {
   instant: 'TIMESTAMP WITH TIME ZONE',
   time: 'TIME',
   base64Binary: 'BLOB',
-};
+}
 
 // Normalised SQL type names (upper case, collapsed whitespace, any width
 // specifier stripped) mapped to the corresponding FHIR `value[x]` key.
@@ -70,7 +70,7 @@ const SQL_TO_FHIR_VALUE_KEY = {
 
   TIMESTAMP: 'valueDateTime',
   'TIMESTAMP WITH TIME ZONE': 'valueInstant',
-};
+}
 
 /**
  * Normalise an SQL type name so that lookups become case-insensitive and
@@ -87,7 +87,7 @@ function normaliseSqlType(type) {
     .replace(/\(.*?\)/g, '')
     .trim()
     .replace(/\s+/g, ' ')
-    .toUpperCase();
+    .toUpperCase()
 }
 
 /**
@@ -101,9 +101,9 @@ function normaliseSqlType(type) {
  */
 export function fhirTypeToSqlType(fhirType) {
   if (!fhirType) {
-    return 'TEXT';
+    return 'TEXT'
   }
-  return FHIR_TO_SQL[fhirType] || 'TEXT';
+  return FHIR_TO_SQL[fhirType] || 'TEXT'
 }
 
 /**
@@ -120,23 +120,23 @@ export function fhirTypeToSqlType(fhirType) {
  */
 export function sqlTypeToFhirValueKey(sqlType) {
   if (sqlType === null || sqlType === undefined || sqlType === '') {
-    return null;
+    return null
   }
-  const normalised = normaliseSqlType(sqlType);
+  const normalised = normaliseSqlType(sqlType)
   if (normalised === '') {
-    return null;
+    return null
   }
   if (UNSUPPORTED_SQL_TYPES.includes(normalised)) {
-    throw new Error(`unsupported SQL column type for _format=fhir: ${sqlType}`);
+    throw new Error(`unsupported SQL column type for _format=fhir: ${sqlType}`)
   }
-  const key = SQL_TO_FHIR_VALUE_KEY[normalised];
+  const key = SQL_TO_FHIR_VALUE_KEY[normalised]
   if (!key) {
     // An unrecognised SQL type still needs a decision; treat it as blank
     // so the caller falls back to runtime inference. A hard error here
     // would reject many legitimate SQLite expression columns.
-    return null;
+    return null
   }
-  return key;
+  return key
 }
 
 /**
@@ -150,21 +150,21 @@ export function sqlTypeToFhirValueKey(sqlType) {
  */
 export function inferFhirValueKeyFromRuntime(value) {
   if (typeof value === 'boolean') {
-    return 'valueBoolean';
+    return 'valueBoolean'
   }
   if (typeof value === 'number') {
-    return Number.isInteger(value) ? 'valueInteger' : 'valueDecimal';
+    return Number.isInteger(value) ? 'valueInteger' : 'valueDecimal'
   }
   if (typeof value === 'bigint') {
-    return 'valueInteger64';
+    return 'valueInteger64'
   }
   if (typeof value === 'string') {
-    return 'valueString';
+    return 'valueString'
   }
   if (Buffer.isBuffer(value)) {
-    return 'valueBase64Binary';
+    return 'valueBase64Binary'
   }
-  throw new Error(`unsupported runtime value type for _format=fhir: ${typeof value}`);
+  throw new Error(`unsupported runtime value type for _format=fhir: ${typeof value}`)
 }
 
 /**
@@ -179,25 +179,25 @@ function roundInstantToMilliseconds(instant) {
   // Match "YYYY-MM-DDTHH:MM:SS.<fraction><offset>" where <offset> is either
   // "Z", a numeric offset, or empty. Only rewrite when the fractional part
   // is longer than three digits.
-  const match = /^(.*\.)(\d+)(Z|[+-]\d{2}:?\d{2})?$/.exec(instant);
+  const match = /^(.*\.)(\d+)(Z|[+-]\d{2}:?\d{2})?$/.exec(instant)
   if (!match) {
-    return instant;
+    return instant
   }
-  const fraction = match[2];
+  const fraction = match[2]
   if (fraction.length <= 3) {
-    return instant;
+    return instant
   }
   // Round half-away-from-zero using integer arithmetic on the fractional
   // digits so we do not introduce floating-point drift.
-  const millis = Math.round(Number('0.' + fraction) * 1000);
-  const offset = match[3] ?? '';
+  const millis = Math.round(Number('0.' + fraction) * 1000)
+  const offset = match[3] ?? ''
   if (millis === 1000) {
     // A carry into the seconds field is rare and would require rewriting
     // the whole timestamp; keep the conservative behaviour of clamping to
     // 999 milliseconds to avoid changing the wall-clock time.
-    return `${match[1]}999${offset}`;
+    return `${match[1]}999${offset}`
   }
-  return `${match[1]}${String(millis).padStart(3, '0')}${offset}`;
+  return `${match[1]}${String(millis).padStart(3, '0')}${offset}`
 }
 
 /**
@@ -213,62 +213,62 @@ export function encodeFhirValue(value, valueKey) {
   switch (valueKey) {
     case 'valueBoolean': {
       if (typeof value === 'boolean') {
-        return { valueBoolean: value };
+        return { valueBoolean: value }
       }
       if (value === 0 || value === 1) {
-        return { valueBoolean: value === 1 };
+        return { valueBoolean: value === 1 }
       }
       if (value === '0' || value === '1') {
-        return { valueBoolean: value === '1' };
+        return { valueBoolean: value === '1' }
       }
-      return { valueBoolean: Boolean(value) };
+      return { valueBoolean: Boolean(value) }
     }
 
     case 'valueInteger': {
       if (typeof value === 'number') {
-        return { valueInteger: value };
+        return { valueInteger: value }
       }
       if (typeof value === 'string') {
-        return { valueInteger: Number.parseInt(value, 10) };
+        return { valueInteger: Number.parseInt(value, 10) }
       }
       if (typeof value === 'bigint') {
-        return { valueInteger: Number(value) };
+        return { valueInteger: Number(value) }
       }
-      return { valueInteger: value };
+      return { valueInteger: value }
     }
 
     case 'valueInteger64': {
       // FHIR integer64 is represented as a JSON string so that values above
       // 2^53 survive JSON round-trips without precision loss.
-      return { valueInteger64: String(value) };
+      return { valueInteger64: String(value) }
     }
 
     case 'valueDecimal': {
       if (typeof value === 'number') {
-        return { valueDecimal: value };
+        return { valueDecimal: value }
       }
       if (typeof value === 'string') {
-        const parsed = Number.parseFloat(value);
-        return { valueDecimal: Number.isNaN(parsed) ? value : parsed };
+        const parsed = Number.parseFloat(value)
+        return { valueDecimal: Number.isNaN(parsed) ? value : parsed }
       }
-      return { valueDecimal: value };
+      return { valueDecimal: value }
     }
 
     case 'valueBase64Binary': {
       if (Buffer.isBuffer(value)) {
-        return { valueBase64Binary: value.toString('base64') };
+        return { valueBase64Binary: value.toString('base64') }
       }
-      return { valueBase64Binary: String(value) };
+      return { valueBase64Binary: String(value) }
     }
 
     case 'valueInstant': {
-      return { valueInstant: roundInstantToMilliseconds(String(value)) };
+      return { valueInstant: roundInstantToMilliseconds(String(value)) }
     }
 
     default: {
       // valueString, valueDate, valueTime, valueDateTime and any other
       // string-shaped primitive all share the same pass-through behaviour.
-      return { [valueKey]: value };
+      return { [valueKey]: value }
     }
   }
 }

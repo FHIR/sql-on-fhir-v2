@@ -1,7 +1,7 @@
-import { errors as verrors } from '../validate.js';
-import { layout, crumb, sectionHead } from './ui.js';
-import { read } from './db.js';
-import { renderOperationDefinition } from './utils.js';
+import { errors as verrors } from '../validate.js'
+import { layout, crumb, sectionHead } from './ui.js'
+import { read } from './db.js'
+import { renderOperationDefinition } from './utils.js'
 
 const defaultResource = {
   resourceType: 'ViewDefinition',
@@ -19,15 +19,15 @@ const defaultResource = {
       ],
     },
   ],
-};
+}
 
 export async function getValidateFormEndpoint(req, res) {
-  const operation = await read(req.config, 'OperationDefinition', '$validate');
+  const operation = await read(req.config, 'OperationDefinition', '$validate')
   const defaults = {
     resource: JSON.stringify(defaultResource, null, 2),
     format: 'csv',
-  };
-  res.setHeader('Content-Type', 'text/html');
+  }
+  res.setHeader('Content-Type', 'text/html')
   res.send(
     layout(`
       ${crumb([
@@ -54,26 +54,26 @@ export async function getValidateFormEndpoint(req, res) {
       </form>
       <div id="result" class="mt-6"></div>
     `),
-  );
+  )
 }
 
 function validateViewDefinition(resource) {
-  return verrors(resource);
+  return verrors(resource)
 }
 
 export async function postValidateEndpoint(req, res) {
-  const resource = await req.body.json();
-  res.setHeader('Content-Type', 'application/fhir+json');
-  res.send(JSON.stringify(resource, null, 2));
-  res.end();
+  const resource = await req.body.json()
+  res.setHeader('Content-Type', 'application/fhir+json')
+  res.send(JSON.stringify(resource, null, 2))
+  res.end()
 }
 
 export async function postValidateFormEndpoint(req, res) {
   try {
-    const resource = JSON.parse(req.body.resource);
-    const result = validateViewDefinition(resource);
-    const issueCount = Array.isArray(result) ? result.length : 0;
-    res.setHeader('Content-Type', 'text/html');
+    const resource = JSON.parse(req.body.resource)
+    const result = validateViewDefinition(resource)
+    const issueCount = Array.isArray(result) ? result.length : 0
+    res.setHeader('Content-Type', 'text/html')
     // Fragment response for htmx swap into #result.
     res.send(`
             <div class="panel panel--flush">
@@ -83,21 +83,21 @@ export async function postValidateFormEndpoint(req, res) {
               </div>
               <pre class="panel__body" style="margin:0;border:0;box-shadow:none;border-radius:0">${JSON.stringify(result, null, 2)}</pre>
             </div>
-        `);
+        `)
   } catch (error) {
-    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Content-Type', 'text/html')
     res.send(`
             <div class="alert">
               <div class="alert__eyebrow">invalid json</div>
               <p>${error.message}</p>
             </div>
-        `);
+        `)
   }
-  res.end();
+  res.end()
 }
 
 export function mountRoutes(app) {
-  app.get('/ViewDefinition/\\$validate', getValidateFormEndpoint);
-  app.post('/ViewDefinition/\\$validate/form', postValidateFormEndpoint);
-  app.post('/ViewDefinition/\\$validate', postValidateEndpoint);
+  app.get('/ViewDefinition/\\$validate', getValidateFormEndpoint)
+  app.post('/ViewDefinition/\\$validate/form', postValidateFormEndpoint)
+  app.post('/ViewDefinition/\\$validate', postValidateEndpoint)
 }

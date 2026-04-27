@@ -1,10 +1,10 @@
-import fs from 'fs';
-import { wrapBundle, isHtml } from './utils.js';
-import { search, read, tableExists } from './db.js';
-import { layout, crumb, sectionHead } from './ui.js';
+import fs from 'fs'
+import { wrapBundle, isHtml } from './utils.js'
+import { search, read, tableExists } from './db.js'
+import { layout, crumb, sectionHead } from './ui.js'
 
 export async function getCapabilityStatementEndpoint(req, res) {
-  const capabilityStatement = JSON.parse(fs.readFileSync('./metadata/CapabilityStatement.json', 'utf8'));
+  const capabilityStatement = JSON.parse(fs.readFileSync('./metadata/CapabilityStatement.json', 'utf8'))
   if (isHtml(req)) {
     res.send(
       layout(`
@@ -25,10 +25,10 @@ export async function getCapabilityStatementEndpoint(req, res) {
           )}</pre>
         </div>
       `),
-    );
+    )
   } else {
-    res.setHeader('Content-Type', 'application/fhir+json');
-    res.json(capabilityStatement);
+    res.setHeader('Content-Type', 'application/fhir+json')
+    res.json(capabilityStatement)
   }
 }
 
@@ -39,12 +39,12 @@ function renderResourceTypeRow(resource) {
         <a href="/${resource.resourceType}/${resource.id}">${resource.id}</a>
       </td>
     </tr>
-  `;
+  `
 }
 
 function renderResourceTypeEndpoint(req, res, resourceType, resources) {
-  const count = resources.length;
-  const countLabel = `${count} ${resourceType} resource${count === 1 ? '' : 's'}`;
+  const count = resources.length
+  const countLabel = `${count} ${resourceType} resource${count === 1 ? '' : 's'}`
   res.send(
     layout(`
       ${crumb([{ href: '/', label: 'Home' }, { label: resourceType }])}
@@ -68,42 +68,42 @@ function renderResourceTypeEndpoint(req, res, resourceType, resources) {
         </table>
       </div>
     `),
-  );
+  )
 }
 
 export async function getResourceTypeEndpoint(req, res) {
-  const resourceType = req.params.resourceType;
+  const resourceType = req.params.resourceType
   if (!(await tableExists(req.config, resourceType))) {
-    res.status(404);
+    res.status(404)
     res.json({
       resourceType: 'OperationOutcome',
       issue: [{ code: 'not-found', message: 'Resource type not found' }],
-    });
-    return;
+    })
+    return
   }
-  const resources = await search(req.config, resourceType);
+  const resources = await search(req.config, resourceType)
   if (isHtml(req)) {
-    renderResourceTypeEndpoint(req, res, resourceType, resources);
+    renderResourceTypeEndpoint(req, res, resourceType, resources)
   } else {
-    res.setHeader('Content-Type', 'application/fhir+json');
-    res.json(wrapBundle(resources));
+    res.setHeader('Content-Type', 'application/fhir+json')
+    res.json(wrapBundle(resources))
   }
 }
 
 export async function getResourceEndpoint(req, res) {
-  const resourceType = req.params.resourceType;
-  const id = req.params.id;
-  const resource = await read(req.config, resourceType, id);
+  const resourceType = req.params.resourceType
+  const id = req.params.id
+  const resource = await read(req.config, resourceType, id)
   if (resource == null) {
-    res.status(404);
+    res.status(404)
     res.json({
       resourceType: 'OperationOutcome',
       issue: [{ code: 'not-found', message: 'Resource not found' }],
-    });
-    return;
+    })
+    return
   }
   if (isHtml(req)) {
-    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Content-Type', 'text/html')
     res.send(
       layout(`
         ${crumb([
@@ -127,15 +127,15 @@ export async function getResourceEndpoint(req, res) {
           )}</pre>
         </div>
       `),
-    );
+    )
   } else {
-    res.setHeader('Content-Type', 'application/fhir+json');
-    res.json(resource);
+    res.setHeader('Content-Type', 'application/fhir+json')
+    res.json(resource)
   }
 }
 
 export function mountRoutes(app) {
-  app.get('/metadata', getCapabilityStatementEndpoint);
-  app.get('/:resourceType', getResourceTypeEndpoint);
-  app.get('/:resourceType/:id', getResourceEndpoint);
+  app.get('/metadata', getCapabilityStatementEndpoint)
+  app.get('/:resourceType', getResourceTypeEndpoint)
+  app.get('/:resourceType/:id', getResourceEndpoint)
 }

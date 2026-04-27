@@ -17,7 +17,7 @@ beforeAll(async () => {
       console.log(`Patient data loaded: ${body.total} patients`)
       break
     }
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise((resolve) => setTimeout(resolve, 500))
     attempts++
   }
 })
@@ -287,7 +287,7 @@ describe('$sqlquery-run operation', () => {
     expect(body.parameter[0].name).toBe('row')
 
     const parts = body.parameter[0].part
-    const byName = Object.fromEntries(parts.map(p => [p.name, p]))
+    const byName = Object.fromEntries(parts.map((p) => [p.name, p]))
 
     expect(byName.id).toBeDefined()
     expect(byName.id.valueString).toEqual(expect.any(String))
@@ -310,7 +310,7 @@ describe('$sqlquery-run operation', () => {
 
     const body = await response.json()
     const parts = body.parameter[0].part
-    const byName = Object.fromEntries(parts.map(p => [p.name, p]))
+    const byName = Object.fromEntries(parts.map((p) => [p.name, p]))
 
     expect(byName.id).toBeDefined()
     expect(byName.missing).toBeUndefined()
@@ -325,7 +325,7 @@ describe('$sqlquery-run operation', () => {
 
     const body = await response.json()
     const parts = body.parameter[0].part
-    const byName = Object.fromEntries(parts.map(p => [p.name, p]))
+    const byName = Object.fromEntries(parts.map((p) => [p.name, p]))
 
     expect(byName.answer.valueInteger).toBe(42)
     expect(byName.greet.valueString).toBe('hello')
@@ -500,7 +500,7 @@ describe('$sqlquery-run operation', () => {
     expect(response.status).toBe(200)
 
     const body = await response.json()
-    const byName = Object.fromEntries(body.parameter.map(p => [p.name, p]))
+    const byName = Object.fromEntries(body.parameter.map((p) => [p.name, p]))
 
     expect(byName._format).toBeDefined()
     expect(byName._format.min).toBe(1)
@@ -509,8 +509,8 @@ describe('$sqlquery-run operation', () => {
     expect(byName.queryResource).toBeDefined()
     const allowedTypeUrl = 'http://hl7.org/fhir/StructureDefinition/operationdefinition-allowed-type'
     const queryResourceAllowed = (byName.queryResource.extension || [])
-      .filter(e => e.url === allowedTypeUrl)
-      .map(e => e.valueUri)
+      .filter((e) => e.url === allowedTypeUrl)
+      .map((e) => e.valueUri)
     expect(queryResourceAllowed).toContain('https://sql-on-fhir.org/ig/StructureDefinition/SQLQuery')
 
     expect(byName.source).toBeDefined()
@@ -523,8 +523,8 @@ describe('$sqlquery-run operation', () => {
     expect(byName.return.min).toBe(1)
     expect(byName.return.max).toBe('1')
     const returnAllowed = (byName.return.extension || [])
-      .filter(e => e.url === allowedTypeUrl)
-      .map(e => e.valueUri)
+      .filter((e) => e.url === allowedTypeUrl)
+      .map((e) => e.valueUri)
     expect(returnAllowed).toContain('Binary')
     expect(returnAllowed).toContain('Parameters')
 

@@ -10,9 +10,9 @@
 :root {
   color-scheme: light;
 
-  --font-display: "Fraunces", "Times New Roman", serif;
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-display: 'Fraunces', 'Times New Roman', serif;
+  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   --color-paper: #f4f0e6;
   --color-paper-raised: #fbf8f0;
@@ -63,7 +63,7 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv11";
+  font-feature-settings: 'ss01', 'cv11';
   -webkit-font-smoothing: antialiased;
 }
 
@@ -71,8 +71,7 @@ body {
   min-height: 100vh;
   /* Blueprint grid - fine inner grid + darker major grid + noise overlay. */
   background-color: var(--color-paper);
-  background-image:
-    radial-gradient(rgba(20, 24, 28, 0.035) 1px, transparent 1px),
+  background-image: radial-gradient(rgba(20, 24, 28, 0.035) 1px, transparent 1px),
     linear-gradient(to right, rgba(20, 24, 28, 0.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(20, 24, 28, 0.05) 1px, transparent 1px);
   background-size:
@@ -281,7 +280,7 @@ pre {
 }
 
 pre::before {
-  content: "◐  ◐  ◐";
+  content: '◐  ◐  ◐';
   position: absolute;
   top: 0.5rem;
   right: 0.75rem;
@@ -337,7 +336,7 @@ textarea {
   box-sizing: border-box;
 }
 
-input[type="checkbox"] {
+input[type='checkbox'] {
   accent-color: var(--color-accent);
 }
 
@@ -515,7 +514,7 @@ hr {
 }
 
 .section-head::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   bottom: -1px;
@@ -700,7 +699,7 @@ hr {
 }
 
 .resource-list li a::after {
-  content: "→";
+  content: '→';
   color: var(--color-ink-mute);
   margin-left: 0.5rem;
 }
@@ -759,11 +758,11 @@ table.op-def .op-def__input {
   max-width: 45vw;
 }
 
-table.op-def .op-def__input input[type="text"],
-table.op-def .op-def__input input[type="number"],
-table.op-def .op-def__input input[type="date"],
-table.op-def .op-def__input input[type="datetime-local"],
-table.op-def .op-def__input input[type="time"],
+table.op-def .op-def__input input[type='text'],
+table.op-def .op-def__input input[type='number'],
+table.op-def .op-def__input input[type='date'],
+table.op-def .op-def__input input[type='datetime-local'],
+table.op-def .op-def__input input[type='time'],
 table.op-def .op-def__input select {
   width: 100%;
   max-width: 100%;
@@ -788,12 +787,12 @@ table.op-def .op-def__input select {
   display: none;
 }
 
-.multiply-row:last-child > .btn[hx-ext="multiply"] {
+.multiply-row:last-child > .btn[hx-ext='multiply'] {
   display: inline-flex;
 }
 
 /* The "-" only makes sense when there is more than one row to remove. */
-.multiply-row:last-child:not(:only-child) > .btn[hx-ext="remove"] {
+.multiply-row:last-child:not(:only-child) > .btn[hx-ext='remove'] {
   display: inline-flex;
 }
 
