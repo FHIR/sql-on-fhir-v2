@@ -631,6 +631,19 @@ function renderInstanceParameterFields(library) {
   `
 }
 
+// Generic free-text fallback used when the user has not picked a stored
+// Library from the dropdown.
+function renderParametersJsonTextarea() {
+  return `
+    <p class="text-sm text-gray-500">
+      Optional: a FHIR Parameters resource bound to the Library's declared
+      inputs. Pick a Library above to see typed inputs instead.
+    </p>
+    <textarea name="parametersJson" rows="6" cols="80"
+      placeholder='{"resourceType":"Parameters","parameter":[{"name":"...","valueString":"..."}]}'></textarea>
+  `
+}
+
 // Build the breadcrumb header for the form page.
 function renderBreadcrumbs(scope, library) {
   if (scope === 'instance') {
@@ -677,7 +690,11 @@ async function renderForm(req, res, { scope, library }) {
             <tr>
               <th>queryReference</th>
               <td>
-                <select name="queryReference">
+                <select name="queryReference"
+                        hx-get="${formAction}/parameters"
+                        hx-target="#parameter-fields"
+                        hx-swap="innerHTML"
+                        hx-trigger="change">
                   <option value="">- choose -</option>
                   ${libraries
                     .map((l) => `<option value="Library/${escapeHtml(l.id)}">${escapeHtml(l.id)}</option>`)
@@ -695,17 +712,13 @@ async function renderForm(req, res, { scope, library }) {
           </table>
         `
 
+  // For instance scope the Library is already known, so render its declared
+  // parameter inputs directly. For system/type scope, the inputs are swapped
+  // in by htmx after the user picks a Library from the dropdown.
   const parameterFields =
     scope === 'instance'
       ? renderInstanceParameterFields(library)
-      : `
-          <p class="text-sm text-gray-500">
-            Optional: a FHIR Parameters resource bound to the Library's
-            declared inputs.
-          </p>
-          <textarea name="parametersJson" rows="6" cols="80"
-            placeholder='{"resourceType":"Parameters","parameter":[{"name":"...","valueString":"..."}]}'></textarea>
-        `
+      : `<div id="parameter-fields">${renderParametersJsonTextarea()}</div>`
 
   res.setHeader('Content-Type', 'text/html')
   res.send(
@@ -899,7 +912,14 @@ async function handleFormSubmit(req, res, { scope, id }) {
         queryResource,
         config: req.config,
       })
-      if (form.parametersJson && form.parametersJson.trim()) {
+      // The htmx fragment swaps the parametersJson textarea out for typed
+      // per-parameter inputs once the user picks a Library. Detect that case
+      // by looking for any `param_*` field; otherwise fall back to the JSON
+      // textarea path.
+      const hasParamFields = Object.keys(form).some((k) => k.startsWith('param_'))
+      if (hasParamFields) {
+        parametersResource = buildInstanceParametersResource(library, form)
+      } else if (form.parametersJson && form.parametersJson.trim()) {
         try {
           parametersResource = JSON.parse(form.parametersJson)
         } catch (parseErr) {
@@ -948,6 +968,24 @@ export async function getSqlQueryRunFormInstance(req, res) {
     return
   }
   await renderForm(req, res, { scope: 'instance', library })
+}
+
+// htmx fragment: render parameter inputs for a given queryReference, used by
+// the system/type forms when the dropdown selection changes.
+export async function getSqlQueryRunFormParameters(req, res) {
+  res.setHeader('Content-Type', 'text/html')
+  const ref = req.query.queryReference
+  if (!ref) {
+    res.send(renderParametersJsonTextarea())
+    return
+  }
+  const segment = String(ref).split('/').pop()
+  const library = await read(req.config, 'Library', segment)
+  if (!library) {
+    res.send(`<p class="text-sm text-red-600">Library not found: ${escapeHtml(String(ref))}</p>`)
+    return
+  }
+  res.send(renderInstanceParameterFields(library))
 }
 
 export async function postSqlQueryRunFormSystem(req, res) {
@@ -1042,6 +1080,11 @@ export function mountRoutes(app) {
   app.post('/\\$sqlquery-run/form', postSqlQueryRunFormSystem)
   app.post('/Library/\\$sqlquery-run/form', postSqlQueryRunFormType)
   app.post('/Library/:id/\\$sqlquery-run/form', postSqlQueryRunFormInstance)
+
+  // htmx fragment used by the system and type forms to render typed parameter
+  // inputs once a Library is selected.
+  app.get('/\\$sqlquery-run/form/parameters', getSqlQueryRunFormParameters)
+  app.get('/Library/\\$sqlquery-run/form/parameters', getSqlQueryRunFormParameters)
 
   // Custom Library list page (overrides the generic FHIR resource list for
   // /Library). Mounted before the FHIR catch-all in server.js.
