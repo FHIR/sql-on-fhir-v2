@@ -13,7 +13,7 @@ import sqlite3 from 'sqlite3'
 import { read, search } from './db.js'
 import { evaluate } from '../index.js'
 import { layout } from './ui.js'
-import { renderOperationDefinition } from './utils.js'
+import { isHtml, renderOperationDefinition, wrapBundle } from './utils.js'
 
 // Map a FHIR Library.parameter.type to the corresponding `value[x]` field
 // name on a Parameters.parameter entry.
@@ -962,6 +962,73 @@ export async function postSqlQueryRunFormInstance(req, res) {
   await handleFormSubmit(req, res, { scope: 'instance', id: req.params.id })
 }
 
+// Render a Library list page mirroring the ViewDefinition list, with a column
+// linking each row to the per-Library $sqlquery-run form.
+function renderLibrariesHtml(res, libraries) {
+  const rows = libraries
+    .map((lib) => {
+      const name = lib.name || lib.id
+      const title = lib.title || ''
+      const url = lib.url || ''
+      return `
+        <tr>
+          <td class="border border-gray-200 p-2">
+            <a class="text-blue-500 hover:text-blue-700"
+               href="/Library/${escapeHtml(lib.id)}">
+              ${escapeHtml(name)}
+            </a>
+          </td>
+          <td class="border border-gray-200 p-2">${escapeHtml(title)}</td>
+          <td class="border border-gray-200 p-2 text-xs">${escapeHtml(url)}</td>
+          <td class="border border-gray-200 p-2">
+            <a class="text-blue-500 hover:text-blue-700"
+               href="/Library/${escapeHtml(lib.id)}/$sqlquery-run/form">
+              $sqlquery-run
+            </a>
+          </td>
+        </tr>
+      `
+    })
+    .join('')
+
+  res.setHeader('Content-Type', 'text/html')
+  res.send(
+    layout(`
+      <div class="container mx-auto p-4">
+        <div class="flex items-center space-x-4">
+          <a href="/" class="text-blue-500 hover:text-blue-700">Home</a>
+          <span class="text-gray-500">/</span>
+        </div>
+        <div class="mt-4 flex items-center space-x-4 border-b border-gray-200 pb-2">
+          <h1 class="flex-1 text-2xl font-bold">SQL queries</h1>
+          <a href="/Library/$sqlquery-run/form" class="btn">$sqlquery-run</a>
+        </div>
+        <table class="mt-4 table-auto border-collapse border border-gray-200">
+          <thead>
+            <tr>
+              <th class="bg-gray-100 border border-gray-200 p-2">Name</th>
+              <th class="bg-gray-100 border border-gray-200 p-2">Title</th>
+              <th class="bg-gray-100 border border-gray-200 p-2">URL</th>
+              <th class="bg-gray-100 border border-gray-200 p-2">Run</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `),
+  )
+}
+
+export async function getLibraryListEndpoint(req, res) {
+  const libraries = await search(req.config, 'Library', 1000)
+  if (isHtml(req)) {
+    renderLibrariesHtml(res, libraries)
+  } else {
+    res.setHeader('Content-Type', 'application/fhir+json')
+    res.json(wrapBundle(libraries))
+  }
+}
+
 export function mountRoutes(app) {
   // API endpoints. POST a Parameters resource and receive query results.
   app.post('/\\$sqlquery-run', postSqlQueryRunSystem)
@@ -975,4 +1042,8 @@ export function mountRoutes(app) {
   app.post('/\\$sqlquery-run/form', postSqlQueryRunFormSystem)
   app.post('/Library/\\$sqlquery-run/form', postSqlQueryRunFormType)
   app.post('/Library/:id/\\$sqlquery-run/form', postSqlQueryRunFormInstance)
+
+  // Custom Library list page (overrides the generic FHIR resource list for
+  // /Library). Mounted before the FHIR catch-all in server.js.
+  app.get('/Library', getLibraryListEndpoint)
 }
