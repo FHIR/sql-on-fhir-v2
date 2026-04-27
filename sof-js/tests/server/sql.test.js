@@ -214,6 +214,27 @@ describe('$sqlquery-run operation', () => {
     expect(body.issue[0].code).toBe('invalid')
   })
 
+  test('parameter type mismatch with declared Library.parameter.type returns 400', async () => {
+    // patient-by-id declares patient_id as a string; sending valueInteger
+    // should be rejected with a 400 invalid OperationOutcome.
+    const res = await postSqlQueryRun(
+      '/Library/patient-by-id/$sqlquery-run',
+      paramsBody([
+        { name: '_format', valueCode: 'json' },
+        {
+          name: 'parameters',
+          resource: paramsBody([{ name: 'patient_id', valueInteger: 42 }]),
+        },
+      ]),
+    )
+
+    expect(res.status).toBe(400)
+    const body = await res.json()
+    expect(body.resourceType).toBe('OperationOutcome')
+    expect(body.issue[0].code).toBe('invalid')
+    expect(body.issue[0].diagnostics).toContain('valueString')
+  })
+
   test('unknown Library id on instance route returns 404', async () => {
     const res = await postSqlQueryRun(
       '/Library/does-not-exist/$sqlquery-run',
