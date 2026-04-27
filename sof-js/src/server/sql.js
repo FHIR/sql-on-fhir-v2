@@ -52,6 +52,7 @@ const viewTypeToValueField = {
   dateTime: 'valueDateTime',
   time: 'valueTime',
   instant: 'valueInstant',
+  base64Binary: 'valueBase64Binary',
 }
 
 class SqlQueryRunError extends Error {
