@@ -782,9 +782,19 @@ table.op-def .op-def__input select {
   min-width: 0;
 }
 
-/* Stop the +/- repeater controls from being caught by text selection. */
+/* Repeater controls live on the last row only; intermediate rows show inputs alone. */
 .multiply-row > .btn {
   user-select: none;
+  display: none;
+}
+
+.multiply-row:last-child > .btn[hx-ext="multiply"] {
+  display: inline-flex;
+}
+
+/* The "-" only makes sense when there is more than one row to remove. */
+.multiply-row:last-child:not(:only-child) > .btn[hx-ext="remove"] {
+  display: inline-flex;
 }
 
 /* Small utility helpers. */
