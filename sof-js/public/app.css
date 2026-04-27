@@ -782,6 +782,11 @@ table.op-def .op-def__input select {
   min-width: 0;
 }
 
+/* Stop the +/- repeater controls from being caught by text selection. */
+.multiply-row > .btn {
+  user-select: none;
+}
+
 /* Small utility helpers. */
 .kbd {
   font-family: var(--font-mono);
