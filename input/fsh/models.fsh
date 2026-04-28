@@ -20,12 +20,36 @@ Expression: "(forEach.exists().toInteger() + forEachOrNull.exists().toInteger() 
 // NOTE: Using RuleSet with LogicalModels where you pass parameters seems to be broken
 Logical: ViewDefinition
 Title: "View Definition"
-Parent: CanonicalResource
+Parent: DomainResource
 Description: """
-A ViewDefinition represents a tabular projection of a FHIR resource, where the columns and inclusion 
-criteria are defined by FHIRPath expressions. 
+A ViewDefinition represents a tabular projection of a FHIR resource, where the columns and inclusion
+criteria are defined by FHIRPath expressions.
 """
+// Canonical resource metadata. ViewDefinition was previously parented on
+// CanonicalResource to inherit these fields, but CanonicalResource is only
+// defined as an abstract type from R5 onward. Defining the fields directly
+// keeps the on-wire shape consistent with other canonical resources while
+// allowing the IG publisher to emit version-specific packages back to R4.
+* url 0..1 uri "Canonical identifier for this view definition" """
+  An absolute URI that is used to identify this view definition when it is referenced in a specification,
+  model, design or an instance; also called its canonical identifier.
+"""
+* identifier 0..* Identifier "Additional identifier for the view definition"
+* version 0..1 string "Business version of the view definition"
+* name 0..1 string "Name for this view definition (machine friendly)"
 * name obeys sql-name
+* title 0..1 string "Name for this view definition (human friendly)"
+* status 1..1 code "draft | active | retired | unknown"
+* status from http://hl7.org/fhir/ValueSet/publication-status (required)
+* experimental 0..1 boolean "For testing purposes, not real usage"
+* date 0..1 dateTime "Date last changed"
+* publisher 0..1 string "Name of the publisher/steward (organization or individual)"
+* contact 0..* ContactDetail "Contact details for the publisher"
+* description 0..1 markdown "Natural language description of the view definition"
+* useContext 0..* UsageContext "The context that the content is intended to support"
+* jurisdiction 0..* CodeableConcept "Intended jurisdiction for view definition (if applicable)"
+* purpose 0..1 markdown "Why this view definition is defined"
+* copyright 0..1 markdown "Use and/or publishing restrictions"
 * resource 1..1 code "FHIR resource for the ViewDefinition" """
   The FHIR resource that the view is based upon, e.g. 'Patient' or 'Observation'.
 """
