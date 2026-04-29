@@ -52,6 +52,17 @@ dependencies:
 parameters:
   excludettl: true
   path-test: tests
+  # Promote the ViewDefinition logical model to a published resource type so
+  # FHIR servers can store and serve view definitions through the standard
+  # REST API. The IG publisher auto-promotes kind=logical to kind=resource
+  # when a StructureDefinition is loaded as a custom resource. This IG is
+  # listed in https://fhir.github.io/ig-registry/igs-approved-for-custom-resource.json.
+  custom-resource: fsh-generated/resources/StructureDefinition-ViewDefinition.json
+  # Emit a sibling R4 package (org.sql-on-fhir.ig.r4.tgz) alongside the
+  # primary R5 package, so R4-based servers can load the IG without
+  # rewriting its dependencies. The publisher rewrites *.r5 dependencies to
+  # *.r4 in the variant package.
+  generate-version: r4
 
 #   validation: [allow-any-extensions, no-broken-links]
 #
