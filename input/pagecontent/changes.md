@@ -13,7 +13,7 @@ stated relative to that release. For earlier material, see
 [version 2.0.0](https://sql-on-fhir.org/ig/2.0.0), released 2024-10-09, and the
 [original SQL on FHIR draft](https://github.com/FHIR/sql-on-fhir-archived/blob/master/sql-on-fhir.md).
 
-## Summary
+### Summary
 
 **The expressive part of a view is unchanged.** `select`, `column`, `path`,
 `forEach`, `forEachOrNull`, `where`, `constant` and `unionAll` retain the
@@ -69,11 +69,11 @@ the `%rowIndex` environment variable.
 identifiers and different canonical URLs, so they install side by side and
 neither shadows the other. See [Migrating from 2.0.0](#migrating-from-200).
 
-## STU 3 ballot (version 3.0.0-ballot)
+### STU 3 ballot (version 3.0.0-ballot)
 
-### Breaking changes
+#### Breaking changes
 
-#### From logical model to additional resource
+##### From logical model to additional resource
 
 In 2.0.0, ViewDefinition was a logical model: a description of a structure that
 could not be stored, searched or exchanged as a resource, so servers holding
@@ -107,7 +107,7 @@ Delivered by [#397](https://github.com/HL7/sql-on-fhir/pull/397), tracked in
 [#395](https://github.com/HL7/sql-on-fhir/issues/395), which remains open for
 follow-up work in `hapifhir/org.hl7.fhir.core`.
 
-#### New canonical base and package identifier
+##### New canonical base and package identifier
 
 The canonical base changed from `https://sql-on-fhir.org/ig` to
 `http://hl7.org/fhir/uv/sql-on-fhir`. The package identifier changed from
@@ -138,7 +138,7 @@ original canonical, so any artifact that continues to claim conformance to
 Delivered by [#387](https://github.com/HL7/sql-on-fhir/pull/387), tracked in
 [#377](https://github.com/HL7/sql-on-fhir/issues/377).
 
-#### `identifier` becomes repeating
+##### `identifier` becomes repeating
 
 The element was declared locally as `0..1` in 2.0.0. It is now `0..*`, matching
 `MetadataResource`. In JSON, an object becomes an array.
@@ -153,7 +153,7 @@ forms is correct against either version.
 
 Issue: [#268](https://github.com/HL7/sql-on-fhir/pull/268).
 
-#### One iteration directive per `select`
+##### One iteration directive per `select`
 
 A `select` now carries at most one of `forEach`, `forEachOrNull` and `repeat`.
 
@@ -172,7 +172,7 @@ set only one directive is unaffected.
 
 Issue: [#301](https://github.com/HL7/sql-on-fhir/pull/301).
 
-#### The conformance test suite is no longer in the package
+##### The conformance test suite is no longer in the package
 
 Version 2.0.0 shipped the shared test suite inside the package, as twenty JSON
 files under `tests/`. The suite is not included in the 3.0.0 package. It now
@@ -190,9 +190,9 @@ read them from the repository instead.
 
 ([48f3607](https://github.com/HL7/sql-on-fhir/commit/48f3607))
 
-### New capabilities
+#### New capabilities
 
-#### Two operations: `$sql-run` and `$sql-export`
+##### Two operations: `$sql-run` and `$sql-export`
 
 Version 2.0.0 defined no operations, so both are new.
 
@@ -219,7 +219,7 @@ Issues: [#392](https://github.com/HL7/sql-on-fhir/pull/392),
 [#394](https://github.com/HL7/sql-on-fhir/issues/394),
 [#369](https://github.com/HL7/sql-on-fhir/pull/369).
 
-#### SQLQuery and SQLView
+##### SQLQuery and SQLView
 
 `SQLQuery` is a profile on `Library` that carries one logical SQL query as a
 FHIR resource: dialect-specific variants, declared parameters, and
@@ -240,7 +240,7 @@ SQLQuery: [#293](https://github.com/HL7/sql-on-fhir/pull/293) and
 [#364](https://github.com/HL7/sql-on-fhir/pull/364), requested in
 [#329](https://github.com/HL7/sql-on-fhir/issues/329).
 
-#### Value set and concept map dependencies
+##### Value set and concept map dependencies
 
 A `SQLQuery` or `SQLView` can declare a `ValueSet` or a `ConceptMap` as a
 `relatedArtifact` dependency alongside its views. The runner resolves the
@@ -273,7 +273,7 @@ left to the terminology layer.
 Proposed in
 [ValueSet abstraction for SQL on FHIR](https://gist.github.com/niquola/0bc5f4c852cbe4a0194a84d1019a9361).
 
-#### `repeat`
+##### `repeat`
 
 `select.repeat` traverses arbitrarily nested structures, such as
 `QuestionnaireResponse.item`, without prior knowledge of their depth. Together
@@ -282,14 +282,14 @@ model; every other addition to ViewDefinition describes the view rather than
 what it computes.
 ([#296](https://github.com/HL7/sql-on-fhir/pull/296))
 
-#### `%rowIndex`
+##### `%rowIndex`
 
 `%rowIndex` provides the position of an element during iteration, so that the
 ordering of elements in FHIR resources can be preserved in the output and
 surrogate keys derived from it.
 ([#311](https://github.com/HL7/sql-on-fhir/pull/311))
 
-#### `ViewDefinition.profile`
+##### `ViewDefinition.profile`
 
 A view can declare the profiles its input resources are expected to conform
 to. The element describes the view rather than changing what the view computes,
@@ -297,7 +297,7 @@ so a runner that ignores it produces the same rows.
 ([#267](https://github.com/HL7/sql-on-fhir/pull/267), requested in
 [#265](https://github.com/HL7/sql-on-fhir/issues/265))
 
-#### Search parameters for ViewDefinition
+##### Search parameters for ViewDefinition
 
 Becoming a resource brings the standard FHIR read and search machinery with it.
 The guide publishes the standard metadata search parameters for ViewDefinition,
@@ -308,14 +308,14 @@ discovering the views held by a server, because a logical model has no
 endpoint.
 ([#397](https://github.com/HL7/sql-on-fhir/pull/397))
 
-#### Default type mappings
+##### Default type mappings
 
 FHIR types and FHIRPath types now have default mappings to SQL types, so that
 two runners evaluating the same view produce comparable column types when no
 type hint is present.
 ([#290](https://github.com/HL7/sql-on-fhir/pull/290))
 
-#### Publication metadata on ViewDefinition
+##### Publication metadata on ViewDefinition
 
 Adoption of the standard metadata occurred in two steps. Deriving from
 `CanonicalResource` brought `version`, `versionAlgorithm[x]`, `date`, `purpose`
@@ -328,7 +328,7 @@ additive.
 ([#268](https://github.com/HL7/sql-on-fhir/pull/268),
 [#397](https://github.com/HL7/sql-on-fhir/pull/397))
 
-#### Code systems and value sets
+##### Code systems and value sets
 
 `LibraryTypesCodes` identifies a Library as a SQL query or a reusable SQL view.
 `ExportStatusCodes` names the states through which an asynchronous export
@@ -347,9 +347,9 @@ Issues: [#293](https://github.com/HL7/sql-on-fhir/pull/293),
 [#351](https://github.com/HL7/sql-on-fhir/issues/351),
 [#365](https://github.com/HL7/sql-on-fhir/pull/365).
 
-### Editorial and process changes
+#### Editorial and process changes
 
-#### ViewDefinition is authored in XML, not FSH
+##### ViewDefinition is authored in XML, not FSH
 
 SUSHI does not support additional resources, so ViewDefinition, its profiles
 and its examples are now authored directly as XML and JSON. The authoring
@@ -358,7 +358,7 @@ examples are now published as ViewDefinition resources rather than as `Binary`,
 and the guide gained search parameters for ViewDefinition and a list of its
 operations. ([#397](https://github.com/HL7/sql-on-fhir/pull/397))
 
-#### Validation messages inherent to the additional-resource design
+##### Validation messages inherent to the additional-resource design
 
 Defining ViewDefinition outside the core specification places it outside the
 assumptions of the IG Publisher's validation machinery, and a family of QA
@@ -381,7 +381,7 @@ None of these messages reflects a conformance change. Each is suppressed in
 discussion that established it.
 ([#399](https://github.com/HL7/sql-on-fhir/pull/399))
 
-#### Publishing housekeeping
+##### Publishing housekeeping
 
 Links to `build.fhir.org` were replaced with links to published versions
 ([#386](https://github.com/HL7/sql-on-fhir/pull/386)). Code systems and value
@@ -393,7 +393,7 @@ required by the HL7 Governance and Operations Manual was added
 ([ff21894](https://github.com/HL7/sql-on-fhir/commit/ff21894),
 [3093259](https://github.com/HL7/sql-on-fhir/commit/3093259)).
 
-#### Reference implementation moved to its own repository
+##### Reference implementation moved to its own repository
 
 The JavaScript reference implementation, the shared test suite and the test
 report site now reside in
@@ -403,7 +403,7 @@ holds the specification alone, and moved to
 ([48f3607](https://github.com/HL7/sql-on-fhir/commit/48f3607),
 [8a9c98f](https://github.com/HL7/sql-on-fhir/commit/8a9c98f))
 
-#### Documentation
+##### Documentation
 
 The introduction was restructured around the three components of the
 specification, and the query and operations sections were added.
@@ -415,9 +415,9 @@ guidance and the completion status code.
 [#365](https://github.com/HL7/sql-on-fhir/pull/365) closing
 [#358](https://github.com/HL7/sql-on-fhir/issues/358)-[#363](https://github.com/HL7/sql-on-fhir/issues/363))
 
-## Migrating from 2.0.0
+### Migrating from 2.0.0
 
-### Existing ViewDefinitions
+#### Existing ViewDefinitions
 
 **The expressive part is unchanged.** `resource`, `select`, `column`, `path`,
 `forEach`, `forEachOrNull`, `where`, `constant` and `unionAll` retain their
@@ -449,7 +449,7 @@ All remaining changes are string replacements rather than changes to views:
 `https://sql-on-fhir.org/ig` becomes the new canonical base, and the package
 `org.sql-on-fhir.ig` becomes `hl7.fhir.uv.sql-on-fhir`.
 
-### Tooling
+#### Tooling
 
 This is where the two versions diverge most. In 2.0.0, ViewDefinition was a
 logical model against FHIR R5. In 3.0.0, it is an additional resource, and the
