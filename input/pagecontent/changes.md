@@ -367,15 +367,12 @@ messages follows that no change to this repository can remove.
 contain a type defined outside core; a `StructureDefinition.type` of
 `ViewDefinition` is rejected as not defined in FHIR;
 `Library.relatedArtifact.resource` does not recognize an additional resource as
-canonical; the inherited `cnl-1` invariant carries `MetadataResource` as its
-source. Every instance is also required to carry a `resourceDefinition`
-property; the published examples include it (see [Tooling](#tooling)). In
-addition, the
-publisher's generic FHIRPath evaluator cannot resolve `%rowIndex` or names
-evaluated inside a `forEach` scope, and no R6 build of
-`hl7.fhir.uv.extensions`, `hl7.terminology` or `hl7.fhir.uv.tools` exists, so
-the publisher reports a package-version mismatch that this repository cannot
-resolve.
+canonical; and the inherited `cnl-1` invariant carries `MetadataResource` as
+its source. In addition, the publisher's generic FHIRPath evaluator cannot
+resolve `%rowIndex` or names evaluated inside a `forEach` scope, and no R6
+build of `hl7.fhir.uv.extensions`, `hl7.terminology` or `hl7.fhir.uv.tools`
+exists, so the publisher reports a package-version mismatch that this
+repository cannot resolve.
 
 None of these messages reflects a conformance change. Each is suppressed in
 `input/ignoreWarnings.txt` with a written justification and a link to the
@@ -471,5 +468,6 @@ naming the versioned canonical of the ViewDefinition definition, for example
 This is the mechanism FHIR R6 uses to identify the definition of an additional
 resource instance. It is not an element of the ViewDefinition
 StructureDefinition, so a structural validator built only from that definition
-will reject it as an unknown element. Processors that read ViewDefinitions
-should tolerate `resourceDefinition` on instances, and may ignore it.
+will reject it as an unknown element. A processor that validates
+ViewDefinitions against that StructureDefinition alone therefore needs to allow
+for this property.
