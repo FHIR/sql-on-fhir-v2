@@ -14,6 +14,7 @@
 
 Instance: ExamplePatient1
 InstanceOf: Patient
+Description: "A patient with official and usual names, home and work addresses, and a contact address."
 Usage: #example
 * id = "1"
 * gender = #female
@@ -47,6 +48,7 @@ Usage: #example
 
 Instance: ExamplePatient2
 InstanceOf: Patient
+Description: "A patient with an official name, a home address and a contact address."
 Usage: #example
 * id = "2"
 * gender = #male
@@ -70,6 +72,7 @@ Usage: #example
 
 Instance: ExamplePatient3
 InstanceOf: Patient
+Description: "A patient with an official name, and home and work addresses."
 Usage: #example
 * id = "3"
 * gender = #other
@@ -99,12 +102,14 @@ Usage: #example
 
 Instance: ExampleBloodPressure1
 InstanceOf: Observation
+Description: "A blood pressure observation of 120/80 mmHg for patient 1."
 Usage: #example
 * id = "1"
 * status = #final
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * subject = Reference(Patient/1)
+* performer = Reference(Practitioner/1)
 * effectiveDateTime = "2020-01-01T00:00:00Z"
 * component[+]
   * code = http://loinc.org#8480-6 "Systolic blood pressure"
@@ -123,12 +128,14 @@ Usage: #example
 
 Instance: ExampleBloodPressure2
 InstanceOf: Observation
+Description: "A blood pressure observation of 130/90 mmHg for patient 1."
 Usage: #example
 * id = "2"
 * status = #final
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * subject = Reference(Patient/1)
+* performer = Reference(Practitioner/1)
 * effectiveDateTime = "2020-01-02T00:00:00Z"
 * component[+]
   * code = http://loinc.org#8480-6 "Systolic blood pressure"
@@ -147,12 +154,14 @@ Usage: #example
 
 Instance: ExampleBloodPressure3
 InstanceOf: Observation
+Description: "A blood pressure observation of 140/100 mmHg for patient 2."
 Usage: #example
 * id = "3"
 * status = #final
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * subject = Reference(Patient/2)
+* performer = Reference(Practitioner/1)
 * effectiveDateTime = "2020-01-03T00:00:00Z"
 * component[+]
   * code = http://loinc.org#8480-6 "Systolic blood pressure"
@@ -171,12 +180,14 @@ Usage: #example
 
 Instance: ExampleBloodPressure4
 InstanceOf: Observation
+Description: "A blood pressure observation of 150/110 mmHg for patient 3."
 Usage: #example
 * id = "4"
 * status = #final
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * subject = Reference(Patient/3)
+* performer = Reference(Practitioner/1)
 * effectiveDateTime = "2020-01-04T00:00:00Z"
 * component[+]
   * code = http://loinc.org#8480-6 "Systolic blood pressure"
@@ -195,12 +206,14 @@ Usage: #example
 
 Instance: ExampleBloodPressure5
 InstanceOf: Observation
+Description: "A blood pressure observation of 160/120 mmHg for patient 3."
 Usage: #example
 * id = "5"
 * status = #final
 * code = http://loinc.org#85354-9 "Blood pressure panel with all children optional"
 * category = http://terminology.hl7.org/CodeSystem/observation-category#vital-signs "Vital Signs"
 * subject = Reference(Patient/3)
+* performer = Reference(Practitioner/1)
 * effectiveDateTime = "2020-01-05T00:00:00Z"
 * component[+]
   * code = http://loinc.org#8480-6 "Systolic blood pressure"
@@ -224,6 +237,7 @@ Usage: #example
 
 Instance: ExampleCondition1
 InstanceOf: Condition
+Description: "An active type 2 diabetes diagnosis for patient 1, recorded during encounter 1."
 Usage: #example
 * id = "1"
 * subject = Reference(Patient/1)
@@ -236,6 +250,7 @@ Usage: #example
 
 Instance: ExampleCondition2
 InstanceOf: Condition
+Description: "A resolved hypertension problem list item for patient 2, linked to encounter 2."
 Usage: #example
 * id = "2"
 * subject = Reference(Patient/2)
@@ -247,15 +262,13 @@ Usage: #example
 * onsetDateTime = "2020-01-02T00:00:00Z"
 
 // =============================================================================
-// Encounter resources (R5 format)
+// Encounter resources
 // =============================================================================
 // Two encounters to demonstrate the EncounterFlat view.
-// Note: The EncounterFlat ViewDefinition targets R4 only, so these R5 Encounter
-// resources will not be processed by that view. The EncounterFlat notes file
-// will explain this limitation.
 
 Instance: ExampleEncounter1
 InstanceOf: Encounter
+Description: "An ambulatory encounter for patient 1."
 Usage: #example
 * id = "1"
 * status = #completed
@@ -273,6 +286,7 @@ Usage: #example
 
 Instance: ExampleEncounter2
 InstanceOf: Encounter
+Description: "An emergency encounter for patient 2."
 Usage: #example
 * id = "2"
 * status = #completed
@@ -296,6 +310,7 @@ Usage: #example
 
 Instance: ExamplePractitioner1
 InstanceOf: Practitioner
+Description: "A practitioner who participated in the example encounters."
 Usage: #example
 * id = "1"
 * name[+]
@@ -304,12 +319,14 @@ Usage: #example
 
 Instance: ExampleOrganization1
 InstanceOf: Organization
+Description: "The organisation that provided the example encounters."
 Usage: #example
 * id = "1"
 * name = "Example Health Service"
 
 Instance: ExampleLocation1
 InstanceOf: Location
+Description: "The clinic room where encounter 1 took place."
 Usage: #example
 * id = "1"
 * name = "Clinic Room 1"
@@ -317,6 +334,7 @@ Usage: #example
 
 Instance: ExampleLocation2
 InstanceOf: Location
+Description: "The emergency department where encounter 2 took place."
 Usage: #example
 * id = "2"
 * name = "Emergency Department"
@@ -334,13 +352,20 @@ Usage: #example
 
 Instance: ExampleVehicleCodeSystem
 InstanceOf: CodeSystem
+Description: "A small hierarchical code system of vehicle types."
 Usage: #example
 * id = "vehicles"
 * url = "http://example.org/CodeSystem/vehicles"
+* name = "Vehicles"
+* title = "Vehicles"
+* description = "A small hierarchical code system of vehicle types, used to demonstrate the CodeSystemHierarchy view."
 * identifier[+]
   * system = "urn:ietf:rfc:3986"
   * value = "urn:oid:2.25.158148347308242154236102391146884827570"
 * status = #draft
+* experimental = true
+* caseSensitive = true
+* hierarchyMeaning = #is-a
 * content = #complete
 * concept[+]
   * code = #vehicle
@@ -378,6 +403,7 @@ Usage: #example
 
 Instance: ExampleQuestionnaireResponse1
 InstanceOf: QuestionnaireResponse
+Description: "A PHQ-9 questionnaire response for patient 1 with integer answers."
 Usage: #example
 * id = "1"
 * status = #completed
@@ -397,6 +423,7 @@ Usage: #example
 
 Instance: ExampleQuestionnaireResponse2
 InstanceOf: QuestionnaireResponse
+Description: "A health history questionnaire response for patient 2 with nested groups and string, date and boolean answers."
 Usage: #example
 * id = "2"
 * status = #completed
