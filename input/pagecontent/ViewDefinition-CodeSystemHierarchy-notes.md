@@ -1,6 +1,6 @@
 This will result in a "code_system_hierarchy" table that looks like this:
 
-{% sql SELECT * FROM code_system_hierarchy %}
+{% sql SELECT id, parent_code, code FROM code_system_hierarchy %}
 
 Given a CodeSystem with nested concepts like:
 
