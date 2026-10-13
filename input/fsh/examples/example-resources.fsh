@@ -326,7 +326,7 @@ Usage: #example
 // CodeSystem resource (vehicle hierarchy)
 // =============================================================================
 // A small hierarchical CodeSystem to demonstrate the CodeSystemHierarchy view.
-// Mirrors the structure described in Binary-CodeSystemHierarchy-notes.md:
+// Mirrors the structure described in ViewDefinition-CodeSystemHierarchy-notes.md:
 //   vehicle
 //     car (sedan, suv, hatchback)
 //     truck (pickup, semi)

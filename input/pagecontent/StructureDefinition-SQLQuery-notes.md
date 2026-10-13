@@ -6,13 +6,17 @@ A minimal SQLQuery Library:
 {
   "resourceType": "Library",
   "meta": {
-    "profile": ["https://sql-on-fhir.org/ig/StructureDefinition/SQLQuery"]
+    "profile": [
+      "http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/SQLQuery"
+    ]
   },
   "type": {
-    "coding": [{
-      "system": "https://sql-on-fhir.org/ig/CodeSystem/LibraryTypesCodes",
-      "code": "sql-query"
-    }]
+    "coding": [
+      {
+        "system": "http://hl7.org/fhir/uv/sql-on-fhir/CodeSystem/LibraryTypesCodes",
+        "code": "sql-query"
+      }
+    ]
   },
   "name": "PatientBloodPressure",
   "status": "active",
@@ -32,14 +36,18 @@ A minimal SQLQuery Library:
     { "name": "patient_id", "type": "string", "use": "in" },
     { "name": "from_date", "type": "date", "use": "in" }
   ],
-  "content": [{
-    "contentType": "application/sql",
-    "extension": [{
-      "url": "https://sql-on-fhir.org/ig/StructureDefinition/sql-text",
-      "valueString": "SELECT patient.id, bp.systolic FROM ..."
-    }],
-    "data": "U0VMRUNUIHBhdGllbnQu..."
-  }]
+  "content": [
+    {
+      "contentType": "application/sql",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/sql-text",
+          "valueString": "SELECT patient.id, bp.systolic FROM ..."
+        }
+      ],
+      "data": "U0VMRUNUIHBhdGllbnQu..."
+    }
+  ]
 }
 ```
 
@@ -53,11 +61,59 @@ WHERE patient.id = :patient_id
   AND bp.effective_date >= :from_date
 ```
 
+### Query Composition
+
+An SQLQuery may reference a reusable
+[SQLView](StructureDefinition-SQLView.html) as well as ViewDefinitions, letting
+queries build on one another much like SQL views. A ViewDefinition projects FHIR
+resources into tables; an SQLView wraps a query over those tables and exposes it
+under a canonical URL; an SQLQuery composes both as its table sources.
+
+These references form a directed graph of ViewDefinitions, SQLViews, and
+SQLQueries, in which each referenced result acts as a virtual table for the
+referencing query. A ValueSet or ConceptMap dependency joins the same graph as
+a leaf, exposed as a relation of its member codes or of its mappings (see
+[Terminology in SQL](terminology-in-sql.html)).
+<span class="fhir-conformance" id="sqlquery-notes-1">Authors SHOULD keep this graph acyclic.</span>
+Whether circular dependencies are detected, any limit on dependency depth, and
+whether intermediate results are materialized or inlined (for example as CTEs or
+database views) are implementation decisions and are not mandated by this
+specification.
+
+The [Active Patient Addresses](Library-ActivePatientAddressesQuery.html) example
+shows an SQLQuery that references the
+[Active Patients](Library-ActivePatientsView.html) SQLView.
+
+How these dependencies are resolved when a query is invoked, including how a
+client may supply one inline that the server cannot itself resolve, is specified
+in
+[Supporting artifacts](operations-common.html#context).
+
+### Parameter Types
+
+<span class="fhir-conformance" id="sqlquery-notes-5">Each `Library.parameter` declares a `type` that
+callers SHALL honour when supplying values.</span>
+<span class="fhir-conformance" id="sqlquery-notes-6">When parameters are passed at invocation time
+via a `Parameters` resource (for example to [`$sql-run`](OperationDefinition-SQLRun.html)
+or [`$sql-export`](OperationDefinition-SQLExport.html)), each entry
+is bound by name to the matching `Library.parameter`, and the appropriate
+`value[x]` element SHALL be used for the declared type:</span>
+
+| Library.parameter.type | Parameters.parameter value |
+| ---------------------- | -------------------------- |
+| `string`               | `valueString`              |
+| `integer`              | `valueInteger`             |
+| `date`                 | `valueDate`                |
+| `dateTime`             | `valueDateTime`            |
+| `boolean`              | `valueBoolean`             |
+| `decimal`              | `valueDecimal`             |
+
+{:.table-data}
+
 ### SQL Annotations
 
-SQL files MAY include annotations to generate SQLQuery Libraries automatically.
-Library elements are authoritative. Based on
-[Brian Kaney's sql-fhir-library-builder](https://github.com/reason-healthcare/sql-fhir-library-builder).
+<span class="fhir-conformance" id="sqlquery-notes-2">SQL files MAY include annotations to generate
+SQLQuery Libraries automatically.</span> Library elements are authoritative.
 
 Syntax: `@key: value` in SQL comments.
 
@@ -81,21 +137,21 @@ WHERE patient.id = :patient_id AND bp.effective_date >= :from_date
 
 Annotation reference:
 
-| Annotation | FHIR Mapping | Format |
-|------------|--------------|--------|
-| `@name` | `Library.name` | `@name: identifier` |
-| `@title` | `Library.title` | `@title: Human Title` |
-| `@description` | `Library.description` | `@description: text` |
-| `@version` | `Library.version` | `@version: semver` |
-| `@status` | `Library.status` | `@status: draft\|active\|retired` |
-| `@author` | `Library.author.name` | `@author: Name` (repeatable) |
-| `@publisher` | `Library.publisher` | `@publisher: Org` |
-| `@param` | `Library.parameter` | `@param: name type [description]` (repeatable) |
-| `@relatedDependency` | `relatedArtifact` | `@relatedDependency: URL [as label]` (repeatable) |
+| Annotation           | FHIR Mapping          | Format                                            |
+| -------------------- | --------------------- | ------------------------------------------------- |
+| `@name`              | `Library.name`        | `@name: identifier`                               |
+| `@title`             | `Library.title`       | `@title: Human Title`                             |
+| `@description`       | `Library.description` | `@description: text`                              |
+| `@version`           | `Library.version`     | `@version: semver`                                |
+| `@status`            | `Library.status`      | `@status: draft\|active\|retired`                 |
+| `@author`            | `Library.author.name` | `@author: Name` (repeatable)                      |
+| `@publisher`         | `Library.publisher`   | `@publisher: Org`                                 |
+| `@param`             | `Library.parameter`   | `@param: name type [description]` (repeatable)    |
+| `@relatedDependency` | `relatedArtifact`     | `@relatedDependency: URL [as label]` (repeatable) |
 
 ### Tooling
 
-Builders SHALL:
+<span class="fhir-conformance" id="sqlquery-notes-3">Builders SHALL:</span>
 
 1. Parse annotations from block (`/* */`) and line (`--`) comments
 2. Populate the `sql-text` extension with the SQL text (plain text)
@@ -105,7 +161,7 @@ Builders SHALL:
 6. Set `parameter.use` to `in` for all parameters
 7. Set `relatedArtifact.type` to `depends-on` for all dependencies
 
-Builders SHOULD:
+<span class="fhir-conformance" id="sqlquery-notes-4">Builders SHOULD:</span>
 
 1. Infer `name` from filename if `@name` not provided
 2. Default `status` to `draft` if not specified

@@ -1,5 +1,3 @@
-## Glossary
-
 ### analytic tools
 
 The broad ecosystem of tools used for data analysis, not specific to any
@@ -14,6 +12,43 @@ The third conceptual "layer" in this specification. This layer is where
 analytic tools are applied to the now tabular representations of the source
 FHIR data. This specification is agnostic to the tooling used and the specific
 queries performed in this layer. 
+
+
+### canonical URL
+
+The globally unique address that identifies a FHIR artifact, such as a view
+definition or a profile. It looks like a web address and usually resolves to the
+artifact's documentation, but its purpose is identification rather than
+retrieval: two artifacts with the same canonical URL are the same artifact, and
+resources refer to each other by canonical URL rather than by name.
+
+The artifacts of this specification share a common canonical base, which is
+`http://hl7.org/fhir/uv/sql-on-fhir`. An individual artifact's canonical URL is
+that base followed by its type and id, for example
+`http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/ViewDefinition`.
+
+
+### code system
+
+A named collection of codes and their meanings, such as SNOMED CT, LOINC or
+ICD-10, identified in FHIR by a canonical URL (for example
+`http://snomed.info/sct`). A code is meaningful only together with the code
+system it belongs to, which is why a coded value in FHIR carries both a `system`
+and a `code`, and why a terminology relation identifies a code by both. Code
+systems are versioned, and a code's meaning or active status may differ between
+versions.
+
+
+### concept map
+
+A set of assertions about how the codes of one code system relate to those of
+another, such as which ICD-10 code a SNOMED CT diagnosis code maps to; defined
+in FHIR by the `ConceptMap` resource and identified by canonical URL. Each
+assertion names a source code, a target code and a relationship between them,
+or states that a source code has no mapping. Finding the target code that a
+source code maps to is _translation_. A SQLQuery or SQLView declares a concept
+map as a dependency and reads its mappings as a relation; see
+[Terminology in SQL](terminology-in-sql.html).
 
 
 ### data layer
@@ -38,9 +73,70 @@ simplify queries
 multiple sources are combined
 
 
+### expansion
+
+The enumerated list of codes that are members of a value set, computed from its
+definition at a point in time under a given set of parameters, and recorded in
+FHIR as `ValueSet.expansion`. An expansion is a record rather than a definition:
+the same value set expanded against a later code system version may yield
+different members. It is the form in which a runner holds membership when it
+exposes a value set to SQL as a relation.
+
+
 ### flattened
 
 Informal synonym for "tabular". Not recommended.
+
+
+### manifest
+
+The `Parameters` resource an export job returns from its result URL. It carries
+the export identifier, the job's status, its timing and output format, and one
+`output` entry per subject, each with a name and one or more download locations.
+Because the manifest states no ordering, a client correlates an entry with the
+subject it requested by that name.
+
+
+### package identifier
+
+The name under which a FHIR implementation guide is distributed and installed,
+in the manner of a package on npm or PyPI. It is a dotted name, separate from the
+guide's canonical URL, and it is how one guide declares a dependency on another.
+
+This specification is distributed as `hl7.fhir.uv.sql-on-fhir`. Published version
+2.0.0 was distributed as `org.sql-on-fhir.ig`.
+
+
+### relation
+
+A table in the relational sense: a set of rows sharing one fixed set of typed
+columns, whether the rows are stored or computed on demand. In this
+specification the term names what a runner exposes for a value set or concept
+map dependency, because the emphasis is on the shape and invariants of the rows
+rather than on any stored table.
+
+
+### snapshot
+
+A single consistent view of the data at one point in time. Every subject in one
+`$sql-export` job is computed against one snapshot, so two of that job's outputs
+can be joined on a shared key without a skew window - the inconsistency that
+arises when two results are computed at different moments and the data changes in
+between.
+
+The term is borrowed from database systems, where a snapshot is the state a
+transaction sees for its duration. This specification requires the observable
+property and says nothing about how a server achieves it.
+
+
+### subject
+
+The artifact a data operation acts on: a ViewDefinition, a
+[SQLQuery](StructureDefinition-SQLQuery.html) Library or a
+[SQLView](StructureDefinition-SQLView.html) Library. A subject is named by
+canonical URL, by a literal reference, or supplied inline in the request, rather
+than by the request path. `$sql-run` takes exactly one subject; `$sql-export`
+takes one or more, each producing one entry in the manifest.
 
 
 ### tabular
@@ -61,6 +157,17 @@ ephemeral.
 
 The process of extracting repeating elements of a resource into a row for each
 item.
+
+
+### value set
+
+A selection of codes drawn from one or more code systems for a particular
+purpose, such as the codes that denote diabetes; defined in FHIR by the
+`ValueSet` resource and identified by canonical URL. A value set may be defined
+by listing its codes, or intensionally by rules that are evaluated against a code
+system to produce an expansion. A SQLQuery or SQLView declares a value set as a
+dependency and reads its membership as a relation; see
+[Terminology in SQL](terminology-in-sql.html).
 
 
 ### view definition

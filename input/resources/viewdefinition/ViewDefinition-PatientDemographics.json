@@ -1,0 +1,36 @@
+{
+  "resourceType": "ViewDefinition",
+  "resourceDefinition" : "http://hl7.org/fhir/StructureDefinition/ViewDefinition|3.0.0-ballot",
+  "id": "PatientDemographics",
+  "name": "patient_demographics",
+  "status": "draft",
+  "resource": "Patient",
+  "select": [
+    {
+      "column": [
+        {
+          "path": "getResourceKey()",
+          "name": "id"
+        },
+        {
+          "path": "gender",
+          "name": "gender"
+        }
+      ]
+    },
+    {
+      "column": [
+        {
+          "path": "given.join(' ')",
+          "name": "given_name",
+          "description": "A single given name field with all names joined together."
+        },
+        {
+          "path": "family",
+          "name": "family_name"
+        }
+      ],
+      "forEach": "name.where(use = 'official').first()"
+    }
+  ]
+}

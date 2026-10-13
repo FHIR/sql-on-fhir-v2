@@ -1,3 +1,12 @@
+<div class="stu-note" markdown="1">
+This is version 3.0.0-ballot. The canonical base of this specification changed
+in this cycle, from `https://sql-on-fhir.org/ig` to
+`http://hl7.org/fhir/uv/sql-on-fhir`, and its package identifier from
+`org.sql-on-fhir.ig` to `hl7.fhir.uv.sql-on-fhir`. Version 2.0.0 remains
+available at [its original location](https://sql-on-fhir.org/ig/2.0.0). See
+[Changes](changes.html) for what this means for an existing implementation.
+</div>
+
 _This is an evolution of the original "SQL on FHIR" draft, which
 can [still be found here](https://github.com/FHIR/sql-on-fhir-archived)._
 
@@ -72,7 +81,9 @@ flat tables, and SQLQuery joins and aggregates them using native SQL.
 
 The profile supports multiple dialect-specific SQL variants of the same logical
 query, parameterized queries with safe binding, and table aliases that map to
-ViewDefinition outputs. See the
+ViewDefinition outputs. A query can also declare a ValueSet or a ConceptMap as
+a dependency whose membership or mappings the runner exposes as a relation the
+SQL joins to ([Terminology in SQL](terminology-in-sql.html)). See the
 [SQLQuery profile](StructureDefinition-SQLQuery.html) for details.
 
 #### HTTP API
@@ -80,15 +91,12 @@ ViewDefinition outputs. See the
 The specification defines a standard [HTTP API](operations.html) as FHIR
 OperationDefinitions for interacting with SQL on FHIR systems:
 
-* [`$viewdefinition-run`](OperationDefinition-ViewDefinitionRun.html) —
-  Synchronous evaluation of a ViewDefinition with streamed results.
-* [`$viewdefinition-export`](OperationDefinition-ViewDefinitionExport.html) —
-  Asynchronous bulk export of ViewDefinition results into formats like CSV,
-  NDJSON, or Parquet.
-* [`$sqlquery-run`](OperationDefinition-SQLQueryRun.html) — Execute a
-  SQLQuery Library against materialized ViewDefinition tables synchronously.
-* `$sqlquery-export` — Asynchronous counterpart to `$sqlquery-run` for
-  large-scale query execution with results delivered to file storage.
+* [`$sql-run`](OperationDefinition-SQLRun.html) — Synchronous evaluation of a
+  single subject, whether a ViewDefinition, a SQLQuery Library or a SQLView
+  Library, with streamed results.
+* [`$sql-export`](OperationDefinition-SQLExport.html) — Asynchronous bulk export
+  of one or more subjects, in any mixture, into formats like CSV, NDJSON or
+  Parquet, as a single job against a single snapshot.
 
 Servers advertise their supported operations via the standard FHIR
 [CapabilityStatement](operations-capability.html).
@@ -171,7 +179,7 @@ Let's start with a simple example, defining "patient_demographics" and
 
 
 Such tabular views can be created for any FHIR resource,
-with [more examples here](artifacts.html#example-example-instances). See
+with [more examples here](artifacts.html). See
 the [View Definition page](StructureDefinition-ViewDefinition.html) for the
 full definition of the above structure.
 
@@ -186,11 +194,11 @@ single, shareable FHIR resource:
 {
   "resourceType": "Library",
   "meta": {
-    "profile": ["https://sql-on-fhir.org/ig/StructureDefinition/SQLQuery"]
+    "profile": ["http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/SQLQuery"]
   },
   "type": {
     "coding": [{
-      "system": "https://sql-on-fhir.org/ig/CodeSystem/LibraryTypesCodes",
+      "system": "http://hl7.org/fhir/uv/sql-on-fhir/CodeSystem/LibraryTypesCodes",
       "code": "sql-query"
     }]
   },
@@ -211,7 +219,7 @@ single, shareable FHIR resource:
   "content": [{
     "contentType": "application/sql",
     "extension": [{
-      "url": "https://sql-on-fhir.org/ig/StructureDefinition/sql-text",
+      "url": "http://hl7.org/fhir/uv/sql-on-fhir/StructureDefinition/sql-text",
       "valueString": "SELECT DATE_PART('year', AGE(pt.dob::timestamp)) AS age, pt.gender, dg.code, dg.display, count(*) FROM pt JOIN dg USING (patient_id) GROUP BY 1,2,3,4 ORDER BY 1, 5 DESC"
     }],
     "data": "U0VMRUNUIERBVEVfUEFSVCgneWVhcicsIEFHRShwdC5kb2I6OnRpbWVzdGFtcCkpIEFTIGFnZSwgcHQuZ2VuZGVyLCBkZy5jb2RlLCBkZy5kaXNwbGF5LCBjb3VudCgqKSBGUk9NIHB0IEpPSU4gZGcgVVNJTkcgKHBhdGllbnRfaWQpIEdST1VQIEJZIDEsMiwzLDQgT1JERVIgQlkgMSwgNSBERVND"
@@ -245,7 +253,7 @@ Example output:
 {:.table-data}
 
 This query can be executed via the
-[`$sqlquery-run`](OperationDefinition-SQLQueryRun.html) operation, or used
+[`$sql-run`](OperationDefinition-SQLRun.html) operation, or used
 directly in any database where the views have been materialized.
 
 
@@ -322,10 +330,8 @@ The View Layer has two key components:
   annotations to optimize performance.
 
 The [HTTP API](operations.html) formalizes the View Runner concept as standard
-FHIR operations:
-[`$viewdefinition-run`](OperationDefinition-ViewDefinitionRun.html) for
-synchronous evaluation and
-[`$viewdefinition-export`](OperationDefinition-ViewDefinitionExport.html) for
+FHIR operations: [`$sql-run`](OperationDefinition-SQLRun.html) for synchronous
+evaluation and [`$sql-export`](OperationDefinition-SQLExport.html) for
 asynchronous bulk export.
 
 See [View Definition](StructureDefinition-ViewDefinition.html) for more
@@ -349,7 +355,7 @@ There are two popular categories of runners:
 
 #### The Analytics Layer
 
-Users must be able to easily leverage the above views with the analytic tools
+Users need to be able to easily leverage the above views with the analytic tools
 of their choice. This specification purposefully does not define what these
 are, but common use cases may be SQL queries by consuming applications,
 dataframe-based data science tools in Python or R, or integration with
@@ -358,7 +364,7 @@ business intelligence tools.
 The [SQLQuery](StructureDefinition-SQLQuery.html) profile serves as a bridge
 between the View Layer and the Analytics Layer, capturing reusable SQL queries
 over ViewDefinition outputs as shareable FHIR Library resources. The
-[`$sqlquery-run`](OperationDefinition-SQLQueryRun.html) operation executes
+[`$sql-run`](OperationDefinition-SQLRun.html) operation executes
 these queries against materialized views.
 
 ### Glossary
@@ -367,6 +373,33 @@ See the [Glossary](glossary.html) for the definitions of terms used in this
 specification.
 
 ### License
+
+This implementation guide is published under the
+[Creative Commons CC0 1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/)
+public domain dedication. CC0 is the licensing mechanism applied to HL7 FHIR
+products under section 09.01.05 of the HL7 Governance and Operations Manual
+(GOM).
+
+#### Contribution and intellectual property
+
+The SQL on FHIR specification was developed externally to HL7 by the FHIR
+Analytics Collaborative, and adopted into the HL7 balloting process under the
+sponsorship of the FHIR Infrastructure Work Group (HL7 project
+[PSS-2716](https://jira.hl7.org/browse/PSS-2716)). The community continues to
+maintain reference implementations, a test report and a playground at
+[sql-on-fhir.org](https://sql-on-fhir.org).
+
+The contributors identified in PSS-2716 as the developers of this externally
+developed content contribute it to HL7 under section 09.01.02 (Commitment) of
+the GOM. Accordingly, each contributor grants HL7 a free, irrevocable license to
+incorporate their contributions, in any media or form, and any subsequent
+modifications, in the creation or maintenance of HL7 Protocol Specifications; to
+copyright in HL7's name any Protocol Specification that includes portions of
+those contributions; and to permit others, at HL7's sole discretion, to
+reproduce the resulting Protocol Specifications in whole or in part. Each
+contributor further acknowledges that, to the best of their personal knowledge,
+all contributions are free of encumbrance with respect to the intellectual
+property rights of others.
 
 FHIR® is the registered trademark of HL7 and is used with the permission of HL7.
 Use of the FHIR trademark does not constitute endorsement of the contents of

@@ -11,6 +11,19 @@ Description: "The content of the Library must be SQL expressions."
 Severity: #error
 Expression: "content.all(contentType.startsWith('application/sql'))"
 
+// Mirrors the sql-name constraint on ViewDefinition, whose definition lives in
+// input/resources/viewdefinition/StructureDefinition-ViewDefinition.xml.
+Invariant: sql-name
+Description: """
+Name is limited to letters, numbers, or underscores and cannot start with an
+underscore -- i.e. with a regular expression of: ^[A-Za-z][A-Za-z0-9_]*$ 
+
+
+This makes it usable as table names in a wide variety of databases.
+"""
+Severity: #error
+Expression: "empty() or matches('^[A-Za-z][A-Za-z0-9_]*$')"
+
 Profile: SQLQuery
 Title: "SQL Query Library"
 Parent: Library
@@ -26,18 +39,25 @@ versioning.
 * content 1..* MS
 * content.contentType 1..1 MS
 * content.contentType ^short = "application/sql or application/sql;dialect=..."
-* content.contentType from AllSQLContentTypeCodes (required)
+* content.contentType from http://hl7.org/fhir/ValueSet/mimetypes (required)
+* content.contentType ^binding.additional[+].purpose = #extensible
+* content.contentType ^binding.additional[=].valueSet = Canonical(AllSQLContentTypeCodes)
+* content.contentType ^binding.additional[=].documentation = "SQLQuery content types, including dialect-specific variants. Authors SHOULD use a code from this value set when one applies; codes outside this value set MAY be used for SQL dialects not yet enumerated, subject to the sql-must-be-sql-expressions invariant."
 * content.extension contains sql-text named sqlText 0..1 MS
 * content.extension[sqlText] ^short = "Plain-text SQL for readability"
 * content.data 1..1 MS
 * content.data ^short = "SQL query (base64-encoded)"
 
-// ViewDefinition dependencies
+// ViewDefinition, SQLView, ValueSet and ConceptMap dependencies. A ValueSet or
+// ConceptMap dependency is exposed to the SQL as a relation; see
+// input/pagecontent/terminology-in-sql.md.
 * relatedArtifact MS
 * relatedArtifact.type 1..1 MS
-* relatedArtifact.type ^short = "depends-on for ViewDefinition references"
+* relatedArtifact.type = #depends-on
+* relatedArtifact.type ^short = "depends-on for ViewDefinition, SQLView, ValueSet or ConceptMap references"
 * relatedArtifact.resource 1..1 MS
-* relatedArtifact.resource ^short = "Canonical URL of ViewDefinition"
+* relatedArtifact.resource only Canonical(ViewDefinition or SQLView or ValueSet or ConceptMap)
+* relatedArtifact.resource ^short = "Canonical URL of a ViewDefinition, SQLView, ValueSet or ConceptMap"
 * relatedArtifact.label 1..1 MS
 * relatedArtifact.label ^short = "Table name used in SQL query"
 * relatedArtifact.label obeys sql-name
@@ -48,3 +68,44 @@ versioning.
 * parameter.type 1..1 MS
 * parameter.use 1..1 MS
 * parameter.use ^short = "in (query parameters are always input)"
+
+Profile: SQLView
+Title: "SQL View Library"
+Parent: Library
+Description: """
+The SQLView profile represents a reusable, named SQL query that other queries
+reference as a virtual table source, analogous to a SQL view. It bundles the
+SQL and its dependencies for sharing and versioning. Unlike SQLQuery, an
+SQLView cannot declare parameters.
+"""
+* obeys sql-must-be-sql-expressions
+* type = LibraryTypesCodes#sql-view
+
+// Parameters are not permitted on views.
+* parameter 0..0
+* parameter ^short = "Not permitted (views cannot be parameterized)"
+
+// Content constraints - SQL attachment(s)
+* content 1..* MS
+* content.contentType 1..1 MS
+* content.contentType ^short = "application/sql or application/sql;dialect=..."
+* content.contentType from http://hl7.org/fhir/ValueSet/mimetypes (required)
+* content.contentType ^binding.additional[+].purpose = #extensible
+* content.contentType ^binding.additional[=].valueSet = Canonical(AllSQLContentTypeCodes)
+* content.contentType ^binding.additional[=].documentation = "SQLView content types, including dialect-specific variants. Authors SHOULD use a code from this value set when one applies; codes outside this value set MAY be used for SQL dialects not yet enumerated, subject to the sql-must-be-sql-expressions invariant."
+* content.extension contains sql-text named sqlText 0..1 MS
+* content.extension[sqlText] ^short = "Plain-text SQL for readability"
+* content.data 1..1 MS
+* content.data ^short = "SQL view (base64-encoded)"
+
+// ViewDefinition, SQLView, ValueSet and ConceptMap dependencies
+* relatedArtifact MS
+* relatedArtifact.type 1..1 MS
+* relatedArtifact.type = #depends-on
+* relatedArtifact.type ^short = "depends-on for ViewDefinition, SQLView, ValueSet or ConceptMap references"
+* relatedArtifact.resource 1..1 MS
+* relatedArtifact.resource only Canonical(ViewDefinition or SQLView or ValueSet or ConceptMap)
+* relatedArtifact.resource ^short = "Canonical URL of a ViewDefinition, SQLView, ValueSet or ConceptMap"
+* relatedArtifact.label 1..1 MS
+* relatedArtifact.label ^short = "Table name used in SQL view"
+* relatedArtifact.label obeys sql-name

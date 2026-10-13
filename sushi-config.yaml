@@ -3,29 +3,32 @@
 # │  used properties are included. For a list of all supported properties and their functions,     │
 # │  see: https://fshschool.org/docs/sushi/configuration/.                                         │
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
-id: org.sql-on-fhir.ig
-canonical: https://sql-on-fhir.org/ig
+id: hl7.fhir.uv.sql-on-fhir
+canonical: http://hl7.org/fhir/uv/sql-on-fhir
 name: SQLonFHIR
 title: SQL on FHIR
 description: A specification for defining portable views of FHIR data that can be easily queried using tools such as SQL.
-status: draft # draft | active | retired | unknown
-version: 2.1.0-pre
-fhirVersion: 5.0.0 # https://www.hl7.org/fhir/valueset-FHIR-version.html
+status: active # draft | active | retired | unknown
+version: 3.0.0-ballot
+fhirVersion: 6.0.0-snapshot1 # https://www.hl7.org/fhir/valueset-FHIR-version.html
 copyrightYear: 2023+
-releaseLabel: release # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
+releaseLabel: STU 3 Ballot # free text shown in the publish box, e.g. "CI Build", "STU 3 Ballot", "STU 3"
 license: CC0-1.0 # https://www.hl7.org/fhir/valueset-spdx-license.html
 jurisdiction: http://unstats.un.org/unsd/methods/m49/m49.htm#001 "World" # https://www.hl7.org/fhir/valueset-jurisdiction.html
+# HL7 publication metadata. The specification is balloted under the sponsorship
+# of the FHIR Infrastructure Work Group (HL7 project PSS-2716). These extensions
+# are propagated to every conformance resource by the IG Publisher.
+extension:
+  - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-wg
+    valueCode: fhir
+  - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+    valueCode: trial-use
+  - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-fmm
+    valueInteger: 2
 publisher:
-  name: SQL on FHIR Working Group
-  url: https://sql-on-fhir.org
+  name: HL7 International / FHIR Infrastructure
+  url: http://www.hl7.org/Special/committees/fiwg
 
-# The dependencies property corresponds to IG.dependsOn. The key is the
-# package id and the value is the version (or dev/current). For advanced
-# use cases, the value can be an object with keys for id, uri, and version.
-#
-dependencies:
-  hl7.fhir.uv.extensions.r5: 5.3.0
-#
 # The pages property corresponds to IG.definition.page. SUSHI can
 # auto-generate the page list, but if the author includes pages in
 # this file, it is assumed that the author will fully manage the
@@ -37,7 +40,36 @@ dependencies:
 # with supported extensions (e.g., .md/.xml) will be treated as
 # sub-pages.
 #
-#
+# The list is declared here only so that a standards status can be set on the
+# Changes page, which requires a page-level extension. Because declaring any
+# page hands the whole list to the author, every authored page must appear
+# below. The titles reproduce the ones SUSHI derived automatically, so the table
+# of contents is unchanged apart from the addition of Changes.
+pages:
+  index.md:
+    title: Home
+  contributing.md:
+    title: Contributing
+  functional-model.md:
+    title: Functional Model
+  glossary.md:
+    title: Glossary
+  operations.md:
+    title: SQL on FHIR API
+  operations-capability.md:
+    title: CapabilityStatement for SQL-on-FHIR API
+  operations-common.md:
+    title: Common Operation Behavior
+  terminology-in-sql.md:
+    title: Terminology in SQL
+    extension:
+      - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+        valueCode: trial-use
+  changes.md:
+    title: Changes
+    extension:
+      - url: http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status
+        valueCode: informative
 
 #
 # The parameters property represents IG.definition.parameter. Rather
@@ -51,26 +83,43 @@ dependencies:
 #
 parameters:
   excludettl: true
-  path-test: tests
+  # Root OID arc assigned to this IG in the FHIR ig-registry. The IG Publisher
+  # uses it to auto-assign and persist OIDs for code systems and value sets.
+  auto-oid-root: 2.16.840.1.113883.4.642.40.77
+  # Automatic comparison against the previous release is disabled. The publisher
+  # resolves the prior release through the package identifier recorded in
+  # {canonical}/package-list.json, so it cannot reach 2.0.0, which was published
+  # as org.sql-on-fhir.ig rather than hl7.fhir.uv.sql-on-fhir. The delta is
+  # hand-authored on the Changes page instead.
+  version-comparison: n/a
+  # ViewDefinition is defined as an additional resource type. Its definition and
+  # supporting artifacts are authored directly as XML rather than via FSH.
+  path-resource:
+    - input/resources/viewdefinition
+  additional-resource:
+    - input/resources/viewdefinition/StructureDefinition-ViewDefinition.xml
+  # Additional resources are published under the core FHIR URL base, following the
+  # convention used by the other HL7 resource incubator guides (see fhir-testing-ig
+  # and api-incubator-ig). This is also required in practice: the IG Publisher
+  # resolves the base of a profiled resource by prefixing the root of
+  # ElementDefinition.base.path with http://hl7.org/fhir/StructureDefinition/, so
+  # profiles of ViewDefinition cannot be rendered unless it lives in that namespace.
+  special-url-base: http://hl7.org/fhir
   # Register ViewDefinitions for SQL on FHIR integration.
   # This enables the IG Publisher to process example resources through these
   # views and populate an SQLite database for {% sql %} queries in notes pages.
   # See: https://build.fhir.org/ig/FHIR/ig-guidance/sql.html
   viewDefinition:
-    - fsh-generated/resources/Binary-PatientDemographics.json
-    - fsh-generated/resources/Binary-ShareablePatientDemographics.json
-    - fsh-generated/resources/Binary-PatientAddresses.json
-    - fsh-generated/resources/Binary-PatientAndContactAddressUnion.json
-    - fsh-generated/resources/Binary-UsCoreBloodPressures.json
-    - fsh-generated/resources/Binary-ConditionFlat.json
-    - fsh-generated/resources/Binary-EncounterFlat.json
-    - fsh-generated/resources/Binary-PatientNamesWithIndex.json
-    - fsh-generated/resources/Binary-QuestionnaireResponseItems.json
-    - fsh-generated/resources/Binary-CodeSystemHierarchy.json
-  special-url:
-    - http://sql-on-fhir.org/OperationDefinition/$sqlquery-run
-    - http://sql-on-fhir.org/OperationDefinition/$viewdefinition-export
-    - http://sql-on-fhir.org/OperationDefinition/$viewdefinition-run
+    - input/resources/viewdefinition/ViewDefinition-PatientDemographics.json
+    - input/resources/viewdefinition/ViewDefinition-ShareablePatientDemographics.json
+    - input/resources/viewdefinition/ViewDefinition-PatientAddresses.json
+    - input/resources/viewdefinition/ViewDefinition-PatientAndContactAddressUnion.json
+    - input/resources/viewdefinition/ViewDefinition-UsCoreBloodPressures.json
+    - input/resources/viewdefinition/ViewDefinition-ConditionFlat.json
+    - input/resources/viewdefinition/ViewDefinition-EncounterFlat.json
+    - input/resources/viewdefinition/ViewDefinition-PatientNamesWithIndex.json
+    - input/resources/viewdefinition/ViewDefinition-QuestionnaireResponseItems.json
+    - input/resources/viewdefinition/ViewDefinition-CodeSystemHierarchy.json
 
 #   validation: [allow-any-extensions, no-broken-links]
 #
@@ -85,19 +134,23 @@ parameters:
 menu:
   Overview: index.html
   View Definition: StructureDefinition-ViewDefinition.html
-  SQL Query: StructureDefinition-SQLQuery.html
+  SQL:
+    SQL Query: StructureDefinition-SQLQuery.html
+    SQL View: StructureDefinition-SQLView.html
+    Terminology in SQL: terminology-in-sql.html
   Artifacts: artifacts.html
   Operations:
     Overview: operations.html
+    Common Behavior: operations-common.html
     CapabilityStatement: operations-capability.html
-    $viewdefinition-export: OperationDefinition-ViewDefinitionExport.html
-    $viewdefinition-run: OperationDefinition-ViewDefinitionRun.html
-    $sqlquery-run: OperationDefinition-SQLQueryRun.html
+    $sql-run: OperationDefinition-SQLRun.html
+    $sql-export: OperationDefinition-SQLExport.html
   Contributing: contributing.html
   # extra/playground.html does not work - TODO: use relative ulrs
   Playground: http://sql-on-fhir.org/extra/playground.html
   Tests: http://sql-on-fhir.org/extra/tests.html
   Implementations: http://sql-on-fhir.org/extra/impls.html
+  Changes: changes.html
 
 # ╭───────────────────────────Less Common Implementation Guide Properties──────────────────────────╮
 # │  Uncomment the properties below to configure additional properties on the ImplementationGuide  │
@@ -156,45 +209,84 @@ menu:
 #     exampleBoolean: true
 #   Patient/bad-example: omit
 
-# Add the implementationguide-resource-logical extension to ViewDefinition examples
-# so the IG Publisher knows to validate them as logical model instances.
+# ViewDefinition artifacts are authored directly as XML/JSON under
+# input/resources/viewdefinition, so their IG metadata is declared here.
 resources:
-  Binary/PatientDemographics:
-    extension:
-      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
-        valueCanonical: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
-  Binary/ShareablePatientDemographics:
-    extension:
-      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
-        valueCanonical: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
-  Binary/PatientAddresses:
-    extension:
-      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
-        valueCanonical: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
-  Binary/PatientAndContactAddressUnion:
-    extension:
-      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
-        valueCanonical: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
-  Binary/UsCoreBloodPressures:
-    extension:
-      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
-        valueCanonical: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
-  Binary/ConditionFlat:
-    extension:
-      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
-        valueCanonical: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
-  Binary/EncounterFlat:
-    extension:
-      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
-        valueCanonical: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
-  Binary/QuestionnaireResponseItems:
-    extension:
-      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
-        valueCanonical: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
-  Binary/CodeSystemHierarchy:
-    extension:
-      - url: http://hl7.org/fhir/tools/StructureDefinition/implementationguide-resource-logical
-        valueCanonical: https://sql-on-fhir.org/ig/StructureDefinition/ViewDefinition
+  List/ViewDefinition-operations:
+    name: ViewDefinition Operations
+    description: All the ViewDefinition operations defined by this guide.
+  ViewDefinition/PatientDemographics:
+    name: Patient Demographics
+    description: >-
+      A minimal example of a patient demographics view. This view uses the first
+      'official' patient name for our demographics table.
+    exampleBoolean: true
+  ViewDefinition/ShareablePatientDemographics:
+    name: Shareable Patient Demographics
+    description: >-
+      Creates the same view as the 'PatientDemographics' example, but applies both
+      the ShareableViewDefinition and TabularViewDefinition profiles.
+    exampleBoolean: true
+  ViewDefinition/PatientAddresses:
+    name: Patient Addresses
+    description: >-
+      An example of unnesting patient addresses into multiple rows. This view uses
+      `forEach` to indicate we are unrolling these into separate rows. The `join`
+      function is used to create a single address line.
+    exampleBoolean: true
+  ViewDefinition/PatientAndContactAddressUnion:
+    name: Patient and Contact Address Union
+    description: >-
+      An example of unnesting patient addresses and contact addresss into multiple
+      rows, which are unioned together into a single table.
+    exampleBoolean: true
+  ViewDefinition/PatientNamesWithIndex:
+    name: Patient Names with Index
+    description: >-
+      An example demonstrating the use of %rowIndex to capture the position of
+      elements within a collection. This is useful for preserving FHIR ordering
+      semantics and creating surrogate keys that combine resource ID with element
+      position.
+    exampleBoolean: true
+  ViewDefinition/UsCoreBloodPressures:
+    name: US Core Blood Pressures
+    description: >-
+      A simple view of blood pressure observations, with separate columns for
+      systolic and diastolic values.
+    exampleBoolean: true
+  ViewDefinition/ConditionFlat:
+    name: Condition Flat
+    description: >-
+      A simple view for flattening a Condition resource. Some of the more commonly
+      used fields are included in this flat view. A notable point is flattening of
+      `category.coding` fields with one `forEach` construct as FHIRPath will take
+      care of handling of nested arrays.
+    exampleBoolean: true
+  ViewDefinition/EncounterFlat:
+    name: Encounter Flat
+    description: >-
+      A simple view for flattening an Encounter resource. Some of the more commonly
+      used fields are included in this flat view. Note this is valid for an R4
+      Encounter resource but not R5 (hence the `fhirVersion`).
+    exampleBoolean: true
+  ViewDefinition/QuestionnaireResponseItems:
+    name: Questionnaire Response Items
+    description: >-
+      Demonstrates using the `repeat` directive to recursively flatten nested
+      QuestionnaireResponse items. Unlike `forEach`, which only unnests a single
+      level, `repeat` traverses all levels of nesting to produce one row per item
+      regardless of depth. This is useful for analysing survey responses where
+      questions may be grouped into nested sections.
+    exampleBoolean: true
+  ViewDefinition/CodeSystemHierarchy:
+    name: CodeSystem Hierarchy
+    description: >-
+      Demonstrates using `repeat` with nested `select` to traverse a CodeSystem
+      concept hierarchy. This produces parent-child code pairs by using `repeat` to
+      walk down the concept tree and a nested `forEach` to extract each child
+      concept at every level. Useful for building concept maps or analysing
+      hierarchical terminologies.
+    exampleBoolean: true
 
 #
 # Groups can control certain aspects of the IG generation.  The IG
