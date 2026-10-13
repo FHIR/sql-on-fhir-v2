@@ -10,27 +10,25 @@ definitions and provides a more compelling demonstration of the specification.
 
 ## What changes
 
-- Create FHIR example resources (Patient, Observation, Condition, Encounter)
-  that match the expected output shown in existing example notes files.
+- Create FHIR example resources (Patient, Observation, Condition, Encounter,
+  CodeSystem, QuestionnaireResponse and supporting resources) that match the
+  expected output shown in existing example notes files.
 - Register each ViewDefinition in `sushi-config.yaml` using the
-  `path-viewdef` parameter so the IG Publisher builds them into its SQLite
+  `viewDefinition` parameter so the IG Publisher builds them into its SQLite
   database.
 - Replace static markdown tables in the `*-notes.md` files with Liquid `{% sql
   %}` tags that query the generated views.
-- Create new notes files for `ConditionFlat` and `EncounterFlat` examples which
-  currently lack any documentation.
+- Create new notes files for the `ConditionFlat`, `EncounterFlat` and
+  `PatientNamesWithIndex` examples which currently lack any documentation.
 
 ## Impact
 
 - Affected files:
-  - `sushi-config.yaml` (add `path-viewdef` entries)
-  - `input/fsh/examples/` (new FSH file for example resources)
-  - `input/pagecontent/Binary-PatientDemographics-notes.md`
-  - `input/pagecontent/Binary-ShareablePatientDemographics-notes.md`
-  - `input/pagecontent/Binary-PatientAddresses-notes.md`
-  - `input/pagecontent/Binary-PatientAndContactAddressUnion-notes.md`
-  - `input/pagecontent/Binary-UsCoreBloodPressures-notes.md`
-  - `input/pagecontent/Binary-ConditionFlat-notes.md` (new)
-  - `input/pagecontent/Binary-EncounterFlat-notes.md` (new)
+  - `sushi-config.yaml` (add `viewDefinition` entries)
+  - `input/fsh/examples/example-resources.fsh` (new FSH file for example
+    resources)
+  - `input/resources/viewdefinition/ViewDefinition-*.json` (unique name for
+    ShareablePatientDemographics, R5 paths for EncounterFlat)
+  - `input/pagecontent/ViewDefinition-*-notes.md` (one per example, three new)
 - No breaking changes; purely additive documentation improvement.
 - Requires IG Publisher version that supports SQL on FHIR integration.

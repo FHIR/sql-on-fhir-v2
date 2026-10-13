@@ -92,7 +92,7 @@ ViewDefinition examples to produce meaningful output tables.
 #### Scenario: Encounter example resources exist
 
 - **WHEN** the IG is built
-- **THEN** example Encounter resources SHALL exist (R4 compatible) with:
+- **THEN** example Encounter resources SHALL exist (R5 compatible) with:
   - Status
   - Type with coding
   - Patient reference

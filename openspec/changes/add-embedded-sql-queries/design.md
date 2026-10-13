@@ -7,7 +7,7 @@ to flatten FHIR resources into tabular form. Currently, the expected output is
 shown as static markdown tables in the `*-notes.md` files. The IG Publisher
 supports dynamically generating these tables by:
 
-1. Registering ViewDefinitions via the `path-viewdef` parameter.
+1. Registering ViewDefinitions via the `viewDefinition` parameter.
 2. Processing example FHIR resources through the ViewDefinitions into an
    internal SQLite database.
 3. Executing SQL queries embedded in narrative pages via `{% sql %}` Liquid
@@ -45,7 +45,7 @@ behaviour.
 │                                                  │                          │
 │  ┌──────────────┐                                ▼                          │
 │  │ ViewDefs     │    ┌──────────────────────────────────────┐               │
-│  │ (Binary/*.json)│──▶│         IG Publisher                 │              │
+│  │ (JSON)       │───▶│         IG Publisher                 │               │
 │  └──────────────┘    │  ┌────────────────────────────────┐  │               │
 │                      │  │   SQL on FHIR Processor        │  │               │
 │                      │  │   ┌────────────────────────┐   │  │               │
@@ -106,28 +106,32 @@ what was previously shown in the static tables.
 
 ### Decision 4: Use simple SQL queries
 
-The `{% sql %}` queries will be simple `SELECT * FROM view_name` statements.
-Advanced SQL features like joins or aggregations are out of scope for this
-change.
+The `{% sql %}` queries will be simple `SELECT` statements over a single view.
+Columns are listed explicitly so that the `ViewRowKey` column added by the IG
+Publisher is not shown. Advanced SQL features like joins or aggregations are out
+of scope for this change.
 
 ## Technical specification
 
 ### Configuration changes (sushi-config.yaml)
 
-Add the `path-viewdef` parameter to register ViewDefinitions with the IG
-Publisher's SQL on FHIR processor:
+Add the `viewDefinition` parameter to register ViewDefinitions with the IG
+Publisher's SQL on FHIR processor. The ViewDefinitions are authored as JSON
+additional resources in `input/resources/viewdefinition/`:
 
 ```yaml
 parameters:
-  excludettl: true
-  path-test: tests
-  path-viewdef: fsh-generated/resources/Binary-PatientDemographics.json
-  path-viewdef: fsh-generated/resources/Binary-ShareablePatientDemographics.json
-  path-viewdef: fsh-generated/resources/Binary-PatientAddresses.json
-  path-viewdef: fsh-generated/resources/Binary-PatientAndContactAddressUnion.json
-  path-viewdef: fsh-generated/resources/Binary-UsCoreBloodPressures.json
-  path-viewdef: fsh-generated/resources/Binary-ConditionFlat.json
-  path-viewdef: fsh-generated/resources/Binary-EncounterFlat.json
+  viewDefinition:
+    - input/resources/viewdefinition/ViewDefinition-PatientDemographics.json
+    - input/resources/viewdefinition/ViewDefinition-ShareablePatientDemographics.json
+    - input/resources/viewdefinition/ViewDefinition-PatientAddresses.json
+    - input/resources/viewdefinition/ViewDefinition-PatientAndContactAddressUnion.json
+    - input/resources/viewdefinition/ViewDefinition-UsCoreBloodPressures.json
+    - input/resources/viewdefinition/ViewDefinition-ConditionFlat.json
+    - input/resources/viewdefinition/ViewDefinition-EncounterFlat.json
+    - input/resources/viewdefinition/ViewDefinition-PatientNamesWithIndex.json
+    - input/resources/viewdefinition/ViewDefinition-QuestionnaireResponseItems.json
+    - input/resources/viewdefinition/ViewDefinition-CodeSystemHierarchy.json
 ```
 
 ### Example resource design
@@ -219,7 +223,7 @@ Usage: #example
 | cond1 | pt1     | enc1      | 44054006 (Diabetes) | encounter-diagnosis | active |
 | cond2 | pt2     | enc2      | 38341003 (Hypertension) | problem-list-item | resolved |
 
-#### Encounter resources (2-3 encounters, R4 format)
+#### Encounter resources (2 encounters, R5 format)
 
 | ID   | Patient | Status   | Type         | Period                    | Practitioner | Location |
 | ---- | ------- | -------- | ------------ | ------------------------- | ------------ | -------- |
@@ -232,25 +236,25 @@ The IG Publisher supports the `{% sql %}` Liquid tag for embedding SQL queries.
 The basic syntax is:
 
 ```liquid
-{% sql SELECT * FROM view_name %}
+{% sql SELECT column_1, column_2 FROM view_name %}
 ```
 
 For the notes pages, the updated content will look like:
 
-**Binary-PatientDemographics-notes.md:**
+**ViewDefinition-PatientDemographics-notes.md:**
 
 ```markdown
 This will result in a "patient_demographics" table that looks like this:
 
-{% sql SELECT * FROM patient_demographics %}
+{% sql SELECT id, gender, given_name, family_name FROM patient_demographics %}
 ```
 
-**Binary-PatientAddresses-notes.md:**
+**ViewDefinition-PatientAddresses-notes.md:**
 
 ```markdown
 This will result in a "patient_addresses" table that looks like this:
 
-{% sql SELECT * FROM patient_addresses %}
+{% sql SELECT patient_id, street, use, city, zip FROM patient_addresses %}
 ```
 
 ### View name mapping
@@ -261,16 +265,18 @@ ViewDefinition:
 | ViewDefinition Instance        | View Name (`name` field)        |
 | ------------------------------ | ------------------------------- |
 | PatientDemographics            | patient_demographics            |
-| ShareablePatientDemographics   | patient_demographics            |
+| ShareablePatientDemographics   | shareable_patient_demographics  |
 | PatientAddresses               | patient_addresses               |
 | PatientAndContactAddressUnion  | patient_and_contact_addresses   |
 | UsCoreBloodPressures           | us_core_blood_pressures         |
 | ConditionFlat                  | condition_flat                  |
 | EncounterFlat                  | encounter_flat                  |
+| PatientNamesWithIndex          | patient_names_with_index        |
+| QuestionnaireResponseItems     | questionnaire_response_items    |
+| CodeSystemHierarchy            | code_system_hierarchy           |
 
-Note: PatientDemographics and ShareablePatientDemographics share the same view
-name, so they will produce identical output (by design, as ShareablePatientDemographics
-is a profiled version of the same view).
+Table names must be unique within `package.db`, so
+ShareablePatientDemographics uses a distinct name from PatientDemographics.
 
 ## Risks / Trade-offs
 
@@ -280,34 +286,23 @@ is a profiled version of the same view).
 | SQL query errors break the build                 | Validate queries during development; keep them simple |
 | Example data becomes stale if ViewDefinitions change | This is the problem we're solving — dynamic generation ensures sync |
 | View name collisions                             | Use unique names; document shared names explicitly    |
-| R4 vs R5 compatibility for Encounter             | EncounterFlat already specifies `fhirVersion = #4.0`  |
+| R4 vs R5 compatibility for Encounter             | EncounterFlat uses R5 paths (`actualPeriod`, `participant.actor`) |
 
 ## Migration plan
 
 1. Add example resources (no impact on existing build).
-2. Add `path-viewdef` parameters to sushi-config.yaml.
+2. Add `viewDefinition` parameters to sushi-config.yaml.
 3. Test IG build to verify SQLite database is populated.
 4. Update notes files one at a time, verifying output after each change.
 5. Create new notes files for ConditionFlat and EncounterFlat.
 
 Rollback: Revert to static markdown tables if SQL integration causes issues.
 
-## Open questions
+## Resolved questions
 
-1. **IG Publisher version** — What is the minimum IG Publisher version that
-   supports the `{% sql %}` Liquid tag? Need to verify and document.
-
-2. **Column metadata** — Should we add column metadata hints to the SQL queries
-   for better rendering (e.g., making IDs into clickable links)? The syntax
-   would be:
-   ```liquid
-   {% sql SELECT id, gender FROM patient_demographics %}
-   ```
-   With metadata in a comment or separate parameter.
-
-3. **CSS styling** — The existing static tables use `{:.table-data}` for styling.
-   Need to verify if the generated tables include appropriate CSS classes.
-
-4. **Shared view names** — PatientDemographics and ShareablePatientDemographics
-   use the same `name`. Should we differentiate them or accept that they
-   demonstrate identical output?
+1. **IG Publisher version** - Verified with IG Publisher 3.0.0 (FHIR
+   6.0.0-snapshot1).
+2. **Column metadata** - Not needed; plain column lists are sufficient.
+3. **CSS styling** - Generated tables use the `grid` class.
+4. **Shared view names** - Resolved by renaming the shareable view to
+   `shareable_patient_demographics`.

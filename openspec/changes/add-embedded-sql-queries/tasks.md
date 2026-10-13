@@ -2,38 +2,43 @@
 
 ## 1. Create example FHIR resources
 
-- [ ] 1.1 Create Patient example resources in FSH matching PatientDemographics
+- [x] 1.1 Create Patient example resources in FSH matching PatientDemographics
       and PatientAddresses expected output (3 patients with names, genders, and
       addresses).
-- [ ] 1.2 Create Patient contact data for PatientAndContactAddressUnion example.
-- [ ] 1.3 Create Observation example resources for UsCoreBloodPressures (5 blood
+- [x] 1.2 Create Patient contact data for PatientAndContactAddressUnion example.
+- [x] 1.3 Create Observation example resources for UsCoreBloodPressures (5 blood
       pressure observations with systolic/diastolic components).
-- [ ] 1.4 Create Condition example resources for ConditionFlat example.
-- [ ] 1.5 Create Encounter example resources for EncounterFlat example.
+- [x] 1.4 Create Condition example resources for ConditionFlat example.
+- [x] 1.5 Create Encounter example resources for EncounterFlat example.
 
 ## 2. Configure IG Publisher for ViewDefinitions
 
-- [ ] 2.1 Add `path-viewdef` parameters to `sushi-config.yaml` for each
+- [x] 2.1 Add `viewDefinition` parameters to `sushi-config.yaml` for each
       ViewDefinition example.
-- [ ] 2.2 Verify the IG builds successfully with SUSHI and IG Publisher.
-- [ ] 2.3 Confirm ViewDefinitions are processed and SQLite database is
+- [x] 2.2 Verify the IG builds successfully with SUSHI and IG Publisher.
+- [x] 2.3 Confirm ViewDefinitions are processed and SQLite database is
       populated.
 
 ## 3. Update example notes with SQL queries
 
-- [ ] 3.1 Update `Binary-PatientDemographics-notes.md` to use `{% sql %}` tag.
-- [ ] 3.2 Update `Binary-ShareablePatientDemographics-notes.md` to use `{% sql
+- [x] 3.1 Update `ViewDefinition-PatientDemographics-notes.md` to use `{% sql
       %}` tag.
-- [ ] 3.3 Update `Binary-PatientAddresses-notes.md` to use `{% sql %}` tag.
-- [ ] 3.4 Update `Binary-PatientAndContactAddressUnion-notes.md` to use `{% sql
+- [x] 3.2 Update `ViewDefinition-ShareablePatientDemographics-notes.md` to use
+      `{% sql %}` tag.
+- [x] 3.3 Update `ViewDefinition-PatientAddresses-notes.md` to use `{% sql %}`
+      tag.
+- [x] 3.4 Update `ViewDefinition-PatientAndContactAddressUnion-notes.md` to use
+      `{% sql %}` tag.
+- [x] 3.5 Update `ViewDefinition-UsCoreBloodPressures-notes.md` to use `{% sql
       %}` tag.
-- [ ] 3.5 Update `Binary-UsCoreBloodPressures-notes.md` to use `{% sql %}` tag.
-- [ ] 3.6 Create `Binary-ConditionFlat-notes.md` with `{% sql %}` tag.
-- [ ] 3.7 Create `Binary-EncounterFlat-notes.md` with `{% sql %}` tag.
+- [x] 3.6 Create `ViewDefinition-ConditionFlat-notes.md` with `{% sql %}` tag.
+- [x] 3.7 Create `ViewDefinition-EncounterFlat-notes.md` with `{% sql %}` tag.
 
 ## 4. Validation
 
-- [ ] 4.1 Run full IG build (`npm run build:ig`) and verify no errors.
-- [ ] 4.2 Verify generated HTML pages contain the expected tables.
-- [ ] 4.3 Compare generated tables with previous static tables to ensure data
+- [x] 4.1 Run full IG build (`npm run build:ig`) and verify no new errors or
+      warnings. The six remaining errors also occur on `main` and come from
+      upstream IG Publisher handling of additional resources.
+- [x] 4.2 Verify generated HTML pages contain the expected tables.
+- [x] 4.3 Compare generated tables with previous static tables to ensure data
       matches.
